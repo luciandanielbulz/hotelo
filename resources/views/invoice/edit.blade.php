@@ -6,12 +6,7 @@
             </div>
             <div class="col col-auto d-flex align-items-center">
                 <a href="{{ route('invoice.index') }}" class="btn btn-transparent">Zurück</a>
-                <form method="post" action="#" class="m-0">
-                    <input type="hidden" name="invoiceid" value="">
-                    <input type="hidden" name="prev" value="1">
-                    <input type="hidden" name="objecttype" value="2">
-                    <button type="submit" class="btn btn-transparent">Vorschau</button>
-                </form>
+                <button id="viewInvoiceButton" class="btn btn-transparent">Vorschau</button>
             </div>
         </div>
     </div>
@@ -38,9 +33,9 @@
         </div>
         <div class="row">
             <div class="col">
-                <label class="label-client">{{ $invoice->companyname }}</label><br>
-                <label class="label-client">{{ $invoice->address}}</label><br>
-                <label class="label-client">{{ $invoice->country}}</label>
+                <label class="label-client">{{ $customer->companyname }}</label><br>
+                <label class="label-client">{{ $customer->address}}</label><br>
+                <label class="label-client">{{ $customer->country}}</label>
             </div>
         </div>
 
@@ -161,9 +156,10 @@
 
             });
 
+
             $('#viewInvoiceButton').click(function() {
-            const url = '{{ route("create.pdf") }}' +
-                '?invoice_id=' + {{$invoice->invoiceid}} +
+            const url = '{{ route("createinvoice.pdf") }}' +
+                '?invoice_id=' + {{$invoice->id}} +
                 '&objecttype=invoice' +
                 '&prev=1';
             window.open(url, '_blank');

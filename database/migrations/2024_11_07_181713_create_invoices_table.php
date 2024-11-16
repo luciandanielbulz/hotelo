@@ -20,8 +20,8 @@ return new class extends Migration
             $table->foreignId('tax_id')->constrained('taxrates')->onDelete('cascade');
             $table->boolean('taxburden')->nullable();  // Steuerlast, boolean, kann null sein
             $table->decimal('depositamount', 10, 2)->nullable();  // Anzahlungsbetrag, Dezimalzahl, kann null sein
-            $table->dateTime('periodfrom')->nullable();  // Anfang der Periode, kann null sein
-            $table->dateTime('periodto')->nullable();  // Ende der Periode, kann null sein
+            $table->date('periodfrom')->nullable();  // Anfang der Periode, kann null sein
+            $table->date('periodto')->nullable();  // Ende der Periode, kann null sein
             $table->foreignId('condition_id')->constrained('conditions')->onDelete('cascade');  // Fremdschlüssel zu Konditionen, kann null sein
             $table->boolean('payed')->nullable();  // Bezahltstatus, boolean, kann null sein
             $table->dateTime('payeddate')->nullable();  // Bezahldatum, kann null sein

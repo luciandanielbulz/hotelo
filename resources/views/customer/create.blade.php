@@ -41,7 +41,7 @@
                 </div>
                 <div class="form-group col">
                     <label for="customername">Titel</label>
-                    <input type="text" class="form-control" id="title" name="title" value="<?php if(isset($_SESSION['customerData']['title'])) { echo $_SESSION['customerData']['title']; } ?>">
+                    <input type="text" class="form-control" id="title" name="title">
 
                 </div>
             </div>
@@ -86,8 +86,18 @@
                     <input type="text" class="form-control" id="country" name="country" value="Österreich">
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="tax_id">UID</label>
-                    <input type="text" class="form-control" id="tax_id" name="tax_id" value="<?php if(isset($_SESSION['customerData']['tax_id'])) { echo $_SESSION['customerData']['taxid']; } ?>">
+                    <label for="vat_number">UID</label>
+                    <input type="text" class="form-control" id="vat_number" name="vat_number" value="<?php if(isset($_SESSION['customerData']['vat_number'])) { echo $_SESSION['customerData']['taxid']; } ?>">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="tax_id">Umsatzsteuer</label>
+                    <select name="tax_id" id="tax_id" class="form-control">
+                        @foreach($taxrates as $taxrate)
+                            <option value="{{ $taxrate->id }}" {{ $taxrate->id == 1 ? 'selected' : '' }}>
+                                {{ $taxrate->taxrate }} %
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
 

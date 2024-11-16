@@ -18,21 +18,4 @@ class Offers extends Model
         'offer_id',
         'number'
     ];
-
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class, 'customer_id', 'id');
-    }
-
-    public function condition()
-    {
-        return $this->belongsTo(Conditions::class, 'condition_id', 'id');
-    }
-
-    public function taxrate()
-    {
-        return $this->belongsTo(Taxrates::class, 'tax_id', 'id');
-    }
-
-
 }

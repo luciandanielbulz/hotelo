@@ -1,20 +1,9 @@
 <x-layout>
     <div class="container">
-        <div class="row mb-4">
-            <div class = "col text-left">
-                <h3>Angebote</h3>
-            </div>
-            <div class = "col text-right">
-                <a href="{{route('dashboard')}}" class="btn btn-transparent">Zurück</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
-        <div class="row" id="offerList">
+        <div class="row">
             <div class="col-md-4 text-left">
-                <form id="searchForm" class="form-inline">
-                    <input type="text" id="searchInput" name="search" class="form-control mr-2" placeholder="Suchen">
+                <form id="searchForm" class="form-inline" method="GET" action="{{ route('offer.index') }}">
+                    <input type="text" name="search" class="form-control mr-2" placeholder="Suchen" value="{{ request('search') }}">
                     <button type="submit" class="btn btn-secondary">Suchen</button>
                 </form>
             </div>
@@ -62,6 +51,9 @@
                             @endforelse
                         </tbody>
                     </table>
+                    <div>
+                        {{ $offers->links() }}
+                    </div>
                 </div>
 
         </div>
@@ -87,12 +79,12 @@
             }
 
             $('#viewOfferButton').click(function() {
-                const url = '{{ route("create.pdf") }}' +
+                const url = '{{ route("createoffer.pdf") }}' +
                     '?offer_id=' + selectedOfferId +
                     '&objecttype=offer' +
                     '&prev=1';
                 window.open(url, '_blank'); // PDF im neuen Tab öffnen
-});
+            });
 
             $('#editOfferButton').click(function() {
                 if (selectedOfferId) {

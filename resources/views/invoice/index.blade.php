@@ -12,11 +12,11 @@
         </div>
 
         <div class="container">
-            <div class="row" id="invoiceList">
+            <div class="row">
                 <div class="col-md-4 text-left">
-                    <form id="searchForm" class="form-inline">
-                        <input type="text" id="searchInput" name="search" class="form-control mr-2" placeholder="Suchen">
-                        <button type="submit" class="btn btn-secondary mr-2">Suchen</button>
+                    <form id="searchForm" class="form-inline" method="GET" action="{{ route('invoice.index') }}">
+                        <input type="text" name="search" class="form-control mr-2" placeholder="Suchen" value="{{ request('search') }}">
+                        <button type="submit" class="btn btn-secondary">Suchen</button>
                     </form>
                 </div>
 
@@ -61,6 +61,9 @@
                                 @endforelse
                             </tbody>
                         </table>
+                        <div>
+                            {{ $invoices->links() }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -82,68 +85,18 @@
                    $('#archiveButton').prop('disabled', false);
                 });
 
-
-
-               $('#searchForm').submit(function(event) {
-                   event.preventDefault();
-                   let searchQuery = $('#searchInput').val();
-
-                   // AJAX request to search for offers
-                   $.ajax({
-                       url: 'includes/invoice_search.inc.php',
-                       type: 'GET',
-                       data: { search: searchQuery },
-                       success: function(response) {
-                           try {
-                               // Parse the JSON response from the server
-                               let results = JSON.parse(response);
-                               let tableContent = '';
-
-                               // Loop through each result and construct the table rows
-                               results.forEach(function(row) {
-                                   // Function to format a date as dd.mm.yyyy
-                                   function formatDate(dateString) {
-                                       const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-                                       const date = new Date(dateString);
-                                       return date.toLocaleDateString('de-DE', options); // Format date as dd.mm.yyyy
-                                   }
-
-                                   // Generate table content with formatted date
-                                   tableContent += `
-                                       <tr data-id="${row.Id}">
-                                           <td class='align-middle'>${row.InvoiceNumber}</td>
-                                           <td class='align-middle'>${formatDate(row.InvoiceDate)}</td>
-                                           <td class='align-middle'>${row.CustomerName || row.CompanyName}</td>
-                                           <td class='align-middle'>${row.Comment}</td>
-                                       </tr>`;
-                               });
-
-                               // Update the table with the new rows
-                               $('#invoiceTable').html(tableContent);
-
-                           } catch (e) {
-                               console.error('Failed to parse JSON response', e);
-                           }
-                       },
-                       error: function(xhr, status, error) {
-                           console.error('AJAX Error: ', status, error);
-                       }
-                   });
-               });
-
                $('#newInvoiceButton').click(function() {
                    console.log("Rechnung anlegen Button wurde geklickt");
                    window.location.href = '{{ route('invoice.create') }}';
                });
 
                $('#viewInvoiceButton').click(function() {
-                    console.log("Ansicht Button wurde geklickt");
-
-                    if (selectedInvoiceId) {
-                        // Dynamisches Weiterleiten zur GET-Route mit der Rechnungs-ID
-                        window.location.href = '{{ route('invoice.show', '') }}/' + selectedInvoiceId;
-                    }
-                });
+                const url = '{{ route("createinvoice.pdf") }}' +
+                    '?invoice_id=' + selectedInvoiceId +
+                    '&objecttype=invoice' +
+                    '&prev=1';
+                window.open(url, '_blank'); // PDF im neuen Tab öffnen
+            });
 
                $('#pdfExportButton').click(function() {
                    console.log("Export Button wurde geklickt");

@@ -8,6 +8,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoicepositionController;
 use App\Http\Controllers\OfferpositionController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\PdfCreateController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,44 +27,50 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+
+Route::middleware(['auth','verified'])->group(function(){
 
 
-Route::resource('customer',CustomerController::class);
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::resource('customer',CustomerController::class);
+
+    Route::post('/offer/updatetaxrate', [OfferController::class, 'updatetaxrate'])->name('offer.updatetaxrate');
+    Route::post('/offer/updateofferdate', [OfferController::class, 'updateofferdate'])->name('offer.updateofferdate');
+    Route::post('/offer/updatedescription', [OfferController::class, 'updatedescription'])->name('offer.updatedescription');
+    Route::post('/offer/updatecomment', [OfferController::class, 'updatecomment'])->name('offer.updatecomment');
+    Route::post('/offer/updatenumber', [OfferController::class, 'updatenumber'])->name('offer.updatenumber');
+    Route::get('/offer/create/{id}',[OfferController::class, 'create'])->name('offer.create');
+    Route::resource('offer',OfferController::class);
+
+    Route::resource('offerposition',OfferpositionController::class);
+
+    Route::post('/invoice/updatetaxrate', [InvoiceController::class, 'updatetaxrate'])->name('invoice.updatetaxrate');
+    Route::post('/invoice/updateinvoicedate', [InvoiceController::class, 'updateinvoicedate'])->name('invoice.updateinvoicedate');
+    Route::post('/invoice/updatenumber', [InvoiceController::class, 'updatenumber'])->name('invoice.updatenumber');
+    Route::post('/invoice/updatecondition', [InvoiceController::class, 'updatecondition'])->name('invoice.updatecondition');
+    Route::post('/invoice/updatedescription', [InvoiceController::class, 'updatedescription'])->name('invoice.updatedescription');
+    Route::post('/invoice/updatecomment', [InvoiceController::class, 'updatecomment'])->name('invoice.updatecomment');
+    Route::post('/invoice/updatedeposit', [InvoiceController::class, 'updatedeposit'])->name('invoice.updatedeposit');
+    Route::get('/invoice/create/{id}',[InvoiceController::class, 'create'])->name('invoice.create');
+    Route::resource('invoice',InvoiceController::class);
+    Route::resource('sales',SalesController::class);
+
+    Route::resource('users', UsersController::class);
+    Route::resource('invoiceposition', InvoicepositionController::class);
 
 
-Route::post('/offer/updatetaxrate', [OfferController::class, 'updatetaxrate'])->name('offer.updatetaxrate');
-Route::post('/offer/updateofferdate', [OfferController::class, 'updateofferdate'])->name('offer.updateofferdate');
-Route::post('/offer/updatedescription', [OfferController::class, 'updatedescription'])->name('offer.updatedescription');
-Route::post('/offer/updatecomment', [OfferController::class, 'updatecomment'])->name('offer.updatecomment');
-Route::get('/offer/create/{id}',[OfferController::class, 'create'])->name('offer.create');
-Route::resource('offer',OfferController::class);
-Route::resource('offerposition',OfferpositionController::class);
 
-Route::post('/invoice/updatetaxrate', [InvoiceController::class, 'updatetaxrate'])->name('invoice.updatetaxrate');
-Route::post('/invoice/updateinvoicedate', [InvoiceController::class, 'updateinvoicedate'])->name('invoice.updateinvoicedate');
-Route::post('/invoice/updatenumber', [InvoiceController::class, 'updatenumber'])->name('invoice.updatenumber');
-Route::post('/invoice/updatecondition', [InvoiceController::class, 'updatecondition'])->name('invoice.updatecondition');
-Route::post('/invoice/updatedescription', [InvoiceController::class, 'updatedescription'])->name('invoice.updatedescription');
-Route::post('/invoice/updatecomment', [InvoiceController::class, 'updatecomment'])->name('invoice.updatecomment');
-Route::post('/invoice/updatedeposit', [InvoiceController::class, 'updatedeposit'])->name('invoice.updatedeposit');
-Route::get('/invoice/create/{id}',[InvoiceController::class, 'create'])->name('invoice.create');
-Route::resource('invoice',InvoiceController::class);
+    Route::middleware('auth')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
+
+    Route::get('/createOfferPdf', [PdfCreateController::class,'createOfferPdf'])->name('createoffer.pdf');
+    Route::get('/createInvoicePdf', [PdfCreateController::class,'createInvoicePdf'])->name('createinvoice.pdf');
 
 
-Route::resource('users', UsersController::class);
-Route::resource('invoiceposition', InvoicepositionController::class);
-
-
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-Route::get('/createPdf', [PdfCreateController::class,'createpdf'])->name('create.pdf');
 
 require __DIR__.'/auth.php';

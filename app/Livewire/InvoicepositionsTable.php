@@ -46,8 +46,29 @@ class InvoicepositionsTable extends Component
         $this->loadPositions();
     }
 
+    public function addTextPosition()
+    {
+
+
+        InvoicePositions::create([
+            'invoice_id' => $this->invoiceId,
+            'designation' => "",
+            'details' => "",
+            'unit_id' => 1,
+            'amount' => 1,
+            'price' => 0,
+            'positiontext' => 1
+        ]);
+
+        // Eingabefelder zurücksetzen
+        //$this->reset(['description', 'quantity', 'price']);
+
+        // Positionen neu laden
+        $this->loadPositions();
+    }
+
     public function render()
     {
-        return view('livewire.positions-table');
+        return view('livewire.invoicepositions-table');
     }
 }

@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sundanese:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    @vite(['resources/css/app.css'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote-bs4.min.css">
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -26,9 +26,10 @@
 
 </head>
 
-<body class="bg-dots-darker bg-gray-100">
-    <br>
+<body>
 
+    @include('components.navigation')
+    <br>
     {{ $slot }}
 
 </body>

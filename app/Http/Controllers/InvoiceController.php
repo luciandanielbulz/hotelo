@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
+use App\Models\Invoicepositions;
 use App\Models\Invoices;
 use App\Models\Condition;
 use Illuminate\Http\Request;
@@ -22,10 +24,11 @@ class InvoiceController extends Controller
             ->where('customers.client_id', 1)
             ->orderBy('invoices.number', 'desc')
             ->when($search, function ($query, $search) {
-                return $query->where('invoices.name', 'like', "%$search%");
+                return $query->where('customers.customername', 'like', "%$search%")
+                    ->orWhere('customers.companyname', 'like', "%$search%");
             })
             ->select('invoices.id','invoices.number','invoices.comment', 'customers.customername')
-            ->get();
+            ->paginate(15);
 
         //dd($invoices->toArray());
 
@@ -79,15 +82,17 @@ class InvoiceController extends Controller
             ->select('invoices.*') // Nur das companyname von customers auswählen
             ->first(); // Nur den ersten Datensatz abrufen
 
-        $customer = Invoices::join('customers','invoices.customer_id','=','customers.id')
-            ->where('invoices.id','=',$invoice)
-            ->select('customers.*') // Nur das companyname von customers auswählen
+        $customer = Customer::where('customers.id','=',$invoice->customer_id)
+            ->select('*') // Nur das companyname von customers auswählen
             ->first(); // Nur den ersten Datensatz abrufen
 
-        $invoicepositions = Invoices::join('invoicepositions', 'invoices.id', '=', 'invoicepositions.invoice_id')
-            ->join('units', 'invoicepositions.unit_id', '=', 'units.id') // Inner Join mit der Tabelle 'units'
+
+
+        $invoicepositions = Invoicepositions::join('units', 'invoicepositions.unit_id', '=', 'units.id') // Inner Join mit der Tabelle 'units'
+            ->where('invoicepositions.invoice_id','=',$invoice->id)
             ->select('invoicepositions.*', 'units.*') // Berechnung der Summe
             ->get();
+        //dd($invoicepositions);
 
         $total_price = Invoices::join('invoicepositions', 'invoices.id', '=', 'invoicepositions.invoice_id')
             ->select(DB::raw('SUM(invoicepositions.Amount * invoicepositions.Price) as total_price')) // Berechnung der Gesamtsumme
@@ -100,7 +105,7 @@ class InvoiceController extends Controller
         //dd($invoicepositions);
 
 
-        return view('invoice.edit', compact('invoice', 'conditions', 'invoicepositions','total_price'));
+        return view('invoice.edit', compact('invoice', 'conditions', 'invoicepositions','total_price', 'customer'));
     }
 
     /**
@@ -138,7 +143,10 @@ class InvoiceController extends Controller
 
             return response()->json(['message' => 'Steuersatz erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
-            Log::error('Fehler beim Aktualisieren des Steuersaaaatzes: ' . $e->getMessage());
+            Log::error('Fehler beim Aktualisieren des Steuersatzes: ' . $e->getMessage(), [
+                'offer_id' => $request->offer_id,
+                'tax_id' => $request->tax_id
+            ]);
             return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
         }
     }
@@ -161,7 +169,10 @@ class InvoiceController extends Controller
 
             return response()->json(['message' => 'Datum erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
-            Log::error('Fehler beim Aktualisieren des Steuersatzes: ' . $e->getMessage());
+            Log::error('Fehler beim Aktualisieren des Datums: ' . $e->getMessage(), [
+                'offer_id' => $request->offer_id,
+                'invoicedate' => $request->invoicedate
+            ]);
             return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
         }
     }
@@ -183,7 +194,10 @@ class InvoiceController extends Controller
 
             return response()->json(['message' => 'Beschreibung erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
-            Log::error('Fehler beim Aktualisieren des Steuersatzes: ' . $e->getMessage());
+            Log::error('Fehler beim Aktualisieren der Beschreibung: ' . $e->getMessage(), [
+                'offer_id' => $request->offer_id,
+                'description' => $request->description
+            ]);
             return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
         }
     }
@@ -206,7 +220,10 @@ class InvoiceController extends Controller
 
             return response()->json(['message' => 'Kommentar erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
-            Log::error('Fehler beim Aktualisieren des Steuersatzes: ' . $e->getMessage());
+            Log::error('Fehler beim Aktualisieren des Kommentars: ' . $e->getMessage(), [
+                'offer_id' => $request->offer_id,
+                'comment' => $request->comment
+            ]);
             return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
         }
     }
@@ -230,7 +247,10 @@ class InvoiceController extends Controller
             Log::info('Nummer erfolgreich aktualisiert: ');
             return response()->json(['message' => 'Nummer erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
-            Log::error('Fehler beim Aktualisieren des Steuersatzes: ' . $e->getMessage());
+            Log::error('Fehler beim Aktualisieren der Nummer: ' . $e->getMessage(), [
+                'offer_id' => $request->offer_id,
+                'number' => $request->number
+            ]);
             return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
         }
     }
@@ -254,7 +274,10 @@ class InvoiceController extends Controller
             Log::info('Condition erfolgreich aktualisiert: ');
             return response()->json(['message' => 'Zahlungsziel erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
-            Log::error('Fehler beim Aktualisieren des Steuersatzes: ' . $e->getMessage());
+            Log::error('Fehler beim Aktualisieren der Konditionen: ' . $e->getMessage(), [
+                'offer_id' => $request->offer_id,
+                'condition_id' => $request->condition_id
+            ]);
             return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
         }
     }
@@ -277,7 +300,10 @@ class InvoiceController extends Controller
             Log::info('Anzahlung erfolgreich aktualisiert: ');
             return response()->json(['message' => 'Anzahlung erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
-            Log::error('Fehler beim Aktualisieren des Steuersatzes: ' . $e->getMessage());
+            Log::error('Fehler beim Aktualisieren der Anzahlung: ' . $e->getMessage(), [
+                'offer_id' => $request->offer_id,
+                'depositamount' => $request->depositamount
+            ]);
             return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
         }
     }

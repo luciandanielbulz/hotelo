@@ -7,6 +7,7 @@ use App\Models\Salutations;
 use App\Models\Taxrates;
 use App\Models\Conditions;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
@@ -15,7 +16,7 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
-
+        //dd($request);
 
         $search = $request->input('search');
 
@@ -24,7 +25,7 @@ class CustomerController extends Controller
             ->when($search, function($query, $search) {
                 return $query->where('customername', 'like', "%$search%");
             })
-            ->get();
+            ->paginate(15);
 
         return view('customer.index', compact('customers'));
     }
@@ -35,8 +36,9 @@ class CustomerController extends Controller
     public function create()
     {
         $conditions = Conditions::all();
+        $taxrates = Taxrates::all();
         $salutations = Salutations::all(); // Alle Anreden aus der DB abrufen
-        return view('customer.create', compact('salutations', 'conditions'));
+        return view('customer.create', compact('salutations', 'conditions', 'taxrates'));
     }
 
     /**
@@ -44,18 +46,22 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request->all());
+
+        $user = Auth::user();
+        $clientId = $user->client_id;
+
+        //dd($clientId);
         // Validierung der Formulardaten
         $validatedData = $request->validate([
 
             'title' => ['nullable', 'string', 'max:50'],
-            'customername' => ['nullable', 'string', 'max:200'],
-            'companyname' => ['nullable', 'string', 'max:200'],
-            'address' => ['nullable', 'string', 'max:200'],
-            'postalcode' => ['nullable', 'integer'],
-            'location' => ['nullable', 'string', 'max:200'],
-            'country' => ['nullable', 'string', 'max:200'],
-            'tax_id' => ['nullable', 'string', 'max:100'],
+            'customername' => ['nullable', 'string', 'max:200', 'required_without:companyname'],
+            'companyname' => ['nullable', 'string', 'max:200', 'required_without:customername'],
+            'address' => ['required', 'string', 'max:200'],
+            'postalcode' => ['required', 'integer'],
+            'location' => ['required', 'string', 'max:200'],
+            'country' => ['required', 'string', 'max:200'],
+            'tax_id' => ['required', 'string', 'max:100'],
             'phone' => ['nullable', 'string', 'max:30'],
             'fax' => ['nullable', 'string', 'max:200'],
             'email' => ['nullable', 'string', 'max:200'],
@@ -64,8 +70,9 @@ class CustomerController extends Controller
             'emailsubject' => ['nullable', 'string', 'max:200'],
             'emailbody' => ['nullable', 'string', 'max:1000']
         ]);
-        //dd($validatedData);
 
+        $validatedData['client_id'] = $clientId;
+        //dd($validatedData);
 
         // Daten speichern
         Customer::create($validatedData);
@@ -104,15 +111,15 @@ class CustomerController extends Controller
         try {
             // Hier wird die Validierung durchgeführt
             $validatedData = $request->validate([
-                'customername' => ['nullable', 'string', 'max:200'],
                 'title' => ['nullable', 'string', 'max:50'],
-                'companyname' => ['nullable', 'string', 'max:200'],
-                'address' => ['nullable', 'string', 'max:200'],
-                'postalcode' => ['nullable', 'integer'],
-                'location' => ['nullable', 'string', 'max:200'],
-                'country' => ['nullable', 'string', 'max:200'],
-                'tax_id' => ['nullable', 'string', 'max:50'],
-                'phone' => ['nullable', 'string', 'max:50'],
+                'customername' => ['nullable', 'string', 'max:200', 'required_without:companyname'],
+                'companyname' => ['nullable', 'string', 'max:200', 'required_without:customername'],
+                'address' => ['required', 'string', 'max:200'],
+                'postalcode' => ['required', 'integer'],
+                'location' => ['required', 'string', 'max:200'],
+                'country' => ['required', 'string', 'max:200'],
+                'tax_id' => ['required', 'string', 'max:100'],
+                'phone' => ['nullable', 'string', 'max:30'],
                 'fax' => ['nullable', 'string', 'max:200'],
                 'email' => ['nullable', 'string', 'max:200'],
                 'condition_id' => ['required', 'integer'],

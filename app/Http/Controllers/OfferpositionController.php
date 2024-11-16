@@ -49,11 +49,12 @@ class OfferpositionController extends Controller
         $units=Units::all();
 
         //dd($offerposition->id);
-        $offerpositioncontent = Offerpositions::join('offers', 'offerpositions.offer_id', '=', 'offers.id')
-        ->where('offerpositions.id','=',$offerposition->id) // auth()->user()->client_id
+        $offerpositioncontent = Offerpositions::join('offers', first: 'offerpositions.offer_id', operator: '=', second: 'offers.id')
+        ->where('offerpositions.id',operator: '=',value: $offerposition->id) // auth()->user()->client_id
+        ->orderBy('sequence',direction: 'asc')
         ->select('offerpositions.*')
         ->first(); // Nur den ersten Datensatz abrufen
-
+        //dd($offerpositioncontent);
         return view('offerposition.edit', compact('offerpositioncontent', 'units'));
     }
 
@@ -62,7 +63,7 @@ class OfferpositionController extends Controller
      */
     public function update(Request $request)
     {
-        //dd($offerposition);
+        //dd($request);
 
         try {
             Log::info('Request data: ', $request->all()); // Debugging-Log
@@ -71,12 +72,13 @@ class OfferpositionController extends Controller
                 'id' => 'required|integer|exists:offerpositions,id',
                 'amount' => 'required|numeric|min:0',
                 'unit_id' => 'required|integer|exists:units,id',
-                'designation' => 'required|string|max:255',
+                'designation' => 'nullable|string|max:255',
                 'price' => 'required|numeric|min:0',
                 'details' => 'nullable|string|max:1000',
+                'sequence' => 'required|integer|min:0'
             ]);
 
-            // Datenbankeintrag finden
+            //dd($validated);
             $offerposition = Offerpositions::findOrFail($validated['id']);
 
             // Felder aktualisieren
@@ -85,6 +87,7 @@ class OfferpositionController extends Controller
             $offerposition->designation = $validated['designation'];
             $offerposition->price = $validated['price'];
             $offerposition->details = $validated['details'] ?? null;
+            $offerposition->sequence = $validated['sequence'] ?? null;
 
             // Speichern
             $offerposition->save();
@@ -96,10 +99,6 @@ class OfferpositionController extends Controller
             Log::error('Fehler beim Aktualisieren des Steuersatzes: ' . $e->getMessage());
             return redirect()->back()->with('error', 'Fehler: ' . $e->getMessage());
         }
-
-
-
-
     }
 
     /**

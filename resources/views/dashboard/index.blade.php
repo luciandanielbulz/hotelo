@@ -1,6 +1,6 @@
 <x-layout>
         <div class="container">
-            <h3 class="mt-1 mb-1">BZ Angebots- und Rechnungsverwaltung</h3>
+
             <div class="row pt-3">
 
                     @foreach($tiles as $tile)

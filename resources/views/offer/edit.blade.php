@@ -65,7 +65,12 @@
                 </form>
             </div>
 
-            <div class="col"></div>
+            <div class="col">
+                <form id="offerNumberForm">
+                    <label for="offerNumber">Angebotsdatum</label>
+                    <input type="input" class="form-control" id = "offerNumber" name ="offerNumber" value="{{$offercontent->number}}">
+                </form>
+            </div>
         </div>
         <hr>
 
@@ -95,7 +100,7 @@
 
         <hr>
 
-        <livewire:positions-table :offerId="$offercontent->offer_id" />
+        <livewire:offerpositions-table :offerId="$offercontent->offer_id" />
     </div>
 
 
@@ -144,7 +149,7 @@
             });
 
             $('#viewOfferButton').click(function() {
-                const url = '{{ route("create.pdf") }}' +
+                const url = '{{ route("createoffer.pdf") }}' +
                     '?offer_id=' + {{$offercontent->offer_id}} +
                     '&objecttype=offer' +
                     '&prev=1';
@@ -168,9 +173,36 @@
 
                     success: function(response) {
                         console.log(response.message);
+                        alert(response.message);
                     },
                     error: function(xhr, status, error) {
                         console.log('Fehler beim Aktualisieren des Steuersatzes');
+                    }
+                });
+            });
+
+            $('#offerNumber').change(function() {
+                var offerId = "{{ $offercontent->offer_id }}";  // Holt das Angebots-ID
+                var offernumber = $(this).val();  // Holt den ausgewählten Steuersatz
+                console.log(offernumber);
+                console.log(offerId);
+                // AJAX Anfrage an den Server senden
+                $.ajax({
+                    url: '{{ route("offer.updatenumber") }}',  // Die Route, die die Aktualisierung entgegennimmt
+                    method: 'POST',
+                    data: {
+                        offer_id: offerId,  // Anbiet-ID (wird aus der Anwendung übergeben)
+                        number: offernumber,  // Steuersatz-ID (wird aus der Anwendung übergeben)
+                        _token: '{{ csrf_token() }}'  // CSRF-Token
+                    },
+
+                    success: function(response) {
+                        console.log(response.message);
+                        alert(response.message);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('Fehler beim Aktualisieren des Steuersatzes');
+                        alert('Fehler beim Aktualisieren der Angebotsnummer, bitte Administrator kontaktieren!');
                     }
                 });
             });
@@ -205,9 +237,11 @@
 
                     success: function(response) {
                         console.log(response.message);
+                        alert(response.message);
                     },
                     error: function(xhr, status, error) {
                         console.log('Fehler beim Aktualisieren des Steuersatzes');
+                        alert('Fehler beim Aktualisieren des Datums, bitte Administrator kontaktieren!');
                     }
                 });
             });
@@ -229,9 +263,11 @@
 
                     success: function(response) {
                         console.log(response.message);
+                        alert(response.message);
                     },
                     error: function(xhr, status, error) {
                         console.log('Fehler beim Aktualisieren des Steuersatzes');
+                        alert('Fehler beim Aktualisieren der Beschreibung, bitte Administrator kontaktieren!');
                     }
                 });
             });
@@ -253,9 +289,11 @@
 
                     success: function(response) {
                         console.log(response.message);
+                        alert(response.message);
                     },
                     error: function(xhr, status, error) {
                         console.log('Fehler beim Aktualisieren des Steuersatzes');
+                        alert('Fehler beim Aktualisieren des Kommentars, bitte Administrator kontaktieren!');
                     }
                 });
             });

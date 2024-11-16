@@ -1,16 +1,5 @@
 <x-layout>
     <div class="container">
-        <div class="row mb-4">
-            <div class="col text-left">
-                <h3>Kunden</h3>
-            </div>
-            <div class = "col text-right">
-                <a href="{{ route('dashboard') }}" class="btn btn-transparent my-1">Zurück</a>
-            </div>
-        </div>
-    </div>
-
-    <div class="container">
         <div class="row">
             <div class="col-md-4">
                 <form id="searchForm" class="form-inline" method="GET" action="{{ route('customer.index') }}">
@@ -32,7 +21,7 @@
         <table class="table table-sm mt-3">
             <thead>
                 <tr>
-                    <th style="width: 5%;">Kd-Id</th>
+                    <th style="width: 5%;">KId</th>
                     <th style="width: 40%;">Kundenname/Firmenname</th>
                     <th style="width: 25%;">Adresse</th>
                     <th style="width: 10%;">PLZ</th>
@@ -43,7 +32,7 @@
                 @forelse($customers as $customer)
                     <tr data-id="{{ $customer->id }}">
                         <td>{{ $customer->id }}</td>
-                        <td>{{ $customer->customername }}</td>
+                        <td>{{ $customer->customername ?? $customer->companyname ?? 'Kein Kundename/firm vorhanden' }}</td>
                         <td>{{ $customer->address }}</td>
                         <td>{{ $customer->postalcode }}</td>
                         <td>{{ $customer->location }}</td>
@@ -55,7 +44,10 @@
                 @endforelse
             </tbody>
         </table>
-
+        <!-- Pagination-Links -->
+        <div>
+            {{ $customers->links() }}
+        </div>
 
 
     </div>

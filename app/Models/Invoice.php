@@ -9,9 +9,12 @@ class Invoice extends Model
 {
     use HasFactory;
 
-    // Definiere die Beziehung zu 'Customer'
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class, 'customer_id'); // Angenommen, der Fremdschlüssel ist 'customer_id'
-    }
+    protected $fillable = [
+        'customer_id',
+        'number',
+        'tax_id',
+        'condition_id',
+        'invoice_id',
+        'number'
+    ];
 }

@@ -12,7 +12,7 @@
         </div>
         <div class="row">
             <div class="col">
-                @if ($offerpositioncontent->postiotiontext=1)
+                @if ($offerpositioncontent->positiontext == 0)
                     <form method="POST" action="{{route('offerposition.update', ['offerposition' => $offerpositioncontent->id])}}" class="p-3 mb-3" id="normalForm">
                         @csrf
                         @method('PUT') <!-- Füge diese Zeile hinzu -->
@@ -61,13 +61,26 @@
                         </div>
                     </form>
                 @else
-                    <form method="POST" action="includes/offer_position_update.inc.php" class="p-3 mb-3" id="textForm" style="display: <?php echo !$showNormalForm ? 'block' : 'none'; ?>;">
+                    <form method="POST" action="{{route('offerposition.update', ['offerposition' => $offerpositioncontent->id])}}" class="p-3 mb-3" id="normalForm">
+                        @csrf
+                        @method('PUT') <!-- Füge diese Zeile hinzu -->
+
+
+                        <div class="form-group col-md-3">
+                            <label for="sequence">Reihenfolge</label>
+                            <input type="text" class="form-control" id="sequence" name="sequence" value="{{$offerpositioncontent->sequence}}">
+                        </div>
+
                         <div class="form-group col-md-10" id="onlyComment">
                             <label for="positiontext">Positionstext</label>
-                            <textarea class="form-control" id="positiontext" name="positiontext" rows="10"><?php echo htmlspecialchars($positiontext); ?></textarea>
+                            <input type="hidden" id="amount" name="amount" value="0">
+                            <input type="hidden" id="unit_id" name="unit_id" value="1">
+                            <input type="hidden" id="designation" name="designation" value="1">
+                            <input type="hidden" id="price" name="price" value="0">
+                            <textarea class="form-control" name="details" rows="10">{{$offerpositioncontent->details}}</textarea>
                         </div>
                         <div class="form-group mt-4">
-                            <input type="hidden" name="positionid" value="<?php echo htmlspecialchars($positionId); ?>">
+                            <input type="hidden" name="id" value="{{$offerpositioncontent->id}}">
                             <button type="submit" class="btn btn-primary">Änderungen speichern</button>
                         </div>
                     </form>

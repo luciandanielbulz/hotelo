@@ -18,17 +18,20 @@ class OfferController extends Controller
     public function index(Request $request)
     {
 
-        $search = $request->input('search');
 
+        $search = $request->input('search');
+        //dd($search);
         // Suche oder alle Kunden abfragen
         $offers = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
             ->where('customers.client_id', 1) // auth()->user()->client_id
             ->orderBy('number','desc')
             ->when($search, function ($query, $search) {
-                return $query->where('offers.name', 'like', "%$search%");
+                return $query->where('customers.customername', 'like', "%$search%")
+                    ->orWhere('customers.companyname', 'like', "%$search%");
             })
-            ->select('offers.id as offer_id','offers.*','customers.*') // Optional: nur die Felder von der offers-Tabelle auswählen
-            ->get();
+            ->select('offers.id as offer_id','offers.*','customers.*')
+
+            ->paginate(15);
 
         //dd($offers->all()); // Zeigt die Ergebnisse an
         return view('offer.index', compact('offers'));
@@ -133,7 +136,10 @@ class OfferController extends Controller
 
             return response()->json(['message' => 'Steuersatz erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
-            Log::error('Fehler beim Aktualisieren des Steuersatzes: ' . $e->getMessage());
+            Log::error('Fehler beim Aktualisieren des Steuersatzes: ' . $e->getMessage(), [
+                'offer_id' => $request->offer_id,
+                'tax_id' => $request->tax_id
+            ]);
             return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
         }
     }
@@ -156,7 +162,35 @@ class OfferController extends Controller
 
             return response()->json(['message' => 'Steuersatz erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
-            Log::error('Fehler beim Aktualisieren des Steuersatzes: ' . $e->getMessage());
+            Log::error('Fehler beim Aktualisieren des Datums: ' . $e->getMessage(), [
+                'offer_id' => $request->offer_id,
+                'offerdate' => $request->offerdate
+            ]);
+            return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function updatenumber(Request $request)
+    {
+        try {
+            Log::info('Request data: ', $request->all()); // Beispiel-Logging
+
+            // Deine Logik hier ...
+            $validated = $request->validate([
+                'offer_id' => 'required|integer|exists:offers,id',
+                'number' => 'required|integer',
+            ]);
+
+            $offer = Offers::findOrFail($validated['offer_id']);
+            $offer->number = $validated['number'];
+            $offer->save();
+
+            return response()->json(['message' => 'Angebotsnummer erfolgreich aktualisiert.'], 200);
+        } catch (\Exception $e) {
+            Log::error('Fehler beim Aktualisieren der Nummer: ' . $e->getMessage(), [
+                'offer_id' => $request->offer_id,
+                'number' => $request->number
+            ]);
             return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
         }
     }
@@ -178,7 +212,10 @@ class OfferController extends Controller
 
             return response()->json(['message' => 'Steuersatz erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
-            Log::error('Fehler beim Aktualisieren des Steuersatzes: ' . $e->getMessage());
+            Log::error('Fehler beim Aktualisieren der Beschreibung: ' . $e->getMessage(), [
+                'offer_id' => $request->offer_id,
+                'description' => $request->description
+            ]);
             return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
         }
     }
@@ -201,7 +238,10 @@ class OfferController extends Controller
 
             return response()->json(['message' => 'Steuersatz erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
-            Log::error('Fehler beim Aktualisieren des Steuersatzes: ' . $e->getMessage());
+            Log::error('Fehler beim Aktualisieren des Kommentars: ' . $e->getMessage(), [
+                'offer_id' => $request->offer_id,
+                'comment' => $request->comment
+            ]);
             return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
         }
     }

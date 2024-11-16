@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();  // Primärschlüssel
             $table->foreignId('invoice_id')->constrained('invoices')->onDelete('cascade');  // Fremdschlüssel zu Rechnungen, mit Cascade-Löschung
             $table->decimal('amount', 10, 2);  // Menge, Dezimalzahl mit bis zu 10 Stellen und 2 Nachkommastellen
-            $table->string('designation', 255);  // Bezeichnung, varchar mit maximal 255 Zeichen
+            $table->string('designation', 255)->nullable();  // Bezeichnung, varchar mit maximal 255 Zeichen
             $table->string('details', 2000)->nullable();  // Details, varchar mit maximal 2000 Zeichen, optional
             $table->foreignId('unit_id')->default(1)->constrained('units');  // Fremdschlüssel zu Einheiten, Standardwert 1
             $table->decimal('price', 10, 2);  // Preis, Dezimalzahl mit bis zu 10 Stellen und 2 Nachkommastellen

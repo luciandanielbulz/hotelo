@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('offer_id')->constrained('offers');
             $table->decimal('amount');
-            $table->string('designation',200);
+            $table->string('designation',200)->nullable();
             $table->string('details',1000)->nullable();
             $table->foreignId('unit_id')->constrained('units');
             $table->decimal('price')->nullable()->default(0.0);

@@ -6,7 +6,7 @@
         </div>
         <div class="col col-auto">
             <button wire:click="addPosition" class="btn btn-transparent">+ Position</button>
-            <button id="insertTextPosition"  class="btn btn-transparent">+ Textposition</button>
+            <button wire:click="addTextPosition"  class="btn btn-transparent">+ Textposition</button>
             <button id="editPosition"  class="btn btn-transparent" disabled>Bearbeiten</button>
             <button id="deletePosition"  class="btn btn-transparent" disabled>Löschen</button>
 
@@ -29,10 +29,11 @@
                     </tr>
                 </thead>
                 <tbody id="positionsTable">
+
                     @forelse ($positions as $position)
                         <tr data-id="{{ $position->id }}">
                             <td>{{ $position->id }}</td>
-                            @if ($position->PositionTextOption == 0)
+                            @if ($position->positiontextoption == 0)
                                 <td>{{ number_format($position->amount, 2, ',', '.') }}</td>
                                 <td>{{ $position->unit_name}}</td>
                                 <td>{{ $position->designation }}</td>

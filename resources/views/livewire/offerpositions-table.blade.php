@@ -6,9 +6,9 @@
         </div>
         <div class="col col-auto">
             <button wire:click="addPosition" class="btn btn-transparent">+ Position</button>
-            <button id="insertTextPosition"  class="btn btn-transparent">+ Textposition</button>
+            <button wire:click="addTextPosition"  class="btn btn-transparent">+ Textposition</button>
             <button id="editPosition"  class="btn btn-transparent" disabled>Bearbeiten</button>
-            <button id="deletePosition"  class="btn btn-transparent" disabled>Löschen</button>
+            <button wire:click="deletePosition" id="deletePosition"  class="btn btn-transparent" disabled>Löschen</button>
         </div>
 
     </div>
@@ -27,11 +27,12 @@
                         <th class = "table-header col-1">Gesampreis</th>
                     </tr>
                 </thead>
+
                 <tbody id="positionsTable">
                     @forelse ($positions as $position)
                         <tr data-id="{{ $position->id }}">
                             <td>{{ $position->id }}</td>
-                            @if ($position->PositionTextOption == 0)
+                            @if ($position->positiontext == 0)
                                 <td>{{ number_format($position->amount, 2, ',', '.') }}</td>
                                 <td>{{ $position->unit_name}}</td>
                                 <td>{{ $position->designation }}</td>
@@ -40,7 +41,7 @@
                             @else
                                 <td><b>P</b></td>
                                 <td></td>
-                                <td><b>{{ $position->positiontext }}</b></td>
+                                <td><b>{{ $position->details }}</b></td>
                                 <td></td>
                                 <td></td>
                             @endif
