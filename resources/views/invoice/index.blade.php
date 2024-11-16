@@ -1,17 +1,6 @@
 <x-layout>
 
         <div class="container">
-            <div class="row mb-4">
-                <div class = "col text-left">
-                    <h3>Rechnungen</h3>
-                </div>
-                <div class = "col text-right">
-                    <a href="{{ route('dashboard') }}" class="btn btn-transparent">Zurück</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
             <div class="row">
                 <div class="col-md-4 text-left">
                     <form id="searchForm" class="form-inline" method="GET" action="{{ route('invoice.index') }}">

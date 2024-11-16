@@ -1,13 +1,5 @@
 <x-layout>
     <div class="container">
-        <div class="row">
-            <div class="col">
-                <h2>Umsatzauswertung</h2>
-            </div>
-            <div class="col">
-                <a href="dashboard.php" class="btn btn-transparent float-right">Zurück</a>
-            </div>
-        </div>
 
         <div class="row">
             <div class="col" style="border: 1px solid #ccc; padding: 20px; width: 80%; margin: 20px auto;">
@@ -26,10 +18,11 @@
 
                         <tbody>
 
-                        @foreach($salespositions as $salesposition)
-                            {{number_format($row['SumExit'], 2, ',', '.')}}
+                        @forelse($salespositions as $salesposition)
                             <tr data-id='{{$salesposition->row}}'>
-                                <td>{$row['Jahr']}</td><td>{$umsatz_deutsch} €</td></tr>
+                                <td>{{$salesposition->Jahr}}</td>
+                                <td>{{$salesposition->SumExit}} €</td>
+
                             </tr>
                         @empty
                             <tr>
@@ -45,8 +38,6 @@
             </div>
         </div>
 
-        <hr>
-        <?php include 'includes/footer.php'; ?>
     </div>
 
     <script>
@@ -78,8 +69,8 @@
         });
         });
 
-        var years = <?php echo json_encode($years); ?>;
-        var revenues = <?php echo json_encode($revenues); ?>;
+        var years = {{$salesposition->years}};
+        var revenues = 0;
 
         // Chart.js Diagramm erstellen
         var ctx = document.getElementById('revenueChart').getContext('2d');

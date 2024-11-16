@@ -26,7 +26,7 @@ class SalesController extends Controller
             ->groupByRaw('YEAR(invoices.date)')
             ->orderByRaw('YEAR(invoices.date)')
             ->get();
-        dd($salespositions);
+        //dd($salespositions);
         return view('sales.index', compact('salespositions'));
     }
 
