@@ -331,25 +331,26 @@ class PdfCreateController extends Controller
                 $formattedPeriodTo = '';
             }
 
-        $operation = '
-            <table cellpadding="2" width="222" style="border: 0.5px solid black;">
+            $operation = '
+            <table cellpadding="2" width="233" style="border: 0.5px solid black; width: 100%;">
                 <tr>
-                    <td style="text-align: right;">Ihr Ansprechpartner:</td>
+                    <td style="text-align: right; width: 45%;">Ihr Ansprechpartner:</td>
                     <td style="text-align: right;">' . ($client->clientname ?? '') . '</td>
                 </tr>
                 <tr>
-                    <td style="text-align: right;">Zahlungskonditionen:</td>
+                    <td style="text-align: right; width: 45%;">Zahlungskonditionen:</td>
                     <td style="text-align: right;">' . ($condition->conditionname ?? '') . '</td>
                 </tr>
                 <tr>
-                    <td style="text-align: right;">Ihre UID-Nummer:</td>
+                    <td style="text-align: right; width: 45%;">Ihre UID-Nummer:</td>
                     <td style="text-align: right;">' . ($customer->vat_number ?? '') . '</td>
                 </tr>
                 <tr>
-                    <td style="text-align: right;">Leistungszeitraum:</td>
+                    <td style="text-align: right; width: 45%;">Leistungszeitraum:</td>
                     <td style="text-align: right;">' . ($formattedPeriodFrom ?? '') . ' - ' . ($formattedPeriodTo ?? '') . '</td>
                 </tr>
             </table>';
+
 
 
         $formattedDate = $invoicecontent && $invoicecontent->date
