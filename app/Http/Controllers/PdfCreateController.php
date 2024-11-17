@@ -366,8 +366,8 @@ class PdfCreateController extends Controller
                     <td style="text-align: left; width: 9%;">Menge</td>
                     <td style="text-align: left; width: 9%;">Einheit</td>
                     <td style="text-align: left; width: 52%;">Bezeichnung</td>
-                    <td style="text-align: center; width: 15%;">Einzelpreis</td>
-                    <td style="text-align: center; width: 15%;">Betrag</td>
+                    <td style="text-align: right; width: 15%;">Einzelpreis</td>
+                    <td style="text-align: right; width: 15%;">Betrag</td>
                 </tr>
             </table>';
 
@@ -382,8 +382,8 @@ class PdfCreateController extends Controller
                     <td style="text-align: left; width: 9%;">'.number_format($position->amount, 2, ',', '') .'</td>
                     <td style="text-align: left; width: 9%;">'.$position->unitdesignation.'</td>
                     <td style="text-align: left; width: 52%;">'.$position->designation.'</td>
-                    <td style="text-align: center; width: 15%;">'.number_format($position->price, 2, ',', '') .' €</td>
-                    <td style="text-align: center; width: 15%;">'.number_format(($position->price * $position->amount), 2, ',', '') .' €</td>
+                    <td style="text-align: right; width: 15%;">'.number_format($position->price, 2, ',', '') .' €</td>
+                    <td style="text-align: right; width: 15%;">'.number_format(($position->price * $position->amount), 2, ',', '') .' €</td>
                 </tr>
                 <tr>
                     <td style="width: 9%;"></td>
@@ -406,17 +406,17 @@ class PdfCreateController extends Controller
                 <tr>
                     <td style="text-align: left; width: 70%;"></td>
                     <td style="text-align: left; width: 15%;">Netto:</td>
-                    <td style="text-align: center; width: 15%;">'.number_format($totalSum, 2, ',', '').' €</td>
+                    <td style="text-align: right; width: 15%;">'.number_format($totalSum, 2, ',', '').' €</td>
                 </tr>
                 <tr>
                     <td style="text-align: left; width: 70%;"></td>
                     <td style="text-align: left; width: 15%; border-bottom: 0.5px solid black;">'.$invoicecontent->taxrate .'% Ust:</td>
-                    <td style="text-align: center; width: 15%; border-bottom: 0.5px solid black;">'.number_format($totalSum*$invoicecontent->taxrate/100, 2, ',', '').' €</td>
+                    <td style="text-align: right; width: 15%; border-bottom: 0.5px solid black;">'.number_format($totalSum*$invoicecontent->taxrate/100, 2, ',', '').' €</td>
                 </tr>
                 <tr>
                     <td style="text-align: left; width: 70%;"></td>
                     <td style="text-align: left; width: 15%; border-bottom: 2px solid black;">Brutto:</td>
-                    <td style="text-align: center; width: 15%; border-bottom: 2px solid black;">'.number_format($totalSum*($invoicecontent->taxrate/100+1), 2, ',', '').' €</td>
+                    <td style="text-align: right; width: 15%; border-bottom: 2px solid black;">'.number_format($totalSum*($invoicecontent->taxrate/100+1), 2, ',', '').' €</td>
                 </tr>
             </table>';
 
