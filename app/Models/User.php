@@ -26,6 +26,7 @@ class User extends Authenticatable
         'role_id',
         'client_id',
         'password',
+        'isactive'
     ];
 
     /**
@@ -47,4 +48,20 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'user_role');
+    }
+
+    public function hasRole($role)
+    {
+        return $this->roles->pluck('name')->contains($role);
+    }
+
+    public function hasPermission($permission)
+    {
+        return $this->roles->flatMap->permissions->pluck('name')->contains($permission);
+    }
+
 }

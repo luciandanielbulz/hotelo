@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\Role;
+use App\Models\Roles;
 use App\Models\Clients;
+use Illuminate\Validation\ValidationException;
 
 
 class UsersController extends Controller
@@ -15,8 +16,11 @@ class UsersController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-        return view('users.index',['users'=>$users]);
+        $users = User::join('clients','users.client_id','=','clients.id')
+            ->join('roles','users.role_id','=','roles.id')
+            ->select('users.id as user_id','users.name as user_name', 'users.*','clients.*', 'roles.*', 'roles.name as role_name' )
+            ->get();
+        return view('users.index',compact('users'));
     }
 
     /**
@@ -24,7 +28,12 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return view('users.create');
+        $roles = Roles::all();
+        $clients = Clients::all();
+
+        //dd($clients);
+
+        return view('users.create', compact('roles', 'clients'));
     }
 
     /**
@@ -32,7 +41,30 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        return 'in store';
+        //dd($request->all());
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'lastname' => 'required|string|max:255',
+                'username' => 'required|string|max:255|unique:users,username',
+                'email' => 'required|email|max:255|unique:users,email',
+                'client_id' => 'required|exists:clients,id',
+                'isactive' => 'required|boolean',
+                'role_id' => 'required|exists:roles,id',
+                'password' => 'required|string|min:8',
+            ]);
+
+            // Hier weiterarbeiten, wenn alles validiert wurde
+            $validated['password'] = bcrypt($validated['password']);
+            User::create($validated);
+
+            return redirect()->route('users.index')->with('success', 'Benutzer erfolgreich erstellt!');
+        } catch (ValidationException $e) {
+            // Validierungsfehler auffangen und zurückgeben
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput();
+        }
     }
 
     /**
@@ -49,7 +81,7 @@ class UsersController extends Controller
     public function edit(User $user)
     {
         $clients = Clients::all();
-        $rights = Role::all();
+        $rights = Roles::all();
         return view('users.edit', compact('user', 'rights', 'clients'));
     }
 
@@ -58,7 +90,21 @@ class UsersController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        return 'testupdate';
+        //dd($request->all());
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'login' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'clientId' => 'required|exists:clients,id',
+            'isactive' => 'required|boolean',
+            'role_id' => 'required|exists:roles,id',
+        ]);
+
+        //dd($validated);
+        $user->update($validated);
+
+        return redirect()->route('users.index')->with('success', 'User erfolgreich aktualisiert!');
     }
 
     /**

@@ -1,17 +1,8 @@
 <x-layout>
     <div class="container">
         <div class="row">
-            <div class="col">
-                <h2>Benutzerverwaltung</h2>
-            </div>
-            <div class="col">
-                <a href="{{ route('dashboard') }}" class="btn btn-transparent float-right">Zurück</a>
-            </div>
-        </div>
-        <div class="row">
             <div class="col text-right">
                 <a href="{{ route('users.create')}}" class="btn btn-transparent">+Neu</a>
-
                 <button id="editUserButton" class="btn btn-transparent" disabled>Bearbeiten</button>
             </div>
         </div>
@@ -20,19 +11,29 @@
                 <table class="table table-sm">
                     <thead>
                         <tr>
-                            <th scope="col">Name</th>
+                            <th scope="col">E-Mail</th>
                             <th scope="col">Login</th>
-                            <th scope="col">Email</th>
+                            <th scope="col">Vorname</th>
+                            <th scope="col">Nachnamename</th>
+                            <th scope="col">Role</th>
+                            <th scope="col">Client</th>
+                            <th scope="col">Aktiv</th>
 
                         </tr>
                     </thead>
 
                     <tbody>
                         @foreach ($users as $user )
-                            <tr data-id="{{ $user->id }}">
-                                <td>{{$user->name}}</td>
-                                <td>{{$user->login}}</td>
+                            <tr data-id="{{ $user->user_id }}">
                                 <td>{{$user->email}}</td>
+                                <td>{{$user->username}}</td>
+                                <td>{{$user->user_name}}</td>
+                                <td>{{$user->lastname}}</td>
+                                <td>{{$user->role_name}}</td>
+                                <td>{{$user->clientname}}</td>
+                                <td>{{ $user->isactive ? 'Ja' : 'Nein' }}</td>
+
+
 
                             </tr>
                         @endforeach

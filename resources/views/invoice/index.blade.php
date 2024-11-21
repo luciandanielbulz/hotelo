@@ -10,7 +10,7 @@
                 </div>
 
                 <div class="col text-right">
-                    <button id="newInvoiceButton" class="btn btn-transparent">+ Neu</button>
+                    <button class="btn btn-transparent" onclick="window.location.href='{{ route('customer.index') }}'">+ Neu</button>
                     <button id="viewInvoiceButton"  class="btn btn-transparent" disabled>Vorschau</button>
                     <button id="editInvoiceButton"  class="btn btn-transparent" disabled>Bearbeiten</button>
                     <button id="pdfExportButton"  class="btn btn-transparent" disabled>PDF</button>
@@ -61,86 +61,81 @@
             $(document).ready(function() {
                let selectedInvoiceId = null;
 
-               $('#invoiceTable').on('click', 'tr', function() {
-                   $('#invoiceTable tr').removeClass('selected-row');
-                   $(this).addClass('selected-row');
-                   selectedInvoiceId = $(this).data('id');
-                   console.log(selectedInvoiceId);
-                   $('#viewInvoiceButton').prop('disabled', false);
-                   $('#editInvoiceButton').prop('disabled', false);
-                   $('#pdfExportButton').prop('disabled', false);
-                   $('#sendEmailButton').prop('disabled', false);
-                   $('#createInvoiceButton').prop('disabled', false);
-                   $('#archiveButton').prop('disabled', false);
+                $('#invoiceTable').on('click', 'tr', function() {
+                    $('#invoiceTable tr').removeClass('selected-row');
+                    $(this).addClass('selected-row');
+                    selectedInvoiceId = $(this).data('id');
+                    console.log(selectedInvoiceId);
+                    $('#viewInvoiceButton').prop('disabled', false);
+                    $('#editInvoiceButton').prop('disabled', false);
+                    $('#pdfExportButton').prop('disabled', false);
+                    $('#sendEmailButton').prop('disabled', false);
+                    $('#createInvoiceButton').prop('disabled', false);
+                    $('#archiveButton').prop('disabled', false);
                 });
 
-               $('#newInvoiceButton').click(function() {
-                   console.log("Rechnung anlegen Button wurde geklickt");
-                   window.location.href = '{{ route('invoice.create') }}';
-               });
+                $('#viewInvoiceButton').click(function() {
+                    const url = '{{ route("createinvoice.pdf") }}' +
+                        '?invoice_id=' + selectedInvoiceId +
+                        '&objecttype=invoice' +
+                        '&prev=I';
+                    window.open(url, '_blank'); // PDF im neuen Tab öffnen
+                });
 
-               $('#viewInvoiceButton').click(function() {
-                const url = '{{ route("createinvoice.pdf") }}' +
-                    '?invoice_id=' + selectedInvoiceId +
-                    '&objecttype=invoice' +
-                    '&prev=1';
-                window.open(url, '_blank'); // PDF im neuen Tab öffnen
-            });
+                $('#pdfExportButton').click(function() {
+                    const url = '{{ route("createinvoice.pdf") }}' +
+                        '?invoice_id=' + selectedInvoiceId +
+                        '&objecttype=invoice' +
+                        '&prev=D';
+                    window.open(url, '_blank'); // PDF im neuen Tab öffnen
+                    });
 
-               $('#pdfExportButton').click(function() {
-                   console.log("Export Button wurde geklickt");
 
-                   if (selectedInvoiceId) {
-                        // Dynamisches Weiterleiten zur GET-Route mit der Rechnungs-ID
-                        window.location.href = '{{ route('invoice.edit', '') }}/' + selectedInvoiceId;
-                    }
-               });
+                $('#editInvoiceButton').click(function() {
+                        console.log("Bearbeiten Button wurde geklickt");
 
-               $('#editInvoiceButton').click(function() {
-                    console.log("Bearbeiten Button wurde geklickt");
+                        if (selectedInvoiceId) {
+                            // Dynamisches Weiterleiten zur GET-Route mit der Rechnungs-ID
+                            window.location.href = '{{ route('invoice.edit', ['invoice' => '__selectedInvoiceId__']) }}'.replace('__selectedInvoiceId__', selectedInvoiceId);
+                        }
+                    });
 
+                $('#searchInput').keyup(function(){
+                    var query = $(this).val().toLowerCase();
+                    $('#invoiceList tbody tr').filter(function(){
+                        $(this).toggle($(this).text().toLowerCase().indexOf(query) > -1)
+                    });
+                });
+
+                $('#sendEmailButton').click(function() {
+                    console.log("SendEmail Button wurde geklickt");
                     if (selectedInvoiceId) {
-                        // Dynamisches Weiterleiten zur GET-Route mit der Rechnungs-ID
-                        window.location.href = '{{ route('invoice.edit', ['invoice' => '__selectedInvoiceId__']) }}'.replace('__selectedInvoiceId__', selectedInvoiceId);
+                        $('<form>', {
+                            'action': 'object_send_over_email.php',
+                            'method': 'post',
+                            'style': 'display: none;',
+                            'html': [
+                                $('<input>', { type: 'hidden', name: 'objectid', value: selectedInvoiceId}),
+                                $('<input>', { type: 'hidden', name: 'objecttype', value: 'invoice'})
+                            ]
+                        }).appendTo('body').submit();
                     }
                 });
 
-               $('#searchInput').keyup(function(){
-                   var query = $(this).val().toLowerCase();
-                   $('#invoiceList tbody tr').filter(function(){
-                       $(this).toggle($(this).text().toLowerCase().indexOf(query) > -1)
-                   });
-               });
-
-               $('#sendEmailButton').click(function() {
-                   console.log("SendEmail Button wurde geklickt");
-                   if (selectedInvoiceId) {
-                       $('<form>', {
-                           'action': 'object_send_over_email.php',
-                           'method': 'post',
-                           'style': 'display: none;',
-                           'html': [
-                               $('<input>', { type: 'hidden', name: 'objectid', value: selectedInvoiceId}),
-                               $('<input>', { type: 'hidden', name: 'objecttype', value: 'invoice'})
-                           ]
-                       }).appendTo('body').submit();
-                   }
-               });
-
-               $('#archiveButton').click(function() {
-                   console.log("Invoice archive Button wurde geklickt");
-                   if (selectedInvoiceId) {
-                       $('<form>', {
-                           'action': 'archive_invoice.php',
-                           'method': 'post',
-                           'style': 'display: none;',
-                           'html': [
-                               $('<input>', { type: 'hidden', name: 'objectid', value: selectedInvoiceId}),
-                               $('<input>', { type: 'hidden', name: 'objecttype', value: 'invoice'})
-                           ]
-                       }).appendTo('body').submit();
-                   }
-               });
+                $('#archiveButton').click(function() {
+                    console.log("Invoice archive Button wurde geklickt");
+                    if (selectedInvoiceId) {
+                        $('<form>', {
+                            'action': 'archive_invoice.php',
+                            'method': 'post',
+                            'style': 'display: none;',
+                            'html': [
+                                $('<input>', { type: 'hidden', name: 'objectid', value: selectedInvoiceId}),
+                                $('<input>', { type: 'hidden', name: 'objecttype', value: 'invoice'})
+                            ]
+                        }).appendTo('body').submit();
+                    }
+                });
            });
        </script>
 </x-layout>

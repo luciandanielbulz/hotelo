@@ -2,10 +2,19 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Roles extends Model
 {
-    use HasFactory;
+    protected $table = 'roles';
+
+    protected $fillable = [
+        'name',
+        'description'
+    ];// Sicherstellen, dass die Tabelle korrekt zugeordnet ist
+
+    public function permissions()
+{
+    return $this->belongsToMany(Permissions::class, 'role_permission', 'role_id', 'permission_id');
+}
 }

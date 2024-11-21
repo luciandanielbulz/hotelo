@@ -25,9 +25,12 @@ class DatabaseSeeder extends Seeder
         $this->call(CashflowsSeeder::class);
         $this->call(MessagesSeeder::class);
         $this->call(RolesSeeder::class);
+        $this->call(PermissionsSeeder::class);
+        $this->call(RolePermissionSeeder::class);
         $this->call(FactorrulesSeeder::class);
         $this->call(FileuploadsSeeder::class);
         $this->call(UserSeeder::class);
+
 
     }
 }

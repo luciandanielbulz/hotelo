@@ -222,7 +222,7 @@ class PdfCreateController extends Controller
             </table>';
         $pdf->writeHTML($pageinfo, true, true, false, true, 'R');
         $pdf->SetXY(10, 105);
-        $pdf->Cell(100, 10, 'Unter Einhaltung unserer allg. Geschäftsbediengungen, erlauben wir uns, Ihnen folgendes Angebot zu unterbreiten', 0, 1, 'L');
+        $pdf->Cell(100, 10, 'Unter Einhaltung unserer allg. Geschäftsbediengungen, erlauben wir uns, Ihnen folgendes Angebot zu unterbreiten:', 0, 1, 'L');
         $pdf->SetXY(10, 115);
         $pdf->writeHTML($positiontableheader, true, true, false, true, 'R');
         $pdf->SetXY(10, 120);
@@ -232,9 +232,25 @@ class PdfCreateController extends Controller
         $pdf->writeHTML('<br><br>Bei Annahme des Angebots bitten wir um Unterfertigung<br><br><br><br>_____________________________________________<br>   Unterschrift Kunde', true, true, true, true, 'L');
 
 
+        //dd($preview);
 
-        return response($pdf->Output('Test' . '_' . $offercontent->number . '.pdf', 'I'))
+        // Definiere den Modus als Variable (z. B. 'I', 'D', 'F', 'S')
+        $outputMode = $preview ?? 'I'; // Standardmodus ist 'I', falls $preview nicht gesetzt ist
+
+        // Für den Modus 'F' (Speichern als Datei) ist ein Speicherpfad erforderlich
+        if ($outputMode === 'F') {
+            $filePath = storage_path('pdfs/Offrer/Angebot_' . $offercontent->number . '.pdf');
+            $pdf->Output($filePath, 'F');
+            return response()->download($filePath)
                 ->header('Content-Type', 'application/pdf');
+        }
+
+        // Für andere Modi (Inline, Download, String)
+        $pdfContent = $pdf->Output('Angebot_' . $offercontent->number . '.pdf', $outputMode);
+
+        // Rückgabe der Response
+        return response($pdfContent)
+            ->header('Content-Type', 'application/pdf');
 
 
     }
@@ -462,8 +478,9 @@ class PdfCreateController extends Controller
                 </tr>
             </table>';
         $pdf->writeHTML($pageinfo, true, true, false, true, 'R');
-        $pdf->SetXY(10, 105);
-        $pdf->Cell(100, 10, 'Unter Einhaltung unserer allg. Geschäftsbediengungen, erlauben wir uns, Ihnen folgendes Angebot zu unterbreiten', 0, 1, 'L');
+        $pdf->SetXY(11, 105);
+        $text = "Vielen Dank für Ihren Auftrag und das damit entgegengebrachte Vertrauen. Gerne stelle ich Ihnen hiermit die folgende Leistung in Rechnung:";
+        $pdf->multiCell(190, 10, $text, 0, 'L', 0, 1);
         $pdf->SetXY(10, 115);
         $pdf->writeHTML($positiontableheader, true, true, false, true, 'R');
         $pdf->SetXY(10, 120);
@@ -476,9 +493,22 @@ class PdfCreateController extends Controller
 
 
 
-        return response($pdf->Output('Test' . '_' . $invoicecontent->number . '.pdf', 'I'))
-                ->header('Content-Type', 'application/pdf');
+        $outputMode = $preview ?? 'I'; // Standardmodus ist 'I', falls $preview nicht gesetzt ist
 
+        // Für den Modus 'F' (Speichern als Datei) ist ein Speicherpfad erforderlich
+        if ($outputMode === 'F') {
+            $filePath = storage_path('pdfs/Invoices/Rechnung_' . $invoicecontent->number . '.pdf');
+            $pdf->Output($filePath, 'F');
+            return response()->download($filePath)
+                ->header('Content-Type', 'application/pdf');
+        }
+
+        // Für andere Modi (Inline, Download, String)
+        $pdfContent = $pdf->Output('Rechnung_' . $invoicecontent->number . '.pdf', $outputMode);
+
+        // Rückgabe der Response
+        return response($pdfContent)
+            ->header('Content-Type', 'application/pdf');
 
     }
 }

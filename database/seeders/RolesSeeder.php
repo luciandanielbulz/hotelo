@@ -14,6 +14,15 @@ class RolesSeeder extends Seeder
      */
     public function run(): void
     {
-        Roles::factory()->count(10)->create();
+        Roles::create([
+            'name' => 'admin',
+            'description' => 'Administrator mit vollen Rechten',
+        ]);
+
+        Roles::create([
+            'name' => 'editor',
+            'description' => 'Benutzer mit Rechten zum Bearbeiten von Inhalten',
+        ]);
     }
 }
+

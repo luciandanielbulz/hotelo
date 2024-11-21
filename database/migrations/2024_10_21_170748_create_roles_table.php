@@ -13,18 +13,8 @@ return new class extends Migration
     {
         Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->string('name',50)->notNull;
-            $table->boolean('customerlist');
-            $table->boolean('offerlist');
-            $table->boolean('invoiceslist');
-            $table->boolean('useradministration');
-            $table->boolean('rolesadministration');
-            $table->boolean('settings');
-            $table->boolean('emaillist');
-            $table->boolean('personalsettings');
-            $table->boolean('salesanalysis');
-            $table->boolean('clients');
-            $table->boolean('cashflow');
+            $table->string('name')->unique();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

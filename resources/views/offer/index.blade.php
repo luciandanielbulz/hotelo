@@ -81,8 +81,8 @@
             $('#viewOfferButton').click(function() {
                 const url = '{{ route("createoffer.pdf") }}' +
                     '?offer_id=' + selectedOfferId +
-                    '&objecttype=offer' +
-                    '&prev=1';
+                    '&objecttype=invoice' +
+                    '&prev=I';
                 window.open(url, '_blank'); // PDF im neuen Tab öffnen
             });
 
@@ -107,13 +107,11 @@
             });
 
             $('#pdfExportButton').click(function() {
-                if (selectedOfferId) {
-                    createHiddenForm('', [
-                        { type: 'hidden', name: 'offerid', value: selectedOfferId },
-                        { type: 'hidden', name: 'objecttype', value: 'offer' },
-                        { type: 'hidden', name: 'prev', value: 0 }
-                    ]);
-                }
+                const url = '{{ route("createoffer.pdf") }}' +
+                    '?offer_id=' + selectedOfferId +
+                    '&objecttype=invoice' +
+                    '&prev=D';
+                window.open(url, '_blank'); // PDF im neuen Tab öffnen
             });
 
             $('#sendEmailButton').click(function() {
@@ -130,51 +128,6 @@
                     createHiddenForm('', [
                         { type: 'hidden', name: 'offerid', value: selectedOfferId }
                     ]);
-                }
-            });
-
-            $('#searchForm').submit(function(event) {
-                event.preventDefault();
-                let searchQuery = $('#searchInput').val();
-
-                $.ajax({
-                    url: '',
-                    type: 'GET',
-                    data: { search: searchQuery },
-                    success: function(response) {
-                        try {
-                            let results = JSON.parse(response);
-                            let tableContent = '';
-
-                            results.forEach(function(row) {
-                                tableContent += `
-                                    <tr data-id="${row.id}">
-                                        <td class='align-middle'>${row.OfferNumber}</td>
-                                        <td class='align-middle'>${new Date(row.OfferDate).toLocaleDateString('de-DE')}</td>
-                                        <td class='align-middle'>${row.CustomerName || row.CompanyName}</td>
-                                        <td class='align-middle'>${row.Comment}</td>
-                                    </tr>`;
-                            });
-
-                            $('#offerTable tbody').html(tableContent);
-                        } catch (e) {
-                            console.error('Failed to parse JSON response', e);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('AJAX Error: ', status, error);
-                    }
-                });
-            });
-
-            $('#searchInput').keyup(function() {
-                var query = $(this).val().toLowerCase();
-                $('#offerTable tbody tr').filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(query) > -1);
-                });
-
-                if ($('#offerTable tbody tr:visible').length === 0) {
-                    $(' #viewOfferButton, #editOfferButton, #createInvoiceButton, #pdfExportButton, #sendEmailButton, #archiveButton').prop('disabled', true);
                 }
             });
         });
