@@ -19,7 +19,7 @@ class DashboardController extends Controller
     $this->addTile($tiles, "CustomerList", "/customer", "fa-solid fa-people-group", "Kunden", "#e0ebfc", "Kundenliste", 1);
     $this->addTile($tiles, "OfferList", "/offer", "fa-regular fa-envelope", "Meine Angebote", "#e1ebfc", "Angeboteliste...", 3);
     $this->addTile($tiles, "InvoicesList", "/invoice", "fa-solid fa-file-invoice", "Meine Rechnungen", "#fce8e8", "Liste der Zeitnachweise...", 5);
-    $this->addTile($tiles, "SalesAnalysis", "/sales_analysis", "fa-solid fa-magnifying-glass-chart", "Umsatzauswertung", "#fce8e8", "Liste der Umsätze...", 6);
+    $this->addTile($tiles, "SalesAnalysis", "/sales", "fa-solid fa-magnifying-glass-chart", "Umsatzauswertung", "#fce8e8", "Liste der Umsätze...", 6);
     $this->addTile($tiles, "EmailList", "/emaillist", "fa-solid fa-envelope-open-text", "E-Mail Liste", "#f8f9fa", "Hier werden die gesendeten Objekte angezeigt", 7);
     $this->addTile($tiles, "UserAdministration", "/users", "fa-solid fa-user-gear", "Benutzerverwaltung", "#f0fcfc", "Benutzer werden hier bearbeitet", 9);
     $this->addTile($tiles, "RolesAdministration", "/roles", "fa-regular fa-circle-user", "Rollenverwaltung", "#f8f9fa", "Rollen werden hier festgelegt", 11);

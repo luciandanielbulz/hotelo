@@ -13,6 +13,7 @@ use App\Http\Controllers\OfferpositionController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\PdfCreateController;
 use App\Http\Controllers\PermissionsController;
+use App\Http\Controllers\ClientsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -80,6 +81,9 @@ Route::middleware(['auth','verified'])->group(function(){
     /*Rechte*/
     Route::resource('rolepermissions', RolePermissionsController::class);
     Route::post('/rolepermissions/update/{role}', [RolePermissionsController::class, 'update'])->name('rolepermissions.update');
+
+    /*Klienten*/
+    Route::resource('clients', ClientsController::class);
 
     /*Middleware*/
     Route::middleware('auth')->group(function () {

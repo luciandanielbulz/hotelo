@@ -35,7 +35,7 @@
                     <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
                         <a href="#" @click.prevent="open = !open"
                            class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
-                            <span>{{ __('Rollen und Rechte') }}</span>
+                            <span>{{ __('App-Einstellungen') }}</span>
                             <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
                                       d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z"
@@ -50,6 +50,9 @@
                                 </x-dropdown-link>
                                 <x-dropdown-link :href="route('permissions.index')">
                                     {{ __('Rechte') }}
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('clients.index')">
+                                    {{ __('Klienten') }}
                                 </x-dropdown-link>
                                 <!-- Weitere Untermenüpunkte -->
                             </div>

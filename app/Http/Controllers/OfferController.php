@@ -6,9 +6,11 @@ use App\Models\Offerpositions;
 use App\Models\Offers;
 use App\Models\Customer;
 use App\Models\Conditions;
+use App\Models\Clients;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; // Importiere DB, falls du es benötigs
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class OfferController extends Controller
 {
@@ -17,13 +19,14 @@ class OfferController extends Controller
      */
     public function index(Request $request)
     {
-
+        $user = Auth::user();
+        $clientId = $user->client_id;
 
         $search = $request->input('search');
         //dd($search);
         // Suche oder alle Kunden abfragen
         $offers = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
-            ->where('customers.client_id', 1) // auth()->user()->client_id
+            ->where('customers.client_id', $clientId) // auth()->user()->client_id
             ->orderBy('number','desc')
             ->when($search, function ($query, $search) {
                 return $query->where('customers.customername', 'like', "%$search%")
@@ -43,23 +46,34 @@ class OfferController extends Controller
      */
     public function create($customer_id)
     {
+        $client_id = Auth::user()->client_id;
 
-        // Hole den Kunden aus der Datenbank
-        $customer = Customer::findOrFail($customer_id);
+        $client = Clients::where('id', '=', $client_id)->select('lastoffer', 'offermultiplikator')->first();
 
-        // Erstelle das Angebot mit Standardwerten
+        $offer_raw_number = $client->lastoffer ?? 0; // Fallback: 0
+        $offermultiplikator = $client->offermultiplikator ?? 1000; // Standardwert für Multiplikator
+
+        $offernumber = now()->year * $offermultiplikator +6000+ $offer_raw_number;
+
+
+
+        // Erstelle das Angebot mit der berechneten Nummer
         $offer = Offers::create([
             'customer_id' => $customer_id,
-            'number' => '20241923',
+            'number' => $offernumber, // Verwende die berechnete Angebotsnummer
             'description' => 'test',
             'tax_id' => 1,
             'condition_id' => 1,
         ]);
 
-        //dd($offer->id);
+        // Aktualisiere die `lastoffer`-Spalte für den Client
+        Clients::where('id', '=', $client_id)->update([
+            'lastoffer' => $offer_raw_number + 1, // Erhöhe den Wert um 1
+        ]);
+
         // Weiterleitung zur Angebotsdetailseite
-        //return redirect()->route('offer.edit', ['id' => $offer->id]);
         return redirect()->route('offer.edit', ['offer' => $offer->id]);
+
 
 
     }
@@ -94,14 +108,26 @@ class OfferController extends Controller
      */
     public function edit($offer)
     {
-        //dd($offer);
+        $user = Auth::user();
+        $clientId = $user->client_id;
 
         $offercontent = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
             ->join('taxrates', 'offers.tax_id', '=', 'taxrates.id') // Join mit der taxrates Tabelle
-            ->where('customers.client_id', '=', 1) // Dynamischer client_id
+            ->where('customers.client_id', '=', $clientId) // Dynamischer client_id
             ->where('offers.id', '=', $offer)
-            ->select('offers.id as offer_id', 'offers.*', 'customers.companyname', 'taxrates.taxrate') // taxrates Spalte auswählen
+            ->select(
+                'offers.id as offer_id',
+                'offers.*',
+                'offers.date as date',
+                'customers.companyname as companyname',
+                'taxrates.taxrate',
+                'customers.customername as customername',
+                'customers.address as address',
+                'customers.country as country',
+                'offers.id as offer_id'
+                ) // taxrates Spalte auswählen
             ->first();
+        //dd($offercontent);
 
         $total_price = Offers::join('offerpositions', 'offers.id', '=', 'offerpositions.offer_id')
             ->select(DB::raw('SUM(offerpositions.Amount * offerpositions.Price) as total_price')) // Berechnung der Gesamtsumme
@@ -160,7 +186,7 @@ class OfferController extends Controller
             $offer->date = $validated['offerdate'];
             $offer->save();
 
-            return response()->json(['message' => 'Steuersatz erfolgreich aktualisiert.'], 200);
+            return response()->json(['message' => 'Datum erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
             Log::error('Fehler beim Aktualisieren des Datums: ' . $e->getMessage(), [
                 'offer_id' => $request->offer_id,
@@ -210,7 +236,7 @@ class OfferController extends Controller
             $offer->description = $validated['description'];
             $offer->save();
 
-            return response()->json(['message' => 'Steuersatz erfolgreich aktualisiert.'], 200);
+            return response()->json(['message' => 'Beschreibung erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
             Log::error('Fehler beim Aktualisieren der Beschreibung: ' . $e->getMessage(), [
                 'offer_id' => $request->offer_id,
@@ -236,7 +262,7 @@ class OfferController extends Controller
             $offer->comment = $validated['comment'];
             $offer->save();
 
-            return response()->json(['message' => 'Steuersatz erfolgreich aktualisiert.'], 200);
+            return response()->json(['message' => 'Kommentar erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
             Log::error('Fehler beim Aktualisieren des Kommentars: ' . $e->getMessage(), [
                 'offer_id' => $request->offer_id,

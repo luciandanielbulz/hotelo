@@ -6,9 +6,12 @@ use App\Models\Customer;
 use App\Models\Invoicepositions;
 use App\Models\Invoices;
 use App\Models\Condition;
+use App\Models\Clients;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+
 
 class InvoiceController extends Controller
 {
@@ -17,17 +20,19 @@ class InvoiceController extends Controller
      */
     public function index(Request $request)
     {
+        $client_id = Auth::user()->client_id;
+
         $search = $request->input('search');
 
         // Abfrage der Rechnungen mit Kundenverknüpfung und Filterung nach client_id
         $invoices = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
-            ->where('customers.client_id', 1)
+            ->where('customers.client_id', $client_id)
             ->orderBy('invoices.number', 'desc')
             ->when($search, function ($query, $search) {
                 return $query->where('customers.customername', 'like', "%$search%")
                     ->orWhere('customers.companyname', 'like', "%$search%");
             })
-            ->select('invoices.id','invoices.number','invoices.comment', 'customers.customername')
+            ->select('invoices.id','invoices.number','invoices.comment', 'customers.customername', 'invoices.date')
             ->paginate(15);
 
         //dd($invoices->toArray());
@@ -40,21 +45,29 @@ class InvoiceController extends Controller
      */
     public function create($customer_id)
     {
-        //dd($customer_id);
-        // Erstelle das Angebot mit Standardwerten
+        $client_id = Auth::user()->client_id;
+
+        $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator')->first();
+
+        $invoice_raw_number = $client->lastinvoice ?? 0; // Fallback: 0
+        $invoicemultiplikator = $client->invoicemultiplikator ?? 1000; // Standardwert für Multiplikator
+
+        $invoicenumber = now()->year * $invoicemultiplikator +1000+ $invoice_raw_number;
+
         $invoice = Invoices::create([
             'customer_id' => $customer_id,
-            'number' => '20241923',
-            'description' => 'test',
+            'number' => $invoicenumber,
+            'description' => '',
             'tax_id' => 1,
             'condition_id' => 1,
         ]);
 
-        //dd($offer->id);
-        // Weiterleitung zur Angebotsdetailseite
-        //return redirect()->route('offer.edit', ['id' => $offer->id]);
-        return redirect()->route('invoice.edit', ['invoice' => $invoice->id]);
+        Clients::where('id', '=', $client_id)->update([
+            'lastinvoice' => $invoice_raw_number + 1, // Erhöhe den Wert um 1
+        ]);
 
+
+        return redirect()->route('invoice.edit', ['invoice' => $invoice->id]);
     }
 
     /**
@@ -79,11 +92,17 @@ class InvoiceController extends Controller
     public function edit($invoice)
     {
         $invoice = Invoices::where('invoices.id','=',$invoice)
-            ->select('invoices.*') // Nur das companyname von customers auswählen
-            ->first(); // Nur den ersten Datensatz abrufen
-
-        $customer = Customer::where('customers.id','=',$invoice->customer_id)
-            ->select('*') // Nur das companyname von customers auswählen
+            ->join('taxrates', 'invoices.tax_id','=','taxrates.id')
+            ->join('customers','customers.id','=','invoices.customer_id')
+            ->select(
+                'invoices.id as invoice_id',
+                'invoices.*',
+                'customers.companyname as companyname',
+                'taxrates.taxrate',
+                'customers.customername as customername',
+                'customers.address as address',
+                'customers.country as country'
+                ) // Nur das companyname von customers auswählen
             ->first(); // Nur den ersten Datensatz abrufen
 
 
@@ -94,10 +113,12 @@ class InvoiceController extends Controller
             ->get();
         //dd($invoicepositions);
 
+        //dd($invoice);
         $total_price = Invoices::join('invoicepositions', 'invoices.id', '=', 'invoicepositions.invoice_id')
-            ->select(DB::raw('SUM(invoicepositions.Amount * invoicepositions.Price) as total_price')) // Berechnung der Gesamtsumme
+            ->where('invoicepositions.invoice_id', '=', $invoice->id)
+            ->select(DB::raw('SUM(invoicepositions.amount * invoicepositions.price) as total_price')) // Berechnung der Gesamtsumme
             ->first();
-
+        //dd($total_price);
 
 
         $conditions = Condition::all();
@@ -105,7 +126,7 @@ class InvoiceController extends Controller
         //dd($invoicepositions);
 
 
-        return view('invoice.edit', compact('invoice', 'conditions', 'invoicepositions','total_price', 'customer'));
+        return view('invoice.edit', compact('invoice', 'conditions', 'invoicepositions','total_price'));
     }
 
     /**

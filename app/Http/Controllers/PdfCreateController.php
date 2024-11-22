@@ -14,12 +14,18 @@ use App\Models\Invoicepositions;
 use TCPDF;
 use Illuminate\Support\Facades\DB;
 use App\Services\MyPDF;
+use Illuminate\Support\Facades\Auth;
 
 class PdfCreateController extends Controller
 {
 
         public function createOfferPdf(Request $request)
     {
+
+        $user = Auth::user();
+        $clientId = $user->client_id;
+
+
         $objectId = $request->input('offer_id');
         $objectType = $request->input('objecttype'); // "offer" oder "invoice"
         $preview = $request->input('prev', 0); // 0: Download, 1: Vorschau, 2: Speichern
@@ -45,7 +51,7 @@ class PdfCreateController extends Controller
             ->first('conditions.*');
 
 
-        $client = Clients::where('id', 1)->firstOrFail();
+        $client = Clients::where('id', $clientId)->firstOrFail();
 
         $customer = Customer::join('offers','customers.id','=','offers.customer_id')
             ->where('offers.id','=',$objectId)
@@ -257,6 +263,10 @@ class PdfCreateController extends Controller
 
     public function createInvoicePdf(Request $request)
     {
+
+        $user = Auth::user();
+        $clientId = $user->client_id;
+
         $objectId = $request->input('invoice_id');
         $objectType = $request->input('objecttype'); // "offer" oder "invoice"
         $preview = $request->input('prev', 0); // 0: Download, 1: Vorschau, 2: Speichern
@@ -282,7 +292,7 @@ class PdfCreateController extends Controller
             ->first('conditions.*');
 
 
-        $client = Clients::where('id', 1)->firstOrFail();
+        $client = Clients::where('id', $clientId)->firstOrFail();
 
         $customer = Customer::join('invoices','customers.id','=','invoices.customer_id')
             ->where('invoices.id','=',$objectId)

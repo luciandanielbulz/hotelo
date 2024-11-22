@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Roles;
-use App\Models\Permission;
+use App\Models\Permissions;
 
 class RolePermissionSeeder extends Seeder
 {
@@ -23,7 +23,7 @@ class RolePermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permissionName) {
-            $permission = Permission::firstOrCreate(['name' => $permissionName]);
+            $permission = Permissions::firstOrCreate(['name' => $permissionName]);
 
             // Verknüpfung mit Admin-Rolle
             $adminRole->permissions()->syncWithoutDetaching($permission->id);

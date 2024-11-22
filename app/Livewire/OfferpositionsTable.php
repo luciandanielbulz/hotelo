@@ -52,6 +52,7 @@ class OfferpositionsTable extends Component
             'unit_id' => 1,
             'amount' => 1,
             'price' => 0,
+            'positiontext' => 0
         ]);
 
         // Eingabefelder zurücksetzen
@@ -68,7 +69,7 @@ class OfferpositionsTable extends Component
         OfferPositions::create([
             'offer_id' => $this->offerId,
             'designation' => "",
-            'details' => "",
+            'details' => "Beschreibung",
             'unit_id' => 1,
             'amount' => 1,
             'price' => 0,

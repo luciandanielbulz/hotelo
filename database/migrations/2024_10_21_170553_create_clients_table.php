@@ -34,7 +34,9 @@ return new class extends Migration
             $table->string('signature',500)->nullable();
             $table->string('style',11)->nullable()->default(1);
             $table->integer('lastoffer');
+            $table->integer('offermultiplikator');
             $table->integer('lastinvoice');
+            $table->integer('invoicemultiplikator');
 
             $table->timestamps();
         });

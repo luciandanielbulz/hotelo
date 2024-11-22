@@ -38,7 +38,7 @@
                                 <tr data-id="{{ $offer->offer_id }}">
                                     <td>{{ $offer->offer_id }}</td>
                                     <td>{{ $offer->number }}</td>
-                                    <td>{{ $offer->date }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($offer->date)->translatedFormat('d.m.Y') }}</td>
                                     <td class='align-middle'>
                                         {{ $offer->customername ?? $offer->companyname ?? 'Kein Kunde' }}
                                     </td>

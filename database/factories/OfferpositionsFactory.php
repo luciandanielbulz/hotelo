@@ -15,7 +15,7 @@ class OfferpositionsFactory extends Factory
     {
         return [
             'offer_id' => \App\Models\Offers::factory(),  // Generiere oder referenziere ein Angebot
-            'amount' => $this->faker->randomFloat(2, 1, 100), // Zufällige Menge zwischen 1 und 100
+            'amount' => $this->faker->randomFloat(2, 1, 50), // Zufällige Menge zwischen 1 und 100
             'designation' => $this->faker->words(3, true),  // Zufällige Bezeichnung
             'details' => $this->faker->optional()->text(200),  // Optionale Details mit maximal 200 Zeichen
             'unit_id' => $this->faker->numberBetween(1, 6),  // Generiere oder referenziere eine Einheit

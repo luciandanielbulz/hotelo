@@ -16,12 +16,13 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
-        //dd($request);
+        $user = Auth::user();
+        $clientId = $user->client_id;
 
         $search = $request->input('search');
 
         // Suche oder alle Kunden abfragen
-        $customers = Customer::where('client_id',1)// auth()->user()->client_id)
+        $customers = Customer::where('client_id',$clientId)// auth()->user()->client_id)
             ->when($search, function($query, $search) {
                 return $query->where('customername', 'like', "%$search%");
             })

@@ -15,7 +15,7 @@
         <hr>
 
         <!-----------------------Kunde----------------------->
-        <div class="row">
+        <div class="row mt-3">
             <div class="col">
                 <h5>Kunde</h5>
             </div>
@@ -33,16 +33,17 @@
         </div>
         <div class="row">
             <div class="col">
-                <label class="label-client">{{ $customer->companyname }}</label><br>
-                <label class="label-client">{{ $customer->address}}</label><br>
-                <label class="label-client">{{ $customer->country}}</label>
+                <label class="label-client">{{ $invoice->companyname }}</label><br>
+                <label class="label-client">{{ $invoice->customername }}</label><br>
+                <label class="label-client">{{ $invoice->address}}</label><br>
+                <label class="label-client">{{ $invoice->country}}</label>
             </div>
         </div>
 
         <hr>
 
         <!-- Steuersatz -->
-        <div class="row">
+        <div class="row mt-3 mb-3">
             <div class="col">
                 <form id="taxrateForm">
                     <label for="taxrateid">Steuersatz</label>
@@ -85,7 +86,7 @@
         <hr>
 
         <!-- Beschreibung -->
-        <div class="row">
+        <div class="row mt-3 mb-3">
             <div class="col">
                 <form id="descriptionForm">
                     <label for="description">Beschreibung - erscheint nicht in Rechnung</label>
@@ -96,7 +97,7 @@
 
         <hr>
         <!-- Rechnungkommentar -->
-        <div class="row">
+        <div class="row mt-3 mb-3">
             <div class="col">
                 <form id="commentForm">
                     <label for="comment">Rechnungskommentar</label>
@@ -112,28 +113,30 @@
     </div>
 
 
-        <hr>
-        <div class="row">
-            <div class="col">
-                <form id="depositForm">
-                    <label for="depositamount">Anzahlung in Euro</label>
-                    <input class="form-control" type="number" step="0.01" id="depositamount" name="depositamount" value="{{$invoice->depositamount}}">
-                </form>
-            </div>
+    <hr>
+    <div class="row mt-3 mb-3">
+        <div class="col">
+            <form id="depositForm">
+                <label for="depositamount">Anzahlung in Euro</label>
+                <input class="form-control" type="number" step="0.01" id="depositamount" name="depositamount" value="{{$invoice->depositamount}}">
+            </form>
+        </div>
+        <div class=col>
+        </div>
+        <div class="col-xs-6 col-md-4 text-right">
+            Zwischensumme (Netto):<br>
+            Umsatzsteuer ({{$invoice->taxrate}} %):<br><hr>
+            <b>Gesamtsumme:</b>
+        </div>
+        <div class="col-xs-6 col-md-4">
             <div class="col-xs-6 col-md-4 text-right">
-                Zwischensumme (Netto):<br>
-                Umsatzsteuer (%):<br><hr>
-                <b>Gesamtsumme:</b>
-            </div>
-            <div class="col-xs-6 col-md-4">
-                <div class="col-xs-6 col-md-4">
-                    {{ number_format($total_price->total_price, 2, ',', '.') }} €<br>
-                    {{ number_format($total_price->total_price * (20 / 100), 2, ',', '.') }}  €<br><hr>
-                    {{ number_format($total_price->total_price*1.2, 2, ',', '.') }} €
-                </div>
+                {{ number_format($total_price->total_price, 2, ',', '.') }} €<br>
+                {{ number_format($total_price->total_price * ($invoice->taxrate / 100), 2, ',', '.') }}  €<br><hr>
+                {{ number_format($total_price->total_price*1.2, 2, ',', '.') }} €
             </div>
         </div>
     </div>
+
 
 
     <script>
@@ -161,7 +164,7 @@
             const url = '{{ route("createinvoice.pdf") }}' +
                 '?invoice_id=' + {{$invoice->id}} +
                 '&objecttype=invoice' +
-                '&prev=1';
+                '&prev=I';
             window.open(url, '_blank');
             });
 

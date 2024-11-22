@@ -22,10 +22,10 @@ class InvoicesFactory extends Factory
     {
         return [
             'customer_id' => Customer::factory(),  // Verknüpfung mit einem zufälligen Kunden
-            'date' => now(),  // Aktuelles Datum und Uhrzeit
+            'date' => $this->faker->dateTimeBetween('-4 years', 'now'),  // Aktuelles Datum und Uhrzeit
             'number' => $this->faker->unique()->numerify('INV-#######'),  // Zufällige Rechnungsnummer
             'description' => $this->faker->optional()->paragraph(),  // Optional Beschreibung
-            'tax_id' => Taxrates::factory(),  // Zufällige Steuer-ID
+            'tax_id' => $this->faker->numberBetween(1, 2),  // Zufällige Steuer-ID
             'taxburden' => $this->faker->optional()->boolean(),  // Optional Steuerlast
             'depositamount' => $this->faker->optional()->randomFloat(2, 0, 1000),  // Optional Anzahlungsbetrag
             'periodfrom' => $this->faker->optional()->dateTime(),  // Optional Anfang der Periode
@@ -39,5 +39,6 @@ class InvoicesFactory extends Factory
             'createddate' => now()  // Aktuelles Erstellungsdatum
 
         ];
+
     }
 }

@@ -16,20 +16,21 @@ class DatabaseSeeder extends Seeder
         $this->call(ClientsSeeder::class);
         $this->call(ConditionsSeeder::class);
         $this->call(SalutationsSeeder::class);
-        $this->call(CustomerSeeder::class);
+        /*$this->call(CustomerSeeder::class);*/
         $this->call(UnitsSeeder::class);
-        $this->call(OffersSeeder::class);
+        /*$this->call(OffersSeeder::class);
         $this->call(InvoicesSeeder::class);
         $this->call(OfferpositionsSeeder::class);
-        $this->call(InvoicepositionsSeeder::class);
-        $this->call(CashflowsSeeder::class);
-        $this->call(MessagesSeeder::class);
+        $this->call(InvoicepositionsSeeder::class);*/
+        /*$this->call(CashflowsSeeder::class);*/
+        /*$this->call(MessagesSeeder::class);*/
         $this->call(RolesSeeder::class);
         $this->call(PermissionsSeeder::class);
-        $this->call(RolePermissionSeeder::class);
-        $this->call(FactorrulesSeeder::class);
-        $this->call(FileuploadsSeeder::class);
         $this->call(UserSeeder::class);
+        $this->call(RolePermissionSeeder::class);
+        /*$this->call(FactorrulesSeeder::class);*/
+        /*$this->call(FileuploadsSeeder::class);*/
+
 
 
     }

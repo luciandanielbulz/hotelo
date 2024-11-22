@@ -17,7 +17,7 @@
         <hr>
 
         <!-----------------------Kunde----------------------->
-        <div class="row">
+        <div class="row mt-2 mb-3">
             <div class="col">
                 <h5>Kunde</h5>
             </div>
@@ -35,6 +35,7 @@
         <div class = "row">
             <div class="col">
                 <label class="label-client">{{ $offercontent->companyname }}</label><br>
+                <label class="label-client">{{ $offercontent->customername }}</label><br>
                 <label class="label-client">{{ $offercontent->address}}</label><br>
                 <label class="label-client">{{ $offercontent->country}}</label>
             </div>
@@ -43,7 +44,7 @@
         <hr>
 
         <!-----------------------Steuersatz & Angebotsdatum----------------------->
-        <div class = "row">
+        <div class = "row mt-2 mb-3">
             <div class="col">
                 <form id="taxrateForm">
                     <label for="taxrateid">Steuersatz</label>
@@ -54,28 +55,25 @@
                 </form>
             </div>
 
-
-
-
             <!---------------------------------------------->
             <div class="col">
                 <form id="offerDateForm">
-                    <label for="offerDate">Angebotsdatum</label>
-                    <input type="date" class="form-control" id="offerDate" name ="offerDate" value="{{$offercontent->date}}">
+                    <label for="offerDate">Datum</label>
+                    <input type="date" class="form-control" id="offerDate" name ="offerDate" value="{{ $offercontent->date ? $offercontent->date->format('Y-m-d') : '' }}">
                 </form>
             </div>
 
             <div class="col">
                 <form id="offerNumberForm">
-                    <label for="offerNumber">Angebotsdatum</label>
-                    <input type="input" class="form-control" id = "offerNumber" name ="offerNumber" value="{{$offercontent->number}}">
+                    <label for="offerNumber">Nummer</label>
+                    <input type="input" class="form-control" id = "offerNumber" name ="offerNumber" value="{{ $offercontent->number }}">
                 </form>
             </div>
         </div>
         <hr>
 
         <!-----------------------Beschreibung----------------------->
-        <div class="row">
+        <div class="row mt-2 mb-3">
             <div class="col">
                 <form id="commentForm">
                     <label for="description">Beschreibung - erscheint nicht in Rechnung</label>
@@ -87,7 +85,7 @@
 
         <hr>
         <!-----------------------Angebotskommentar----------------------->
-        <div class="row">
+        <div class="row mt-2 mb-3">
             <div class = "col">
                 <form id="descriptionForm">
                     <label for="comment">Angebotskommentar</label>
@@ -105,7 +103,7 @@
 
 
     <hr>
-    <div class ="row">
+    <div class ="row mt-2 mb-3">
         <div class="col"></div>
 
 
@@ -152,7 +150,7 @@
                 const url = '{{ route("createoffer.pdf") }}' +
                     '?offer_id=' + {{$offercontent->offer_id}} +
                     '&objecttype=offer' +
-                    '&prev=1';
+                    '&prev=I';
                 window.open(url, '_blank');
             });
 

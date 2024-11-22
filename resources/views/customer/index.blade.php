@@ -21,9 +21,9 @@
         <table class="table table-sm mt-3">
             <thead>
                 <tr>
-                    <th style="width: 5%;">KId</th>
-                    <th style="width: 40%;">Kundenname/Firmenname</th>
-                    <th style="width: 25%;">Adresse</th>
+                    <th style="width: 3%;">KId</th>
+                    <th style="width: 30%;">Kundenname / Firmenname</th>
+                    <th style="width: 35%;">Adresse</th>
                     <th style="width: 10%;">PLZ</th>
                     <th style="width: 10%;">Ort</th>
                 </tr>
@@ -32,7 +32,7 @@
                 @forelse($customers as $customer)
                     <tr data-id="{{ $customer->id }}">
                         <td>{{ $customer->id }}</td>
-                        <td>{{ $customer->customername ?? $customer->companyname ?? 'Kein Kundename/firm vorhanden' }}</td>
+                        <td>{{ $customer->customername}} / {{$customer->companyname}}</td>
                         <td>{{ $customer->address }}</td>
                         <td>{{ $customer->postalcode }}</td>
                         <td>{{ $customer->location }}</td>

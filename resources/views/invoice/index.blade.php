@@ -37,7 +37,7 @@
                                     <tr data-id="{{ $invoice->id }}">
                                         <td>{{ $invoice->id }}</td>
                                         <td>{{ $invoice->number }}</td>
-                                        <td>{{ $invoice->date }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($invoice->date)->translatedFormat('d.m.Y') }}</td>
                                         <td class='align-middle'>
                                             {{ $invoice->customername ?? $invoice->companyname ?? 'Kein Kunde' }}
                                         </td>

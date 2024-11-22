@@ -16,7 +16,7 @@ class UnitsFactory extends Factory
      */
     public function definition(): array
     {
-        $units = ['Stk', 'Pau', 'Std','.','h','m'];
+        $units = ['Pau', 'Stk', 'Std','.','h','m'];
 
         return [
             'unitdesignation' => $units[array_rand($units)], // Erzeugt eine zufällige Bezeichnung

@@ -21,7 +21,7 @@
                         @forelse($salespositions as $salesposition)
                             <tr data-id='{{$salesposition->row}}'>
                                 <td>{{$salesposition->Jahr}}</td>
-                                <td>{{$salesposition->SumExit}} €</td>
+                                <td>{{$salesposition->SumExit - $salesposition->Deposit}} €</td>
 
                             </tr>
                         @empty
@@ -41,9 +41,8 @@
     </div>
 
     <script>
-
         $(document).ready(function() {
-                let selectedYear = null;
+            let selectedYear = null;
 
             // Wenn auf eine Zeile in der Tabelle geklickt wird
             $('#salesTable').on('click', 'tr', function() {
@@ -55,44 +54,46 @@
             });
 
             $('#showDetails').click(function() {
-            console.log("Details Button wurde geklickt");
-            if (selectedYear) {
-                $('<form>', {
-                    'action': 'sales_details.php',
-                    'method': 'post',
-                    'style': 'display: none;',
-                    'html': [
-                        $('<input>', {'type': 'hidden', 'name': 'year', 'value': selectedYear}),
-                    ]
-                }).appendTo('body').submit();
-            }
-        });
-        });
+                console.log("Details Button wurde geklickt");
+                if (selectedYear) {
+                    $('<form>', {
+                        'action': 'sales_details.php',
+                        'method': 'post',
+                        'style': 'display: none;',
+                        'html': [
+                            $('<input>', {'type': 'hidden', 'name': 'year', 'value': selectedYear}),
+                        ]
+                    }).appendTo('body').submit();
+                }
+            });
 
-        var years = {{$salesposition->years}};
-        var revenues = 0;
+            // Daten von Laravel an JavaScript übergeben
+            var years = @json($salespositions->pluck('Jahr'));
+            var revenues = @json($salespositions->pluck('Umsatz'));
 
-        // Chart.js Diagramm erstellen
-        var ctx = document.getElementById('revenueChart').getContext('2d');
-        var revenueChart = new Chart(ctx, {
-            type: 'line', // Du kannst auch 'line' oder 'pie' verwenden
-            data: {
-                labels: years, // Die Jahre auf der X-Achse
-                datasets: [{
-                    label: 'Umsätze in €',
-                    data: revenues, // Umsätze auf der Y-Achse
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)', // Farbe der Balken
-                    borderColor: 'rgba(75, 192, 192, 1)', // Rahmenfarbe der Balken
-                    borderWidth: 1 // Breite des Rahmens
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true // Y-Achse beginnt bei 0
+            // Chart.js Diagramm erstellen
+            var ctx = document.getElementById('revenueChart').getContext('2d');
+            var revenueChart = new Chart(ctx, {
+                type: 'line', // Du kannst auch 'bar' oder 'pie' verwenden
+                data: {
+                    labels: years, // Die Jahre auf der X-Achse
+                    datasets: [{
+                        label: 'Umsätze in €',
+                        data: revenues, // Umsätze auf der Y-Achse
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Farbe der Linie
+                        borderColor: 'rgba(75, 192, 192, 1)', // Farbe der Linie
+                        borderWidth: 1 // Breite der Linie
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true // Y-Achse beginnt bei 0
+                        }
                     }
                 }
-            }
+            });
         });
     </script>
+
 </x-layout>

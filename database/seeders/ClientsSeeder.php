@@ -35,7 +35,10 @@ class ClientsSeeder extends Seeder
                 'signature' => "MFG\nBulz Lucian",
                 'style' => 1,
                 'lastoffer' => 1,
-                'lastinvoice' => 1
+                'lastinvoice' => 1,
+                'offermultiplikator' => 10000,
+                'invoicemultiplikator' => 10000
+
             ]);
         }
     }

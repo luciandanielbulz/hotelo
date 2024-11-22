@@ -9,6 +9,9 @@ class Invoice extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'date' => 'datetime',
+    ];
     protected $fillable = [
         'customer_id',
         'number',

@@ -16,7 +16,7 @@ class OffersFactory extends Factory
     {
         return [
             'customer_id' => Customer::factory(), // Verknüpft mit einer zufälligen Customer-Instanz
-            'date' => $this->faker->date(), // Zufälliges Datum
+            'date' => $this->faker->dateTimeBetween('-4 years', 'now'), // Zufälliges Datum
             'number' => $this->faker->unique()->numberBetween(1000, 9999), // Zufällige, einzigartige Angebotsnummer
             'description' => $this->faker->sentence(), // Zufällige Beschreibung
             'tax_id' => $this->faker->numberBetween(1, 2), // Verknüpft mit einer zufälligen Taxrate-Instanz

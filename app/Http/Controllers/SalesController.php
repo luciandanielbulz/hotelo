@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Sales;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
+use Illuminate\Support\Facades\DB;
 
 class SalesController extends Controller
 {
@@ -14,15 +15,15 @@ class SalesController extends Controller
     public function index()
     {
         $currentClientId = auth()->user()->client_id; // Ersetzen mit deinem tatsächlichen Zugang zur Client-ID
-
+        //dd($currentClientId);
         $salespositions = Invoice::join('invoicepositions', 'invoices.Id', '=', 'invoicepositions.invoice_id')
             ->join('customers', 'invoices.customer_id', '=', 'customers.id')
-            ->where('client_id', '=', $currentClientId)
+            ->where('customers.client_id', '=', $currentClientId)
             ->where('invoicepositions.issoftdeleted', '=', 0)
             ->selectRaw('YEAR(invoices.date) AS Jahr')
-            ->selectRaw('SUM(invoicepositions.price * invoicepositions.amount) AS Umsatz')
-            ->selectRaw('SUM(invoices.depositAmount) AS Deposit')
-            ->selectRaw('(SUM(invoicepositions.price * invoicepositions.amount) - SUM(invoicepositions.amount)) AS SumExit')
+            ->addSelect(DB::raw('SUM(invoicepositions.price * invoicepositions.amount) AS Umsatz'))
+            ->addSelect(DB::raw('SUM(invoices.depositAmount) AS Deposit'))
+            ->addSelect(DB::raw('(SUM(invoicepositions.price * invoicepositions.amount)) AS SumExit'))
             ->groupByRaw('YEAR(invoices.date)')
             ->orderByRaw('YEAR(invoices.date)')
             ->get();

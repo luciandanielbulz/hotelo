@@ -16,7 +16,7 @@ class InvoicepositionsFactory extends Factory
     {
         return [
             'invoice_id' => Invoices::factory(),  // Verknüpfung mit einer zufälligen Rechnung
-            'amount' => $this->faker->randomFloat(2, 1, 1000),  // Zufällige Menge, Dezimalzahl
+            'amount' => $this->faker->randomFloat(2, 1, 50),  // Zufällige Menge, Dezimalzahl
             'designation' => $this->faker->word(),  // Zufällige Bezeichnung
             'details' => $this->faker->optional()->paragraph(),  // Optional Details
             'unit_id' => $this->faker->numberBetween(1, 6),  // Verknüpfung mit einer zufälligen Einheit, Standardwert 1 kann im Seeder überschrieben werden
