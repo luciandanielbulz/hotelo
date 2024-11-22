@@ -142,6 +142,7 @@ class PdfCreateController extends Controller
 
 
         foreach ($positions as $position) {
+            if($position->positiontext)
             $details = $position->details ?? '';
             $positiontablebody .= '
                 <tr>

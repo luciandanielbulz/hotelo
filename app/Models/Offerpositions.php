@@ -14,7 +14,8 @@ class Offerpositions extends Model
         'designation',
         'details',
         'unit_id',
-        'price'
+        'price',
+        'positiontext'
 
         // Weitere Spalten hinzufügen, falls nötig
     ];

@@ -73,7 +73,7 @@ class OfferpositionsTable extends Component
             'unit_id' => 1,
             'amount' => 1,
             'price' => 0,
-            'positiontext' => 1
+            'positiontext' => 1,
         ]);
 
         // Eingabefelder zurücksetzen
