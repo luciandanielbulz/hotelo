@@ -19,8 +19,7 @@ return new class extends Migration
             $table->string('details', 2000)->nullable();  // Details, varchar mit maximal 2000 Zeichen, optional
             $table->foreignId('unit_id')->default(1)->constrained('units');  // Fremdschlüssel zu Einheiten, Standardwert 1
             $table->decimal('price', 10, 2);  // Preis, Dezimalzahl mit bis zu 10 Stellen und 2 Nachkommastellen
-            $table->text('positiontext')->nullable();  // Positionstext, optional
-            $table->boolean('positiontextoption')->default(false);  // Option für Positionstext, standardmäßig false
+            $table->boolean('positiontext')->default(false);  // Positionstext, optional
             $table->integer('sequence')->nullable();  // Sequenznummer, optional
             $table->boolean('issoftdeleted')->default(false);  // Soft-Delete-Flag, standardmäßig false
             $table->timestamps();  // Standard timestamps für created_at und updated_at

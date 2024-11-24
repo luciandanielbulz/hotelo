@@ -21,7 +21,7 @@ return new class extends Migration
             $table->decimal('price')->nullable()->default(0.0);
             $table->boolean('positiontext')->default(false);
             $table->integer('sequence')->default(0);
-            $table->boolean('issoftdelteted')->nullable();
+            $table->boolean('issoftdeleted')->nullable();
             $table->timestamps();
         });
     }

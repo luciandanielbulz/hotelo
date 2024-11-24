@@ -142,25 +142,36 @@ class PdfCreateController extends Controller
 
 
         foreach ($positions as $position) {
-            if($position->positiontext)
-            $details = $position->details ?? '';
-            $positiontablebody .= '
-                <tr>
-                    <td style="text-align: left; width: 9%;">'.number_format($position->amount, 2, ',', '') .'</td>
-                    <td style="text-align: left; width: 9%;">'.$position->unitdesignation.'</td>
-                    <td style="text-align: left; width: 52%;">'.$position->designation.'</td>
-                    <td style="text-align: center; width: 15%;">'.number_format($position->price, 2, ',', '') .' €</td>
-                    <td style="text-align: center; width: 15%;">'.number_format(($position->price * $position->amount), 2, ',', '') .' €</td>
-                </tr>
-                <tr>
-                    <td style="width: 9%;"></td>
-                    <td style="width: 7%;"></td>
+            $positiontablebody .= '<tr><td></td></tr>';
+            if($position->positiontext == 1) {
+                $positiontablebody .= '
 
-                    <td style="text-align: left; width: 54%;">'.$details.'</td>
-                    <td style="width: 15%;"></td>
-                    <td style="width: 15%;"></td>
-                </tr>
-            ';
+                    <tr>
+                        <td style="text-align:center; width: 100%;"><b>'.$position->details.'</b></td>
+                    </tr>
+                ';
+            } else {
+                $details = $position->details ?? '';
+                $positiontablebody .= '
+
+                    <tr>
+                        <td style="text-align: left; width: 9%;">'.number_format($position->amount, 2, ',', '') .'</td>
+                        <td style="text-align: left; width: 9%;">'.$position->unitdesignation.'</td>
+                        <td style="text-align: left; width: 52%;">'.$position->designation.'</td>
+                        <td style="text-align: center; width: 15%;">'.number_format($position->price, 2, ',', '') .' €</td>
+                        <td style="text-align: center; width: 15%;">'.number_format(($position->price * $position->amount), 2, ',', '') .' €</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 9%;"></td>
+                        <td style="width: 7%;"></td>
+
+                        <td style="text-align: left; width: 54%;">'.$position->details.'</td>
+                        <td style="width: 15%;"></td>
+                        <td style="width: 15%;"></td>
+                    </tr>
+                ';
+            }
+
         }
 
 
@@ -277,7 +288,7 @@ class PdfCreateController extends Controller
             ->join('taxrates','invoices.tax_id','=','taxrates.id')
             ->first(['invoices.*','taxrates.*']);
 
-        //dd($invoicecontent);
+        //dd($invoicecontent->depositamount);
 
         $positions = Invoicepositions::where('invoice_id', $objectId)
             ->join('units','invoicepositions.unit_id','=','units.id')
@@ -403,24 +414,34 @@ class PdfCreateController extends Controller
 
 
         foreach ($positions as $position) {
-            $details = $position->details ?? '';
-            $positiontablebody .= '
-                <tr>
-                    <td style="text-align: left; width: 9%;">'.number_format($position->amount, 2, ',', '') .'</td>
-                    <td style="text-align: left; width: 9%;">'.$position->unitdesignation.'</td>
-                    <td style="text-align: left; width: 52%;">'.$position->designation.'</td>
-                    <td style="text-align: right; width: 15%;">'.number_format($position->price, 2, ',', '') .' €</td>
-                    <td style="text-align: right; width: 15%;">'.number_format(($position->price * $position->amount), 2, ',', '') .' €</td>
-                </tr>
-                <tr>
-                    <td style="width: 9%;"></td>
-                    <td style="width: 7%;"></td>
+            $positiontablebody .= '<tr><td></td></tr>';
+            if($position->positiontext == 1) {
+                $positiontablebody .= '
 
-                    <td style="text-align: left; width: 54%;">'.$details.'</td>
-                    <td style="width: 15%;"></td>
-                    <td style="width: 15%;"></td>
-                </tr>
-            ';
+                    <tr>
+                        <td style="text-align:center; width: 100%;"><b>'.$position->details.'</b></td>
+                    </tr>
+                ';
+            } else {
+                $details = $position->details ?? '';
+                $positiontablebody .= '
+                    <tr>
+                        <td style="text-align: left; width: 9%;">'.number_format($position->amount, 2, ',', '') .'</td>
+                        <td style="text-align: left; width: 9%;">'.$position->unitdesignation.'</td>
+                        <td style="text-align: left; width: 52%;">'.$position->designation.'</td>
+                        <td style="text-align: right; width: 15%;">'.number_format($position->price, 2, ',', '') .' €</td>
+                        <td style="text-align: right; width: 15%;">'.number_format(($position->price * $position->amount), 2, ',', '') .' €</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 9%;"></td>
+                        <td style="width: 7%;"></td>
+
+                        <td style="text-align: left; width: 54%;">'.$details.'</td>
+                        <td style="width: 15%;"></td>
+                        <td style="width: 15%;"></td>
+                    </tr>
+                ';
+            }
         }
 
 
@@ -442,14 +463,30 @@ class PdfCreateController extends Controller
                 </tr>
                 <tr>
                     <td style="text-align: left; width: 70%;"></td>
-                    <td style="text-align: left; width: 15%; border-bottom: 2px solid black;">Brutto:</td>
-                    <td style="text-align: right; width: 15%; border-bottom: 2px solid black;">'.number_format($totalSum*($invoicecontent->taxrate/100+1), 2, ',', '').' €</td>
+                    <td style="text-align: left; width: 15%; border-bottom: 1px solid black;">Brutto:</td>
+                    <td style="text-align: right; width: 15%; border-bottom: 1px solid black;">'.number_format($totalSum*($invoicecontent->taxrate/100+1), 2, ',', '').' €</td>
                 </tr>
             </table>';
 
 
             $footer = $client->webpage.", ".$client->address.", ".$client->postalcode." ".$client->location.", Tel ".$client->phone.",\n".$client->email.", ".$client->bank.", ".$client->accountnumber.", ".$client->bic;
 
+
+            if ($invoicecontent->depositamount > 0) {
+                $positionsum .= '
+                    <table cellpadding="2" cellspacing="0" width = "533">
+                        <tr>
+                            <td style="text-align: left; width: 70%;"></td>
+                            <td style="text-align: left; width: 15%; border-bottom: 0.5px solid black;">Anzahlung</td>
+                            <td style="text-align: right; width: 15%; border-bottom: 0.5px solid black;">-'.number_format($invoicecontent->depositamount, 2, ',', '').' €</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left; width: 70%;"></td>
+                            <td style="text-align: left; width: 15%; border-bottom: 2px solid black;">Zu zahlen:</td>
+                            <td style="text-align: right; width: 15%; border-bottom: 2px solid black;">'.number_format($totalSum*($invoicecontent->taxrate/100+1)-$invoicecontent->depositamount, 2, ',', '').' €</td>
+                        </tr>
+                    </table>';
+            }
 
         //$html="test";
         // PDF erstellen

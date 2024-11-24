@@ -61,6 +61,7 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::post('/invoice/updatecomment', [InvoiceController::class, 'updatecomment'])->name('invoice.updatecomment');
     Route::post('/invoice/updatedeposit', [InvoiceController::class, 'updatedeposit'])->name('invoice.updatedeposit');
     Route::get('/invoice/create/{id}',[InvoiceController::class, 'create'])->name('invoice.create');
+    Route::get('/invoice/createinvoicefromoffer',[InvoiceController::class, 'createinvoicefromoffer'])->name('invoice.createinvoicefromoffer');
     Route::resource('invoice',InvoiceController::class);
 
     /*Rechnungs-Positionen*/

@@ -18,6 +18,7 @@ class Invoice extends Model
         'tax_id',
         'condition_id',
         'invoice_id',
-        'number'
+        'number',
+
     ];
 }

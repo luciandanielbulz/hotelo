@@ -7,6 +7,8 @@ use App\Models\Invoicepositions;
 use App\Models\Invoices;
 use App\Models\Condition;
 use App\Models\Clients;
+use App\Models\Offers;
+use App\Models\Offerpositions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -47,6 +49,8 @@ class InvoiceController extends Controller
     {
         $client_id = Auth::user()->client_id;
 
+        $customer = Customer::where('id','=',$customer_id)->first();
+
         $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator')->first();
 
         $invoice_raw_number = $client->lastinvoice ?? 0; // Fallback: 0
@@ -59,7 +63,7 @@ class InvoiceController extends Controller
             'number' => $invoicenumber,
             'description' => '',
             'tax_id' => 1,
-            'condition_id' => 1,
+            'condition_id' => $customer->condition_id,
         ]);
 
         Clients::where('id', '=', $client_id)->update([
@@ -327,5 +331,84 @@ class InvoiceController extends Controller
             ]);
             return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function createinvoicefromoffer(Request $request) {
+
+        $client_id = Auth::user()->client_id;
+
+        $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator')->first();
+
+        $invoice_raw_number = $client->lastinvoice ?? 0; // Fallback: 0
+        $invoicemultiplikator = $client->invoicemultiplikator ?? 1000; // Standardwert für Multiplikator
+
+        $invoicenumber = now()->year * $invoicemultiplikator +1000+ $invoice_raw_number;
+
+        //dd($invoicemultiplikator);
+        $request->validate([
+            'offerid' => 'required|exists:offers,id', // Existenzprüfung in der Tabelle Offers
+        ]);
+
+        $offerId = $request->offerid;
+        //dd($offerId);
+
+
+        $offer = Offers::findOrFail($offerId);
+        $offerPositions = OfferPositions::where('offer_id', '=',$offerId)
+        ->where('issoftdeleted','!=',1)
+        ->get();
+
+        //dd($offerPositions);
+
+        $invoice = Invoices::create([
+            'customer_id' => $offer->customer_id,
+            'date' => now(),
+            'number' => $invoicenumber,
+            'description' => $offer->description,
+            'tax_id' => $offer->tax_id,
+            'taxburden' => $offer->taxburden,
+            'deposit' => $offer->deposit,
+            'depositamount' => $offer->depositamount,
+            'periodfrom' => $offer->periodfrom,
+            'periodto' => $offer->periodto,
+            'condition_id' => $offer->condition_id,
+            'payed' => 0,
+            'payeddate' => '',
+            'archived' => 0,
+            'archiveddate' => '',
+            'sequence' => $offer->sequence,
+            'comment' => $offer->comment,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+
+        Clients::where('id', '=', $client_id)->update([
+            'lastinvoice' => $invoice_raw_number + 1, // Erhöhe den Wert um 1
+        ]);
+
+        //dd($invoice);
+        // 4. Neue InvoicePositions erstellen
+        foreach ($offerPositions as $position) {
+            //dd($position->sequence);
+            Invoicepositions::create([
+                'invoice_id' => $invoice->id,
+                'amount' => $position->amount,
+                'designation' => $position->description,
+                'details' => $position->details,
+                'unit_id' => $position->unit_id,
+                'price' => $position->price,
+                'positiontext' => $position->positiontext,
+                'sequence' => $position->sequence,
+                'created_at' => now(),
+                'updated_at' => now(),
+                // Weitere Felder hier übernehmen
+            ]);
+        }
+
+        // 5. Erfolgsmeldung oder Weiterleitung
+        return redirect()->route('invoice.edit', ['invoice' => $invoice->id])
+        ->with('success', 'Invoice successfully created and opened in edit mode!');
+
     }
 }

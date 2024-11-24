@@ -100,11 +100,13 @@
 
             $('#createInvoiceButton').click(function() {
                 if (selectedOfferId) {
-                    createHiddenForm('{{ route('offer.create', '') }}', [
-                        { type: 'hidden', name: 'offerid', value: selectedOfferId }
-                    ]);
+                    // Dynamische URL mit dem selectedOfferId als Query-Parameter
+                    const url = '{{ route('invoice.createinvoicefromoffer') }}' + '?offerid=' + selectedOfferId;
+                    // Weiterleitung zur URL
+                    window.location.href = url;
                 }
             });
+
 
             $('#pdfExportButton').click(function() {
                 const url = '{{ route("createoffer.pdf") }}' +

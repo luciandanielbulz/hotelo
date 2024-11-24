@@ -32,7 +32,7 @@
                     @forelse ($positions as $position)
                         <tr data-id="{{ $position->id }}">
                             <td>{{ $position->id }}</td>
-                            @if ($position->positiontext == 0)
+                            @if ($position->positiontext == false)
                                 <td>{{ number_format($position->amount, 2, ',', '.') }}</td>
                                 <td>{{ $position->unit_name}}</td>
                                 <td>{{ $position->designation }}</td>

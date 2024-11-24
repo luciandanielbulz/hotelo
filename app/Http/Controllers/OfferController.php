@@ -48,6 +48,8 @@ class OfferController extends Controller
     {
         $client_id = Auth::user()->client_id;
 
+        $customer = Customer::where('id','=',$customer_id)->first();
+
         $client = Clients::where('id', '=', $client_id)->select('lastoffer', 'offermultiplikator')->first();
 
         $offer_raw_number = $client->lastoffer ?? 0; // Fallback: 0
@@ -63,7 +65,7 @@ class OfferController extends Controller
             'number' => $offernumber, // Verwende die berechnete Angebotsnummer
             'description' => 'test',
             'tax_id' => 1,
-            'condition_id' => 1,
+            'condition_id' => $customer->condition_id,
         ]);
 
         // Aktualisiere die `lastoffer`-Spalte für den Client

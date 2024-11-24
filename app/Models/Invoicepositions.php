@@ -15,7 +15,8 @@ class Invoicepositions extends Model
         'details',
         'unit_id',
         'price',
-        'positiontext'
+        'positiontext',
+        'sequence'
 
         // Weitere Spalten hinzufügen, falls nötig
     ];

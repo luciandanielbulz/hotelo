@@ -43,11 +43,16 @@ class OfferpositionsTable extends Component
 
     public function addPosition()
     {
+        $highestseqnumber = Offerpositions::where('offer_id', $this->offerId)
+            ->max('sequence') ?? 0;
+
+        $highestseqnumber = $highestseqnumber + 2;
 
 
         OfferPositions::create([
             'offer_id' => $this->offerId,
             'designation' => "Beschreibung",
+            'sequence' => $highestseqnumber,
             'details' => "",
             'unit_id' => 1,
             'amount' => 1,
@@ -64,10 +69,14 @@ class OfferpositionsTable extends Component
 
     public function addTextPosition()
     {
+        $highestseqnumber = Offerpositions::where('offer_id', $this->offerId)
+            ->max('sequence') ?? 0;
 
+        $highestseqnumber = $highestseqnumber + 2;
 
         OfferPositions::create([
             'offer_id' => $this->offerId,
+            'sequence' => $highestseqnumber,
             'designation' => "",
             'details' => "Beschreibung",
             'unit_id' => 1,
