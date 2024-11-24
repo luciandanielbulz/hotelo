@@ -19,10 +19,10 @@ class OfferpositionsTable extends Component
 
     public function loadPositions()
     {
-        $this->positions = Offerpositions::where('offer_id', $this->offerId)
-        ->join('units','offerpositions.unit_id','=','units.id')
-        ->orderBy('sequence','asc')
+        $this->positions = Offerpositions::join('units','offerpositions.unit_id','=','units.id')
+        ->where('offerpositions.offer_id', $this->offerId)
         ->select('units.unitdesignation as unit_desigtnation', 'offerpositions.*', 'units.unitdesignation as unit_name')
+        ->orderBy('sequence','asc')
         ->get();
         //dd($this->positions);
     }

@@ -19,8 +19,8 @@ class InvoicepositionsTable extends Component
 
     public function loadPositions()
     {
-        $this->positions = Invoicepositions::where('invoice_id', $this->invoiceId)
-        ->join('units','invoicepositions.unit_id','=','units.id')
+        $this->positions = Invoicepositions::join('units','invoicepositions.unit_id','=','units.id')
+        ->where('invoicepositions.invoice_id', $this->invoiceId)
         ->select('units.unitdesignation as unit_desigtnation', 'invoicepositions.*', 'units.unitdesignation as unit_name')
         ->orderBy('sequence')
         ->get();
