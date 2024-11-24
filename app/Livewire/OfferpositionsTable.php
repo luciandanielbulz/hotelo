@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\OfferPositions;
+use App\Models\Offerpositions;
 
 class OfferpositionsTable extends Component
 {

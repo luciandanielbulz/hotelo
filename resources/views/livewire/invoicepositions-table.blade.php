@@ -42,7 +42,7 @@
                             @else
                                 <td><b>P</b></td>
                                 <td></td>
-                                <td><b>{{ $position->positiontext }}</b></td>
+                                <td><b>{{ $position->details }}</b></td>
                                 <td></td>
                                 <td></td>
                             @endif
