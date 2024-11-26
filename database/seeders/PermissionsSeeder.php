@@ -20,6 +20,17 @@ class PermissionsSeeder extends Seeder
             'create_users' => 'Erlaubt das Erstellen neuer Benutzer',
             'edit_users' => 'Erlaubt das Bearbeiten von Benutzerdaten',
             'delete_users' => 'Erlaubt das Löschen von Benutzern',
+            'view_customers' => 'Kunden sehen',
+            'view_offers' => 'Angebote sehen',
+            'view_invoices' => 'Rechnungen sehen',
+            'view_sales_analysis'=> 'Analyse des Umsatzes sehen',
+            'view_email_list'=>'Liste der gesendeten E-Mails sehen',
+            'manage_users'=>'Benutzer verwalten',
+            'manage_roles'=>'Rollen verwalten',
+            'view_clients' => 'Klienten verwalten',
+            'update_settings'=> 'Einstellungen sehen',
+            'logout'=>'Ausloggen',
+            'manage_permissions'=>'Rechte bearbeiten'
         ];
 
         foreach ($permissions as $name => $description) {

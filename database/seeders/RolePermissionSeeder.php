@@ -20,6 +20,20 @@ class RolePermissionSeeder extends Seeder
             'view_dashboard',
             'edit_posts',
             'delete_posts',
+            'create_users',
+            'edit_users',
+            'delete_users',
+            'view_customers',
+            'view_offers',
+            'view_invoices',
+            'view_sales_analysis',
+            'view_email_list',
+            'manage_users',
+            'manage_roles',
+            'view_clients',
+            'update_settings',
+            'logout',
+            'manage_permissions'
         ];
 
         foreach ($permissions as $permissionName) {
