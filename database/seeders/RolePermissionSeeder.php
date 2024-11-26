@@ -4,16 +4,16 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Roles;
-use App\Models\Permissions;
+use App\Models\Role;
+use App\Models\Permission;
 
 class RolePermissionSeeder extends Seeder
 {
     public function run()
     {
         // Rollen erstellen oder existierende abrufen
-        $adminRole = Roles::firstOrCreate(['name' => 'admin'], ['description' => 'Administrator mit vollen Rechten']);
-        $editorRole = Roles::firstOrCreate(['name' => 'editor'], ['description' => 'Editor mit Bearbeitungsrechten']);
+        $adminRole = Role::firstOrCreate(['name' => 'admin'], ['description' => 'Administrator mit vollen Rechten']);
+        $editorRole = Role::firstOrCreate(['name' => 'editor'], ['description' => 'Editor mit Bearbeitungsrechten']);
 
         // Berechtigungen erstellen oder existierende abrufen
         $permissions = [
@@ -23,7 +23,7 @@ class RolePermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permissionName) {
-            $permission = Permissions::firstOrCreate(['name' => $permissionName]);
+            $permission = Permission::firstOrCreate(['name' => $permissionName]);
 
             // Verknüpfung mit Admin-Rolle
             $adminRole->permissions()->syncWithoutDetaching($permission->id);
