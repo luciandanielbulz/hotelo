@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Permissions;
+use App\Models\Permission;
 
 class PermissionsSeeder extends Seeder
 {
@@ -23,7 +23,7 @@ class PermissionsSeeder extends Seeder
         ];
 
         foreach ($permissions as $name => $description) {
-            Permissions::firstOrCreate(
+            Permission::firstOrCreate(
                 ['name' => $name], // Einzigartige Spalte
                 ['description' => $description] // Standardwert bei Erstellung
             );
