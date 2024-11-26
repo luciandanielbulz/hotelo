@@ -1,8 +1,6 @@
 <?php
-
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,13 +10,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-
-     protected $fillable = [
+    protected $fillable = [
         'username',
         'name',
         'lastname',
@@ -29,39 +21,37 @@ class User extends Authenticatable
         'isactive'
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
 
-    public function roles()
+    // Beziehung zur Rolle
+    public function role()
     {
-        return $this->belongsToMany(Role::class, 'user_role');
+        return $this->belongsTo(Role::class, 'role_id');
     }
 
+    // Prüfen, ob der Benutzer eine bestimmte Rolle hat
     public function hasRole($role)
     {
-        return $this->roles->pluck('name')->contains($role);
+        return $this->role && $this->role->name === $role;
     }
 
+    // Prüfen, ob der Benutzer eine Berechtigung hat
     public function hasPermission($permission)
     {
-        return $this->roles->flatMap->permissions->pluck('name')->contains($permission);
-    }
+        $roleId = $this->role_id;
 
+        return \DB::table('permissions')
+            ->join('role_permission', 'permissions.id', '=', 'role_permission.permission_id')
+            ->where('role_permission.role_id', $roleId)
+            ->where('permissions.name', $permission)
+            ->exists();
+    }
 }

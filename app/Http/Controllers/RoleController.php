@@ -2,27 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Permissions;
+use App\Models\Role;
 use Illuminate\Http\Request;
 
-class PermissionsController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $permissions = Permissions::all();
-        //dd($permissions);
-        return view('permissions.index', compact('permissions'));
+        $roles = Role::all();
+
+        return view('roles.index', compact('roles'));
     }
+
 
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('permissions.create');
+        return view('roles.create');
     }
 
     /**
@@ -31,23 +32,22 @@ class PermissionsController extends Controller
     public function store(Request $request)
     {
         //dd($request);
-
         $validatedData = $request->validate([
 
             'name' => ['string', 'max:50'],
             'description' => ['nullable', 'string', 'max:200'],
         ]);
 
-        Permissions::create($validatedData);
+        Role::create($validatedData);
 
         // Erfolgsnachricht und Weiterleitung
-        return redirect()->route('permissions.index')->with('message', 'Recht erfolgreich gespeichert!');
+        return redirect()->route('roles.index')->with('message', 'Daten erfolgreich gespeichert!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Permissions $permissions)
+    public function show(Role $role)
     {
         //
     }
@@ -55,26 +55,20 @@ class PermissionsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($permissions_id)
+    public function edit($role_id)
     {
-        //dd($role_id);
-        $role = Permissions::find($permissions_id);
+        $role = Role::find($role_id);
+        //dd($role);
 
-        $permissions = Permissions::where('permissions.id','=',$permissions_id)
-            ->first();
-
-        $raw_permissions = Permissions::all();
-
-        //dd($permissions);
-        return view('permissions.edit', compact('permissions'));
+        return view('roles.edit', compact('role'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Permissions $permission)
+    public function update(Request $request, Role $role)
     {
-        //dd($request);
+
         try {
             // Hier wird die Validierung durchgeführt
             $validatedData = $request->validate([
@@ -91,15 +85,15 @@ class PermissionsController extends Controller
         }
         //dd($validatedData);
 
-        $permission->update($validatedData);
+        $role->update($validatedData);
 
-        return to_route('permissions.index')->with('message', 'Recht wurde geändert');
+        return to_route('roles.index')->with('message', 'Rolle wurde geändert');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Permissions $permissions)
+    public function destroy(Role $role)
     {
         //
     }

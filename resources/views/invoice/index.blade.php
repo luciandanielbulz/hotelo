@@ -29,7 +29,8 @@
                                     <th style="width: 8%;">Nummer</th>
                                     <th style="width: 8%;">Datum</th>
                                     <th style="width: 29.5%;">Kunde</th>
-                                    <th style="width: 29.5%;">Beschreibung</th>
+                                    <th style="width: 20.0%;">Beschreibung</th>
+                                    <th style="width: 9.5%;">Betrag</th>
                                 </tr>
                             </thead>
                             <tbody id="invoiceTable">
@@ -42,6 +43,8 @@
                                             {{ $invoice->customername ?? $invoice->companyname ?? 'Kein Kunde' }}
                                         </td>
                                         <td class='align-middle'>{{ $invoice->comment ?? 'Kein Kommentar' }}</td>
+                                        <td class='align-middle'>{{ number_format($invoice->total_price, 2, ',', '.') }} €</td>
+
                                     </tr>
                                 @empty
                                     <tr>

@@ -20,7 +20,7 @@
             <table class= "table table-hover" >
                 <thead>
                     <tr>
-                        <th class = "table-header col-1">Pos</th>
+                        <th class = "table-header col-1">Reihenfolge</th>
                         <th class = "table-header col-1">Menge</th>
                         <th class = "table-header col-1">Einheit</th>
                         <th class = "table-header col-4">Beschreibung</th>
@@ -32,7 +32,7 @@
 
                     @forelse ($positions as $position)
                         <tr data-id="{{ $position->id }}">
-                            <td>{{ $position->id }}</td>
+                            <td>{{ $position->sequence }}</td>
                             @if ($position->positiontext == false)
                                 <td>{{ number_format($position->amount, 2, ',', '.') }}</td>
                                 <td>{{ $position->unit_name}}</td>

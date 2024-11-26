@@ -120,7 +120,7 @@
 
             {{ number_format($total_price->total_price, 2, ',', '.') }} €<br>
             {{ number_format($total_price->total_price * ($offercontent->taxrate / 100), 2, ',', '.') }}  €<br><hr>
-            {{ number_format($total_price->total_price*($offercontent->taxrate / 100+1), 2, ',', '.') }} €
+            {{ number_format($total_price->total_price*(1+($offercontent->taxrate / 100)), 2, ',', '.') }} €
 
         </div>
 

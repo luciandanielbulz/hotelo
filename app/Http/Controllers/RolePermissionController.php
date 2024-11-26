@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Permissions;
-use App\Models\Roles;
+use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 
-class RolePermissionsController extends Controller
+class RolePermissionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -48,15 +48,15 @@ class RolePermissionsController extends Controller
     public function edit($role_id)
     {
         //dd($role_id);
-        $role = Roles::find($role_id);
+        $role = Role::find($role_id);
 
-        $permissions = Permissions::join('role_permission', 'role_permission.permission_id', '=', 'permissions.id')
+        $permissions = Permission::join('role_permission', 'role_permission.permission_id', '=', 'permissions.id')
             ->join('roles', 'roles.id', '=', 'role_permission.role_id')
             ->where('roles.id','=',$role_id)
             ->select('permissions.*', 'roles.name as role_name') // Beispiel: Nur bestimmte Spalten auswählen
             ->get();
 
-        $raw_permissions = Permissions::all();
+        $raw_permissions = Permission::all();
 
         //dd($permissions);
         return view('rolepermissions.edit', compact('permissions', 'raw_permissions', 'role'));
@@ -79,7 +79,7 @@ class RolePermissionsController extends Controller
         }
 
         // Rolle aus der Datenbank abrufen
-        $role = Roles::find($roleId);
+        $role = Role::find($roleId);
         if (!$role) {
             return redirect()->back()->withErrors(['msg' => 'Rolle nicht gefunden']);
         }
@@ -116,7 +116,7 @@ class RolePermissionsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Permissions $permissions)
+    public function destroy(Permission $permissions)
     {
         //
     }

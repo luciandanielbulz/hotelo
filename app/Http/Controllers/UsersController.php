@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\Roles;
+use App\Models\Role;
 use App\Models\Clients;
 use Illuminate\Validation\ValidationException;
 
@@ -28,7 +28,7 @@ class UsersController extends Controller
      */
     public function create()
     {
-        $roles = Roles::all();
+        $roles = Role::all();
         $clients = Clients::all();
 
         //dd($clients);
@@ -81,7 +81,7 @@ class UsersController extends Controller
     public function edit(User $user)
     {
         $clients = Clients::all();
-        $rights = Roles::all();
+        $rights = Role::all();
         return view('users.edit', compact('user', 'rights', 'clients'));
     }
 

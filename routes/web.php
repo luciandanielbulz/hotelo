@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\RolePermissionsController;
-use App\Http\Controllers\RolesController;
+use App\Http\Controllers\RolePermissionController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\OfferController;
 use App\Http\Controllers\InvoiceController;
@@ -12,7 +12,7 @@ use App\Http\Controllers\InvoicepositionController;
 use App\Http\Controllers\OfferpositionController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\PdfCreateController;
-use App\Http\Controllers\PermissionsController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ClientsController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,10 +35,13 @@ Route::get('/', function () {
 Route::middleware(['auth','verified'])->group(function(){
 
     /*Dashboard*/
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard')
+    ->middleware('permission:view_dashboard');
 
     /*Kunden*/
-    Route::resource('customer',CustomerController::class);
+    Route::resource('customer',CustomerController::class)->middleware('permission:view_customers');
+    
 
     /*Angebot*/
     Route::post('/offer/updatetaxrate', [OfferController::class, 'updatetaxrate'])->name('offer.updatetaxrate');
@@ -74,14 +77,14 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::resource('users', UsersController::class);
 
     /*Rolen*/
-    Route::resource('roles', RolesController::class);
+    Route::resource('roles', RoleController::class);
 
     /* Rechte */
-    Route::resource('permissions', PermissionsController::class);
+    Route::resource('permissions', PermissionController::class);
 
     /*Rechte*/
-    Route::resource('rolepermissions', RolePermissionsController::class);
-    Route::post('/rolepermissions/update/{role}', [RolePermissionsController::class, 'update'])->name('rolepermissions.update');
+    Route::resource('rolepermissions', RolePermissionController::class);
+    Route::post('/rolepermissions/update/{role}', [RolePermissionController::class, 'update'])->name('rolepermissions.update');
 
     /*Klienten*/
     Route::resource('clients', ClientsController::class);

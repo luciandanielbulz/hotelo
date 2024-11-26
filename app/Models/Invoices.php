@@ -13,6 +13,9 @@ class Invoices extends Model
         'number',
         'tax_id',
         'condition_id',
-        'number'
+        'number',
+        'comment',
+        'description',
+        'depositamount'
     ];
 }

@@ -19,13 +19,7 @@ return new class extends Migration
             $table->string('description',200)->nullable();
             $table->foreignId('tax_id')->constrained('taxrates');
             $table->double('taxburden')->nullable();
-            $table->boolean('deposit')->default(false);
-            $table->double('depositamount')->nullable();
-            $table->dateTime('periodfrom')->nullable();
-            $table->dateTime('periodto')->nullable();
             $table->foreignId('condition_id')->constrained('conditions');
-            $table->boolean('payed')->default(false);
-            $table->date('payeddate')->nullable();
             $table->boolean('archived')->default(false);
             $table->dateTime('archiveddate')->nullable();
             $table->string('comment',200)->nullable();

@@ -15,52 +15,73 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('customer.index')" :active="request()->routeIs('customer.index')">
-                        {{ __('Kunden') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('offer.index')" :active="request()->routeIs('offer.index')">
-                        {{ __('Angebote') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('invoice.index')" :active="request()->routeIs('invoice.index')">
-                        {{ __('Rechnungen') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.index')">
-                        {{ __('Umsatz') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
-                        {{ __('Benutzer') }}
-                    </x-nav-link>
+
+                    @if(auth()->user()->hasPermission('view_customers'))
+                        <x-nav-link :href="route('customer.index')" :active="request()->routeIs('customer.index')">
+                            {{ __('Kunden') }}
+                        </x-nav-link>
+                    @endif
+
+                    @if(auth()->user()->hasPermission('view_offers'))
+                        <x-nav-link :href="route('offer.index')" :active="request()->routeIs('offer.index')">
+                            {{ __('Angebote') }}
+                        </x-nav-link>
+                    @endif
+
+                    @if(auth()->user()->hasPermission('view_invoices'))
+                        <x-nav-link :href="route('invoice.index')" :active="request()->routeIs('invoice.index')">
+                            {{ __('Rechnungen') }}
+                        </x-nav-link>
+                    @endif
+
+                    @if(auth()->user()->hasPermission('view_sales_analysis'))
+                        <x-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.index')">
+                            {{ __('Umsatz') }}
+                        </x-nav-link>
+                    @endif
+
+                    @if(auth()->user()->hasPermission('manage_users'))
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                            {{ __('Benutzer') }}
+                        </x-nav-link>
+                    @endif
 
                     <!-- Rollenverwaltung mit Untermenü -->
-                    <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
-                        <a href="#" @click.prevent="open = !open"
-                           class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
-                            <span>{{ __('App-Einstellungen') }}</span>
-                            <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd"
-                                      d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z"
-                                      clip-rule="evenodd" />
-                            </svg>
-                        </a>
-                        <!-- Dropdown-Inhalt -->
-                        <div x-show="open" @click.away="open = false" class="absolute z-50 mt-5 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                            <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                <x-dropdown-link :href="route('roles.index')">
-                                    {{ __('Rollen') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('permissions.index')">
-                                    {{ __('Rechte') }}
-                                </x-dropdown-link>
-                                <x-dropdown-link :href="route('clients.index')">
-                                    {{ __('Klienten') }}
-                                </x-dropdown-link>
-                                <!-- Weitere Untermenüpunkte -->
+                    @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients'))
+                        <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
+                            <a href="#" @click.prevent="open = !open"
+                            class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
+                                <span>{{ __('App-Einstellungen') }}</span>
+                                <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <!-- SVG path -->
+                                </svg>
+                            </a>
+                            <!-- Dropdown-Inhalt -->
+                            <div x-show="open" @click.away="open = false" class="absolute z-50 mt-5 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                                <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                    @if(auth()->user()->hasPermission('manage_roles'))
+                                        <x-dropdown-link :href="route('roles.index')">
+                                            {{ __('Rollen') }}
+                                        </x-dropdown-link>
+                                    @endif
+                                    @if(auth()->user()->hasPermission('manage_permissions'))
+                                        <x-dropdown-link :href="route('permissions.index')">
+                                            {{ __('Rechte') }}
+                                        </x-dropdown-link>
+                                    @endif
+                                    @if(auth()->user()->hasPermission('view_clients'))
+                                        <x-dropdown-link :href="route('clients.index')">
+                                            {{ __('Klienten') }}
+                                        </x-dropdown-link>
+                                    @endif
+                                    <!-- Weitere Untermenüpunkte -->
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    @endif
                     <!-- Ende des Untermenüs -->
                 </div>
-            </div>
+
 
             <!-- Einstellungen Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
@@ -114,44 +135,67 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('customer.index')" :active="request()->routeIs('customer.index')">
-                {{ __('Kunden') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('offer.index')" :active="request()->routeIs('offer.index')">
-                {{ __('Angebote') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('invoice.index')" :active="request()->routeIs('invoice.index')">
-                {{ __('Rechnungen') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.index')">
-                {{ __('Umsatz') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
-                {{ __('Benutzer') }}
-            </x-responsive-nav-link>
+
+            @if(auth()->user()->hasPermission('view_customers'))
+                <x-responsive-nav-link :href="route('customer.index')" :active="request()->routeIs('customer.index')">
+                    {{ __('Kunden') }}
+                </x-responsive-nav-link>
+            @endif
+
+            @if(auth()->user()->hasPermission('view_offers'))
+                <x-responsive-nav-link :href="route('offer.index')" :active="request()->routeIs('offer.index')">
+                    {{ __('Angebote') }}
+                </x-responsive-nav-link>
+            @endif
+
+            @if(auth()->user()->hasPermission('view_invoices'))
+                <x-responsive-nav-link :href="route('invoice.index')" :active="request()->routeIs('invoice.index')">
+                    {{ __('Rechnungen') }}
+                </x-responsive-nav-link>
+            @endif
+
+            @if(auth()->user()->hasPermission('view_sales_analysis'))
+                <x-responsive-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.index')">
+                    {{ __('Umsatz') }}
+                </x-responsive-nav-link>
+            @endif
+
+            @if(auth()->user()->hasPermission('manage_users'))
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                    {{ __('Benutzer') }}
+                </x-responsive-nav-link>
+            @endif
 
             <!-- Rollenverwaltung mit Untermenü in mobiler Ansicht -->
-            <div x-data="{ openSubmenu: false }" class="space-y-1">
-                <x-responsive-nav-link href="#" @click.prevent="openSubmenu = !openSubmenu" class="flex items-center">
-                    <span>{{ __('Rollen und Rechte') }}</span>
-                    <svg class="ml-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                              d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.23 8.29a.75.75 0 01.02-1.06z"
-                              clip-rule="evenodd" />
-                    </svg>
-                </x-responsive-nav-link>
-                <div x-show="openSubmenu" class="space-y-1 mt-2">
-                    <x-responsive-nav-link :href="route('roles.index')">
-                        {{ __('Alle Rollen') }}
+            @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients'))
+                <div x-data="{ openSubmenu: false }" class="space-y-1">
+                    <x-responsive-nav-link href="#" @click.prevent="openSubmenu = !openSubmenu" class="flex items-center">
+                        <span>{{ __('App-Einstellungen') }}</span>
+                        <svg class="ml-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <!-- SVG path -->
+                        </svg>
                     </x-responsive-nav-link>
-                    <x-responsive-nav-link :href="route('roles.create')">
-                        {{ __('Neue Rolle erstellen') }}
-                    </x-responsive-nav-link>
-                    <!-- Weitere Untermenüpunkte -->
+                    <div x-show="openSubmenu" class="space-y-1 mt-2">
+                        @if(auth()->user()->hasPermission('manage_roles'))
+                            <x-responsive-nav-link :href="route('roles.index')">
+                                {{ __('Rollen') }}
+                            </x-responsive-nav-link>
+                        @endif
+                        @if(auth()->user()->hasPermission('manage_permissions'))
+                            <x-responsive-nav-link :href="route('permissions.index')">
+                                {{ __('Rechte') }}
+                            </x-responsive-nav-link>
+                        @endif
+                        @if(auth()->user()->hasPermission('view_clients'))
+                            <x-responsive-nav-link :href="route('clients.index')">
+                                {{ __('Klienten') }}
+                            </x-responsive-nav-link>
+                        @endif
+                        <!-- Weitere Untermenüpunkte -->
+                    </div>
                 </div>
-            </div>
+            @endif
             <!-- Ende des Untermenüs -->
-
         </div>
 
         <!-- Responsive Einstellungen -->

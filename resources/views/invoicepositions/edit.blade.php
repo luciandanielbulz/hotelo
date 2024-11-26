@@ -29,7 +29,7 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="amount">Menge</label>
-                                <input type="number" step="0.01" class="form-control" id="amount" name="amount" value="{{ old('amount', $invoicepositioncontent->amount) }} required">
+                                <input type="number" step="0.01" class="form-control" id="amount" name="amount" value="{{ old('amount', $invoicepositioncontent->amount) }}" required>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="unit_id">Einheit</label>

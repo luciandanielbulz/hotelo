@@ -19,6 +19,8 @@ class Offers extends Model
         'tax_id',
         'condition_id',
         'offer_id',
-        'number'
+        'number',
+        'comment',
+        'description'
     ];
 }

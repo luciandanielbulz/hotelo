@@ -21,21 +21,27 @@
         <table class="table table-sm mt-3">
             <thead>
                 <tr>
-                    <th style="width: 3%;">KId</th>
+                    <th style="width: 3%;">K-Nr</th>
                     <th style="width: 30%;">Kundenname / Firmenname</th>
-                    <th style="width: 35%;">Adresse</th>
-                    <th style="width: 10%;">PLZ</th>
-                    <th style="width: 10%;">Ort</th>
+                    <th style="width: 22%;">Adresse</th>
+                    <th style="width: 8%;">PLZ</th>
+                    <th style="width: 13%;">Ort</th>
+                    <th style="width: 20%;">E-Mail</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($customers as $customer)
                     <tr data-id="{{ $customer->id }}">
                         <td>{{ $customer->id }}</td>
-                        <td>{{ $customer->customername}} / {{$customer->companyname}}</td>
+                        <td>
+                            {{ $customer->customername ?? '' }}
+                            @if(!empty($customer->customername) && !empty($customer->companyname)) / @endif
+                            {{ $customer->companyname ?? '' }}
+                        </td>
                         <td>{{ $customer->address }}</td>
                         <td>{{ $customer->postalcode }}</td>
                         <td>{{ $customer->location }}</td>
+                        <td>{{ $customer->email }}</td>
                     </tr>
                 @empty
                     <tr>

@@ -26,7 +26,7 @@ class CustomerController extends Controller
             ->when($search, function($query, $search) {
                 return $query->where('customername', 'like', "%$search%");
             })
-            ->paginate(15);
+            ->paginate(18);
 
         return view('customer.index', compact('customers'));
     }

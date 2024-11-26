@@ -66,7 +66,7 @@ class InvoicepositionController extends Controller
         ->where('invoicepositions.id','=',$invoiceposition->id) // auth()->user()->client_id
         ->select('invoicepositions.*')
         ->first(); // Nur den ersten Datensatz abrufen
-        //dd($position);
+        //dd($invoicepositioncontent->amount);
 
         return view('invoicepositions.edit', compact('invoicepositioncontent', 'units'));
     }
@@ -102,8 +102,9 @@ class InvoicepositionController extends Controller
             $invoiceposition->sequence = $validated['sequence'] ?? null;
 
             // Speichern
-            $invoiceposition->save();
+            $test = $invoiceposition->save();
 
+            //dd($test);
             return redirect()->route('invoice.edit', ['invoice' => $invoiceposition->invoice_id])
                              ->with('success', 'Rechnungsposition erfolgreich aktualisiert.');
         } catch (\Exception $e) {

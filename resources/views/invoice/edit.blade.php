@@ -132,7 +132,7 @@
             <div class="col-xs-6 col-md-4 text-right">
                 {{ number_format($total_price->total_price, 2, ',', '.') }} €<br>
                 {{ number_format($total_price->total_price * ($invoice->taxrate / 100), 2, ',', '.') }}  €<br><hr>
-                {{ number_format($total_price->total_price*1.2, 2, ',', '.') }} €
+                {{ number_format($total_price->total_price*(1+($invoice->taxrate / 100)), 2, ',', '.') }} €
             </div>
         </div>
     </div>

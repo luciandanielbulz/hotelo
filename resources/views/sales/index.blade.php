@@ -21,7 +21,7 @@
                         @forelse($salespositions as $salesposition)
                             <tr data-id='{{$salesposition->row}}'>
                                 <td>{{$salesposition->Jahr}}</td>
-                                <td>{{$salesposition->SumExit - $salesposition->Deposit}} €</td>
+                                <td>{{$salesposition->Umsatz - $salesposition->Deposit}} €</td>
 
                             </tr>
                         @empty

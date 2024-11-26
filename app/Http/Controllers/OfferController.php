@@ -230,7 +230,7 @@ class OfferController extends Controller
             // Deine Logik hier ...
             $validated = $request->validate([
                 'offer_id' => 'required|integer|exists:offers,id',
-                'description' => 'required|string',
+                'description' => 'nullable|string',
             ]);
 
             //dd($validated);
@@ -256,13 +256,16 @@ class OfferController extends Controller
             // Deine Logik hier ...
             $validated = $request->validate([
                 'offer_id' => 'required|integer|exists:offers,id',
-                'comment' => 'required|string',
+                'comment' => 'nullable|string',
             ]);
 
-            //dd($validated);
+            Log::info('Validated data: ', $validated); // Beispiel-Logging
+
             $offer = Offers::findOrFail($validated['offer_id']);
             $offer->comment = $validated['comment'];
             $offer->save();
+            Log::info('Saved data: ', $offer->toArray());
+
 
             return response()->json(['message' => 'Kommentar erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {

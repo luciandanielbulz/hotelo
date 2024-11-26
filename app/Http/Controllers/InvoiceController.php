@@ -28,14 +28,28 @@ class InvoiceController extends Controller
 
         // Abfrage der Rechnungen mit Kundenverknüpfung und Filterung nach client_id
         $invoices = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
+            ->leftjoin('invoicepositions', 'invoicepositions.invoice_id', '=', 'invoices.id')
             ->where('customers.client_id', $client_id)
             ->orderBy('invoices.number', 'desc')
             ->when($search, function ($query, $search) {
-                return $query->where('customers.customername', 'like', "%$search%")
-                    ->orWhere('customers.companyname', 'like', "%$search%");
+                return $query->where(function ($query) use ($search) {
+                    $query->where('customers.customername', 'like', "%$search%")
+                        ->orWhere('customers.companyname', 'like', "%$search%");
+                });
             })
-            ->select('invoices.id','invoices.number','invoices.comment', 'customers.customername', 'invoices.date')
+            ->select(
+                'invoices.id',
+                'invoices.number',
+                'invoices.comment',
+                'customers.customername',
+                'invoices.date',
+                DB::raw('(SUM(invoicepositions.price * invoicepositions.amount) - COALESCE(invoices.depositamount, 0)) as total_price')
+            )
+            ->groupBy('invoices.id', 'invoices.number', 'invoices.comment', 'customers.customername', 'invoices.date', 'invoices.depositamount')
             ->paginate(15);
+
+            //dd($invoices);
+
 
         //dd($invoices->toArray());
 
@@ -209,7 +223,7 @@ class InvoiceController extends Controller
             // Deine Logik hier ...
             $validated = $request->validate([
                 'invoice_id' => 'required|integer|exists:invoices,id',
-                'description' => 'required|string',
+                'description' => 'nullable|string',
             ]);
 
             //dd($validated);
@@ -235,7 +249,7 @@ class InvoiceController extends Controller
             // Deine Logik hier ...
             $validated = $request->validate([
                 'invoice_id' => 'required|integer|exists:invoices,id',
-                'comment' => 'required|string',
+                'comment' => 'nullable|string',
             ]);
 
             //dd($validated);
@@ -314,7 +328,7 @@ class InvoiceController extends Controller
             // Deine Logik hier ...
             $validated = $request->validate([
                 'invoice_id' => 'required|integer|exists:invoices,id',
-                'depositamount' => 'required|string',
+                'depositamount' => 'nullable|string',
             ]);
 
             //dd($validated);

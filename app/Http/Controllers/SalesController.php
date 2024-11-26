@@ -21,12 +21,12 @@ class SalesController extends Controller
             ->where('customers.client_id', '=', $currentClientId)
             ->where('invoicepositions.issoftdeleted', '=', 0)
             ->selectRaw('YEAR(invoices.date) AS Jahr')
+            ->addSelect(DB::raw('SUM(DISTINCT invoices.depositAmount) AS Deposit')) // Einmalige Summierung von Deposit
             ->addSelect(DB::raw('SUM(invoicepositions.price * invoicepositions.amount) AS Umsatz'))
-            ->addSelect(DB::raw('SUM(invoices.depositAmount) AS Deposit'))
-            ->addSelect(DB::raw('(SUM(invoicepositions.price * invoicepositions.amount)) AS SumExit'))
             ->groupByRaw('YEAR(invoices.date)')
             ->orderByRaw('YEAR(invoices.date)')
             ->get();
+
         //dd($salespositions);
         return view('sales.index', compact('salespositions'));
     }
