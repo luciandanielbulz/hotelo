@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('type')->comment('E-Mail-Typ (z. B. 1 = Rechnung, 2 = Angebot)')->required();
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade');
             $table->integer('objectnumber')->comment('Referenznummer des zugehörigen Objekts');
-            $table->date('sentdate')->comment('Datum, an dem die E-Mail gesendet wurde');
+            $table->datetime('sentdate')->comment('Datum, an dem die E-Mail gesendet wurde');
             $table->string('getteremail')->comment('Empfängeremail');
             $table->string('filename')->comment('Name der angehängten Datei oder des E-Mail-Protokolls');
             $table->boolean('withattachment')->comment('Gibt an, ob ein Anhang vorhanden ist (true/false)');

@@ -579,15 +579,23 @@ class PdfCreateController extends Controller
         ]);
 
         $invoiceData = Invoices::join('customers', 'customers.id', '=', 'invoices.customer_id')
+            ->join('clients','clients.id','=','customers.client_id')
             ->where('invoices.id', '=', $request->invoice_id) // Expliziter Bezug auf `invoices.id`
-            ->select('customers.*', 'invoices.*', 'customers.id as customer_id')
+            ->select('customers.*', 'invoices.*', 'customers.id as customer_id', 'clients.email as senderemail', 'clients.companyname as clientname')
             ->first();
 
 
+        if (!$invoiceData->senderemail) {
+            return response()->json(['message' => 'Client oder Absender-E-Mail nicht gefunden.'], 404);
+        }
+
+        $email = $request->input('email'); // Empfängeradresse
         $invoiceId = $request->input('invoice_id');
         $email = $request->input('email');
         $subject = $request->input('subject');
+        $senderEmail = $invoiceData->senderemail; // Absender-E-Mail aus Client-Daten
         $messageBody = $request->input('message');
+        $senderName = $invoiceData->clientname;
 
         // PDF generieren
         $request->merge(['prev' => 'S']);
@@ -599,10 +607,11 @@ class PdfCreateController extends Controller
 
         try {
             // E-Mail senden
-            Mail::send([], [], function ($message) use ($email, $subject, $messageBody, $pdfContent) {
-                $message->to($email)
-                        ->subject($subject)
-                        ->html($messageBody)
+            Mail::send([], [], function ($message) use ($email, $subject, $messageBody, $pdfContent, $senderEmail, $senderName) {
+                $message->from($senderEmail, $senderName) // Dynamische Absenderdaten
+                        ->to($email) // Empfängeradresse
+                        ->subject($subject) // Betreff
+                        ->html($messageBody) // Nachricht
                         ->attachData($pdfContent, 'Rechnung.pdf', [
                             'mime' => 'application/pdf',
                         ]);
