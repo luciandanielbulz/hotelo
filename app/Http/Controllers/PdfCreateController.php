@@ -11,10 +11,17 @@ use App\Models\Taxrates;
 use App\Models\Clients;
 use App\Models\Offerpositions;
 use App\Models\Invoicepositions;
-use TCPDF;
+use App\Models\OutgoingEmail;
+
 use Illuminate\Support\Facades\DB;
 use App\Services\MyPDF;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+
 
 class PdfCreateController extends Controller
 {
@@ -559,4 +566,69 @@ class PdfCreateController extends Controller
             ->header('Content-Type', 'application/pdf');
 
     }
+
+
+
+    public function sendInvoiceByEmail(Request $request)
+    {
+        $request->validate([
+            'invoice_id' => 'required|integer|exists:invoices,id',
+            'email' => 'required|email',
+            'subject' => 'required|string',
+            'message' => 'required|string',
+        ]);
+
+        $invoiceData = Invoices::join('customers', 'customers.id', '=', 'invoices.customer_id')
+            ->where('invoices.id', '=', $request->invoice_id) // Expliziter Bezug auf `invoices.id`
+            ->select('customers.*', 'invoices.*', 'customers.id as customer_id')
+            ->first();
+
+
+        $invoiceId = $request->input('invoice_id');
+        $email = $request->input('email');
+        $subject = $request->input('subject');
+        $messageBody = $request->input('message');
+
+        // PDF generieren
+        $request->merge(['prev' => 'S']);
+        $pdfResponse = $this->createInvoicePdf($request);
+        $pdfContent = $pdfResponse->getContent();
+
+        $sentDate = now(); // Sendedatum speichern
+        $status = false; // Status initial auf fehlgeschlagen setzen
+
+        try {
+            // E-Mail senden
+            Mail::send([], [], function ($message) use ($email, $subject, $messageBody, $pdfContent) {
+                $message->to($email)
+                        ->subject($subject)
+                        ->html($messageBody)
+                        ->attachData($pdfContent, 'Rechnung.pdf', [
+                            'mime' => 'application/pdf',
+                        ]);
+            });
+
+            $status = true; // Status auf erfolgreich setzen, wenn kein Fehler auftritt
+
+        } catch (\Exception $e) {
+            \Log::error('Fehler beim E-Mail-Versand: ' . $e->getMessage());
+        }
+        //dd($invoiceData->id);
+        // Eintrag in der Tabelle `outgoingemails` erstellen
+        OutgoingEmail::create([
+            'type' => 1, // Beispiel: Typ 1 für Rechnung
+            'customer_id' => $invoiceData->customer_id, // Annahme: im Request vorhanden
+            'objectnumber' => $invoiceData->number,
+            'sentdate' => $sentDate,
+            'getteremail' => $email,
+            'filename' => 'Rechnung.pdf',
+            'withattachment' => true, // Immer mit Anhang
+            'status' => $status, // Erfolgsstatus
+            'client_id' => $request->user()->client_id, // Annahme: Client-ID aus eingeloggtem Benutzer
+        ]);
+
+        return redirect()->route('outgoingemails.index')->with('success', 'Rechnung wurde erfolgreich per E-Mail versendet.');
+    }
+
+
 }

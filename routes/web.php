@@ -14,6 +14,8 @@ use App\Http\Controllers\SalesController;
 use App\Http\Controllers\PdfCreateController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ClientsController;
+use App\Http\Controllers\OutgoingEmailController;
+use App\Models\OutgoingEmail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,7 +43,7 @@ Route::middleware(['auth','verified'])->group(function(){
 
     /*Kunden*/
     Route::resource('customer',CustomerController::class)->middleware('permission:view_customers');
-    
+
 
     /*Angebot*/
     Route::post('/offer/updatetaxrate', [OfferController::class, 'updatetaxrate'])->name('offer.updatetaxrate');
@@ -65,6 +67,12 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::post('/invoice/updatedeposit', [InvoiceController::class, 'updatedeposit'])->name('invoice.updatedeposit');
     Route::get('/invoice/create/{id}',[InvoiceController::class, 'create'])->name('invoice.create');
     Route::get('/invoice/createinvoicefromoffer',[InvoiceController::class, 'createinvoicefromoffer'])->name('invoice.createinvoicefromoffer');
+    Route::post('/invoice/sendmail',[InvoiceController::class, 'sendmail'])->name('invoice.sendmail');
+    Route::post('/send-invoice/email', [PdfCreateController::class, 'sendInvoiceByEmail'])->name('sendinvoice.email');
+    Route::get('/outgoingemails', [OutgoingEmailController::class, 'index'])->name('outgoingemails.index');
+
+
+
     Route::resource('invoice',InvoiceController::class);
 
     /*Rechnungs-Positionen*/

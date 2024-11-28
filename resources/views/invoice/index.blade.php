@@ -110,20 +110,34 @@
                     });
                 });
 
-                $('#sendEmailButton').click(function() {
+                $('#sendEmailButton').click(function () {
                     console.log("SendEmail Button wurde geklickt");
+
                     if (selectedInvoiceId) {
                         $('<form>', {
-                            'action': 'object_send_over_email.php',
+                            'action': '{{ route('invoice.sendmail') }}',
                             'method': 'post',
                             'style': 'display: none;',
-                            'html': [
-                                $('<input>', { type: 'hidden', name: 'objectid', value: selectedInvoiceId}),
-                                $('<input>', { type: 'hidden', name: 'objecttype', value: 'invoice'})
-                            ]
-                        }).appendTo('body').submit();
+                        }).append(
+                            $('<input>', {
+                                type: 'hidden',
+                                name: 'objectid',
+                                value: selectedInvoiceId
+                            }),
+                            $('<input>', {
+                                type: 'hidden',
+                                name: 'objecttype',
+                                value: 'invoice'
+                            }),
+                            $('<input>', {
+                                type: 'hidden',
+                                name: '_token',
+                                value: '{{ csrf_token() }}'
+                            })
+                        ).appendTo('body').submit();
                     }
                 });
+
 
                 $('#archiveButton').click(function() {
                     console.log("Invoice archive Button wurde geklickt");

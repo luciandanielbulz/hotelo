@@ -425,4 +425,18 @@ class InvoiceController extends Controller
         ->with('success', 'Invoice successfully created and opened in edit mode!');
 
     }
+
+    function sendmail(Request $request) {
+
+
+        $clientdata = Clients::join('customers','customers.client_id','=','clients.id')
+            ->join('invoices','invoices.customer_id','=','customers.id')
+            ->where('invoices.id','=',$request->objectid)
+            ->select('customers.email as getter_email', 'clients.email as sender_email', 'clients.*','customers.*','invoices.*','invoices.id as invoice_id')
+            ->first();
+        //dd($clientdata);
+        return view('invoice.sendmail', compact('clientdata'));
+    }
+
+
 }
