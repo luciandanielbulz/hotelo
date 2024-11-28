@@ -108,15 +108,17 @@ class OfferController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($offer)
+    public function edit(Offers $offer)
     {
+        // Aktuell eingeloggter Benutzer
         $user = Auth::user();
         $clientId = $user->client_id;
 
-        $offercontent = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
+        // Überprüfen, ob das Angebot zum aktuellen Client gehört
+        $offer = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
             ->join('taxrates', 'offers.tax_id', '=', 'taxrates.id') // Join mit der taxrates Tabelle
             ->where('customers.client_id', '=', $clientId) // Dynamischer client_id
-            ->where('offers.id', '=', $offer)
+            ->where('offers.id', '=', $offer->id) // Angebot mit passender ID finden
             ->select(
                 'offers.id as offer_id',
                 'offers.*',
@@ -125,21 +127,28 @@ class OfferController extends Controller
                 'taxrates.taxrate',
                 'customers.customername as customername',
                 'customers.address as address',
-                'customers.country as country',
-                'offers.id as offer_id'
-                ) // taxrates Spalte auswählen
+                'customers.country as country'
+            )
             ->first();
-        //dd($offercontent);
 
+        // Wenn kein passendes Angebot gefunden wird, Zugriff verweigern
+        if (!$offer) {
+            abort(403, 'Sie sind nicht berechtigt, dieses Angebot zu bearbeiten.');
+        }
+
+        // Berechnung der Gesamtsumme für das Angebot
         $total_price = Offers::join('offerpositions', 'offers.id', '=', 'offerpositions.offer_id')
             ->select(DB::raw('SUM(offerpositions.Amount * offerpositions.Price) as total_price')) // Berechnung der Gesamtsumme
-            ->where('offers.id','=',$offer)
+            ->where('offers.id', '=', $offer->id)
             ->first();
-        //dd($total_price);
+
+        // Bedingungen laden
         $conditions = Conditions::all();
 
-        return view('offer.edit', compact('offercontent','conditions', 'total_price'));
+        // View zurückgeben
+        return view('offer.edit', compact('offer', 'conditions', 'total_price'));
     }
+
 
 
     public function destroy(Offers $offer)

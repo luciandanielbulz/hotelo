@@ -581,7 +581,7 @@ class PdfCreateController extends Controller
         $invoiceData = Invoices::join('customers', 'customers.id', '=', 'invoices.customer_id')
             ->join('clients','clients.id','=','customers.client_id')
             ->where('invoices.id', '=', $request->invoice_id) // Expliziter Bezug auf `invoices.id`
-            ->select('customers.*', 'invoices.*', 'customers.id as customer_id', 'clients.email as senderemail', 'clients.companyname as clientname')
+            ->select('customers.*', 'invoices.*', 'customers.id as customer_id', 'clients.email as senderemail', 'clients.companyname as clientname','invoices.number as invoice_number')
             ->first();
 
 
@@ -604,15 +604,15 @@ class PdfCreateController extends Controller
 
         $sentDate = now(); // Sendedatum speichern
         $status = false; // Status initial auf fehlgeschlagen setzen
-
+        $invoice_number = $invoiceData->invoice_number;
         try {
             // E-Mail senden
-            Mail::send([], [], function ($message) use ($email, $subject, $messageBody, $pdfContent, $senderEmail, $senderName) {
+            Mail::send([], [], function ($message) use ($invoice_number, $email, $subject, $messageBody, $pdfContent, $senderEmail, $senderName) {
                 $message->from($senderEmail, $senderName) // Dynamische Absenderdaten
                         ->to($email) // Empfängeradresse
                         ->subject($subject) // Betreff
                         ->html($messageBody) // Nachricht
-                        ->attachData($pdfContent, 'Rechnung.pdf', [
+                        ->attachData($pdfContent, 'Rechnung_'.$invoice_number.'.pdf', [
                             'mime' => 'application/pdf',
                         ]);
             });

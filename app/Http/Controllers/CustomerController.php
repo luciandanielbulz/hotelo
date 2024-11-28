@@ -17,6 +17,7 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
+        //dd($user);
         $clientId = $user->client_id;
 
         $search = $request->input('search');
@@ -96,6 +97,12 @@ class CustomerController extends Controller
      */
     public function edit(Customer $customer)
     {
+        // Überprüfen, ob der Kunde zum aktuellen Client gehört
+        $currentClientId = auth()->user()->client_id; // Angenommen, der eingeloggte Benutzer hat eine `client_id`
+
+        if ($customer->client_id !== $currentClientId) {
+            abort(403, 'Sie sind nicht berechtigt, diesen Kunden zu bearbeiten.');
+        }
         $conditions = Conditions::all();
         $salutations = Salutations::all();
         $taxrates = Taxrates::all();
@@ -116,7 +123,7 @@ class CustomerController extends Controller
                 'customername' => ['nullable', 'string', 'max:200', 'required_without:companyname'],
                 'companyname' => ['nullable', 'string', 'max:200', 'required_without:customername'],
                 'address' => ['required', 'string', 'max:200'],
-                'postalcode' => ['required', 'integer'],
+                'postalcode' => ['required', 'string', 'max:10'],
                 'location' => ['required', 'string', 'max:200'],
                 'country' => ['required', 'string', 'max:200'],
                 'tax_id' => ['required', 'string', 'max:100'],
@@ -125,10 +132,10 @@ class CustomerController extends Controller
                 'email' => ['nullable', 'string', 'max:200'],
                 'condition_id' => ['required', 'integer'],
                 'salutation_id' => ['required', 'integer'],
-                'emailsubject' => ['nullable', 'string', 'max:200'],
-                'emailbody' => ['nullable', 'string', 'max:1000']
+                'emailsubject' => ['nullable', 'string', 'max:300'],
+                'emailbody' => ['nullable', 'string', 'max:10000']
             ]);
-
+        //dd($validatedData);
             // Wenn die Validierung erfolgreich ist, fahre hier fort
             // Speichere die Daten oder führe deine gewünschte Aktion aus
 

@@ -141,11 +141,45 @@
 
             <div class="form-group mt-4">
                 <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+                <button id="standardtext" class="btn btn-primary">Standardtext einfügen</button>
             </div>
         </form>
 
         <hr>
 
     </div>
+    <script>
+
+        $(document).ready(function() {
+            // Summernote-Editor initialisieren
+            $('.summernote').summernote({
+                height: 300,
+                width:1200
+            });
+        });
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+        const standardButton = document.getElementById('standardtext');
+        const subjectField = document.getElementById('emailsubject');
+
+        standardButton.addEventListener('click', function(event) {
+            // Verhindert das Standard-Submit-Verhalten des Buttons
+            event.preventDefault();
+
+            // Betreff setzen
+            subjectField.value = "{objekt} {objektnummer}";
+
+            // Body setzen über Summernote
+            $('.summernote').summernote('code',
+                `Sehr geehrte Damen und Herren,<br><br>
+                anbei {object_mit_artikel} für die vorangegangenen Dienstleistungen.<br><br>
+                {signature}`
+            );
+        });
+    });
+
+
+    </script>
 
 </x-layout>

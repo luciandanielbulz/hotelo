@@ -96,7 +96,7 @@ class UsersController extends Controller
             'lastname' => 'required|string|max:255',
             'login' => 'required|string|max:255',
             'email' => 'required|email|max:255',
-            'clientId' => 'required|exists:clients,id',
+            'client_id' => 'required|exists:clients,id',
             'isactive' => 'required|boolean',
             'role_id' => 'required|exists:roles,id',
         ]);

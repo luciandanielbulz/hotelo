@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row">
             <div class="col">
-                <h3>Angebot bearbeiten - {{$offercontent->offer_id}}</h3>
+                <h3>Angebot bearbeiten - {{$offer->offer_id}}</h3>
             </div>
             <div class="col col-auto d-flex align-items-center">
                 <a href="{{ route('offer.index') }}" class="btn btn-transparent me-2">Zurück</a>
@@ -34,10 +34,10 @@
         </div>
         <div class = "row">
             <div class="col">
-                <label class="label-client">{{ $offercontent->companyname }}</label><br>
-                <label class="label-client">{{ $offercontent->customername }}</label><br>
-                <label class="label-client">{{ $offercontent->address}}</label><br>
-                <label class="label-client">{{ $offercontent->country}}</label>
+                <label class="label-client">{{ $offer->companyname }}</label><br>
+                <label class="label-client">{{ $offer->customername }}</label><br>
+                <label class="label-client">{{ $offer->address}}</label><br>
+                <label class="label-client">{{ $offer->country}}</label>
             </div>
         </div>
 
@@ -49,8 +49,8 @@
                 <form id="taxrateForm">
                     <label for="taxrateid">Steuersatz</label>
                     <select class="form-control" id="taxrateid" name="taxrateid">
-                        <option value="1" {{ $offercontent->tax_id == 1 ? 'selected' : '' }}>0 %</option>
-                        <option value="2" {{ $offercontent->tax_id == 2 ? 'selected' : '' }}>20 %</option>
+                        <option value="1" {{ $offer->tax_id == 1 ? 'selected' : '' }}>0 %</option>
+                        <option value="2" {{ $offer->tax_id == 2 ? 'selected' : '' }}>20 %</option>
                     </select>
                 </form>
             </div>
@@ -59,14 +59,14 @@
             <div class="col">
                 <form id="offerDateForm">
                     <label for="offerDate">Datum</label>
-                    <input type="date" class="form-control" id="offerDate" name ="offerDate" value="{{ $offercontent->date ? $offercontent->date->format('Y-m-d') : '' }}">
+                    <input type="date" class="form-control" id="offerDate" name ="offerDate" value="{{ $offer->date ? $offer->date->format('Y-m-d') : '' }}">
                 </form>
             </div>
 
             <div class="col">
                 <form id="offerNumberForm">
                     <label for="offerNumber">Nummer</label>
-                    <input type="input" class="form-control" id = "offerNumber" name ="offerNumber" value="{{ $offercontent->number }}">
+                    <input type="input" class="form-control" id = "offerNumber" name ="offerNumber" value="{{ $offer->number }}">
                 </form>
             </div>
         </div>
@@ -77,7 +77,7 @@
             <div class="col">
                 <form id="commentForm">
                     <label for="description">Beschreibung - erscheint nicht in Rechnung</label>
-                    <input class="form-control" name="description" id="description" value = "{{$offercontent->description}}"></input>
+                    <input class="form-control" name="description" id="description" value = "{{$offer->description}}"></input>
                 </form>
             </div>
 
@@ -89,7 +89,7 @@
             <div class = "col">
                 <form id="descriptionForm">
                     <label for="comment">Angebotskommentar</label>
-                    <input type="text" class="form-control" id="comment" name="comment" value="{{$offercontent->comment}}"></input>
+                    <input type="text" class="form-control" id="comment" name="comment" value="{{$offer->comment}}"></input>
                 </form>
             </div>
         </div>
@@ -98,7 +98,7 @@
 
         <hr>
 
-        <livewire:offerpositions-table :offerId="$offercontent->offer_id" />
+        <livewire:offerpositions-table :offerId="$offer->offer_id" />
     </div>
 
 
@@ -112,15 +112,15 @@
         <div class="col"></div>
         <div class="col">
             Zwischensumme (Netto):<br>
-            Umsatzsteuer ({{$offercontent->taxrate}} %):<br><hr>
+            Umsatzsteuer ({{$offer->taxrate}} %):<br><hr>
             <b>Gesamtsumme:</b>
         </div>
 
         <div class="col">
 
             {{ number_format($total_price->total_price, 2, ',', '.') }} €<br>
-            {{ number_format($total_price->total_price * ($offercontent->taxrate / 100), 2, ',', '.') }}  €<br><hr>
-            {{ number_format($total_price->total_price*(1+($offercontent->taxrate / 100)), 2, ',', '.') }} €
+            {{ number_format($total_price->total_price * ($offer->taxrate / 100), 2, ',', '.') }}  €<br><hr>
+            {{ number_format($total_price->total_price*(1+($offer->taxrate / 100)), 2, ',', '.') }} €
 
         </div>
 
@@ -148,14 +148,14 @@
 
             $('#viewOfferButton').click(function() {
                 const url = '{{ route("createoffer.pdf") }}' +
-                    '?offer_id=' + {{$offercontent->offer_id}} +
+                    '?offer_id=' + {{$offer->offer_id}} +
                     '&objecttype=offer' +
                     '&prev=I';
                 window.open(url, '_blank');
             });
 
             $('#taxrateid').change(function() {
-                var offerId = "{{ $offercontent->offer_id }}";  // Holt das Angebots-ID
+                var offerId = "{{ $offer->offer_id }}";  // Holt das Angebots-ID
                 var taxrateid = $(this).val();  // Holt den ausgewählten Steuersatz
                 console.log(taxrateid);
                 console.log(offerId);
@@ -180,7 +180,7 @@
             });
 
             $('#offerNumber').change(function() {
-                var offerId = "{{ $offercontent->offer_id }}";  // Holt das Angebots-ID
+                var offerId = "{{ $offer->offer_id }}";  // Holt das Angebots-ID
                 var offernumber = $(this).val();  // Holt den ausgewählten Steuersatz
                 console.log(offernumber);
                 console.log(offerId);
@@ -219,7 +219,7 @@
 
 
             $('#offerDate').change(function() {
-                var offerId = "{{ $offercontent->offer_id }}";  // Holt das Angebots-ID
+                var offerId = "{{ $offer->offer_id }}";  // Holt das Angebots-ID
                 var offerDate = $(this).val();  // Holt den ausgewählten Steuersatz
                 console.log(offerDate);
                 console.log(offerId);
@@ -245,7 +245,7 @@
             });
 
             $('#description').change(function() {
-                var offerId = "{{ $offercontent->offer_id }}";  // Holt das Angebots-ID
+                var offerId = "{{ $offer->offer_id }}";  // Holt das Angebots-ID
                 var description = $(this).val();  // Holt den ausgewählten Steuersatz
                 console.log(description);
                 console.log(offerId);
@@ -271,7 +271,7 @@
             });
 
             $('#comment').change(function() {
-                var offerId = "{{ $offercontent->offer_id }}";  // Holt das Angebots-ID
+                var offerId = "{{ $offer->offer_id }}";  // Holt das Angebots-ID
                 var comment = $(this).val();  // Holt den ausgewählten Steuersatz
                 console.log(comment);
                 console.log(offerId);

@@ -36,7 +36,7 @@
                 <div class="col">
                     <div class="form-group">
                         <label for="clientId">Client</label>
-                        <select class="form-control" id="clientId" name="clientId" required>
+                        <select class="form-control" id="client_id" name="client_id" required>
                             @foreach($clients as $client)
                                 <option value="{{ $client->id }}" {{ $client->id == old('client_id', $user->client_id) ? 'selected' : '' }}>
                                     {{ $client->clientname }} - {{ $client->companyname }}

@@ -10,15 +10,25 @@ class OutgoingEmailController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $outgoingEmails = OutgoingEmail::join('customers','customers.id','=','outgoingemails.customer_id')
-            ->select('customers.*','outgoingemails.*')
-            ->get();
-        //dd($outgoingEmails);
-        return view('outgoingemails.index',compact('outgoingEmails'));
+        // Suchbegriff
+        $search = $request->input('search');
 
+        // Abfrage mit Suche und Pagination
+        $outgoingEmails = OutgoingEmail::join('customers', 'customers.id', '=', 'outgoingemails.customer_id')
+            ->select('customers.*', 'outgoingemails.*')
+            ->when($search, function ($query, $search) {
+                $query->where('customers.customername', 'like', "%$search%") // Beispiel: Suche nach Kundenname
+                    ->orWhere('outgoingemails.objectnumber', 'like', "%$search%"); // Beispiel: Suche nach Betreff
+            })
+            ->where('outgoingemails.client_id','=',$request->client_id)
+            ->orderBy('outgoingemails.sentdate', 'desc')
+            ->paginate(18); // 18 Items pro Seite
+
+        return view('outgoingemails.index', compact('outgoingEmails', 'search'));
     }
+
 
     /**
      * Show the form for creating a new resource.

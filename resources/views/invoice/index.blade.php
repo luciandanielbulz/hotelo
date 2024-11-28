@@ -48,7 +48,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5">Keine Kunden gefunden</td>
+                                        <td colspan="5">Keine Datensätze gefunden</td>
                                     </tr>
                                 @endforelse
                             </tbody>

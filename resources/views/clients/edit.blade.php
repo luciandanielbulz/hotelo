@@ -166,11 +166,14 @@
                 <!-- signature als textarea -->
                 <div class="form-group col-md-6">
                     <label for="signature">Signatur</label>
-                    <textarea class="form-control" id="signature" name="signature" rows="3">{{ old('signature', $clients->signature) }}</textarea>
+                    <textarea class="form-control summernote" id="signature" name="signature" rows="3">
+                        {{ old('signature', $clients->signature) }}
+                    </textarea>
                     @error('signature')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
+
             </div>
 
             <!-- Logo -->
@@ -240,4 +243,21 @@
         </form>
         <hr>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#signature').summernote({
+                height: 150, // Höhe des Editors
+                toolbar: [
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough', 'superscript', 'subscript']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['insert', ['link']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ],
+                placeholder: 'Geben Sie hier Ihre Signatur ein...',
+            });
+        });
+    </script>
+
 </x-layout>

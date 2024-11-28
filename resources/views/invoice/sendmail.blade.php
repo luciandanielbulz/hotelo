@@ -11,9 +11,8 @@
         </div>
     </div>
     <div class="container">
-        <div class="row">
-            <h1 class="form-title">E-Mail senden</h1>
-        </div>
+
+
         <div class="row">
             <div class="col">
                 <form method="post" id="myForm">
@@ -24,13 +23,13 @@
 
                     <div class="form-group">
                         <label for="subject">Betreff:</label>
-                        <input class="form-control" type="text" id="subject" name="subject" value="{{ $clientdata->subject }}" required>
+                        <input class="form-control" type="text" id="subject" name="subject" value="{{ $emailsubject }}" required>
                     </div>
 
                     <div class="form-group">
                         <label for="message">Nachricht:</label>
                         <input type="hidden" id="invoiceId" value="{{ $clientdata->invoice_id }}">
-                        <textarea class="form-control summernote" id="message" name="message" rows="7">{{ $clientdata->emailbody }}</textarea>
+                        <textarea class="form-control summernote" id="message" name="message" rows="7">{{ $emailbody }}</textarea>
                     </div>
 
                     <div class="form-group text-center">

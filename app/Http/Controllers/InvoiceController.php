@@ -107,11 +107,17 @@ class InvoiceController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($invoice)
+    public function edit($invoiceId)
     {
-        $invoice = Invoices::where('invoices.id','=',$invoice)
-            ->join('taxrates', 'invoices.tax_id','=','taxrates.id')
-            ->join('customers','customers.id','=','invoices.customer_id')
+        // Aktuell eingeloggter Benutzer
+        $user = Auth::user();
+        $clientId = $user->client_id;
+
+        // Überprüfen, ob die Rechnung zum aktuellen Client gehört
+        $invoice = Invoices::where('invoices.id', '=', $invoiceId)
+            ->join('taxrates', 'invoices.tax_id', '=', 'taxrates.id')
+            ->join('customers', 'customers.id', '=', 'invoices.customer_id')
+            ->where('customers.client_id', '=', $clientId) // Sicherstellen, dass der Kunde zum aktuellen Client gehört
             ->select(
                 'invoices.id as invoice_id',
                 'invoices.*',
@@ -120,32 +126,33 @@ class InvoiceController extends Controller
                 'customers.customername as customername',
                 'customers.address as address',
                 'customers.country as country'
-                ) // Nur das companyname von customers auswählen
-            ->first(); // Nur den ersten Datensatz abrufen
+            )
+            ->first();
 
+        // Wenn keine Rechnung gefunden wird, Zugriff verweigern
+        if (!$invoice) {
+            abort(403, 'Sie sind nicht berechtigt, diese Rechnung zu bearbeiten.');
+        }
 
-
+        // Positionen der Rechnung abrufen
         $invoicepositions = Invoicepositions::join('units', 'invoicepositions.unit_id', '=', 'units.id') // Inner Join mit der Tabelle 'units'
-            ->where('invoicepositions.invoice_id','=',$invoice->id)
-            ->select('invoicepositions.*', 'units.*') // Berechnung der Summe
+            ->where('invoicepositions.invoice_id', '=', $invoice->id)
+            ->select('invoicepositions.*', 'units.*') // Daten aus beiden Tabellen abrufen
             ->get();
-        //dd($invoicepositions);
 
-        //dd($invoice);
+        // Gesamtsumme berechnen
         $total_price = Invoices::join('invoicepositions', 'invoices.id', '=', 'invoicepositions.invoice_id')
             ->where('invoicepositions.invoice_id', '=', $invoice->id)
-            ->select(DB::raw('SUM(invoicepositions.amount * invoicepositions.price) as total_price')) // Berechnung der Gesamtsumme
+            ->select(DB::raw('SUM(invoicepositions.amount * invoicepositions.price) as total_price'))
             ->first();
-        //dd($total_price);
 
-
+        // Bedingungen laden
         $conditions = Condition::all();
-        // Zugriff auf companyname
-        //dd($invoicepositions);
 
-
-        return view('invoice.edit', compact('invoice', 'conditions', 'invoicepositions','total_price'));
+        // View zurückgeben
+        return view('invoice.edit', compact('invoice', 'conditions', 'invoicepositions', 'total_price'));
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -426,16 +433,37 @@ class InvoiceController extends Controller
 
     }
 
-    function sendmail(Request $request) {
-
-
-        $clientdata = Clients::join('customers','customers.client_id','=','clients.id')
-            ->join('invoices','invoices.customer_id','=','customers.id')
-            ->where('invoices.id','=',$request->objectid)
-            ->select('customers.email as getter_email', 'clients.email as sender_email', 'clients.*','customers.*','invoices.*','invoices.id as invoice_id')
+    public function sendmail(Request $request) {
+        // Daten abrufen
+        $clientdata = Clients::join('customers', 'customers.client_id', '=', 'clients.id')
+            ->join('invoices', 'invoices.customer_id', '=', 'customers.id')
+            ->where('invoices.id', '=', $request->objectid)
+            ->select(
+                'customers.email as getter_email',
+                'clients.email as sender_email',
+                'clients.*',
+                'customers.*',
+                'invoices.*',
+                'invoices.id as invoice_id'
+            )
             ->first();
-        //dd($clientdata);
-        return view('invoice.sendmail', compact('clientdata'));
+
+        // Platzhalter in emailsubject und emailbody ersetzen
+        $placeholders = [
+            '{signature}' => $clientdata->signature ?? '', // Signatur aus Clients
+            '{objekt}' => 'Rechnung', // Objektart als fixer Wert
+            '{object_mit_artikel}' => 'die Rechnung', // Objektart als fixer Wert
+            '{objektnummer}' => $clientdata->number ?? '', // Objektnummer aus Invoices
+        ];
+
+        //dd($placeholders);
+
+        $emailsubject = str_replace(array_keys($placeholders), array_values($placeholders), $clientdata->emailsubject);
+        $emailbody = str_replace(array_keys($placeholders), array_values($placeholders), $clientdata->emailbody);
+
+        //dd($emailsubject);
+        // Werte an die View weitergeben
+        return view('invoice.sendmail', compact('clientdata', 'emailsubject', 'emailbody'));
     }
 
 
