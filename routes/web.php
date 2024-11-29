@@ -14,6 +14,7 @@ use App\Http\Controllers\SalesController;
 use App\Http\Controllers\PdfCreateController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ClientsController;
+use App\Http\Controllers\LogoController;
 use App\Http\Controllers\OutgoingEmailController;
 use App\Models\OutgoingEmail;
 use Illuminate\Support\Facades\Route;
@@ -83,6 +84,8 @@ Route::middleware(['auth','verified'])->group(function(){
 
     /*Benutzer*/
     Route::resource('users', UsersController::class);
+
+    Route::resource('logos', LogoController::class);
 
     /*Rolen*/
     Route::resource('roles', RoleController::class);

@@ -101,8 +101,9 @@ class ClientsController extends Controller
     public function edit($client_id)
     {
         $clients=Clients::where('clients.id','=',$client_id)
+            ->leftjoin('logos','clients.id','=','logos.client_id')
             ->orderBy('clientname')
-            ->select('clients.*')
+            ->select('clients.*', 'logos.name as logo_name')
             ->first();
 
         $taxrates = Taxrates::all();

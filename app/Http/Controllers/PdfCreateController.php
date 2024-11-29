@@ -10,6 +10,7 @@ use App\Models\Conditions;
 use App\Models\Taxrates;
 use App\Models\Clients;
 use App\Models\Offerpositions;
+use App\Models\Logos;
 use App\Models\Invoicepositions;
 use App\Models\OutgoingEmail;
 
@@ -64,8 +65,15 @@ class PdfCreateController extends Controller
             ->where('offers.id','=',$objectId)
             ->first('customers.*');
 
+        $logopath = Logos::where('client_id','=',$clientId)->firstOrFail();
+        //dd($logopath);
+
         //$html = view('pdf.template', compact('offercontent','positions','client', 'condition', 'customer'));
-        $imagePath = public_path('logo/Logo.jpg');
+        $imagePath = $imagePath = public_path('storage/' . $logopath->localfilename);
+        $imageHeight = $client->logoheight;
+        $imageWidth = $client->logowidth;
+        //dd($imageHeight);
+
         $customerdata = '
             <table cellpadding="1" cellspacing="0" style="width:100%;">
                 <tr>
@@ -218,7 +226,7 @@ class PdfCreateController extends Controller
         $pageNumber = $pdf->PageNo();
         $totalPages = $pdf->getNumPages();
         $pdf->SetFont('helvetica', '', 10);
-        $pdf->Image($imagePath, 18, 12, 30, 30);
+        $pdf->Image($imagePath, 18, 12, $imageWidth, $imageHeight);
         $pdf->SetCreator('Venditio');
         $pdf->SetAuthor('Lucian Bulz');
         $pdf->SetTitle('Angebot' . ' ' . $offercontent->number);
@@ -318,7 +326,14 @@ class PdfCreateController extends Controller
             ->first('customers.*');
 
         //$html = view('pdf.template', compact('offercontent','positions','client', 'condition', 'customer'));
-        $imagePath = public_path('logo/Logo.jpg');
+        $logopath = Logos::where('client_id','=',$clientId)->firstOrFail();
+        //dd($logopath);
+
+        //$html = view('pdf.template', compact('offercontent','positions','client', 'condition', 'customer'));
+        $imagePath = $imagePath = public_path('storage/' . $logopath->localfilename);
+        $imageHeight = $client->logoheight;
+        $imageWidth = $client->logowidth;
+        //dd($imageHeight);
         $customerdata = '
             <table cellpadding="1" cellspacing="0" style="width:100%;">
                 <tr>
@@ -505,7 +520,7 @@ class PdfCreateController extends Controller
         $pageNumber = $pdf->PageNo();
         $totalPages = $pdf->getNumPages();
         $pdf->SetFont('helvetica', '', 10);
-        $pdf->Image($imagePath, 18, 12, 30, 30);
+        $pdf->Image($imagePath, 18, 12, $imageWidth, $imageHeight);
         $pdf->SetCreator('Venditio');
         $pdf->SetAuthor('{{$client->name}}');
         $pdf->SetTitle('Rechnung' . ' ' . $invoicecontent->number);

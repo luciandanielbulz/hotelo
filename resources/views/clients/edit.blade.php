@@ -181,11 +181,12 @@
             <div class="form-row mt-4">
                 <div class="form-group col-md-4">
                     <label for="logo">Logo</label>
-                    <input type="text" class="form-control" id="logo" name="logo" value="{{ old('logo', $clients->logo) }}">
+                    <input type="text" class="form-control" id="logo" name="logo" value="{{ old('logo', $clients->logo_name) }}" readonly>
                     @error('logo')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
+
                 <div class="form-group col-md-4">
                     <label for="logoheight">Höhe</label>
                     <input type="number" class="form-control" id="logoheight" name="logoheight" value="{{ old('logoheight', $clients->logoheight) }}">
