@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id(); // Primärschlüssel
             $table->string('name')->comment('Name des Logos');
             $table->string('filename')->comment('Name der Datei');
+            $table->string('localfilename')->comment('Name der Datei');
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
             $table->timestamps(); // Erstellt automatisch created_at und updated_at
         });
