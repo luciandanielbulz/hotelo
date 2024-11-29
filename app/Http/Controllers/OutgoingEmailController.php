@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OutgoingEmail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OutgoingEmailController extends Controller
 {
@@ -12,6 +13,10 @@ class OutgoingEmailController extends Controller
      */
     public function index(Request $request)
     {
+        //dd($request);
+
+        $user = Auth::user();
+        $clientId = $user->client_id;
         // Suchbegriff
         $search = $request->input('search');
 
@@ -22,7 +27,7 @@ class OutgoingEmailController extends Controller
                 $query->where('customers.customername', 'like', "%$search%") // Beispiel: Suche nach Kundenname
                     ->orWhere('outgoingemails.objectnumber', 'like', "%$search%"); // Beispiel: Suche nach Betreff
             })
-            ->where('outgoingemails.client_id','=',$request->client_id)
+            ->where('outgoingemails.client_id','=',$clientId)
             ->orderBy('outgoingemails.sentdate', 'desc')
             ->paginate(18); // 18 Items pro Seite
 

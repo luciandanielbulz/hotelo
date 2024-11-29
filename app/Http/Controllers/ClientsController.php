@@ -34,54 +34,57 @@ class ClientsController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-
-    //dd($request);
-    // Validierung der Eingabedaten
-    $validatedData = $request->validate([
-        'clientname'     => ['required', 'string', 'max:50'],
-        'companyname'    => ['required', 'string', 'max:200'],
-        'business'       => ['required', 'string', 'max:100'],
-        'address'        => ['required', 'string', 'max:200'],
-        'postalcode'     => ['required', 'integer'],
-        'location'       => ['required', 'string', 'max:200'],
-        'email'          => ['required', 'email', 'max:200'],
-        'phone'          => ['required', 'string', 'max:200'],
-        'tax_id'         => ['required', 'integer', 'exists:taxrates,id'],
-        'webpage'        => ['nullable', 'string', 'max:30'],
-        'bank'           => ['required', 'string', 'max:200'],
-        'accountnumber'  => ['required', 'string', 'max:200'],
-        'vat_number'     => ['nullable', 'string'],
-        'bic'            => ['required', 'string'],
-        'smallbusiness'  => ['required', 'boolean'],
-        'logo'           => ['nullable', 'string', 'max:500'],
-        'logoheight'     => ['nullable', 'integer', 'max:500'],
-        'logowidth'      => ['nullable', 'integer', 'max:500'],
-        'signature'      => ['nullable', 'string', 'max:1000'],
-        'style'          => ['nullable', 'string', 'max:500'],
-        'lastoffer'      => ['required', 'integer'],
-        'offermultiplikator' => ['required', 'integer'],
-        'lastinvoice'    => ['required', 'integer'],
-        'invoicemultiplikator' => ['required', 'integer'],
-    ]);
-    //dd($validatedData);
-
-    try {
-        // Neuen Klienten erstellen
-        Clients::create($validatedData);
-
-        // Erfolgreiche Erstellung, Weiterleitung zur Übersicht
-        return redirect()->route('clients.index')->with('success', 'Klient erfolgreich erstellt.');
-    } catch (\Exception $e) {
-        // Fehlerbehandlung und Logging
-        Log::error('Fehler beim Erstellen des Klienten: ' . $e->getMessage(), [
-            'request_data' => $request->all(),
+    {
+        // Validierung der Eingabedaten
+        $validatedData = $request->validate([
+            'clientname'     => ['required', 'string', 'max:50'],
+            'companyname'    => ['required', 'string', 'max:200'],
+            'business'       => ['required', 'string', 'max:100'],
+            'address'        => ['required', 'string', 'max:200'],
+            'postalcode'     => ['required', 'integer'],
+            'location'       => ['required', 'string', 'max:200'],
+            'email'          => ['required', 'email', 'max:200'],
+            'phone'          => ['required', 'string', 'max:200'],
+            'tax_id'         => ['required', 'integer', 'exists:taxrates,id'],
+            'webpage'        => ['nullable', 'string', 'max:30'],
+            'bank'           => ['required', 'string', 'max:200'],
+            'accountnumber'  => ['required', 'string', 'max:200'],
+            'vat_number'     => ['nullable', 'string'],
+            'bic'            => ['required', 'string'],
+            'smallbusiness'  => ['required', 'boolean'],
+            'logo'           => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'], // Validierung für das Logo
+            'logoheight'     => ['nullable', 'integer', 'max:500'],
+            'logowidth'      => ['nullable', 'integer', 'max:500'],
+            'signature'      => ['nullable', 'string', 'max:1000'],
+            'style'          => ['nullable', 'string', 'max:500'],
+            'lastoffer'      => ['required', 'integer'],
+            'offermultiplikator' => ['required', 'integer'],
+            'lastinvoice'    => ['required', 'integer'],
+            'invoicemultiplikator' => ['required', 'integer'],
         ]);
 
-        // Weiterleitung zurück zum Formular mit Fehlermeldung
-        return redirect()->back()->withErrors(['error' => 'Fehler: ' . $e->getMessage()])->withInput();
+        try {
+            // Logo hochladen, falls vorhanden
+            if ($request->hasFile('logo')) {
+                $validatedData['logo'] = $request->file('logo')->store('logos', 'public'); // Speichert das Logo in storage/app/public/logos
+            }
+
+            // Neuen Klienten erstellen
+            Clients::create($validatedData);
+
+            // Erfolgreiche Erstellung, Weiterleitung zur Übersicht
+            return redirect()->route('clients.index')->with('success', 'Klient erfolgreich erstellt.');
+        } catch (\Exception $e) {
+            // Fehlerbehandlung und Logging
+            Log::error('Fehler beim Erstellen des Klienten: ' . $e->getMessage(), [
+                'request_data' => $request->all(),
+            ]);
+
+            // Weiterleitung zurück zum Formular mit Fehlermeldung
+            return redirect()->back()->withErrors(['error' => 'Fehler: ' . $e->getMessage()])->withInput();
+        }
     }
-}
+
 
 
     /**
