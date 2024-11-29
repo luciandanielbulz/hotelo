@@ -70,7 +70,7 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::get('/invoice/createinvoicefromoffer',[InvoiceController::class, 'createinvoicefromoffer'])->name('invoice.createinvoicefromoffer');
     Route::post('/invoice/sendmail',[InvoiceController::class, 'sendmail'])->name('invoice.sendmail');
     Route::post('/send-invoice/email', [PdfCreateController::class, 'sendInvoiceByEmail'])->name('sendinvoice.email');
-    Route::get('/outgoingemails', [OutgoingEmailController::class, 'index'])->name('outgoingemails.index');
+    Route::get('/emaillist', [OutgoingEmailController::class, 'index'])->name('outgoingemails.index');
 
 
 

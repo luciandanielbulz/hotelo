@@ -43,9 +43,10 @@ class InvoiceController extends Controller
                 'invoices.comment',
                 'customers.customername',
                 'invoices.date',
+                'invoices.description',
                 DB::raw('(SUM(invoicepositions.price * invoicepositions.amount) - COALESCE(invoices.depositamount, 0)) as total_price')
             )
-            ->groupBy('invoices.id', 'invoices.number', 'invoices.comment', 'customers.customername', 'invoices.date', 'invoices.depositamount')
+            ->groupBy('invoices.id', 'invoices.number', 'invoices.comment', 'customers.customername', 'invoices.date', 'invoices.depositamount','invoices.description')
             ->paginate(15);
 
             //dd($invoices);

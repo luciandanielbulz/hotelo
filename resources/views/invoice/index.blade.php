@@ -42,7 +42,7 @@
                                         <td class='align-middle'>
                                             {{ $invoice->customername ?? $invoice->companyname ?? 'Kein Kunde' }}
                                         </td>
-                                        <td class='align-middle'>{{ $invoice->comment ?? 'Kein Kommentar' }}</td>
+                                        <td class='align-middle'>{{ $invoice->description ?? 'Kein Kommentar' }}</td>
                                         <td class='align-middle'>{{ number_format($invoice->total_price, 2, ',', '.') }} €</td>
 
                                     </tr>
