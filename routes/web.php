@@ -110,6 +110,24 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::get('/createOfferPdf', [PdfCreateController::class,'createOfferPdf'])->name('createoffer.pdf');
     Route::get('/createInvoicePdf', [PdfCreateController::class,'createInvoicePdf'])->name('createinvoice.pdf');
 
+    Route::put('/users/{id}/reset-password', [UsersController::class, 'resetUserPassword'])
+        ->middleware('permission:reset_user_password')
+        ->name('users.reset-password');
+
+
+    Route::get('/users/{id}/reset-password', function ($id) {
+        // Finde den Benutzer
+        $user = App\Models\User::findOrFail($id);
+
+        // Prüfe Berechtigung
+        if (!Auth::user()->hasPermission('reset_user_password')) {
+            abort(403, 'Zugriff verweigert.');
+        }
+
+        // Zeige die View
+        return view('admin.reset_password', compact('user'));
+    })->middleware('auth')->name('users.show-reset-password');
+
 
 });
 

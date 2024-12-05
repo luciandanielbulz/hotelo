@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Role;
 use App\Models\Clients;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 
 class UsersController extends Controller
@@ -18,7 +20,7 @@ class UsersController extends Controller
     {
         $users = User::join('clients','users.client_id','=','clients.id')
             ->join('roles','users.role_id','=','roles.id')
-            ->select('users.id as user_id','users.name as user_name', 'users.*','clients.*', 'roles.*', 'roles.name as role_name' )
+            ->select('users.id as user_id','users.name as user_name', 'users.*','clients.*', 'roles.*', 'roles.name as role_name', 'users.email as user_email' )
             ->get();
         return view('users.index',compact('users'));
     }
@@ -114,4 +116,35 @@ class UsersController extends Controller
     {
         //
     }
+
+    public function resetUserPassword(Request $request, $userId)
+{
+
+    // Prüfe, ob der aktuelle Benutzer die Berechtigung hat
+    if (!Auth::user()->hasPermission('reset_user_password')) {
+        abort(403, 'Zugriff verweigert. Sie haben keine Berechtigung, Passwörter zurückzusetzen.');
+    }
+
+
+
+    // Validiere das neue Passwort
+    $validated = $request->validate([
+        'password' => 'required|min:8|confirmed',
+    ]);
+
+
+    // Finde den Benutzer und setze das neue Passwort
+    $user = User::findOrFail($userId);
+
+
+    $user->password = bcrypt($validated['password']);
+
+    $user->save();
+
+    //dd($userId);
+
+    return redirect()->route('users.index')
+    ->with('success', 'Das Passwort wurde erfolgreich zurückgesetzt.');
+
+}
 }

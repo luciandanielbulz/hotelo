@@ -34,7 +34,7 @@ class DashboardController extends Controller
         $this->addTileIfPermitted($tiles, $permissions, "view_clients", "/clients", "fa-regular fa-circle-user", "Klientenverwaltung", "#f8f9af", "Klienten werden hier festgelegt", 12);
         $this->addTileIfPermitted($tiles, $permissions, "update_settings", "/settings", "fa-solid fa-gear", "Einstellungen", "#ecfce8", "Einstellungen werden hier festgelegt", 13);
         $this->addTileIfPermitted($tiles, $permissions, "edit_personal_settings", "/personal_settings/edit", "fa-solid fa-person-burst", "Eigene Einstellungen", "#fffce8", "Eigene Einstellungen ändern", 15);
-        $this->addTileIfPermitted($tiles, $permissions, "logout", "/logout", "fa-solid fa-arrow-right-from-bracket", "Ausloggen", "#f9fce8", "Aus Programm aussteigen", 17);
+
 
         // Sortiere Kacheln nach Priorität
         usort($tiles, function ($a, $b) {

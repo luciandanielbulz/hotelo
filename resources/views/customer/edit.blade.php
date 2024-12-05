@@ -14,7 +14,7 @@
             <div class="px-4 py-6 sm:p-8">
                 <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <!-- Anrede -->
-                    <div class="sm:col-span-3">
+                    <div class="sm:col-span-2">
                         <label for="salutation_id" class="block text-sm font-medium text-gray-900">Anrede</label>
                         <div class="mt-2">
                             <select name="salutation_id" id="salutation_id" class="block w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
@@ -64,7 +64,7 @@
                     </div>
 
                     <!-- Postleitzahl -->
-                    <div class="sm:col-span-2">
+                    <div class="sm:col-span-1">
                         <label for="postalcode" class="block text-sm font-medium text-gray-900">Postleitzahl</label>
                         <div class="mt-2">
                             <input type="text" name="postalcode" id="postalcode" value="{{ $customer->postalcode }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
@@ -72,7 +72,7 @@
                     </div>
 
                     <!-- Ort -->
-                    <div class="sm:col-span-1">
+                    <div class="sm:col-span-3">
                         <label for="location" class="block text-sm font-medium text-gray-900">Ort</label>
                         <div class="mt-2">
                             <input type="text" name="location" id="location" value="{{ $customer->location }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
@@ -80,7 +80,7 @@
                     </div>
 
                     <!-- Land -->
-                    <div class="sm:col-span-2">
+                    <div class="sm:col-span-3">
                         <label for="country" class="block text-sm font-medium text-gray-900">Land</label>
                         <div class="mt-2">
                             <input type="text" name="country" id="country" value="{{ $customer->country }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
@@ -147,6 +147,25 @@
                             </select>
                         </div>
                     </div>
+                    <!-- Email Subject -->
+                    <div class="sm:col-span-6">
+                        <label for="email_subject" class="block text-sm font-medium text-gray-900">E-Mail Betreff</label>
+                        <div class="mt-2">
+                            <input type="text" name="emailsubject" id="emailsubject" value="{{ old('email_subject', $customer->emailsubject) }}"
+                                   class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Email Body -->
+                    <div class="sm:col-span-6">
+                        <label for="email_body" class="block text-sm font-medium text-gray-900">E-Mail Text</label>
+                        <div class="mt-2">
+                            <textarea name="emailbody" id="emailbody" class="summernote block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                                {{ old('email_body', $customer->emailbody) }}
+                            </textarea>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -159,4 +178,24 @@
             </div>
         </form>
     </div>
+
+    @push('scripts')
+    <!-- Summernote Script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            $('.summernote').summernote({
+                height: 200,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'italic', 'underline', 'clear']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['insert', ['link', 'picture', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            });
+        });
+    </script>
+    @endpush
 </x-layout>

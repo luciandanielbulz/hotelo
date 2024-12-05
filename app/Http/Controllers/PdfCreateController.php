@@ -586,6 +586,7 @@ class PdfCreateController extends Controller
 
     public function sendInvoiceByEmail(Request $request)
     {
+        
         $request->validate([
             'invoice_id' => 'required|integer|exists:invoices,id',
             'email' => 'required|email',

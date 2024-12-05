@@ -449,6 +449,8 @@ class InvoiceController extends Controller
             )
             ->first();
 
+
+        //dd($clientdata->emailsubject);
         // Platzhalter in emailsubject und emailbody ersetzen
         $placeholders = [
             '{signature}' => $clientdata->signature ?? '', // Signatur aus Clients
