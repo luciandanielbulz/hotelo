@@ -32,7 +32,7 @@
                                 class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 focus:outline-indigo-600">
                             @error('name')
                                 <span class="text-sm text-red-600">{{ $message }}</span>
-                            @enderrorz
+                            @enderror
                         </div>
                     </div>
 
