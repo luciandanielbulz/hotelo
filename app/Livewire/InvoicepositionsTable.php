@@ -84,4 +84,18 @@ class InvoicepositionsTable extends Component
     {
         return view('livewire.invoicepositions-table');
     }
+
+    public function deletePosition($positionId)
+    {
+        //dd($positionId);
+        // Prüfen, ob die Position existiert
+        $position = InvoicePositions::find($positionId);
+
+        if ($position) {
+            $position->delete(); // Datensatz löschen
+        }
+
+        // Positionen neu laden
+        $this->loadPositions();
+    }
 }

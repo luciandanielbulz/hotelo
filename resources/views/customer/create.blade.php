@@ -1,129 +1,158 @@
 <x-layout>
-
-    <div class="container">
-        <div class="row">
-            <div class = "col">
-                <h3>Neuen Kunden anlegen</h3>
-            </div>
-
-            <div class = "col">
-                <a href="{{ route('customer.index') }}" class="btn btn-transparent my-1 float-right">Zurück</a>
-            </div>
+    <div class="grid grid-cols-1 gap-x-8 gap-y-8 pt-10 md:grid-cols-3">
+        <!-- Linke Spalte: Überschrift -->
+        <div class="px-4 sm:px-0">
+            <h2 class="text-base font-semibold text-gray-900">Neuen Kunden anlegen</h2>
+            <p class="mt-1 text-sm text-gray-600">Bitte füllen Sie die folgenden Informationen aus, um einen neuen Kunden anzulegen.</p>
         </div>
 
-        <?php
-            //check_customer_errors();
-        ?>
-        <form action = "{{route('customer.store')}}" method="POST">
+        <!-- Formular -->
+        <form action="{{ route('customer.store') }}" method="POST" class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
             @csrf
-            <div class="form-row mt-4">
-                <div class="form-group col">
-                    <label for="salusalutation_idtation">Anrede</label>
-                    <select name="salutation_id" id="salutation_id" class="form-control">
-                        @foreach($salutations as $salutation)
-                            <option value="{{ $salutation->id }}" {{ $salutation->id == 1 ? 'selected' : '' }}>
-                                {{ $salutation->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="form-group col">
-                    <label for="customername">Titel</label>
-                    <input type="text" class="form-control" id="title" name="title">
+            <div class="px-4 py-6 sm:p-8">
+                <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                    <!-- Anrede -->
+                    <div class="sm:col-span-3">
+                        <label for="salutation_id" class="block text-sm font-medium text-gray-900">Anrede</label>
+                        <div class="mt-2">
+                            <select name="salutation_id" id="salutation_id" class="block w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                                @foreach($salutations as $salutation)
+                                    <option value="{{ $salutation->id }}" {{ $salutation->id == 1 ? 'selected' : '' }}>
+                                        {{ $salutation->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
 
+                    <!-- Titel -->
+                    <div class="sm:col-span-3">
+                        <label for="title" class="block text-sm font-medium text-gray-900">Titel</label>
+                        <div class="mt-2">
+                            <input type="text" name="title" id="title" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Kundenname -->
+                    <div class="sm:col-span-3">
+                        <label for="customername" class="block text-sm font-medium text-gray-900">Kundenname</label>
+                        <div class="mt-2">
+                            <input type="hidden" name="client_id" value="1">
+                            <input type="hidden" name="emailsubject" value="">
+                            <input type="hidden" name="emailbody" value="">
+                            <input type="text" name="customername" id="customername" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Firmenname -->
+                    <div class="sm:col-span-3">
+                        <label for="companyname" class="block text-sm font-medium text-gray-900">Firmenname</label>
+                        <div class="mt-2">
+                            <input type="text" name="companyname" id="companyname" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Adresse -->
+                    <div class="sm:col-span-3">
+                        <label for="address" class="block text-sm font-medium text-gray-900">Adresse</label>
+                        <div class="mt-2">
+                            <input type="text" name="address" id="address" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Postleitzahl -->
+                    <div class="sm:col-span-2">
+                        <label for="postalcode" class="block text-sm font-medium text-gray-900">Postleitzahl</label>
+                        <div class="mt-2">
+                            <input type="text" name="postalcode" id="postalcode" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Ort -->
+                    <div class="sm:col-span-1">
+                        <label for="location" class="block text-sm font-medium text-gray-900">Ort</label>
+                        <div class="mt-2">
+                            <input type="text" name="location" id="location" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Land -->
+                    <div class="sm:col-span-2">
+                        <label for="country" class="block text-sm font-medium text-gray-900">Land</label>
+                        <div class="mt-2">
+                            <input type="text" name="country" id="country" value="Österreich" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- UID -->
+                    <div class="sm:col-span-2">
+                        <label for="vat_number" class="block text-sm font-medium text-gray-900">UID</label>
+                        <div class="mt-2">
+                            <input type="text" name="vat_number" id="vat_number" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Umsatzsteuer -->
+                    <div class="sm:col-span-2">
+                        <label for="tax_id" class="block text-sm font-medium text-gray-900">Umsatzsteuer</label>
+                        <div class="mt-2">
+                            <select name="tax_id" id="tax_id" class="block w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                                @foreach($taxrates as $taxrate)
+                                    <option value="{{ $taxrate->id }}" {{ $taxrate->id == 1 ? 'selected' : '' }}>
+                                        {{ $taxrate->taxrate }} %
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Telefonnummer -->
+                    <div class="sm:col-span-2">
+                        <label for="phone" class="block text-sm font-medium text-gray-900">Telefonnummer</label>
+                        <div class="mt-2">
+                            <input type="text" name="phone" id="phone" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Fax -->
+                    <div class="sm:col-span-2">
+                        <label for="fax" class="block text-sm font-medium text-gray-900">Fax</label>
+                        <div class="mt-2">
+                            <input type="text" name="fax" id="fax" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- E-Mail -->
+                    <div class="sm:col-span-2">
+                        <label for="email" class="block text-sm font-medium text-gray-900">E-Mail</label>
+                        <div class="mt-2">
+                            <input type="text" name="email" id="email" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Konditionen -->
+                    <div class="sm:col-span-3">
+                        <label for="condition_id" class="block text-sm font-medium text-gray-900">Konditionen</label>
+                        <div class="mt-2">
+                            <select name="condition_id" id="condition_id" class="block w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                                @foreach($conditions as $condition)
+                                    <option value="{{ $condition->id }}">
+                                        {{ $condition->conditionname }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
-                <!--Kundenname oder Firmenname-->
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="customername">Kundenname</label>
-                    <input type="hidden" class="form-control" id="client_id" name="client_id" value=1>
-                    <input type="hidden" class="form-control" id="emailsubject" name="emailsubject" value="">
-                    <input type="hidden" class="form-control" id="emailbody" name="emailbody" value="">
-                    <input type="text" class="form-control" id="customername" name="customername" value="<?php if(isset($_SESSION['customerData']['customername'])) { echo $_SESSION['customerData']['customername']; } ?>">
-                </div>
 
-                <div class="form-group col-md-6">
-                    <label for="companyname">Firmenname</label>
-                    <input type="text" class="form-control" id="companyname" name="companyname" value="<?php if(isset($_SESSION['customerData']['companyname'])) { echo $_SESSION['customerData']['companyname']; } ?>">
-                </div>
+            <!-- Schaltflächen -->
+            <div class="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
+                <a href="{{ route('customer.index') }}" class="text-sm font-semibold text-gray-900">Abbrechen</a>
+                <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    Speichern
+                </button>
             </div>
-
-                <!--Adresse PLZ und Ort-->
-            <div class="form-row">
-                <div class="form-group col-md-5">
-                    <label for="address">Adresse</label>
-                    <input type="text" class="form-control" id="address" name="address" value="<?php if(isset($_SESSION['customerData']['address'])) { echo $_SESSION['customerData']['address']; } ?>">
-                </div>
-
-                <div class="form-group col-md-3">
-                    <label for="postalcode">Postleitzahl</label>
-                    <input type="text" class="form-control" id="postalcode" name="postalcode" value="<?php if(isset($_SESSION['customerData']['postalcode'])) { echo $_SESSION['customerData']['postalcode']; } ?>">
-                </div>
-
-                <div class="form-group col-md-4">
-                    <label for="location">Ort</label>
-                    <input type="text" class="form-control" id="location" name="location" value="<?php if(isset($_SESSION['customerData']['location'])) { echo $_SESSION['customerData']['location']; } ?>">
-                </div>
-            </div>
-
-                <!-- Land und UID -->
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="country">Land</label>
-                    <input type="text" class="form-control" id="country" name="country" value="Österreich">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="vat_number">UID</label>
-                    <input type="text" class="form-control" id="vat_number" name="vat_number" value="<?php if(isset($_SESSION['customerData']['vat_number'])) { echo $_SESSION['customerData']['taxid']; } ?>">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="tax_id">Umsatzsteuer</label>
-                    <select name="tax_id" id="tax_id" class="form-control">
-                        @foreach($taxrates as $taxrate)
-                            <option value="{{ $taxrate->id }}" {{ $taxrate->id == 1 ? 'selected' : '' }}>
-                                {{ $taxrate->taxrate }} %
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
-                <!-- Telefonnummer, Fax und Email-->
-            <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="phone">Telefonnummer</label>
-                    <input type="text" class="form-control" id="phone" name="phone" value="<?php if(isset($_SESSION['customerData']['phonenumber'])) { echo $_SESSION['customerData']['phone']; } ?>">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="fax">Fax</label>
-                    <input type="text" class="form-control" id="fax" name="fax" value="<?php if(isset($_SESSION['customerData']['fax'])) { echo $_SESSION['customerData']['fax']; } ?>">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="email">E-Mail</label>
-                    <input type="text" class="form-control" id="email" name="email" value="<?php if(isset($_SESSION['customerData']['email'])) { echo $_SESSION['customerData']['email']; } ?>">
-                </div>
-            </div>
-
-                <!--Dropdown-Menü für Conditions-->
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="condition_id">Konditionen</label>
-                    <select class="form-control" id="condition_id" name="condition_id">
-                        @foreach($conditions as $condition)
-                        <option value="{{ $condition->id }}">{{ $condition->conditionname }}</option>
-                    @endforeach
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Neuen Kunden anlegen</button>
-            </div>
-            <div class="row"></div>
         </form>
-
-
     </div>
-
 </x-layout>

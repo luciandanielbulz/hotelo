@@ -1,185 +1,162 @@
 <x-layout>
-
-    <div class="container">
-        <h3 class="mb-4">Kunde bearbeiten</h3>
-
-        <div class="row mb-4">
-            <div class="col text-right">
-                <a href="{{ route('customer.index') }}" class="btn btn-transparent my-1">Zurück</a>
-            </div>
+    <div class="grid grid-cols-1 gap-x-8 gap-y-8 pt-10 md:grid-cols-3">
+        <!-- Linke Spalte: Überschrift -->
+        <div class="px-4 sm:px-0">
+            <h2 class="text-base font-semibold text-gray-900">Kundeninformationen</h2>
+            <p class="mt-1 text-sm text-gray-600">Aktualisieren Sie die Informationen des Kunden.</p>
         </div>
 
-        <form action="{{ route('customer.update', $customer->id) }}" method="POST" class = "customer">
+        <!-- Formular -->
+        <form action="{{ route('customer.update', $customer->id) }}" method="POST" class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
             @csrf
             @method('PUT')
 
-            <!-- Anrede und Titel -->
-            <div class="form-row mt-4">
-                <div class="form-group col-md-4">
+            <div class="px-4 py-6 sm:p-8">
+                <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                    <!-- Anrede -->
+                    <div class="sm:col-span-3">
+                        <label for="salutation_id" class="block text-sm font-medium text-gray-900">Anrede</label>
+                        <div class="mt-2">
+                            <select name="salutation_id" id="salutation_id" class="block w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                                @foreach($salutations as $salutation)
+                                    <option value="{{ $salutation->id }}" {{ $salutation->id == old('salutation_id', $customer->salutation_id) ? 'selected' : '' }}>
+                                        {{ $salutation->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
 
-                    <label for="salutation_id">Anrede</label>
-                    <select class="form-control" id="salutation_id" name="salutation_id">
+                    <!-- Titel -->
+                    <div class="sm:col-span-3">
+                        <label for="title" class="block text-sm font-medium text-gray-900">Titel</label>
+                        <div class="mt-2">
+                            <input type="text" name="title" id="title" value="{{ $customer->title }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
 
-                        @foreach($salutations as $salutation)
-                            <option value="{{ $salutation->id }}" {{ $salutation->id == old('salutation_id', $customer->salutation_id) ? 'selected' : '' }}>
-                                {{ $salutation->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <!-- Kundenname -->
+                    <div class="sm:col-span-3">
+                        <label for="customername" class="block text-sm font-medium text-gray-900">Kundenname</label>
+                        <div class="mt-2">
+                            <input type="hidden" name="customerid" value="{{ $customer->id }}">
+                            <input type="text" name="customername" id="customername" value="{{ old('customername', $customer->customername) }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                            @error('customername')
+                                <div class="text-sm text-red-600">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
 
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="customername">Titel</label>
-                    <input type="text" class="form-control" id="title" name="title" value="{{$customer->title}}">
+                    <!-- Firmenname -->
+                    <div class="sm:col-span-3">
+                        <label for="companyname" class="block text-sm font-medium text-gray-900">Firmenname</label>
+                        <div class="mt-2">
+                            <input type="text" name="companyname" id="companyname" value="{{ $customer->companyname }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Adresse -->
+                    <div class="sm:col-span-3">
+                        <label for="address" class="block text-sm font-medium text-gray-900">Adresse</label>
+                        <div class="mt-2">
+                            <input type="text" name="address" id="address" value="{{ $customer->address }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Postleitzahl -->
+                    <div class="sm:col-span-2">
+                        <label for="postalcode" class="block text-sm font-medium text-gray-900">Postleitzahl</label>
+                        <div class="mt-2">
+                            <input type="text" name="postalcode" id="postalcode" value="{{ $customer->postalcode }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Ort -->
+                    <div class="sm:col-span-1">
+                        <label for="location" class="block text-sm font-medium text-gray-900">Ort</label>
+                        <div class="mt-2">
+                            <input type="text" name="location" id="location" value="{{ $customer->location }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Land -->
+                    <div class="sm:col-span-2">
+                        <label for="country" class="block text-sm font-medium text-gray-900">Land</label>
+                        <div class="mt-2">
+                            <input type="text" name="country" id="country" value="{{ $customer->country }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- UID -->
+                    <div class="sm:col-span-2">
+                        <label for="vat_number" class="block text-sm font-medium text-gray-900">UID</label>
+                        <div class="mt-2">
+                            <input type="text" name="vat_number" id="vat_number" value="{{ $customer->vat_number }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Umsatzsteuer -->
+                    <div class="sm:col-span-2">
+                        <label for="tax_id" class="block text-sm font-medium text-gray-900">Umsatzsteuer</label>
+                        <div class="mt-2">
+                            <select name="tax_id" id="tax_id" class="block w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                                <option value="">Bitte wählen...</option>
+                                @foreach ($taxrates as $taxrate)
+                                    <option value="{{ $taxrate->id }}" {{ $customer->tax_id == $taxrate->id ? 'selected' : '' }}>
+                                        {{ $taxrate->taxrate }}%
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Telefonnummer -->
+                    <div class="sm:col-span-2">
+                        <label for="phone" class="block text-sm font-medium text-gray-900">Telefonnummer</label>
+                        <div class="mt-2">
+                            <input type="text" name="phone" id="phone" value="{{ $customer->phone }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Fax -->
+                    <div class="sm:col-span-2">
+                        <label for="fax" class="block text-sm font-medium text-gray-900">Fax</label>
+                        <div class="mt-2">
+                            <input type="text" name="fax" id="fax" value="{{ $customer->fax }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- E-Mail -->
+                    <div class="sm:col-span-2">
+                        <label for="email" class="block text-sm font-medium text-gray-900">E-Mail</label>
+                        <div class="mt-2">
+                            <input type="email" name="email" id="email" value="{{ $customer->email }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Konditionen -->
+                    <div class="sm:col-span-3">
+                        <label for="condition_id" class="block text-sm font-medium text-gray-900">Konditionen</label>
+                        <div class="mt-2">
+                            <select name="condition_id" id="condition_id" class="block w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                                @foreach($conditions as $condition)
+                                    <option value="{{ $condition->id }}" {{ $condition->id == old('condition_id', $customer->condition_id) ? 'selected' : '' }}>
+                                        {{ $condition->conditionname }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Kundenname und Firmenname -->
-            <div class="form-row mt-4">
-                <div class="form-group col-md-6">
-                    <label for="customername">Kundenname</label>
-                    <input type="hidden" id="customerid" name="customerid" value="{{$customer->id}}">
-                    <input type="text" class="form-control" id="customername" name="customername" value="{{ old('customername', $customer->customername) }}">
-                    @error('customername')
-                        <div class="alert alert-danger">{{ $message }}</div>
-                    @enderror
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="companyname">Firmenname</label>
-                    <input type="text" class="form-control" id="companyname" name="companyname" value="{{$customer->companyname}}">
-                </div>
-            </div>
-
-            <!-- Adresse, Postleitzahl und Ort -->
-            <div class="form-row mt-4">
-                <div class="form-group col-md-4">
-                    <label for="address">Adresse</label>
-                    <input type="text" class="form-control" id="address" name="address" value="{{$customer->address}}">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="postalcode">Postleitzahl</label>
-                    <input type="text" class="form-control" id="postalcode" name="postalcode" value="{{$customer->postalcode}}">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="location">Ort</label>
-                    <input type="text" class="form-control" id="location" name="location" value="{{$customer->location}}">
-                </div>
-            </div>
-            <div class="form-row mt-4">
-                <div class="form-group col-md-4">
-                    <label for="address">Land</label>
-                    <input type="text" class="form-control" id="country" name="country" value="{{$customer->country}}">
-                </div>
-                <div class="form-group col-md-4">
-                </div>
-                <div class="form-group col-md-4">
-                </div>
-            </div>
-
-            <!-- UID -->
-            <div class="form-row mt-4">
-                <div class="form-group col-md-6">
-                    <label for="tax_id">Kondition</label>
-                    <select class="form-control" id="tax_id" name="tax_id">
-                        <option value="">Bitte wählen...</option>
-                        @foreach ($taxrates as $taxrate)
-                            <option value="{{ $taxrate->id }}"
-                                @if ($customer->tax_id == $taxrate->id) selected @endif>
-                                {{ $taxrate->taxrate }}%
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
-            <!-- Telefonnummer, Fax und E-Mail -->
-            <div class="form-row mt-4">
-                <div class="form-group col-md-4">
-                    <label for="phonenumber">Telefonnummer</label>
-                    <input type="text" class="form-control" id="phone" name="phone" value="{{$customer->phone}}">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="fax">Fax</label>
-                    <input type="text" class="form-control" id="fax" name="fax" value="{{$customer->fax}}">
-                </div>
-                <div class="form-group col-md-4">
-                    <label for="email">E-Mail</label>
-                    <input type="email" class="form-control" id="email" name="email" value="{{$customer->email}}">
-                </div>
-            </div>
-
-            <!-- Dropdown-Menü für Bedingungen -->
-            <div class="form-row mt-4">
-                <div class="form-group col-md-6">
-                    <label for="condition_id">Konditionen</label>
-                    <select class="form-control" id="condition_id" name="condition_id">
-                        @foreach($conditions as $condition)
-                            <option value="{{ $condition->id }}" {{ $condition->id == old('condition_id', $customer->condition_id) ? 'selected' : '' }}>
-                                {{ $condition->conditionname }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
-            <!-- Email-Betreff und Nachricht -->
-            <hr>
-            <div class="form-row mt-4">
-                <div class="form-group col-md-4">
-                    <label for="emailsubject">Email-Betreff</label>
-                    <span class="info-icon" id="info-icon">i</span>
-                    <input type="text" class="form-control" id="emailsubject" name="emailsubject" value="{{$customer->emailsubject}}">
-                </div>
-            </div>
-
-            <div class="form-row mt-4">
-                <div class="form-group">
-                    <label for="emailbody">Nachricht:</label>
-                    <textarea class="form-control summernote" id="emailbody" name="emailbody" rows="7">{{ old('emailbody', $customer->emailbody) }}</textarea>
-                </div>
-            </div>
-
-            <div class="form-group mt-4">
-                <button type="submit" class="btn btn-primary">Änderungen speichern</button>
-                <button id="standardtext" class="btn btn-primary">Standardtext einfügen</button>
+            <!-- Schaltflächen -->
+            <div class="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
+                <a href="{{ route('customer.index') }}" class="text-sm font-semibold text-gray-900">Abbrechen</a>
+                <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    Änderungen speichern
+                </button>
             </div>
         </form>
-
-        <hr>
-
     </div>
-    <script>
-
-        $(document).ready(function() {
-            // Summernote-Editor initialisieren
-            $('.summernote').summernote({
-                height: 300,
-                width:1200
-            });
-        });
-
-
-        document.addEventListener("DOMContentLoaded", function() {
-        const standardButton = document.getElementById('standardtext');
-        const subjectField = document.getElementById('emailsubject');
-
-        standardButton.addEventListener('click', function(event) {
-            // Verhindert das Standard-Submit-Verhalten des Buttons
-            event.preventDefault();
-
-            // Betreff setzen
-            subjectField.value = "{objekt} {objektnummer}";
-
-            // Body setzen über Summernote
-            $('.summernote').summernote('code',
-                `Sehr geehrte Damen und Herren,<br><br>
-                anbei {object_mit_artikel} für die vorangegangenen Dienstleistungen.<br><br>
-                {signature}`
-            );
-        });
-    });
-
-
-    </script>
-
 </x-layout>

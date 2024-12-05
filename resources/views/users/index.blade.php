@@ -1,110 +1,51 @@
 <x-layout>
-    <div class="container">
-        <div class="row">
-            <div class="col text-right">
-                <a href="{{ route('users.create')}}" class="btn btn-transparent">+Neu</a>
-                <button id="editUserButton" class="btn btn-transparent" disabled>Bearbeiten</button>
+    <div class="px-4 sm:px-6 lg:px-8">
+        <div class="sm:flex sm:items-center">
+            <div class="sm:flex-auto">
+                <h1 class="text-base font-semibold text-gray-900">Benutzerverwaltung</h1>
             </div>
-        </div>
-        <div class="row">
-            <div class="table-responsive" id="userTable">
-                <table class="table table-sm">
-                    <thead>
-                        <tr>
-                            <th scope="col">E-Mail</th>
-                            <th scope="col">Login</th>
-                            <th scope="col">Vorname</th>
-                            <th scope="col">Nachnamename</th>
-                            <th scope="col">Role</th>
-                            <th scope="col">Client</th>
-                            <th scope="col">Aktiv</th>
-
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($users as $user )
-                            <tr data-id="{{ $user->user_id }}">
-                                <td>{{$user->email}}</td>
-                                <td>{{$user->username}}</td>
-                                <td>{{$user->user_name}}</td>
-                                <td>{{$user->lastname}}</td>
-                                <td>{{$user->role_name}}</td>
-                                <td>{{$user->clientname}}</td>
-                                <td>{{ $user->isactive ? 'Ja' : 'Nein' }}</td>
-
-
-
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <div class="mt-4 sm:ml-auto sm:mt-0 sm:flex-none">
+                <a href="{{ route('users.create') }}" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">+ Neuer Benutzer hinzufügen</a>
             </div>
         </div>
 
+        <div class="mt-8 flow-root">
+            <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                    <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-300">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">E-Mail</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Login</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Vorname</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Nachname</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Role</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Client</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Aktiv</th>
+                                    <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Aktionen</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white">
+                                @foreach ($users as $user)
+                                    <tr data-id="{{ $user->user_id }}" class="hover:bg-indigo-100 cursor-pointer">
+                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6">{{ $user->email }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $user->username }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $user->user_name }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $user->lastname }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $user->role_name }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $user->clientname }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $user->isactive ? 'Ja' : 'Nein' }}</td>
+                                        <td class="text-right whitespace-nowrap px-3 py-4 text-sm">
+                                            <a href="{{ route('users.edit', $user->user_id) }}" class="rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">Bearbeiten</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <script>
-        let selectedCustomerId = null;
-
-        // Event-Listener für die Zeilenauswahl
-        document.querySelectorAll('tr').forEach(row => {
-            row.addEventListener('click', function() {
-                document.querySelectorAll('tr').forEach(row => row.classList.remove('selected-row'));
-                this.classList.add('selected-row');
-                selectedUserId = this.dataset.id;
-                document.getElementById('editUserButton').disabled = false;
-                document.getElementById('deleteUserButton').disabled = false;
-            });
-        });
-
-        // Event-Listener für die Bearbeiten-Schaltfläche
-        document.getElementById('editUserButton').addEventListener('click', function() {
-            if (selectedUserId) {
-                window.location.href = `/users/${selectedUserId}/edit`; // Weiterleiten zur Bearbeitungsseite mit ID
-            } else {
-                alert('Bitte wählen Sie einen Kunden zum Bearbeiten aus.');
-            }
-        });
-
-        // Event-Listener für die Löschen-Schaltfläche
-        document.getElementById('deleteCustomerButton').addEventListener('click', function() {
-            if (selectedUserId && confirm('Möchten Sie diesen Kunden wirklich löschen?')) {
-                fetch(`/customer/${selectedUserId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message) {
-                        // Erfolgsnachricht anzeigen
-                        alert(data.message);
-
-                        // Entferne die Zeile des gelöschten Kunden aus der Tabelle
-                        const rowToRemove = document.querySelector(`tr[data-id="${selectedUserId}"]`);
-                        if (rowToRemove) {
-                            rowToRemove.remove();
-                        }
-
-                        // Buttons deaktivieren
-                        document.getElementById('editUserButton').disabled = true;
-                        document.getElementById('deleteUserButton').disabled = true;
-
-                        // Setze die Auswahl zurück
-                        selectedCustomerId = null;
-                    }
-                })
-                .catch(error => console.error('Fehler:', error));
-            }
-        });
-
-        // Event-Listener für die Neue Kunde Schaltfläche
-        document.getElementById('newUserButton').addEventListener('click', function() {
-            window.location.href = '{{ route('customer.create') }}'; // Benutze route() für die Route
-        });
-    </script>
-
 </x-layout>

@@ -1,141 +1,101 @@
 <x-layout>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <form id="searchForm" class="form-inline" method="GET" action="{{ route('customer.index') }}">
-                    <input type="text" name="search" class="form-control mr-2" placeholder="Suchen" value="{{ request('search') }}">
-                    <button type="submit" class="btn btn-secondary">Suchen</button>
+    <div class="px-4 sm:px-6 lg:px-8">
+        <div class="sm:flex sm:items-center">
+            <div class="sm:flex-auto">
+                <h1 class="text-base font-semibold text-gray-900">Kunden</h1>
+                <p class="mt-2 text-sm text-gray-700">Eine Liste aller Kunden in Ihrem Konto, inklusive Name, Adresse, E-Mail und mehr.</p>
+            </div>
+        </div>
+        <div class="sm:flex sm:items-center">
+            <div class="sm:flex-auto">
+                <form id="searchForm" class="form-inline flex w-1/3" method="GET" action="{{ route('customer.index') }}">
+                    <input type="text" name="search" class="form-control mr-2 rounded-md border-gray-300 px-3 py-2 text-sm w-full" placeholder="Suchen" value="{{ request('search') }}">
+                    <button type="submit" class="ml-2 rounded-md bg-gray-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500">Suchen</button>
                 </form>
             </div>
-
-            <div class="col text-right">
-                    <button id="newCustomerButton" class="btn btn-transparent">+ Neu</button>
-                    <button id="editCustomerButton"  class="btn btn-transparent" disabled>Bearbeiten</button>
-                    <button id="createOfferButton"  class="btn btn-transparent" disabled>+ Angebot</button>
-                    <button id="createInvoiceButton"  class="btn btn-transparent" disabled>+ Rechnung</button>
-                    <button id="deleteCustomerButton"  class="btn btn-transparent" disabled>Löschen</button>
+            <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+                <a href="{{ route('customer.create') }}" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">+ Neu</a>
             </div>
         </div>
-    </div>
-    <div class="container">
-        <table class="table table-sm mt-3">
-            <thead>
-                <tr>
-                    <th style="width: 5%;">K-Nr</th>
-                    <th style="width: 30%;">Kundenname / Firmenname</th>
-                    <th style="width: 20%;">Adresse</th>
-                    <th style="width: 8%;">PLZ</th>
-                    <th style="width: 12%;">Ort</th>
-                    <th style="width: 20%;">E-Mail</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($customers as $customer)
-                    <tr data-id="{{ $customer->id }}">
-                        <td>{{ $customer->id }}</td>
-                        <td>
-                            {{ $customer->customername ?? '' }}
-                            @if(!empty($customer->customername) && !empty($customer->companyname)) / @endif
-                            {{ $customer->companyname ?? '' }}
-                        </td>
-                        <td>{{ $customer->address }}</td>
-                        <td>{{ $customer->postalcode }}</td>
-                        <td>{{ $customer->location }}</td>
-                        <td>{{ $customer->email }}</td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5">Keine Kunden gefunden</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-        <!-- Pagination-Links -->
-        <div>
+
+        <div class="mt-8 flow-root">
+            <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                    <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-300">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">K-Nr</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Kundenname / Firmenname</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Adresse</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">PLZ</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Ort</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">E-Mail</th>
+                                    <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                        <span class="sr-only">Actions</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white">
+                                @forelse($customers as $customer)
+                                    <tr data-id="{{ $customer->id }}" class="hover:bg-indigo-100 cursor-pointer">
+                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{{ $customer->id }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                            {{ $customer->customername ?? '' }}
+                                            @if(!empty($customer->customername) && !empty($customer->companyname)) / @endif
+                                            {{ $customer->companyname ?? '' }}
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $customer->address }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $customer->postalcode }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $customer->location }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $customer->email }}</td>
+                                        <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                            <div class="flex flex-wrap gap-2 justify-end items-center">
+                                                <!-- Bearbeiten Link -->
+                                                <a href="{{ url('/customer/' . $customer->id . '/edit') }}"
+                                                    class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
+                                                    Bearbeiten
+                                                </a>
+
+                                                <!-- + Angebot Link -->
+                                                <a href="{{ url('/offer/create/' . $customer->id) }}"
+                                                    class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
+                                                    + Angebot
+                                                </a>
+
+                                                <!-- + Rechnung Link -->
+                                                <a href="{{ url('/invoice/create/' . $customer->id) }}"
+                                                    class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
+                                                    + Rechnung
+                                                </a>
+
+                                                <!-- Löschen Button -->
+                                                <form action="{{ url('/customer/' . $customer->id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="inline-flex items-center rounded-md bg-red-600 px-3 h-8 text-sm font-semibold text-white shadow-sm hover:bg-red-500">
+                                                        Löschen
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="px-3 py-4 text-sm text-gray-500 text-center">Keine Kunden gefunden</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4">
             {{ $customers->links() }}
         </div>
-
-
     </div>
-    <script>
-        let selectedCustomerId = null;
-
-        // Event-Listener für die Zeilenauswahl
-        document.querySelectorAll('tr').forEach(row => {
-            row.addEventListener('click', function() {
-                document.querySelectorAll('tr').forEach(row => row.classList.remove('selected-row'));
-                this.classList.add('selected-row');
-                selectedCustomerId = this.dataset.id;
-                document.getElementById('editCustomerButton').disabled = false;
-                document.getElementById('deleteCustomerButton').disabled = false;
-                document.getElementById('createInvoiceButton').disabled = false;
-                document.getElementById('createOfferButton').disabled = false;
-            });
-        });
-
-        // Event-Listener für die Bearbeiten-Schaltfläche
-        document.getElementById('editCustomerButton').addEventListener('click', function() {
-            if (selectedCustomerId) {
-                window.location.href = `/customer/${selectedCustomerId}/edit`; // Weiterleiten zur Bearbeitungsseite mit ID
-            } else {
-                alert('Bitte wählen Sie einen Kunden zum Bearbeiten aus.');
-            }
-        });
-
-        document.getElementById('createOfferButton').addEventListener('click', function() {
-            if (selectedCustomerId) {
-                window.location.href = `/offer/create/${selectedCustomerId}`; // Weiterleiten zur Bearbeitungsseite mit ID
-            } else {
-                alert('Bitte wählen Sie einen Kunden zum Bearbeiten aus.');
-            }
-        });
-
-        document.getElementById('createInvoiceButton').addEventListener('click', function() {
-            if (selectedCustomerId) {
-                window.location.href = `/invoice/create/${selectedCustomerId}`; // Weiterleiten zur Bearbeitungsseite mit ID
-            } else {
-                alert('Bitte wählen Sie einen Kunden zum Bearbeiten aus.');
-            }
-        });
-
-        // Event-Listener für die Löschen-Schaltfläche
-        document.getElementById('deleteCustomerButton').addEventListener('click', function() {
-            if (selectedCustomerId && confirm('Möchten Sie diesen Kunden wirklich löschen?')) {
-                fetch(`/customer/${selectedCustomerId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.message) {
-                        // Erfolgsnachricht anzeigen
-                        alert(data.message);
-
-                        // Entferne die Zeile des gelöschten Kunden aus der Tabelle
-                        const rowToRemove = document.querySelector(`tr[data-id="${selectedCustomerId}"]`);
-                        if (rowToRemove) {
-                            rowToRemove.remove();
-                        }
-
-                        // Buttons deaktivieren
-                        document.getElementById('editCustomerButton').disabled = true;
-                        document.getElementById('deleteCustomerButton').disabled = true;
-
-                        // Setze die Auswahl zurück
-                        selectedCustomerId = null;
-                    }
-                })
-                .catch(error => console.error('Fehler:', error));
-            }
-        });
-
-        // Event-Listener für die Neue Kunde Schaltfläche
-        document.getElementById('newCustomerButton').addEventListener('click', function() {
-            window.location.href = '{{ route('customer.create') }}'; // Benutze route() für die Route
-        });
-    </script>
 
 </x-layout>

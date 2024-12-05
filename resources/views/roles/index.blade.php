@@ -1,81 +1,44 @@
 <x-layout>
-
-        <div class="container">
-            <div class="row">
-                <div class="col text-right">
-                    <a href="{{ route('roles.create')}}" class="btn btn-transparent">+Neu</a>
-                    <button id="editRoleButton" class="btn btn-transparent" disabled>Bearbeiten</button>
-                    <button id="editRolePermissionButton" class="btn btn-transparent" disabled>Rechte bearbeiten</button>
-
-
-                </div>
+    <div class="px-4 sm:px-6 lg:px-8">
+        <div class="sm:flex sm:items-center">
+            <div class="sm:flex-auto">
+                <h1 class="text-base font-semibold text-gray-900">Rollenverwaltung</h1>
             </div>
-            <div class="row">
-                <div class="col">
-                    <div class ="table-responsive" id="rolesTable">
-                        <table class="table table-hover table-sm">
-                            <thead >
+            <div class="mt-4 sm:ml-auto sm:mt-0 sm:flex-none">
+                <a href="{{ route('roles.create') }}" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">+ Neue Rolle hinzufügen</a>
+            </div>
+        </div>
+
+        <div class="mt-8 flow-root">
+            <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+                    <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-300">
+                            <thead class="bg-gray-50">
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Beschreibung</th>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Beschreibung</th>
+                                    <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Aktionen</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach ($roles as $role )
-                                <tr data-id="{{ $role->id }}">
-                                    <td>{{$role->name}}</td>
-                                    <td>{{$role->description}}</td>
-                                </tr>
-                            @endforeach
+                            <tbody class="divide-y divide-gray-200 bg-white">
+                                @foreach ($roles as $role)
+                                    <tr data-id="{{ $role->id }}" class="hover:bg-indigo-100 cursor-pointer">
+                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6">{{ $role->name }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $role->description }}</td>
+                                        <td class="text-right whitespace-nowrap px-3 py-4 text-sm">
+                                            <a href="{{ route('roles.edit', $role->id) }}" class="rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">Bearbeiten</a>
+                                            <a href="{{ route('rolepermissions.edit', $role->id) }}" class="rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">Rechte bearbeiten</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-
         </div>
+    </div>
 
-    <script>
-
-        $(document).ready(function() {
-            let selectedRoleId = null;
-
-            // Wenn auf eine Zeile in der Tabelle geklickt wird
-            $('#rolesTable').on('click', 'tr', function() {
-                $('#rolesTable tr').removeClass('selected-row');
-                $(this).addClass('selected-row');
-                selectedRoleId = $(this).data('id');
-                console.log(selectedRoleId);
-                $('#editRoleButton').prop('disabled', false);
-                $('#editRolePermissionButton').prop('disabled', false);
-            });
-
-            // Wenn auf den Bearbeiten-Button geklickt wird
-            $('#editRoleButton').click(function () {
-                if (selectedRoleId) {
-                    // Leite den Benutzer direkt zur Edit-Seite mit der ID
-                    window.location.href = '{{ route('roles.edit', ':id') }}'.replace(':id', selectedRoleId);
-                } else {
-                    alert('Bitte wähle zuerst eine Rolle aus.');
-                }
-            });
-
-            $('#editRolePermissionButton').click(function () {
-                if (selectedRoleId) {
-                    // Leite den Benutzer direkt zur Edit-Seite mit der ID
-                    window.location.href = '{{ route('rolepermissions.edit', ':id') }}'.replace(':id', selectedRoleId);
-                } else {
-                    alert('Bitte wähle zuerst eine Rolle aus.');
-                }
-            });
-
-
-        });
-
-
-    </script>
-
-</body>
-</html>
 
 </x-layout>

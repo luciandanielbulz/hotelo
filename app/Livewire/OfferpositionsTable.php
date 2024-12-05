@@ -29,7 +29,7 @@ class OfferpositionsTable extends Component
 
     public function deletePosition($positionId)
     {
-        dd($positionId);
+        //dd($positionId);
         // Prüfen, ob die Position existiert
         $position = OfferPositions::find($positionId);
 

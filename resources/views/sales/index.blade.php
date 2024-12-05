@@ -1,43 +1,48 @@
 <x-layout>
-    <div class="container">
+    <div class="px-4 sm:px-6 lg:px-8">
+        <div class="sm:flex sm:items-center">
+            <div class="sm:flex-auto">
+                <h1 class="text-base font-semibold text-gray-900">Umsatzübersicht</h1>
+            </div>
+        </div>
 
-        <div class="row">
-            <div class="col" style="border: 1px solid #ccc; padding: 20px; width: 80%; margin: 20px auto;">
-                <div class="text-right">
-                    <button id="showDetails" class="btn btn-transparent" disabled>Details</button>
-                </div>
-                <div class="table-responsive" id="salesTable">
-                    <table class="table table-sm">
-                        <thead>
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Tabelle -->
+            <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
                             <tr>
-                                <th scope="col">Jahr</th>
-                                <th scope="col">Umsatz-Netto</th>
-
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Jahr</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Umsatz-Netto</th>
+                                <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Details</th>
                             </tr>
                         </thead>
-
-                        <tbody>
-
-                        @forelse($salespositions as $salesposition)
-                            <tr data-id='{{$salesposition->row}}'>
-                                <td>{{$salesposition->Jahr}}</td>
-                                <td>{{$salesposition->Umsatz - $salesposition->Deposit}} €</td>
-
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5">Keine Datensätze gefunden</td>
-                            </tr>
-                        @endforelse
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                            @forelse($salespositions as $salesposition)
+                                <tr data-id='{{ $salesposition->row }}' class="hover:bg-indigo-100 cursor-pointer">
+                                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900">{{ $salesposition->Jahr }}</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $salesposition->Umsatz - $salesposition->Deposit }} €</td>
+                                    <td class="text-right whitespace-nowrap px-3 py-4 text-sm">
+                                        <button onclick="window.location.href='sales_details.php?year={{ $salesposition->row }}'" class="rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">Details</button>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="px-3 py-4 text-sm text-gray-500 text-center">Keine Datensätze gefunden</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div class="col" style="border: 1px solid #ccc; padding: 20px; width: 80%; margin: 20px auto;">
-                <canvas id="revenueChart"></canvas> <!-- Canvas für das Chart -->
+
+            <!-- Chart -->
+            <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg p-4">
+                <canvas id="revenueChart"></canvas>
             </div>
         </div>
-
     </div>
 
     <script>
@@ -49,21 +54,12 @@
                 $('#salesTable tr').removeClass('selected-row');
                 $(this).addClass('selected-row');
                 selectedYear = $(this).data('id');
-                console.log(selectedYear);
                 $('#showDetails').prop('disabled', false);
             });
 
             $('#showDetails').click(function() {
-                console.log("Details Button wurde geklickt");
                 if (selectedYear) {
-                    $('<form>', {
-                        'action': 'sales_details.php',
-                        'method': 'post',
-                        'style': 'display: none;',
-                        'html': [
-                            $('<input>', {'type': 'hidden', 'name': 'year', 'value': selectedYear}),
-                        ]
-                    }).appendTo('body').submit();
+                    window.location.href = `sales_details.php?year=${selectedYear}`;
                 }
             });
 
@@ -74,26 +70,25 @@
             // Chart.js Diagramm erstellen
             var ctx = document.getElementById('revenueChart').getContext('2d');
             var revenueChart = new Chart(ctx, {
-                type: 'line', // Du kannst auch 'bar' oder 'pie' verwenden
+                type: 'line',
                 data: {
-                    labels: years, // Die Jahre auf der X-Achse
+                    labels: years,
                     datasets: [{
                         label: 'Umsätze in €',
-                        data: revenues, // Umsätze auf der Y-Achse
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Farbe der Linie
-                        borderColor: 'rgba(75, 192, 192, 1)', // Farbe der Linie
-                        borderWidth: 1 // Breite der Linie
+                        data: revenues,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
                     }]
                 },
                 options: {
                     scales: {
                         y: {
-                            beginAtZero: true // Y-Achse beginnt bei 0
+                            beginAtZero: true
                         }
                     }
                 }
             });
         });
     </script>
-
 </x-layout>

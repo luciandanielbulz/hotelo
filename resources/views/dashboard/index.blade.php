@@ -1,26 +1,24 @@
 <x-layout>
-    
+
     <div class="container">
 
         <div class="row pt-3">
 
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 @foreach($tiles as $tile)
-                    <div class='col-md-4 mb-4'>
-                        <a href='{{ $tile["targetFile"] }}' class='text-decoration-none text-dark'>
-                            <div class='tile p-4' style='background-color: {{ $tile["backgroundColor"] }}'>
-                                <div class='row'>
-                                    <div class='col-auto'>
-                                        <i class='{{ $tile["icon"] }}'></i>
-                                    </div>
-                                    <div class='col'>
-                                        <h5>{{ $tile["title"] }}</h5>
-                                        <p>{{ $tile["text"] }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
+                    <a href="{{ $tile['targetFile'] }}" class="relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400 text-decoration-none">
+                        <div class="shrink-0">
+                            <i class="{{ $tile['icon'] }} size-10 rounded-full" style="font-size: 2rem; color: {{ $tile['backgroundColor'] }}"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <span class="absolute inset-0" aria-hidden="true"></span>
+                            <p class="text-sm font-medium text-gray-900">{{ $tile['title'] }}</p>
+                            <p class="truncate text-sm text-gray-500">{{ $tile['text'] }}</p>
+                        </div>
+                    </a>
                 @endforeach
+            </div>
+
 
         </div>
 

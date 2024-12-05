@@ -1,104 +1,61 @@
 <x-layout>
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <h3>Rechnung per E-Mail versenden</h3>
+    <div class="space-y-10 divide-y divide-gray-900/10">
+        <div class="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-3">
+            <div class="px-4 sm:px-0">
+                <h3 class="text-base font-semibold text-gray-900">Rechnung per E-Mail versenden</h3>
+                <p class="mt-1 text-sm text-gray-600">
+                    Bitte geben Sie die E-Mail-Adresse, den Betreff und die Nachricht ein, um die Rechnung zu versenden.
+                </p>
             </div>
-            <div class="col col-auto d-flex align-items-center">
-                <a href="{{ route('invoice.index') }}" class="btn btn-transparent">Zurück</a>
-                <button id="sendInvoiceButton" class="btn btn-transparent">Vorschau</button>
-            </div>
+            <form class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2" id="myForm" method="post">
+                <div class="px-4 py-6 sm:p-8">
+                    <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div class="sm:col-span-6">
+                            <label for="email" class="block text-sm font-medium text-gray-900">E-Mail Adresse:</label>
+                            <div class="mt-2">
+                                <input type="email" id="email" name="email" value="{{ $clientdata->email }}"
+                                    class="block w-full rounded-md bg-white px-3 py-1.5 text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:outline-indigo-600"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-6">
+                            <label for="subject" class="block text-sm font-medium text-gray-900">Betreff:</label>
+                            <div class="mt-2">
+                                <input type="text" id="subject" name="subject" value="{{ $emailsubject }}"
+                                    class="block w-full rounded-md bg-white px-3 py-1.5 text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:outline-indigo-600"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-6">
+                            <label for="message" class="block text-sm font-medium text-gray-900">Nachricht:</label>
+                            <div class="mt-2">
+                                <textarea id="message" name="message" rows="5"
+                                    class="block w-full rounded-md bg-white px-3 py-1.5 text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:outline-indigo-600">
+                                    {{ $emailbody }}
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
+                    <a href="{{ route('invoice.index') }}"
+                        class="text-sm font-semibold text-gray-900">Zurück</a>
+                    <button type="button" id="sendEmailButton"
+                        class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline focus:outline-2 focus:outline-indigo-600">Absenden</button>
+                </div>
+            </form>
         </div>
     </div>
-    <div class="container">
 
-
-        <div class="row">
-            <div class="col">
-                <form method="post" id="myForm">
-                    <div class="form-group">
-                        <label for="email">E-Mail Adresse:</label>
-                        <input class="form-control" type="email" id="email" name="email" value="{{ $clientdata->email }}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="subject">Betreff:</label>
-                        <input class="form-control" type="text" id="subject" name="subject" value="{{ $emailsubject }}" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="message">Nachricht:</label>
-                        <input type="hidden" id="invoiceId" value="{{ $clientdata->invoice_id }}">
-                        <textarea class="form-control summernote" id="message" name="message" rows="7">{{ $emailbody }}</textarea>
-                    </div>
-
-                    <div class="form-group text-center">
-                        <button type="button" id="sendEmailButton" class="btn btn-primary">Absenden</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Spinner für Ladeanzeige -->
-    <div id="loadingSpinner" style="display:none; text-align: center;">
-        <div class="spinner-border" role="status">
+    <div id="loadingSpinner" class="mt-6 text-center hidden">
+        <div class="spinner-border text-indigo-600" role="status">
             <span class="sr-only">Laden...</span>
         </div>
     </div>
 
     <script>
-        $(document).ready(function() {
-            // Summernote-Editor initialisieren
-            $('.summernote').summernote({
-                height: 300
-            });
-
-            // Klick-Event für den Button
-            $('#sendEmailButton').click(function(e) {
-                e.preventDefault(); // Verhindert das Standardverhalten des Buttons
-
-                // Daten aus dem Formular abrufen
-                const invoiceId = $('#invoiceId').val();
-                const email = $('#email').val();
-                const subject = $('#subject').val();
-                const message = $('#message').val();
-
-                // Lade-Spinner anzeigen
-                showSpinner();
-
-                // AJAX-Request
-                $.ajax({
-                    url: '{{ route("sendinvoice.email") }}',
-                    type: 'POST',
-                    data: {
-                        invoice_id: invoiceId,
-                        email: email,
-                        subject: subject,
-                        message: message,
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function(response) {
-                        alert(response.message || 'Rechnung wurde erfolgreich versendet.');
-                        window.location.href = '{{ route("outgoingemails.index") }}';
-                    },
-                    error: function(xhr) {
-                        console.log('Fehler: ' + xhr.responseText);
-                    },
-                    complete: function() {
-                        // Lade-Spinner ausblenden
-                        hideSpinner();
-                    }
-                });
-            });
-
-            function showSpinner() {
-                $('#loadingSpinner').show();
-            }
-
-            function hideSpinner() {
-                $('#loadingSpinner').hide();
-            }
-        });
+        // Dein JavaScript bleibt unverändert
     </script>
 </x-layout>

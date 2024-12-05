@@ -1,300 +1,93 @@
 <x-layout>
+    <div class="container mx-auto px-4 py-8">
+        <form class="bg-white p-6 rounded-lg shadow-md">
+            <div class="space-y-12">
+                <div class="border-b border-gray-900/10 pb-12">
+                    <h2 class="text-base/7 font-semibold text-gray-900">Angebot bearbeiten</h2>
+                    <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div class="col-span-full">
+                            <label class="block text-sm/6 font-medium text-gray-900">Kundendaten</label>
+                            <div class="mt-2">
+                                <p class="text-sm text-gray-900">{{ $offer->companyname }}</p>
+                                <p class="text-sm text-gray-900">{{ $offer->customername }}</p>
+                                <p class="text-sm text-gray-900">{{ $offer->address }}</p>
+                                <p class="text-sm text-gray-900">{{ $offer->country }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <h3>Angebot bearbeiten - {{$offer->offer_id}}</h3>
+                <div class="border-b border-gray-900/10 pb-12">
+                    <h2 class="text-base/7 font-semibold text-gray-900">Rechnungsdetails</h2>
+                    <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div class="sm:col-span-3">
+                            <label for="taxrateid" class="block text-sm font-medium text-gray-900">Steuersatz</label>
+                            <div class="mt-2">
+                                <select id="taxrateid" name="taxrateid" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 focus:outline-indigo-600">
+                                    <option value="1" {{ $offer->tax_id == 1 ? 'selected' : '' }}>0 %</option>
+                                    <option value="2" {{ $offer->tax_id == 2 ? 'selected' : '' }}>20 %</option>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Datum -->
+                        <div class="sm:col-span-2">
+                            <label for="offerDate" class="block text-sm font-medium text-gray-900">Datum</label>
+                            <div class="mt-2">
+                                <input type="date" id="offerDate" name="offerDate" value="{{ $offer->date ? $offer->date->format('Y-m-d') : '' }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 focus:outline-indigo-600">
+                            </div>
+                        </div>
+                        <!-- Nummer -->
+                        <div class="sm:col-span-2">
+                            <label for="offerNumber" class="block text-sm font-medium text-gray-900">Nummer</label>
+                            <div class="mt-2">
+                                <input type="text" id="offerNumber" name="offerNumber" value="{{ $offer->number }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 focus:outline-indigo-600">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border-b border-gray-900/10 pb-12">
+                    <h2 class="text-base/7 font-semibold text-gray-900">Zusätzliche Informationen</h2>
+                    <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div class="col-span-full">
+                            <label for="description" class="block text-sm font-medium text-gray-900">Beschreibung - erscheint nicht in Rechnung</label>
+                            <input type="text" id="description" name="description" value="{{ $offer->description }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 focus:outline-indigo-600">
+                        </div>
+                        <div class="col-span-full">
+                            <label for="comment" class="block text-sm font-medium text-gray-900">Angebotskommentar</label>
+                            <input type="text" id="comment" name="comment" value="{{ $offer->comment }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 focus:outline-indigo-600">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hier wird die Livewire-Komponente eingebunden -->
+                <livewire:offerpositions-table :offerId="$offer->offer_id" />
+
+                <div class="border-b border-gray-900/10 pb-12">
+                    <h2 class="text-base/7 font-semibold text-gray-900">Zusammenfassung</h2>
+                    <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div class="col-span-full text-right">
+                            <p>Zwischensumme (Netto): {{ number_format($total_price->total_price, 2, ',', '.') }} €</p>
+                            <p>Umsatzsteuer ({{ $offer->taxrate }} %): {{ number_format($total_price->total_price * ($offer->taxrate / 100), 2, ',', '.') }} €</p>
+                            <hr>
+                            <p class="font-semibold">Gesamtsumme: {{ number_format($total_price->total_price * (1 + ($offer->taxrate / 100)), 2, ',', '.') }} €</p>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
-            <div class="col col-auto d-flex align-items-center">
-                <a href="{{ route('offer.index') }}" class="btn btn-transparent me-2">Zurück</a>
-                <button id="viewOfferButton" class="btn btn-transparent">Vorschau</button>
-            </div>
-        </div>
+        </form>
     </div>
 
-
-    <div class="container">
-        <hr>
-
-        <!-----------------------Kunde----------------------->
-        <div class="row mt-2 mb-3">
-            <div class="col">
-                <h5>Kunde</h5>
-            </div>
-            <div class="col">
-                <form method="post" action="#" class="m-0">
-                    <input type="hidden" name="offerId" value="">
-                    <button type="submit" class="btn btn-transparent">Ändern</button>
-                </form>
-            </div>
-            <div class="col"></div>
-            <div class="col"></div>
-            <div class="col"></div>
-
-        </div>
-        <div class = "row">
-            <div class="col">
-                <label class="label-client">{{ $offer->companyname }}</label><br>
-                <label class="label-client">{{ $offer->customername }}</label><br>
-                <label class="label-client">{{ $offer->address}}</label><br>
-                <label class="label-client">{{ $offer->country}}</label>
-            </div>
-        </div>
-
-        <hr>
-
-        <!-----------------------Steuersatz & Angebotsdatum----------------------->
-        <div class = "row mt-2 mb-3">
-            <div class="col">
-                <form id="taxrateForm">
-                    <label for="taxrateid">Steuersatz</label>
-                    <select class="form-control" id="taxrateid" name="taxrateid">
-                        <option value="1" {{ $offer->tax_id == 1 ? 'selected' : '' }}>0 %</option>
-                        <option value="2" {{ $offer->tax_id == 2 ? 'selected' : '' }}>20 %</option>
-                    </select>
-                </form>
-            </div>
-
-            <!---------------------------------------------->
-            <div class="col">
-                <form id="offerDateForm">
-                    <label for="offerDate">Datum</label>
-                    <input type="date" class="form-control" id="offerDate" name ="offerDate" value="{{ $offer->date ? $offer->date->format('Y-m-d') : '' }}">
-                </form>
-            </div>
-
-            <div class="col">
-                <form id="offerNumberForm">
-                    <label for="offerNumber">Nummer</label>
-                    <input type="input" class="form-control" id = "offerNumber" name ="offerNumber" value="{{ $offer->number }}">
-                </form>
-            </div>
-        </div>
-        <hr>
-
-        <!-----------------------Beschreibung----------------------->
-        <div class="row mt-2 mb-3">
-            <div class="col">
-                <form id="commentForm">
-                    <label for="description">Beschreibung - erscheint nicht in Rechnung</label>
-                    <input class="form-control" name="description" id="description" value = "{{$offer->description}}"></input>
-                </form>
-            </div>
-
-        </div>
-
-        <hr>
-        <!-----------------------Angebotskommentar----------------------->
-        <div class="row mt-2 mb-3">
-            <div class = "col">
-                <form id="descriptionForm">
-                    <label for="comment">Angebotskommentar</label>
-                    <input type="text" class="form-control" id="comment" name="comment" value="{{$offer->comment}}"></input>
-                </form>
-            </div>
-        </div>
-
-        <!-----------------------Beschreibung Ende----------------------->
-
-        <hr>
-
-        <livewire:offerpositions-table :offerId="$offer->offer_id" />
-    </div>
-
-
-    <hr>
-    <div class ="row mt-2 mb-3">
-        <div class="col"></div>
-
-
-        <div class="col"></div>
-
-        <div class="col"></div>
-        <div class="col">
-            Zwischensumme (Netto):<br>
-            Umsatzsteuer ({{$offer->taxrate}} %):<br><hr>
-            <b>Gesamtsumme:</b>
-        </div>
-
-        <div class="col">
-
-            {{ number_format($total_price->total_price, 2, ',', '.') }} €<br>
-            {{ number_format($total_price->total_price * ($offer->taxrate / 100), 2, ',', '.') }}  €<br><hr>
-            {{ number_format($total_price->total_price*(1+($offer->taxrate / 100)), 2, ',', '.') }} €
-
-        </div>
-
-
-
-    </div>
-
-</div>
-    <script>
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        $(document).ready(function() {
-            $('#positionsTable').on('click', 'tr', function() {
-                $('#positionsTable tr').removeClass('selected-row');
-                $(this).addClass('selected-row');
-                selectedPositionId = $(this).data('id');
-                console.log(selectedPositionId);
-                $('#editPosition').prop('disabled', false);
-                $('#deletePosition').prop('disabled', false);
-            });
-
-            $('#viewOfferButton').click(function() {
-                const url = '{{ route("createoffer.pdf") }}' +
-                    '?offer_id=' + {{$offer->offer_id}} +
-                    '&objecttype=offer' +
-                    '&prev=I';
+    <!-- Vorschau-Skript -->
+        <script>
+            document.getElementById('viewOfferButton').addEventListener('click', function() {
+                const url = '{{ route('createoffer.pdf') }}?offer_id={{ $offer->offer_id }}&objecttype=offer&prev=I';
                 window.open(url, '_blank');
             });
+        </script>
 
-            $('#taxrateid').change(function() {
-                var offerId = "{{ $offer->offer_id }}";  // Holt das Angebots-ID
-                var taxrateid = $(this).val();  // Holt den ausgewählten Steuersatz
-                console.log(taxrateid);
-                console.log(offerId);
-                // AJAX Anfrage an den Server senden
-                $.ajax({
-                    url: '{{ route("offer.updatetaxrate") }}',  // Die Route, die die Aktualisierung entgegennimmt
-                    method: 'POST',
-                    data: {
-                        offer_id: offerId,  // Anbiet-ID (wird aus der Anwendung übergeben)
-                        tax_id: taxrateid,  // Steuersatz-ID (wird aus der Anwendung übergeben)
-                        _token: '{{ csrf_token() }}'  // CSRF-Token
-                    },
-
-                    success: function(response) {
-                        console.log(response.message);
-                        alert(response.message);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log('Fehler beim Aktualisieren des Steuersatzes');
-                    }
-                });
-            });
-
-            $('#offerNumber').change(function() {
-                var offerId = "{{ $offer->offer_id }}";  // Holt das Angebots-ID
-                var offernumber = $(this).val();  // Holt den ausgewählten Steuersatz
-                console.log(offernumber);
-                console.log(offerId);
-                // AJAX Anfrage an den Server senden
-                $.ajax({
-                    url: '{{ route("offer.updatenumber") }}',  // Die Route, die die Aktualisierung entgegennimmt
-                    method: 'POST',
-                    data: {
-                        offer_id: offerId,  // Anbiet-ID (wird aus der Anwendung übergeben)
-                        number: offernumber,  // Steuersatz-ID (wird aus der Anwendung übergeben)
-                        _token: '{{ csrf_token() }}'  // CSRF-Token
-                    },
-
-                    success: function(response) {
-                        console.log(response.message);
-                        alert(response.message);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log('Fehler beim Aktualisieren des Steuersatzes');
-                        alert('Fehler beim Aktualisieren der Angebotsnummer, bitte Administrator kontaktieren!');
-                    }
-                });
-            });
-
-            $('#editPosition').click(function() {
-                console.log("bearbeiten geklickt");
-
-                if (!selectedPositionId) {
-                    console.log("Keine Position ausgewählt");
-                    return; // Abbruch, wenn keine ID gesetzt ist
-                }
-
-                // Weiterleitung zur neuen Seite
-                window.location.href = `/offerposition/${selectedPositionId}/edit`;
-            });
-
-
-            $('#offerDate').change(function() {
-                var offerId = "{{ $offer->offer_id }}";  // Holt das Angebots-ID
-                var offerDate = $(this).val();  // Holt den ausgewählten Steuersatz
-                console.log(offerDate);
-                console.log(offerId);
-                // AJAX Anfrage an den Server senden
-                $.ajax({
-                    url: '{{ route("offer.updateofferdate") }}',  // Die Route, die die Aktualisierung entgegennimmt
-                    method: 'POST',
-                    data: {
-                        offer_id: offerId,  // Anbiet-ID (wird aus der Anwendung übergeben)
-                        offerdate: offerDate,  // Steuersatz-ID (wird aus der Anwendung übergeben)
-                        _token: '{{ csrf_token() }}'  // CSRF-Token
-                    },
-
-                    success: function(response) {
-                        console.log(response.message);
-                        alert(response.message);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log('Fehler beim Aktualisieren des Steuersatzes');
-                        alert('Fehler beim Aktualisieren des Datums, bitte Administrator kontaktieren!');
-                    }
-                });
-            });
-
-            $('#description').change(function() {
-                var offerId = "{{ $offer->offer_id }}";  // Holt das Angebots-ID
-                var description = $(this).val();  // Holt den ausgewählten Steuersatz
-                console.log(description);
-                console.log(offerId);
-                // AJAX Anfrage an den Server senden
-                $.ajax({
-                    url: '{{ route("offer.updatedescription") }}',  // Die Route, die die Aktualisierung entgegennimmt
-                    method: 'POST',
-                    data: {
-                        offer_id: offerId,  // Anbiet-ID (wird aus der Anwendung übergeben)
-                        description: description,  // Steuersatz-ID (wird aus der Anwendung übergeben)
-                        _token: '{{ csrf_token() }}'  // CSRF-Token
-                    },
-
-                    success: function(response) {
-                        console.log(response.message);
-                        alert(response.message);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log('Fehler beim Aktualisieren des Steuersatzes');
-                        alert('Fehler beim Aktualisieren der Beschreibung, bitte Administrator kontaktieren!');
-                    }
-                });
-            });
-
-            $('#comment').change(function() {
-                var offerId = "{{ $offer->offer_id }}";  // Holt das Angebots-ID
-                var comment = $(this).val();  // Holt den ausgewählten Steuersatz
-                console.log(comment);
-                console.log(offerId);
-                // AJAX Anfrage an den Server senden
-                $.ajax({
-                    url: '{{ route("offer.updatecomment") }}',  // Die Route, die die Aktualisierung entgegennimmt
-                    method: 'POST',
-                    data: {
-                        offer_id: offerId,  // Anbiet-ID (wird aus der Anwendung übergeben)
-                        comment: comment,  // Steuersatz-ID (wird aus der Anwendung übergeben)
-                        _token: '{{ csrf_token() }}'  // CSRF-Token
-                    },
-
-                    success: function(response) {
-                        console.log(response.message);
-                        alert(response.message);
-                    },
-                    error: function(xhr, status, error) {
-                        console.log('Fehler beim Aktualisieren des Steuersatzes');
-                        alert('Fehler beim Aktualisieren des Kommentars, bitte Administrator kontaktieren!');
-                    }
-                });
-            });
-        });
-    </script>
+        <!-- Livewire Scripts -->
+        @livewireScripts
 </x-layout>
