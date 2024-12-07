@@ -7,7 +7,7 @@
         </div>
 
         <!-- Formular -->
-        <form action="{{ route('customer.update', $customer->id) }}" method="POST" class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
+        <form action="{{ route('customer.update', $customer->id) }}" method="POST" value = 1 class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
             @csrf
             @method('PUT')
 
@@ -15,145 +15,76 @@
                 <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <!-- Anrede -->
                     <div class="sm:col-span-2">
-                        <label for="salutation_id" class="block text-sm font-medium text-gray-900">Anrede</label>
-                        <div class="mt-2">
-                            <select name="salutation_id" id="salutation_id" class="block w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                                @foreach($salutations as $salutation)
-                                    <option value="{{ $salutation->id }}" {{ $salutation->id == old('salutation_id', $customer->salutation_id) ? 'selected' : '' }}>
-                                        {{ $salutation->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                        <x-dropdown_body name="salutation_id" id="salutation_id" :options="$salutations->pluck('name', 'id')" :selected="old('salutation', $customer->salutation)"  label="Anrede" placeholder="Bitte auswählen" />
                     </div>
 
                     <!-- Titel -->
-                    <div class="sm:col-span-3">
-                        <label for="title" class="block text-sm font-medium text-gray-900">Titel</label>
-                        <div class="mt-2">
-                            <input type="text" name="title" id="title" value="{{ $customer->title }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                        </div>
+                    <div class="sm:col-span-2">
+                        <x-input name="title" type="text" placeholder="Titel" label="Titel" value="{{ $customer->title }}" />
                     </div>
 
                     <!-- Kundenname -->
                     <div class="sm:col-span-3">
-                        <label for="customername" class="block text-sm font-medium text-gray-900">Kundenname</label>
-                        <div class="mt-2">
-                            <input type="hidden" name="customerid" value="{{ $customer->id }}">
-                            <input type="text" name="customername" id="customername" value="{{ old('customername', $customer->customername) }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                            @error('customername')
-                                <div class="text-sm text-red-600">{{ $message }}</div>
-                            @enderror
-                        </div>
+                        <x-input name="customername" type="text" placeholder="Kundenname" label="Kundenname" value="{{ $customer->customername }}" />
+                        <input type="hidden" name="customerid" value="{{ $customer->id }}">
                     </div>
-
                     <!-- Firmenname -->
                     <div class="sm:col-span-3">
-                        <label for="companyname" class="block text-sm font-medium text-gray-900">Firmenname</label>
-                        <div class="mt-2">
-                            <input type="text" name="companyname" id="companyname" value="{{ $customer->companyname }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                        </div>
+                        <x-input name="companyname" type="text" placeholder="Firmenname" label="Firmenname" value="{{ $customer->companyname }}" />
                     </div>
 
                     <!-- Adresse -->
-                    <div class="sm:col-span-3">
-                        <label for="address" class="block text-sm font-medium text-gray-900">Adresse</label>
-                        <div class="mt-2">
-                            <input type="text" name="address" id="address" value="{{ $customer->address }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                        </div>
+                    <div class="sm:col-span-4">
+                        <x-input name="address" type="text" placeholder="Adresse" label="Adresse" value="{{ $customer->address }}" />
                     </div>
 
                     <!-- Postleitzahl -->
                     <div class="sm:col-span-1">
-                        <label for="postalcode" class="block text-sm font-medium text-gray-900">Postleitzahl</label>
-                        <div class="mt-2">
-                            <input type="text" name="postalcode" id="postalcode" value="{{ $customer->postalcode }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                        </div>
+                        <x-input name="postalcode" type="text" placeholder="Postleitzahl" label="Postleitzahl" value="{{ $customer->postalcode }}" />
                     </div>
 
                     <!-- Ort -->
                     <div class="sm:col-span-3">
-                        <label for="location" class="block text-sm font-medium text-gray-900">Ort</label>
-                        <div class="mt-2">
-                            <input type="text" name="location" id="location" value="{{ $customer->location }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                        </div>
+                        <x-input name="location" type="text" placeholder="Ort" label="Ort" value="{{ $customer->location }}" />
                     </div>
 
                     <!-- Land -->
                     <div class="sm:col-span-3">
-                        <label for="country" class="block text-sm font-medium text-gray-900">Land</label>
-                        <div class="mt-2">
-                            <input type="text" name="country" id="country" value="{{ $customer->country }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                        </div>
+                        <x-input name="country" type="text" placeholder="Land" label="Land" value="{{ $customer->country }}" />
                     </div>
 
                     <!-- UID -->
                     <div class="sm:col-span-2">
-                        <label for="vat_number" class="block text-sm font-medium text-gray-900">UID</label>
-                        <div class="mt-2">
-                            <input type="text" name="vat_number" id="vat_number" value="{{ $customer->vat_number }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                        </div>
+                        <x-input name="vat_number" type="text" placeholder="UID" label="UID" value="{{ $customer->vat_number }}" />
                     </div>
 
                     <!-- Umsatzsteuer -->
                     <div class="sm:col-span-2">
-                        <label for="tax_id" class="block text-sm font-medium text-gray-900">Umsatzsteuer</label>
-                        <div class="mt-2">
-                            <select name="tax_id" id="tax_id" class="block w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                                <option value="">Bitte wählen...</option>
-                                @foreach ($taxrates as $taxrate)
-                                    <option value="{{ $taxrate->id }}" {{ $customer->tax_id == $taxrate->id ? 'selected' : '' }}>
-                                        {{ $taxrate->taxrate }}%
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                        <x-dropdown_body name="tax_id" id="tax_id" :options="$taxrates->pluck('taxrate', 'id')" :selected="old('taxrate', $customer->tax_id)"  label="Umsatzsteuer in %" placeholder="Bitte auswählen" />
                     </div>
-
                     <!-- Telefonnummer -->
-                    <div class="sm:col-span-2">
-                        <label for="phone" class="block text-sm font-medium text-gray-900">Telefonnummer</label>
-                        <div class="mt-2">
-                            <input type="text" name="phone" id="phone" value="{{ $customer->phone }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                        </div>
+                    <div class="sm:col-span-3">
+                        <x-input name="phone" type="text" placeholder="Telefonnummer" label="Telefonnummer" value="{{ $customer->phone }}" />
                     </div>
 
                     <!-- Fax -->
-                    <div class="sm:col-span-2">
-                        <label for="fax" class="block text-sm font-medium text-gray-900">Fax</label>
-                        <div class="mt-2">
-                            <input type="text" name="fax" id="fax" value="{{ $customer->fax }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                        </div>
+                    <div class="sm:col-span-3">
+                        <x-input name="fax" type="text" placeholder="Fax" label="Fax" value="{{ $customer->fax }}" />
                     </div>
 
                     <!-- E-Mail -->
-                    <div class="sm:col-span-2">
-                        <label for="email" class="block text-sm font-medium text-gray-900">E-Mail</label>
-                        <div class="mt-2">
-                            <input type="email" name="email" id="email" value="{{ $customer->email }}" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                        </div>
+                    <div class="sm:col-span-3">
+                        <x-input name="email" type="text" placeholder="E-Mail" label="E-Mail" value="{{ $customer->email }}" />
                     </div>
 
                     <!-- Konditionen -->
                     <div class="sm:col-span-3">
-                        <label for="condition_id" class="block text-sm font-medium text-gray-900">Konditionen</label>
-                        <div class="mt-2">
-                            <select name="condition_id" id="condition_id" class="block w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                                @foreach($conditions as $condition)
-                                    <option value="{{ $condition->id }}" {{ $condition->id == old('condition_id', $customer->condition_id) ? 'selected' : '' }}>
-                                        {{ $condition->conditionname }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
+                        <x-dropdown_body name="condition_id" id="condition_id" :options="$conditions->pluck('conditionname', 'id')" :selected="old('conditionname', $customer->condition_id)"  label="Konditionen" placeholder="Bitte auswählen" />
                     </div>
+
                     <!-- Email Subject -->
                     <div class="sm:col-span-6">
-                        <label for="email_subject" class="block text-sm font-medium text-gray-900">E-Mail Betreff</label>
-                        <div class="mt-2">
-                            <input type="text" name="emailsubject" id="emailsubject" value="{{ old('email_subject', $customer->emailsubject) }}"
-                                   class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                        </div>
+                        <x-input name="emailsubject" type="text" placeholder="E-Mail Betreff" label="E-Mail Betreff" value="{{ $customer->emailsubject }}" />
                     </div>
 
                     <!-- Email Body -->

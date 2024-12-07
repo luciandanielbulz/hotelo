@@ -36,7 +36,7 @@
                         </div>
                     </div>
 
-                    <!-- Nachname-- -->
+                    <!-- Nachname -->
                     <div class="sm:col-span-2">
                         <label for="lastname" class="block text-sm font-medium text-gray-900">Nachname</label>
                         <div class="mt-2">
