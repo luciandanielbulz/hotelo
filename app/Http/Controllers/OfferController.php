@@ -127,7 +127,9 @@ class OfferController extends Controller
                 'taxrates.taxrate',
                 'customers.customername as customername',
                 'customers.address as address',
-                'customers.country as country'
+                'customers.country as country',
+                'customers.postalcode as postalcode',
+                'customers.location as location'
             )
             ->first();
 
@@ -156,81 +158,6 @@ class OfferController extends Controller
         //
     }
 
-    public function updateTaxRate(Request $request)
-    {
-        try {
-            Log::info('Request data: ', $request->all()); // Beispiel-Logging
-
-            // Deine Logik hier ...
-            $validated = $request->validate([
-                'offer_id' => 'required|integer|exists:offers,id',
-                'tax_id' => 'required|integer|exists:taxrates,id',
-            ]);
-
-            $offer = Offers::findOrFail($validated['offer_id']);
-            $offer->tax_id = $validated['tax_id'];
-            $offer->save();
-
-            return response()->json(['message' => 'Steuersatz erfolgreich aktualisiert.'], 200);
-        } catch (\Exception $e) {
-            Log::error('Fehler beim Aktualisieren des Steuersatzes: ' . $e->getMessage(), [
-                'offer_id' => $request->offer_id,
-                'tax_id' => $request->tax_id
-            ]);
-            return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
-        }
-    }
-
-    public function updateofferdate(Request $request)
-    {
-        try {
-            Log::info('Request data: ', $request->all()); // Beispiel-Logging
-
-            // Deine Logik hier ...
-            $validated = $request->validate([
-                'offer_id' => 'required|integer|exists:offers,id',
-                'offerdate' => 'required|date',
-            ]);
-
-            //dd($validated);
-            $offer = Offers::findOrFail($validated['offer_id']);
-            $offer->date = $validated['offerdate'];
-            $offer->save();
-
-            return response()->json(['message' => 'Datum erfolgreich aktualisiert.'], 200);
-        } catch (\Exception $e) {
-            Log::error('Fehler beim Aktualisieren des Datums: ' . $e->getMessage(), [
-                'offer_id' => $request->offer_id,
-                'offerdate' => $request->offerdate
-            ]);
-            return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
-        }
-    }
-
-    public function updatenumber(Request $request)
-    {
-        try {
-            Log::info('Request data: ', $request->all()); // Beispiel-Logging
-
-            // Deine Logik hier ...
-            $validated = $request->validate([
-                'offer_id' => 'required|integer|exists:offers,id',
-                'number' => 'required|integer',
-            ]);
-
-            $offer = Offers::findOrFail($validated['offer_id']);
-            $offer->number = $validated['number'];
-            $offer->save();
-
-            return response()->json(['message' => 'Angebotsnummer erfolgreich aktualisiert.'], 200);
-        } catch (\Exception $e) {
-            Log::error('Fehler beim Aktualisieren der Nummer: ' . $e->getMessage(), [
-                'offer_id' => $request->offer_id,
-                'number' => $request->number
-            ]);
-            return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
-        }
-    }
     public function updatedescription(Request $request)
     {
         try {

@@ -1,5 +1,5 @@
 <x-layout>
-    <div class="px-4 sm:px-6 lg:px-8">
+
         <div class="sm:flex sm:items-center">
             <div class="sm:flex-auto">
                 <h1 class="text-base font-semibold text-gray-900">Angebote</h1>
@@ -9,8 +9,12 @@
         <div class="sm:flex sm:items-center">
             <div class="sm:flex-auto">
                 <form id="searchForm" class="form-inline flex w-1/3" method="GET" action="{{ route('offer.index') }}">
-                    <input type="text" name="search" class="form-control mr-2 rounded-md border-gray-300 px-3 py-2 text-sm w-full" placeholder="Suchen" value="{{ request('search') }}">
-                    <button type="submit" class="ml-2 rounded-md bg-gray-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500">Suchen</button>
+                    <div class="sm:col-span-4">
+                        <x-input name="search" type="text" placeholder="Suchen" label="" value="{{ request('search') }}" />
+                    </div>
+                    <div class="sm:col-span-2">
+                        <x-button_submit value="Suchen" />
+                    </div>
                 </form>
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
@@ -110,5 +114,5 @@
         <div class="mt-4">
             {{ $offers->links() }}
         </div>
-    </div>
+
 </x-layout>

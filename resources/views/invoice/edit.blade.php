@@ -1,6 +1,6 @@
-<x-layout>
+<x-layout> 
     <div class="container mx-auto px-4 py-8">
-        <form class="bg-white p-6 rounded-lg shadow-md">
+        <div class="bg-white p-6 rounded-lg shadow-md">
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12">
                     <h2 class="text-base/7 font-semibold text-gray-900">Rechnung bearbeiten</h2>
@@ -11,6 +11,7 @@
                                 <p class="text-sm text-gray-900">{{ $invoice->companyname }}</p>
                                 <p class="text-sm text-gray-900">{{ $invoice->customername }}</p>
                                 <p class="text-sm text-gray-900">{{ $invoice->address }}</p>
+                                <p class="text-sm text-gray-900">{{ $invoice->postalcode }} {{ $invoice->location }} </p>
                                 <p class="text-sm text-gray-900">{{ $invoice->country }}</p>
                             </div>
                         </div>
@@ -18,32 +19,8 @@
                 </div>
 
                 <div class="border-b border-gray-900/10 pb-12">
-                    <h2 class="text-base/7 font-semibold text-gray-900">Rechnungsdetails</h2>
-                    <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        <div class="sm:col-span-3">
-                            <label for="taxrateid" class="block text-sm/6 font-medium text-gray-900">Steuersatz</label>
-                            <select id="taxrateid" name="taxrateid" class="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                                <option value="1" {{ $invoice->tax_id == 1 ? 'selected' : '' }}>0 %</option>
-                                <option value="2" {{ $invoice->tax_id == 2 ? 'selected' : '' }}>20 %</option>
-                            </select>
-                        </div>
-                        <div class="sm:col-span-3">
-                            <label for="invoiceDate" class="block text-sm/6 font-medium text-gray-900">Rechnungsdatum</label>
-                            <input type="date" id="invoiceDate" name="invoiceDate" value="{{ $invoice->date }}" class="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                        </div>
-                        <div class="sm:col-span-3">
-                            <label for="invoiceNumber" class="block text-sm/6 font-medium text-gray-900">Rechnungsnummer</label>
-                            <input type="text" id="invoiceNumber" name="invoiceNumber" value="{{ $invoice->number }}" class="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                        </div>
-                        <div class="sm:col-span-3">
-                            <label for="condition_id" class="block text-sm/6 font-medium text-gray-900">Zahlungsziel</label>
-                            <select id="condition_id" name="condition_id" class="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                                @foreach ($conditions as $condition)
-                                    <option value="{{ $condition->id }}" {{ $invoice->condition_id == $condition->id ? 'selected' : '' }}>{{ $condition->conditionname }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
+                    <h2 class="text-base/7 font-semibold text-gray-900">Rechnungsdetails</h2> 
+                    <livewire:invoice.invoicedetails :invoiceId="$invoice->id" />
                 </div>
 
                 <div class="border-b border-gray-900/10 pb-12">
@@ -88,7 +65,7 @@
             <div class="mt-6 flex items-center justify-end gap-x-6">
                 <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Speichern</button>
             </div>
-        </form>
+        </div>
     </div>
 
     <script>

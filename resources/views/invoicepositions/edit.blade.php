@@ -1,99 +1,57 @@
 <x-layout>
     @if ($errors->any())
         <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
+            <ul>@foreach ($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul>
         </div>
     @endif
     <div class="container">
         <div class="row">
             <div class="col text-left">
-                <h3>Position bearbeiten</h3>
+                <h2 class="text-base/7 font-semibold text-gray-900">Position bearbeiten</h4>
             </div>
             <div class="col text-right">
-                <form action="{{ route('invoice.edit', ['invoice' => $invoicepositioncontent->invoice_id]) }}" method="GET">
-                    <button type="submit" class="btn btn-transparent">Zurück</button>
-                </form>
+                <x-button route="{{ route('invoice.edit', ['invoice' => $invoicepositioncontent->invoice_id]) }}" value="Zurück" />
             </div>
         </div>
         <div class="row">
             <div class="col">
-
                 @if ($invoicepositioncontent->positiontext == 0)
                     <form method="POST" action="{{ route('invoiceposition.update', ['invoiceposition' => $invoicepositioncontent->id])}}" class="p-3 mb-3" id="normalForm">
                         @csrf
-                        @method('PUT') <!-- Wenn du die Position aktualisieren möchtest -->
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="amount">Menge</label>
-                                <input type="number" step="0.01" class="form-control" id="amount" name="amount" value="{{ old('amount', $invoicepositioncontent->amount) }}" required>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="unit_id">Einheit</label>
-                                <select class="form-control" id="unit_id" name="unit_id">
-                                    @foreach ($units as $unit)
-                                        <option value="{{ $unit->id }}" {{ $unit->id == old('unit_id', $invoicepositioncontent->unit_id) ? 'selected' : '' }}  required>
-                                            {{ $unit->unitdesignation }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                        @method('PUT')
+                        <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-4">
+                            <x-input type="number" step="0.01" name="amount" label="Menge" value="{{ old('amount', $invoicepositioncontent->amount) }}" placeholder="Geben Sie die Menge ein" />
+                            <x-dropdown_body name="unit_id" label="Einheit" :options="$units->pluck('unitdesignation', 'id')" selected="{{ old('unit_id', $invoicepositioncontent->unit_id) }}" />
+                            <x-input type="number" step="0.01" name="price" label="Preis/EH" value="{{ old('price', $invoicepositioncontent->price) }}" placeholder="Preis eingeben" />
+                            <x-input name="sequence" label="Reihenfolge" value="{{ old('sequence', $invoicepositioncontent->sequence) }}" placeholder="Reihenfolge eingeben" />
+                        </div>
+                        
+                        <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-1">
+                            <x-input type="text" name="designation" label="Beschreibung" value="{{ old('designation', $invoicepositioncontent->designation) }}" placeholder="Beschreibung eingeben" />
+                        </div>
+                            
+                        <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-1">
+                            <label for="details" class="block text-sm/6 font-medium text-gray-900 mb-1">Positionsdetail</label>
+                            <textarea name="details" id="details" rows="10" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">{{ old('details', $invoicepositioncontent->details) }}</textarea>
                         </div>
 
-                        <div class="form-row">
-                            <div class="form-group col-md-12">
-                                <label for="designation">Beschreibung</label>
-                                <input type="text" class="form-control" id="designation" name="designation" value="{{ old('designation', $invoicepositioncontent->designation) }}"  required>
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="price">Preis/EH</label>
-                                <input type="number" step="0.01" class="form-control" id="price" name="price" value="{{ old('price', $invoicepositioncontent->price) }}"  required>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="sequence">Reihenfolge</label>
-                                <input type="text" class="form-control" id="sequence" name="sequence" value="{{ old('sequence', $invoicepositioncontent->sequence) }}" >
-                            </div>
-                        </div>
-
-                        <div class="form-row">
-                            <div class="form-group col-md-10">
-                                <label for="details">Positionsdetail</label>
-                                <textarea class="form-control" id="details" name="details" rows="10">{{ old('details', $invoicepositioncontent->details) }}</textarea>
-                            </div>
-                        </div>
                         <div class="form-group mt-4">
-                            <input type="hidden" name="id" value="{{$invoicepositioncontent->id}}">
-                            <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+                            <input type="hidden" name="id" value="{{ $invoicepositioncontent->id }}">
+                            <x-button route="{{ route('invoiceposition.update', ['invoiceposition' => $invoicepositioncontent->id]) }}" value="Änderungen speichern" />
                         </div>
                     </form>
                 @else
                     <form method="POST" action="{{ route('invoiceposition.update', ['invoiceposition' => $invoicepositioncontent->id])}}" class="p-3 mb-3" id="normalForm">
                         @csrf
-                        @method('PUT') <!-- Füge diese Zeile hinzu -->
-
-
-                        <div class="form-group col-md-3">
-                            <label for="sequence">Reihenfolge</label>
-                            <input type="text" class="form-control" id="sequence" name="sequence" value="{{$invoicepositioncontent->sequence}}">
-                        </div>
-
-                        <div class="form-group col-md-10" id="onlyComment">
-                            <label for="positiontext">Positionstext</label>
-                            <input type="hidden" id="amount" name="amount" value="0">
-                            <input type="hidden" id="unit_id" name="unit_id" value="1">
-                            <input type="hidden" id="designation" name="designation" value="1">
-                            <input type="hidden" id="price" name="price" value="0">
-                            <textarea class="form-control" name="details" rows="10"  required>{{$invoicepositioncontent->details}}</textarea>
+                        @method('PUT')
+                        <x-input name="sequence" label="Reihenfolge" value="{{ $invoicepositioncontent->sequence }}" placeholder="Reihenfolge eingeben" />
+                        <div class="sm:col-span-3">
+                            <label for="details" class="block text-sm font-medium text-gray-900">Positionstext</label>
+                            <textarea name="details" rows="10" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600" required>{{ $invoicepositioncontent->details }}</textarea>
                         </div>
                         <div class="form-group mt-4">
-                            <input type="hidden" name="id" value="{{$invoicepositioncontent->id}}">
-                            <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+                            <input type="hidden" name="id" value="{{ $invoicepositioncontent->id }}">
+                            <x-button route="{{ route('invoiceposition.update', ['invoiceposition' => $invoicepositioncontent->id]) }}" value="Änderungen speichern" />
                         </div>
                     </form>
                 @endif

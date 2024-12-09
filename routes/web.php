@@ -47,11 +47,10 @@ Route::middleware(['auth','verified'])->group(function(){
 
 
     /*Angebot*/
-    Route::post('/offer/updatetaxrate', [OfferController::class, 'updatetaxrate'])->name('offer.updatetaxrate');
-    Route::post('/offer/updateofferdate', [OfferController::class, 'updateofferdate'])->name('offer.updateofferdate');
+    Route::post('/offer/updatedetails', [OfferController::class, 'updateOfferDetails'])->name('offer.updatedetails');
+
     Route::post('/offer/updatedescription', [OfferController::class, 'updatedescription'])->name('offer.updatedescription');
     Route::post('/offer/updatecomment', [OfferController::class, 'updatecomment'])->name('offer.updatecomment');
-    Route::post('/offer/updatenumber', [OfferController::class, 'updatenumber'])->name('offer.updatenumber');
     Route::get('/offer/create/{id}',[OfferController::class, 'create'])->name('offer.create');
     Route::resource('offer',OfferController::class);
 

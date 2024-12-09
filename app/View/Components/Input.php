@@ -8,12 +8,19 @@ use Illuminate\View\Component;
 
 class Input extends Component
 {
+    public $route;
+    public $value;
+
     /**
-     * Create a new component instance.
+     * Erstelle die Komponente mit den erforderlichen Props.
+     *
+     * @param string $route
+     * @param string $value
      */
-    public function __construct()
+    public function __construct($route = '#', $value = 'Input')
     {
-        //
+        $this->route = $route;
+        $this->value = $value;
     }
 
     /**

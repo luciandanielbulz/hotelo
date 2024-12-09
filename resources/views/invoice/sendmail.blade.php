@@ -47,16 +47,6 @@
 
     <script>
         $(document).ready(function () {
-            // Initialisiere Summernote
-            $('.summernote').summernote({
-                height: 300,
-                toolbar: [
-                    ['style', ['bold', 'italic', 'underline']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['insert', ['link', 'picture']]
-                ]
-            });
-
             // Zeige Lade-Spinner beim Absenden des Formulars
             $('#emailForm').on('submit', function () {
                 $('#loadingSpinner').removeClass('hidden');

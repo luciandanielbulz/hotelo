@@ -126,7 +126,10 @@ class InvoiceController extends Controller
                 'taxrates.taxrate',
                 'customers.customername as customername',
                 'customers.address as address',
-                'customers.country as country'
+                'customers.country as country',
+                'customers.postalcode',
+                'customers.location',
+                'customers.country'
             )
             ->first();
 
@@ -276,31 +279,31 @@ class InvoiceController extends Controller
     }
 
     public function updatenumber(Request $request)
-    {
-        try {
-            Log::info('Request data: ', $request->all()); // Beispiel-Logging
+        {
+            try {
+                Log::info('Request data: ', $request->all()); // Beispiel-Logging
 
-            // Deine Logik hier ...
-            $validated = $request->validate([
-                'invoice_id' => 'required|integer|exists:invoices,id',
-                'number' => 'required|string',
-            ]);
+                // Deine Logik hier ...
+                $validated = $request->validate([
+                    'invoice_id' => 'required|integer|exists:invoices,id',
+                    'number' => 'required|string',
+                ]);
 
-            //dd($validated);
-            $invoice = Invoices::findOrFail($validated['invoice_id']);
-            $invoice->number = $validated['number'];
-            $invoice->save();
+                //dd($validated);
+                $invoice = Invoices::findOrFail($validated['invoice_id']);
+                $invoice->number = $validated['number'];
+                $invoice->save();
 
-            Log::info('Nummer erfolgreich aktualisiert: ');
-            return response()->json(['message' => 'Nummer erfolgreich aktualisiert.'], 200);
-        } catch (\Exception $e) {
-            Log::error('Fehler beim Aktualisieren der Nummer: ' . $e->getMessage(), [
-                'offer_id' => $request->offer_id,
-                'number' => $request->number
-            ]);
-            return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
+                Log::info('Nummer erfolgreich aktualisiert: ');
+                return response()->json(['message' => 'Nummer erfolgreich aktualisiert.'], 200);
+            } catch (\Exception $e) {
+                Log::error('Fehler beim Aktualisieren der Nummer: ' . $e->getMessage(), [
+                    'offer_id' => $request->offer_id,
+                    'number' => $request->number
+                ]);
+                return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
+            }
         }
-    }
 
     public function updatecondition(Request $request)
     {

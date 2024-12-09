@@ -83,8 +83,8 @@ class UsersController extends Controller
     public function edit(User $user)
     {
         $clients = Clients::all();
-        $rights = Role::all();
-        return view('users.edit', compact('user', 'rights', 'clients'));
+        $roles = Role::all();
+        return view('users.edit', compact('user', 'roles', 'clients'));
     }
 
     /**
