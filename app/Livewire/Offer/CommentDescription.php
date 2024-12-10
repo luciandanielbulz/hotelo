@@ -30,8 +30,8 @@ class CommentDescription extends Component
     public function updateCommentDescription()
     {
         $this->validate([
-            'comment' => 'string',
-            'description' => 'string'
+            'comment' => 'nullable|string',
+            'description' => 'nullable|string'
         ]);
 
         $offer = Offers::findOrFail($this->offerId);
