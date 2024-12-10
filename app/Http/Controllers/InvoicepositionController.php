@@ -86,7 +86,7 @@ class InvoicepositionController extends Controller
                 'id' => 'required|integer|exists:invoicepositions,id',
                 'amount' => 'required|numeric',
                 'unit_id' => 'required|integer|max:100',
-                'designation' => 'required|string|max:255',
+                'designation' => 'nullable|string|max:255',
                 'price' => 'required|numeric',
                 'details' => 'nullable|string|max:2000',
                 'sequence' => 'nullable|integer|min:0'

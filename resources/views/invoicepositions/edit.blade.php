@@ -52,6 +52,10 @@
                         </div>
                         <div class="form-group mt-4">
                             <input type="hidden" name="id" value="{{ $invoicepositioncontent->id }}">
+                            <input type="hidden" name="unit_id" value="{{ $invoicepositioncontent->unit_id }}">
+                            <input type="hidden" name="price" value="{{ $invoicepositioncontent->price }}">
+                            <input type="hidden" name="designation" value="{{ $invoicepositioncontent->designation }}">
+                            <input type="hidden" name="amount" value="{{ $invoicepositioncontent->amount }}">
                             <button type="submit" class="inline-block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Änderungen speichern</button>
                         </div>
                     </form>
