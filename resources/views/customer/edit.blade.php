@@ -8,8 +8,8 @@
 
         <!-- Formular -->
         <form action="{{ route('customer.update', $customer->id) }}" method="POST" value = 1>
-        @csrf
-        @method('PUT')
+            @csrf
+            @method('PUT')
 
             <!-- Formular -->
             <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
