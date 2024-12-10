@@ -25,11 +25,11 @@
                             <x-input type="number" step="0.01" name="price" label="Preis/EH" value="{{ old('price', $invoicepositioncontent->price) }}" placeholder="Preis eingeben" />
                             <x-input name="sequence" label="Reihenfolge" value="{{ old('sequence', $invoicepositioncontent->sequence) }}" placeholder="Reihenfolge eingeben" />
                         </div>
-                        
+
                         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-1">
                             <x-input type="text" name="designation" label="Beschreibung" value="{{ old('designation', $invoicepositioncontent->designation) }}" placeholder="Beschreibung eingeben" />
                         </div>
-                            
+
                         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-1">
                             <label for="details" class="block text-sm/6 font-medium text-gray-900 mb-1">Positionsdetail</label>
                             <textarea name="details" id="details" rows="10" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">{{ old('details', $invoicepositioncontent->details) }}</textarea>
@@ -37,7 +37,8 @@
 
                         <div class="form-group mt-4">
                             <input type="hidden" name="id" value="{{ $invoicepositioncontent->id }}">
-                            <x-button route="{{ route('invoiceposition.update', ['invoiceposition' => $invoicepositioncontent->id]) }}" value="Änderungen speichern" />
+
+                            <button type="submit" class="inline-block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Änderungen speichern</button>
                         </div>
                     </form>
                 @else
@@ -51,7 +52,7 @@
                         </div>
                         <div class="form-group mt-4">
                             <input type="hidden" name="id" value="{{ $invoicepositioncontent->id }}">
-                            <x-button route="{{ route('invoiceposition.update', ['invoiceposition' => $invoicepositioncontent->id]) }}" value="Änderungen speichern" />
+                            <button type="submit" class="inline-block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Änderungen speichern</button>
                         </div>
                     </form>
                 @endif
