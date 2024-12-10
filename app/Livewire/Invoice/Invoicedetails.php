@@ -19,13 +19,13 @@ class Invoicedetails extends Component
     public $number;
     public $condition_id;
     public $message;
- 
-    
+
+
     public $taxrateid;
     public $invoiceDate;
     public $invoiceNumber;
 
-    
+
     public function mount($invoiceId)
     {
         $this->invoiceId = $invoiceId;
@@ -35,7 +35,7 @@ class Invoicedetails extends Component
     public function loadData($invoiceId)
     {
         $this->details = Invoices::findOrFail($invoiceId);
-        
+
         $this->taxrateid = $this->details->tax_id;
         $this->invoiceDate = $this->details->date ? Carbon::parse($this->details->date)->format('Y-m-d') : '';
         $this->invoiceNumber = $this->details->number;
@@ -45,7 +45,7 @@ class Invoicedetails extends Component
 
     public function updateInvoiceDetails()
     {
-        
+
         $this->validate([
             'taxrateid' => 'required|integer',
             'invoiceDate' => 'required|date',
@@ -62,8 +62,10 @@ class Invoicedetails extends Component
         $invoice->save();
 
         //dd($invoice);
-        
-        $this->message = 'Rechnungsdetails erfolgreich aktualisiert.';
+
+        $this->dispatch('comment-updated', [
+            'message' => 'Details erfolgreich aktualisiert.'
+        ]);
 
         //dd($this->message);
         // Debugging hinzufügen

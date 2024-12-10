@@ -1,4 +1,4 @@
-<x-layout> 
+<x-layout>
     <div class="container mx-auto px-4 py-8">
         <div class="bg-white p-6 rounded-lg shadow-md">
             <div class="space-y-12">
@@ -19,22 +19,13 @@
                 </div>
 
                 <div class="border-b border-gray-900/10 pb-12">
-                    <h2 class="text-base/7 font-semibold text-gray-900">Rechnungsdetails</h2> 
+                    <h2 class="text-base/7 font-semibold text-gray-900">Rechnungsdetails</h2>
                     <livewire:invoice.invoicedetails :invoiceId="$invoice->id" />
                 </div>
 
                 <div class="border-b border-gray-900/10 pb-12">
                     <h2 class="text-base/7 font-semibold text-gray-900">Zusätzliche Informationen</h2>
-                    <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        <div class="col-span-full">
-                            <label for="description" class="block text-sm/6 font-medium text-gray-900">Beschreibung - erscheint nicht in Rechnung</label>
-                            <input type="text" id="description" name="description" value="{{ $invoice->description }}" class="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                        </div>
-                        <div class="col-span-full">
-                            <label for="comment" class="block text-sm/6 font-medium text-gray-900">Rechnungskommentar</label>
-                            <input type="text" id="comment" name="comment" value="{{ $invoice->comment }}" class="mt-2 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                        </div>
-                    </div>
+                    <livewire:invoice.comment-description :invoiceId="$invoice->id" />
                 </div>
 
                 <livewire:invoicepositions-table :invoiceId="$invoice->id" />
@@ -74,6 +65,11 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-    </script>
+
+        document.addEventListener('comment-updated', (event) => {
+            console.log(event.detail[0].message);
+            alert(event.detail[0].message);
+        });
+     </script>
 </x-layout>
 

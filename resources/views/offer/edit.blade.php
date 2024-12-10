@@ -1,5 +1,5 @@
-<x-layout> 
-    
+<x-layout>
+
     <div class="container mx-auto px-4 py-8">
         <div class="bg-white p-6 rounded-lg shadow-md">
             <div class="space-y-6">
@@ -50,6 +50,11 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('comment-updated', (event) => {
+            console.log(event.detail[0].message);
+            alert(event.detail[0].message);
+        });
+    </script>
 
-    
 </x-layout>

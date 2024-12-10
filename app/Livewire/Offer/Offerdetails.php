@@ -15,12 +15,12 @@ class Offerdetails extends Component
     public $number;
     public $message;
 
-    
+
     public $taxrateid;
     public $offerDate;
     public $offerNumber;
 
-    
+
     public function mount($offerId)
     {
         $this->offerId = $offerId;
@@ -50,8 +50,9 @@ class Offerdetails extends Component
         $offer->number = $this->offerNumber;
         $offer->save();
 
-        $this->message = 'Rechnungsdetails erfolgreich aktualisiert.';
-
+        $this->dispatch('comment-updated', [
+            'message' => 'Details erfolgreich aktualisiert.'
+        ]);
         // Debugging hinzufügen
         \Log::info('Daten aktualisiert:', [
             'taxrateid' => $this->taxrateid,

@@ -1,13 +1,8 @@
 <form wire:submit='updateInvoiceDetails'>
-    
+
     @if($message)
-        
-    <div x-data="{ show: true, timeout: null }" 
-     x-init="timeout = setTimeout(() => show = false, 3000)" 
-     x-show="show"
-     x-transition:leave="transition-opacity ease-linear duration-300"
-     class="rounded-md bg-green-50 p-4">
-    <div class="flex">
+
+    <div x-data="{ show: true, timeout: null }" x-init="timeout = setTimeout(() => show = false, 3000)" x-show="show" x-transition:leave="transition-opacity ease-linear duration-300"   class="rounded-md bg-green-50 p-4"><div class="flex">
         <div class="shrink-0">
             <svg class="size-5 text-green-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
                 <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" />
@@ -20,15 +15,6 @@
             </div>
         </div>
     </div>
-</div>
-
-
-
-
-
-
-
-
 
     @endif
     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-4">
@@ -79,7 +65,7 @@
                         </option>
                     @endforeach
                 </select>
-            
+
                 <!-- Pfeil-Icon -->
                 <svg
                     class="pointer-events-none absolute top-9 right-3  w-4 h-4 text-gray-500"
@@ -93,6 +79,6 @@
         <div >
             <button class="inline-block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Speichern</button>
         </div>
-        
-    </div> 
+
+    </div>
 </form>

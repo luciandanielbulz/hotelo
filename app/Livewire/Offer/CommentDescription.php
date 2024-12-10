@@ -39,7 +39,9 @@ class CommentDescription extends Component
         $offer->description = $this->description;
         $offer->save();
 
-        $this->message = 'Zusätzliche Informationen erfolgreich aktualisiert.';
+        $this->dispatch('comment-updated', [
+            'message' => 'Zusatzinformationen erfolgreich aktualisiert.'
+        ]);
 
         // Debugging hinzufügen
         \Log::info('Daten aktualisiert:', [

@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Livewire\Invoice;
-use App\Models\Invoices;
 
 use Livewire\Component;
+use App\Models\Invoices;
 
 class CommentDescription extends Component
 {
@@ -21,7 +21,7 @@ class CommentDescription extends Component
 
     public function loadData($invoiceId)
     {
-        dd($invoiceId);
+        //dd($invoiceId);
         $this->details = Invoices::findOrFail($invoiceId);
 
         $this->comment = $this->details->comment;
@@ -40,7 +40,10 @@ class CommentDescription extends Component
         $invoice->description = $this->description;
         $invoice->save();
 
-        $this->message = 'Zusätzliche Informationen erfolgreich aktualisiert.';
+        $this->dispatch('comment-updated', [
+            'message' => 'Zusätzliche Informationen erfolgreich aktualisiert.'
+        ]);
+
 
         // Debugging hinzufügen
         \Log::info('Daten aktualisiert:', [
