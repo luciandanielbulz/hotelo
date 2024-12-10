@@ -1,19 +1,5 @@
 <x-layout>
-    <!-- Fehlermeldungen -->
-    @if($errors->has('error'))
-        <div class="alert alert-danger">
-            {{ $errors->first('error') }}
-        </div>
-    @endif
-
-    <!-- Erfolgsnachricht -->
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    <div class="grid grid-cols-1 gap-x-8 gap-y-8 pt-10 md:grid-cols-3">
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
         <!-- Linke Spalte: Überschrift -->
         <div class="px-4 sm:px-0">
             <h2 class="text-base font-semibold text-gray-900">Klienten bearbeiten</h2>
@@ -21,33 +7,27 @@
         </div>
 
         <!-- Formular -->
-        <form action="{{ route('clients.update', $clients->id) }}" method="POST" class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
+        <form action="{{ route('clients.update', $clients->id) }}" method="POST" class="sm:col-span-2">
             @csrf
             @method('PUT')
 
-            <div class="px-4 py-6 sm:p-8">
-                <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                    <!-- Name -->
-                    <div class="sm:col-span-3">
-                        <label for="clientname" class="block text-sm font-medium text-gray-900">Name</label>
-                        <div class="mt-2">
-                            <input type="text" name="clientname" id="clientname" value="{{ old('clientname', $clients->clientname) }}" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 focus:outline-indigo-600">
-                            @error('clientname')
-                                <span class="text-sm text-red-600">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
+            <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-8 md:col-span-2">
+                <!-- Name -->
 
-                    <!-- Firma -->
-                    <div class="sm:col-span-3">
-                        <label for="companyname" class="block text-sm font-medium text-gray-900">Firma</label>
-                        <div class="mt-2">
-                            <input type="text" name="companyname" id="companyname" value="{{ old('companyname', $clients->companyname) }}" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 focus:outline-indigo-600">
-                            @error('companyname')
-                                <span class="text-sm text-red-600">{{ $message }}</span>
-                            @enderror
-                        </div>
+                <div class="sm:col-span-4">
+                    <x-input name="clientname" type="text" placeholder="Name" label="Name" value="{{ old('clientname', $clients->clientname) }}" />
+                </div>
+
+                <!-- Firma -->
+                <div class="sm:col-span-3">
+                    <label for="companyname" class="block text-sm font-medium text-gray-900">Firma</label>
+                    <div class="mt-2">
+                        <input type="text" name="companyname" id="companyname" value="{{ old('companyname', $clients->companyname) }}" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 focus:outline-indigo-600">
+                        @error('companyname')
+                            <span class="text-sm text-red-600">{{ $message }}</span>
+                        @enderror
                     </div>
+                </div>
 
                     <!-- Firmenart -->
                     <div class="sm:col-span-3">
@@ -296,7 +276,7 @@
                     </div>
 
                 </div>
-            </div>
+
 
             <!-- Schaltflächen -->
             <div class="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">

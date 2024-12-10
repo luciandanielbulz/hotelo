@@ -17,7 +17,7 @@
     </div>
 
     @endif
-    <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-4">
+    <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-4">
         <!--Steuersatz-->
         <div class="relative">
             <label for="taxrateid" class="block text-sm/6 font-medium text-gray-900">Steuersatz</label>

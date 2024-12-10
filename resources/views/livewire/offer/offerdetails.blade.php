@@ -17,7 +17,7 @@
                 </div>
             </div>
         @endif
-        <div class="mt-2 grid grid-cols-3 gap-x-6 gap-y-2">
+        <div class="grid grid-cols-3 gap-x-6 gap-y-2">
             <!-- Steuersatz -->
             <div>
                 <label for="taxrateid" class="block text-sm/6 font-medium text-gray-900">Steuersatz</label>
@@ -30,7 +30,7 @@
                         @endforeach
                     </select>
                 </div>
-        
+
                 <!-- Pfeil-Icon -->
                 <svg
                     class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 w-4 h-4 text-gray-500"
@@ -40,8 +40,8 @@
                     <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                 </svg>
             </div>
-            
-            
+
+
 
             <!-- Datum -->
             <div >
@@ -52,7 +52,7 @@
             </div>
 
             <!-- Nummer -->
-            
+
             <div>
                 <label for="offerNumber" class="block text-sm/6 font-medium text-gray-900">Nummer</label>
                 <div class="mt-1">
@@ -63,7 +63,7 @@
             <div >
                 <button class="inline-block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Speichern</button>
             </div>
-            
-        </div>   
+
+        </div>
     </form>
-    
+
