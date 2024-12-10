@@ -46,7 +46,7 @@
                                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $offer->number }}</td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ \Carbon\Carbon::parse($offer->date)->translatedFormat('d.m.Y') }}</td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $offer->customername ?? $offer->companyname ?? 'Kein Kunde' }}</td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $offer->comment ?? 'Kein Kommentar' }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $offer->description ?? 'Kein Kommentar' }}</td>
                                         <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                             <div class="flex flex-wrap gap-2 justify-end items-center">
                                                 <!-- Vorschau Button -->
