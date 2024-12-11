@@ -13,7 +13,7 @@
                 <div class="sm:col-span-3">
                     <x-input name="search" type="text" placeholder="Suchen" label="" value="{{ request('search') }}" />
                 </div>
-                <div class="sm:col-span-2">
+                <div class="sm:col-span-2 mt-1">
                     <x-button_submit value="Suchen" />
                 </div>
 

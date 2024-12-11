@@ -1,6 +1,6 @@
 <x-layout>
 
-    <div class="sm:flex sm:items-center">
+    <div class="sm:flex sm:items-center sm:max-w-7xl">
         <div class="sm:flex-auto">
             <h1 class="text-base font-semibold text-gray-900">Rollenverwaltung</h1>
         </div>
@@ -9,8 +9,8 @@
         </div>
     </div>
 
-    <div class="mt-8 flow-root">
-        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+    <div class="mt-8 flow-root sm:items-center sm:max-w-7xl">
+        <div class="-mx-4 -my-2 overflow-x-auto  sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                 <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
                     <table class="min-w-full divide-y divide-gray-300">

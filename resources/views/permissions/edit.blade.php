@@ -1,5 +1,5 @@
 <x-layout>
-    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-5">
         <!-- Linke Spalte: Überschrift -->
         <div class="px-4 sm:px-0">
             <h2 class="text-base font-semibold text-gray-900">Recht bearbeiten</h2>
@@ -11,13 +11,13 @@
         <form action="{{ route('permissions.update', $permissions->id) }}" method="POST">
             @csrf
             @method('PUT')
-            <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 md:col-span-2">
+            <div class="grid max-w-2xl grid-cols-3 gap-x-6 gap-y-8 sm:grid-cols-2 md:col-span-2">
                 <!-- Rollenname -->
                 <div class="sm:col-span-2">
                     <x-input name="name" type="text" placeholder="Name" label="Name" value="{{  $permissions->name  }}" />
                 </div>
             </div>
-            <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 md:col-span-2">
+            <div class="grid max-w-2xl grid-cols-3 gap-x-6 gap-y-8 sm:grid-cols-2 md:col-span-2">
                 <!-- Rollenname -->
                 <div class="sm:col-span-2">
                     <x-input name="description" type="text" placeholder="Beschreibung" label="Beschreibung" value="{{  $permissions->description  }}" />

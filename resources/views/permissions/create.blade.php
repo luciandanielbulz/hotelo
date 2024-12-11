@@ -24,7 +24,7 @@
 
 
             <!-- Schaltflächen -->
-            <div class="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
+            <div class="flex items-center justify-end gap-x-6   px-4 py-4 sm:px-8">
                 <a href="{{ route('permissions.index') }}" class="text-sm font-semibold text-gray-900">Abbrechen</a>
                 <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-indigo-600">
                     Speichern

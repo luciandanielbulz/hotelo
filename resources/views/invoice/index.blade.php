@@ -12,12 +12,12 @@
                 <div class="sm:col-span-3">
                     <x-input name="search" type="text" placeholder="Suchen" label="" value="{{ request('search') }}" />
                 </div>
-                <div class="sm:col-span-2">
+                <div class="sm:col-span-2 mt-1">
                     <x-button_submit value="Suchen" />
                 </div>
             </form>
         </div>
-        <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+        <div class="sm:ml-16 sm:mt-0 sm:flex-none">
             <a href="{{ route('customer.index') }}" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">+ Neu</a>
         </div>
     </div>

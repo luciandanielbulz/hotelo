@@ -13,57 +13,35 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-1 gap-x-8 gap-y-8 pt-10 md:grid-cols-3">
+    <div class="grid grid-cols-1 gap-x-8 border-b border-gray-900/10 pb-12 md:grid-cols-5 sm:grid-cols-1">
         <!-- Linke Spalte: Überschrift -->
-        <div class="px-4 sm:px-0">
+        <div class="py-2 px-4 sm:px-0">
             <h2 class="text-base font-semibold text-gray-900">Neues Logo hochladen</h2>
             <p class="mt-1 text-sm text-gray-600">Bitte füllen Sie die folgenden Informationen aus, um ein neues Logo hochzuladen.</p>
         </div>
 
         <!-- Formular -->
-        <form action="{{ route('logos.store') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2">
+        <form action="{{ route('logos.store') }}" method="POST" enctype="multipart/form-data" class="sm:col-span-1 md:col-span-3">
             @csrf
 
-            <div class="px-4 py-6 sm:p-8">
-                <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                    <!-- Name -->
-                    <div class="sm:col-span-2">
-                        <label for="name" class="block text-sm font-medium text-gray-900">Name</label>
-                        <div class="mt-2">
-                            <input type="text" name="name" id="name" required
-                                class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 placeholder:text-gray-400 focus:outline-indigo-600">
-                            @error('name')
-                                <span class="text-sm text-red-600">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
+            <div class="grid md:grid-cols-2 sm:grid-cols-1 pb-4 gap-x-6">
+                <!-- Name -->
+                <div class="sm:col-span-1">
+                    <x-input name="name" type="text" placeholder="Name" label="Name" value="" />
+                </div>
 
-                    <!-- Client auswählen -->
-                    <div class="sm:col-span-2">
-                        <label for="client_id" class="block text-sm font-medium text-gray-900">Client auswählen</label>
-                        <div class="mt-2">
-                            <select name="client_id" id="client_id" required
-                                class="block w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 focus:outline-indigo-600">
-                                <option value="">Bitte wählen</option>
-                                @foreach($clients as $client)
-                                    <option value="{{ $client->id }}">{{ $client->clientname }}</option>
-                                @endforeach
-                            </select>
-                            @error('client_id')
-                                <span class="text-sm text-red-600">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
+                <div class="sm:col-span-1">
+                    <x-dropdown_body name="client_id" id="client_id" value="" :options="$clients->pluck('clientname', 'id')" :selected="1" label="Steuerhöhe" placeholder="Bitte auswählen" class="w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm" />
+                </div>
 
+            </div>
+            <div class="grid md:grid-cols-2 sm:grid-cols-1 pb-4 gap-x-6">
                     <!-- Datei hochladen -->
-                    <div class="sm:col-span-2">
+                    <div class="sm:col-span-1">
                         <label for="filename" class="block text-sm font-medium text-gray-900">Datei hochladen</label>
                         <div class="mt-2">
-                            <input type="file" name="file" id="filename" required
-                                class="block w-full text-gray-900 focus:outline-indigo-600">
-                            @error('file')
-                                <span class="text-sm text-red-600">{{ $message }}</span>
-                            @enderror
+                            <input type="file" name="file" id="filename" required class="block w-full text-gray-900 focus:outline-indigo-600">
+
                         </div>
                     </div>
                 </div>

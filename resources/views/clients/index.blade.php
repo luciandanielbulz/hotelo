@@ -2,10 +2,10 @@
 
     <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
-            <h1 class="text-base font-semibold text-gray-900">Kundenverwaltung</h1>
+            <h1 class="text-base font-semibold text-gray-900">Klientenverwaltung</h1>
         </div>
         <div class="mt-4 sm:ml-auto sm:mt-0 sm:flex-none">
-            <a href="{{ route('clients.create') }}" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">+ Neuer Kunde hinzufügen</a>
+            <a href="{{ route('clients.create') }}" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">+ Neuen Klienten</a>
         </div>
     </div>
 
