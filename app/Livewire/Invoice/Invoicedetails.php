@@ -18,6 +18,8 @@ class Invoicedetails extends Component
     public $date;
     public $number;
     public $condition_id;
+
+    public $depositamount;
     public $message;
 
 
@@ -37,6 +39,7 @@ class Invoicedetails extends Component
         $this->details = Invoices::findOrFail($invoiceId);
 
         $this->taxrateid = $this->details->tax_id;
+        $this->depositamount = $this->details->depositamount;
         $this->invoiceDate = $this->details->date ? Carbon::parse($this->details->date)->format('Y-m-d') : '';
         $this->invoiceNumber = $this->details->number;
         $this->condition_id = $this->details->condition_id;
@@ -51,6 +54,7 @@ class Invoicedetails extends Component
             'invoiceDate' => 'required|date',
             'invoiceNumber' => 'required|numeric',
             'condition_id' => 'required|integer',
+            'depositamount' => 'nullable|numeric',
         ]);
 
         //dd("test");
@@ -59,6 +63,7 @@ class Invoicedetails extends Component
         $invoice->date = $this->invoiceDate;
         $invoice->number = $this->invoiceNumber;
         $invoice->condition_id = $this->condition_id;
+        $invoice->depositamount = $this->depositamount;
         $invoice->save();
 
         //dd($invoice);
@@ -76,7 +81,7 @@ class Invoicedetails extends Component
             'condition' => $this->condition_id,
         ]);
 
-        $this->loadData($this->invoiceId);
+        return redirect()->to(request()->header('Referer')); // Zur aktuellen URL zurück
     }
 
     public function render()

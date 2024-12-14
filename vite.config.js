@@ -7,9 +7,11 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
-                'resources/css/guest_app.css',
             ],
             refresh: true,
         }),
     ],
+    optimizeDeps: {
+        include: ['alpinejs', 'andere-commonjs-bibliothek'] // Füge hier problematische Module hinzu
+    }
 });

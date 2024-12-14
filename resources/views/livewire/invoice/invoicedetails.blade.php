@@ -17,7 +17,7 @@
     </div>
 
     @endif
-    <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-4">
+    <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-5">
         <!--Steuersatz-->
         <div class="relative">
             <label for="taxrateid" class="block text-sm/6 font-medium text-gray-900">Steuersatz</label>
@@ -52,6 +52,12 @@
             <label for="invoiceNumber" class="block text-sm/6 font-medium text-gray-900">Nummer</label>
             <div class="mt-1">
                 <input type="number" name="invoiceNumber" id="invoiceNumber" wire:model="invoiceNumber"  class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
+            </div>
+        </div>
+        <div>
+            <label for="invoiceNumber" class="block text-sm/6 font-medium text-gray-900">Anzahlung</label>
+            <div class="mt-1">
+                <input type="number" name="depositamount" id="depositamount" wire:model="depositamount"  class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
             </div>
         </div>
 

@@ -1,5 +1,4 @@
 <form wire:submit.prevent='updateCommentDescription'>
-
     <div class="mt-2 grid grid-cols-1 gap-x-6 gap-y-2">
         <div>
             <label for="description" class="block text-sm/6 font-medium text-gray-900">Beschreibung</label>
@@ -18,4 +17,4 @@
             <button class="inline-block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Speichern</button>
         </div>
     </div>
-
+</form>

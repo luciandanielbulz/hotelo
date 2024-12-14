@@ -1,5 +1,5 @@
 <x-layout>
-    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-7 sm:grid-cols-1">
         <!-- Linke Spalte: Überschrift -->
         <div>
             <h2 class="text-base font-semibold text-gray-900">Kundeninformationen</h2>
@@ -7,34 +7,37 @@
         </div>
 
         <!-- Formular -->
-        <form action="{{ route('customer.update', $customer->id) }}" method="POST" value = 1>
+        <form action="{{ route('customer.update', $customer->id) }}" method="POST" value = 1 class="sm:col-span-1 md:col-span-5">
             @csrf
             @method('PUT')
 
             <!-- Formular -->
-            <div class="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 md:col-span-2">
+            <div class="grid  grid-cols-1 gap-x-6 gap-y-8 md:grid-cols-4 sm:grid-cols-1 md:col-span-1">
 
                 <!-- Anrede -->
-                <div class="sm:col-span-2"><x-dropdown_body name="salutation_id" id="salutation_id" value="" :options="$salutations->pluck('name', 'id')" :selected="old('salutation', $customer->salutation)" label="Anrede" placeholder="Bitte auswählen" class="w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm" /></div>
+                <div class="sm:col-span-1">
+                    <x-dropdown_body name="salutation_id" id="salutation_id" value="" :options="$salutations->pluck('name', 'id')" :selected="old('salutation', $customer->salutation)" label="Anrede" placeholder="Bitte auswählen" class="w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm" />
+
+                    </div>
 
 
                 <!-- Titel -->
-                <div class="sm:col-span-2">
+                <div class="sm:col-span-1">
                     <x-input name="title" type="text" placeholder="Titel" label="Titel" value="{{ $customer->title }}" />
                 </div>
 
                 <!-- Kundenname -->
-                <div class="sm:col-span-3">
+                <div class="sm:col-span-2">
                     <x-input name="customername" type="text" placeholder="Kundenname" label="Kundenname" value="{{ $customer->customername }}" />
                     <input type="hidden" name="customerid" value="{{ $customer->id }}">
                 </div>
                 <!-- Firmenname -->
-                <div class="sm:col-span-3">
+                <div class="sm:col-span-2">
                     <x-input name="companyname" type="text" placeholder="Firmenname" label="Firmenname" value="{{ $customer->companyname }}" />
                 </div>
 
                 <!-- Adresse -->
-                <div class="sm:col-span-4">
+                <div class="sm:col-span-2">
                     <x-input name="address" type="text" placeholder="Adresse" label="Adresse" value="{{ $customer->address }}" />
                 </div>
 
@@ -44,12 +47,12 @@
                 </div>
 
                 <!-- Ort -->
-                <div class="sm:col-span-3">
+                <div class="sm:col-span-2">
                     <x-input name="location" type="text" placeholder="Ort" label="Ort" value="{{ $customer->location }}" />
                 </div>
 
                 <!-- Land -->
-                <div class="sm:col-span-3">
+                <div class="sm:col-span-2">
                     <x-input name="country" type="text" placeholder="Land" label="Land" value="{{ $customer->country }}" />
                 </div>
 
@@ -64,22 +67,22 @@
                 </div>
 
                 <!-- Telefonnummer -->
-                <div class="sm:col-span-3">
+                <div class="sm:col-span-2">
                     <x-input name="phone" type="text" placeholder="Telefonnummer" label="Telefonnummer" value="{{ $customer->phone }}" />
                 </div>
 
                 <!-- Fax -->
-                <div class="sm:col-span-3">
+                <div class="sm:col-span-2">
                     <x-input name="fax" type="text" placeholder="Fax" label="Fax" value="{{ $customer->fax }}" />
                 </div>
 
                 <!-- E-Mail -->
-                <div class="sm:col-span-3">
+                <div class="sm:col-span-2">
                     <x-input name="email" type="text" placeholder="E-Mail" label="E-Mail" value="{{ $customer->email }}" />
                 </div>
 
                 <!-- Konditionen -->
-                <div class="sm:col-span-3">
+                <div class="sm:col-span-2">
                     <x-dropdown_body name="condition_id" id="condition_id" value="" :options="$conditions->pluck('conditionname', 'id')" :selected="old('conditionname', $customer->condition_id)" label="Konditionen" placeholder="Bitte auswählen" class="w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm" />
                 </div>
 

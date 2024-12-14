@@ -1,12 +1,12 @@
 <x-layout>
-    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-3">
+    <div class="grid grid-cols-1 gap-x-8 gap-y-10 border-b border-gray-900/10 pb-12 md:grid-cols-7">
         <!-- Linke Spalte: Überschrift -->
         <div>
             <h2 class="text-base font-semibold text-gray-900">Neuen Kunden anlegen</h2>
             <p class="mt-1 text-sm text-gray-600">Bitte füllen Sie die folgenden Informationen aus, um einen neuen Kunden anzulegen.</p>
         </div>
 
-        <form action="{{ route('customer.store') }}" method="POST">
+        <form action="{{ route('customer.store') }}" method="POST" class="sm:col-span-1 md:col-span-5">
         @csrf
 
             <!-- Formular -->
