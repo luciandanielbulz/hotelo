@@ -18,6 +18,7 @@ use App\Http\Controllers\LogoController;
 use App\Http\Controllers\OutgoingEmailController;
 use App\Models\OutgoingEmail;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BankDataController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +35,8 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+Route::get('/bankdata/upload', [BankDataController::class, 'showUploadForm'])->name('bankdata.upload.form');
+Route::post('/bankdata/upload', [BankDataController::class, 'uploadJSON'])->name('bankdata.upload');
 
 Route::middleware(['auth','verified'])->group(function(){
 
