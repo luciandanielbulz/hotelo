@@ -62,7 +62,7 @@ class BankDataController extends Controller
 
         $newreferencenumber = $row['referenceNumber'];
 
-        $reference = Bankdata::where('referencenumber','=',$newreferencenumber)
+        $reference = BankData::where('referencenumber','=',$newreferencenumber)
             ->first();
         //dd($client_id);
 
