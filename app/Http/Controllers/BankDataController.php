@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class BankdataController extends Controller
+class BankDataController extends Controller
 {
     // Zeigt das Upload-Formular
     public function showUploadForm()
