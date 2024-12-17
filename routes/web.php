@@ -35,8 +35,8 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/bankdata/upload', [BankDataController::class, 'showUploadForm'])->name('bankdata.upload.form');
-Route::post('/bankdata/upload', [BankDataController::class, 'uploadJSON'])->name('bankdata.upload');
+Route::get('/bankdata/upload', [BankdataController::class, 'showUploadForm'])->name('bankdata.upload.form');
+Route::post('/bankdata/upload', [BankdataController::class, 'uploadJSON'])->name('bankdata.upload');
 
 Route::middleware(['auth','verified'])->group(function(){
 
