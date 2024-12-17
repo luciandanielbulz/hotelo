@@ -35,9 +35,28 @@
                     @endif
 
                     @if(auth()->user()->hasPermission('view_sales_analysis'))
-                        <x-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.index')">
-                            {{ __('Umsatz') }}
-                        </x-nav-link>
+                        <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
+                            <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
+                                <span>{{ __('Umsatzauswertung') }}</span>
+                                <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <!-- SVG path -->
+                                </svg>
+                            </a>
+                            <div x-show="open" @click.away="open = false" class="absolute z-50 mt-5 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                                <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                    @if(auth()->user()->hasPermission('manage_roles'))
+                                        <x-dropdown-link :href="route('sales.index')" :active="request()->routeIs('sales.index')">
+                                            {{ __('Umsatz') }}
+                                        </x-dropdown-link>
+                                    @endif
+                                    @if(auth()->user()->hasPermission('manage_roles'))
+                                        <x-dropdown-link :href="route('bankdata.upload.form')" :active="request()->routeIs('bankdata.upload.form')">
+                                            {{ __('Bankdatenupload') }}
+                                        </x-dropdown-link>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
                     @endif
 
 

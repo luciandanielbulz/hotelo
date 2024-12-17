@@ -1,5 +1,5 @@
 <x-layout>
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto px-4 py-6">
         <div class="bg-white p-6 rounded-lg shadow-md">
             <div class="space-y-4">
                 <div class="border-b border-gray-900/10 pb-4">

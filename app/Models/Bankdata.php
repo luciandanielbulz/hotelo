@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Bankdata extends Model
+class BankData extends Model
 {
     use HasFactory;
 
@@ -22,5 +22,6 @@ class Bankdata extends Model
         'currency',
         'reference',
         'referencenumber',
+        'client_id',
     ];
 }

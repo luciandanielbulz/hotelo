@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('currency')->nullable();
             $table->string('reference',1000)->nullable();
             $table->string('referencenumber',400)->nullable();
+            $table->foreignId('client_id')->constrained('clients');
             $table->timestamps();
         });
     }
