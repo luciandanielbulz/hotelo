@@ -28,7 +28,7 @@
                 <div class="border-b border-gray-900/10 pb-4">
                     <h2 class="text-base/7 font-semibold text-gray-900">Rechnungsdetails</h2>
                     <div>
-                        <livewire:invoice.invoicedetails :invoiceId="$invoice->id" />
+                        <livewire:invoice.invoicedetails :invoiceId="$invoice->id"/>
                     </div>
                 </div>
 
@@ -37,45 +37,15 @@
                     <livewire:invoice.comment-description :invoiceId="$invoice->id" />
                 </div>
                 <div>
-                    <livewire:invoicepositions-table :invoiceId="$invoice->id" />
+                    <h2 class="text-base/7 font-semibold text-gray-900">Positionen</h2>
+                    <livewire:invoicepositions-table :invoiceId="$invoice->id"/>
                 </div>
-                <div>
-                    <div class="border-b border-t border-gray-900/10 pt-2 pb-4">
+                <div class="mt-2 grid md:grid-cols-5 gap-x-6 gap-y-8 sm:grid-cols-1 border-b border-t border-gray-900/10 pt-2 pb-4">
 
-                        <div class="mt-2 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-8">
-                            <!-- Formular für Anzahlung -->
-                            <div class="sm:col-span-2 md:col-span-2">
+                    <livewire:invoice.depositamount :invoiceId="$invoice->id"/>
+                    <livewire:invoice.calculations  :invoiceId="$invoice->id"/>
 
-                            </div>
 
-                            <!-- Leere Spalte für Abstand -->
-                            <div class="sm:col-span-2"></div>
-
-                            <!-- Zusammenfassung der Beträge -->
-                            <div class="sm:col-span-2 text-right">
-                                <p>Zwischensumme (Netto):</p>
-                                <p>Umsatzsteuer ({{ $invoice->taxrate }} %):</p>
-                                <p class="font-semibold border-t border-b">Gesamtsumme:</p>
-
-                                @if ($invoice->depositamount > 0)
-                                    <p class="border-t border-b">Anzahlung:</p>
-                                    <p class="font-semibold border-t border-b-2">Zu Zahlen:</p>
-                                @endif
-                            </div>
-
-                            <!-- Werte für Zusammenfassung -->
-                            <div class="sm:col-span-2 text-left">
-                                <p>{{ number_format($total_price->total_price, 2, ',', '.') }} €</p>
-                                <p>{{ number_format($total_price->total_price * ($invoice->taxrate / 100), 2, ',', '.') }} €</p>
-                                <p class="font-semibold border-t border-b">{{ number_format($total_price->total_price * (1 + ($invoice->taxrate / 100)), 2, ',', '.') }} €</p>
-
-                                @if ($invoice->depositamount > 0)
-                                    <p class="border-t border-b">{{ number_format($invoice->depositamount * -1, 2, ',', '.') }} €</p>
-                                    <p class="font-semibold border-t border-b-2">{{ number_format($total_price->total_price * (1 + ($invoice->taxrate / 100)) - $invoice->depositamount, 2, ',', '.') }} €</p>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
 
                 </div>
 

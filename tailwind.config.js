@@ -1,4 +1,5 @@
-module.exports = {
+// tailwind.config.mjs
+export default {
     content: [
       "./resources/**/*.blade.php",
       "./resources/**/*.js",

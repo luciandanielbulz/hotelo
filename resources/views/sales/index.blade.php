@@ -13,7 +13,6 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Jahr</th>
-                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Monat</th>
                             <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Umsatz</th>
                             <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Ausgaben</th>
                         </tr>
@@ -22,7 +21,6 @@
                         @foreach($salespositions as $salesposition)
                             <tr>
                                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900">{{ $salesposition->Jahr }}</td>
-                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ str_pad($salesposition->Monat, 2, '0', STR_PAD_LEFT) }}</td>
                                 <td class="whitespace-nowrap px-3 py-4 text-right text-sm text-gray-900">{{ number_format($salesposition->Umsatz, 2, ',', '.') }} €</td>
                                 <td class="whitespace-nowrap px-3 py-4 text-right text-sm text-gray-500">{{ number_format($salesposition->Ausgaben, 2, ',', '.') }} €</td>
                             </tr>

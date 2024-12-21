@@ -80,6 +80,7 @@ class BankdataController extends Controller
                 'referencenumber' => $row['referenceNumber'] ?? null,
                 'reference' => $row['reference'] ?? null,
                 'client_id' => $client_id,
+                'category' => 1,
             ]);
             //dd($bankwrite);
         }

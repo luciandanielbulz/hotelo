@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('reference',1000)->nullable();
             $table->string('referencenumber',400)->nullable();
             $table->foreignId('client_id')->constrained('clients');
+            $table->enum('category', [1, 2]);
             $table->timestamps();
         });
     }
