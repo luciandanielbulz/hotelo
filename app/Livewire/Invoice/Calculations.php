@@ -26,7 +26,7 @@ class Calculations extends Component
     #[On('updateSums')]
     public function updateSums(){
         //dd('test');
-
+        $this->loadData($this->invoiceId);
     }
 
     public function loadData($invoiceId)
