@@ -17,7 +17,7 @@
     </div>
 
     @endif
-    <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-5">
+    <div class="grid md:grid-cols-4 gap-x-6 gap-y-8 sm:grid-cols-1">
         <!--Steuersatz-->
         <div class="relative">
             <label for="taxrateid" class="block text-sm/6 font-medium text-gray-900">Steuersatz</label>
@@ -54,12 +54,7 @@
                 <input type="number" name="invoiceNumber" id="invoiceNumber" wire:model="invoiceNumber"  class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
             </div>
         </div>
-        <div>
-            <label for="invoiceNumber" class="block text-sm/6 font-medium text-gray-900">Anzahlung</label>
-            <div class="mt-1">
-                <input type="number" name="depositamount" id="depositamount" wire:model="depositamount"  class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
-            </div>
-        </div>
+
 
         <div class ="relative">
             <label for="condition_id" class="block text-sm/6 font-medium text-gray-900">Steuersatz</label>
@@ -82,6 +77,8 @@
                 </svg>
             </div>
         </div>
+    </div>
+    <div class="grid md:grid-cols-4 gap-x-6 gap-y-8 sm:grid-cols-1 mt-4">
         <div >
             <button class="inline-block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Speichern</button>
         </div>

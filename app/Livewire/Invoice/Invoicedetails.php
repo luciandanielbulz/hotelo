@@ -54,7 +54,6 @@ class Invoicedetails extends Component
             'invoiceDate' => 'required|date',
             'invoiceNumber' => 'required|numeric',
             'condition_id' => 'required|integer',
-            'depositamount' => 'nullable|numeric',
         ]);
 
         //dd("test");
@@ -63,7 +62,6 @@ class Invoicedetails extends Component
         $invoice->date = $this->invoiceDate;
         $invoice->number = $this->invoiceNumber;
         $invoice->condition_id = $this->condition_id;
-        $invoice->depositamount = $this->depositamount;
         $invoice->save();
 
         //dd($invoice);
