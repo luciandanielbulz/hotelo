@@ -42,11 +42,11 @@
                             <tbody class="divide-y divide-gray-200 bg-white">
                                 @forelse($offers as $offer)
                                     <tr data-id="{{ $offer->offer_id }}" class="hover:bg-indigo-100 cursor-pointer">
-                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{{ $offer->offer_id }}</td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $offer->number }}</td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ \Carbon\Carbon::parse($offer->date)->translatedFormat('d.m.Y') }}</td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $offer->customername ?? $offer->companyname ?? 'Kein Kunde' }}</td>
-                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $offer->description ?? 'Kein Kommentar' }}</td>
+                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-black sm:pl-6">{{ $offer->offer_id }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-back">{{ $offer->number }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-back">{{ \Carbon\Carbon::parse($offer->date)->translatedFormat('d.m.Y') }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-back">{{ $offer->customername ?? $offer->companyname ?? 'Kein Kunde' }}</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-back">{{ $offer->description ?? 'Kein Kommentar' }}</td>
                                         <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                             <div class="flex flex-wrap gap-2 justify-end items-center">
                                                 <!-- Vorschau Button -->

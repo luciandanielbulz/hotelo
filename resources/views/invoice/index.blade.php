@@ -29,7 +29,7 @@
                     <table class="min-w-full divide-y divide-gray-300">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Id</th>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-6">Id</th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Nummer</th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Datum</th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Kunde</th>
@@ -43,12 +43,12 @@
                         <tbody class="divide-y divide-gray-200 bg-white">
                             @forelse($invoices as $invoice)
                                 <tr data-id="{{ $invoice->id }}" class="hover:bg-indigo-100 cursor-pointer">
-                                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{{ $invoice->id }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $invoice->number }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ \Carbon\Carbon::parse($invoice->date)->translatedFormat('d.m.Y') }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $invoice->customername ?? $invoice->companyname ?? 'Kein Kunde' }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $invoice->description ?? 'Kein Kommentar' }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ number_format($invoice->total_price, 2, ',', '.') }} €</td>
+                                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm  text-black sm:pl-6">{{ $invoice->id }}</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $invoice->number }}</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ \Carbon\Carbon::parse($invoice->date)->translatedFormat('d.m.Y') }}</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $invoice->customername ?? $invoice->companyname ?? 'Kein Kunde' }}</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $invoice->description ?? 'Kein Kommentar' }}</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ number_format($invoice->total_price, 2, ',', '.') }} €</td>
                                     <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                         <div class="flex flex-wrap gap-2 justify-end items-center">
                                             <!-- Vorschau Button -->
