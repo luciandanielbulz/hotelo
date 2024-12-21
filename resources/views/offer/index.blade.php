@@ -59,7 +59,7 @@
                                                 <!-- Bearbeiten Button -->
                                                 <a href="{{ route('offer.edit', $offer->offer_id) }}"
                                                     class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
-                                                    Bearbeiten
+                                                    Kopieren
                                                 </a>
 
                                                 <!-- Rechnung Button -->
