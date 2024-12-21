@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class BankdataController extends Controller
+class BankDataController extends Controller
 {
     // Zeigt das Upload-Formular
     public function showUploadForm()
@@ -62,7 +62,7 @@ class BankdataController extends Controller
 
         $newreferencenumber = $row['referenceNumber'];
 
-        $reference = Bankdata::where('referencenumber','=',$newreferencenumber)
+        $reference = BankData::where('referencenumber','=',$newreferencenumber)
             ->first();
         //dd($client_id);
 
