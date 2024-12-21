@@ -69,6 +69,7 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::post('/invoice/updatecomment', [InvoiceController::class, 'updatecomment'])->name('invoice.updatecomment');
     Route::post('/invoice/updatedeposit', [InvoiceController::class, 'updatedeposit'])->name('invoice.updatedeposit');
     Route::get('/invoice/create/{id}',[InvoiceController::class, 'create'])->name('invoice.create');
+    Route::get('/invoice/copy/{id}',[InvoiceController::class, 'copy'])->name('invoice.copy');
     Route::get('/invoice/createinvoicefromoffer',[InvoiceController::class, 'createinvoicefromoffer'])->name('invoice.createinvoicefromoffer');
     Route::post('/invoice/sendmail',[InvoiceController::class, 'sendmail'])->name('invoice.sendmail');
     Route::post('/send-invoice/email', [PdfCreateController::class, 'sendInvoiceByEmail'])->name('sendinvoice.email');

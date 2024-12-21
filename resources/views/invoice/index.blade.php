@@ -64,6 +64,12 @@
                                                 Bearbeiten
                                             </a>
 
+                                            <!-- Kopieren Link -->
+                                            <a href="{{ route('invoice.copy', $invoice->id) }}"
+                                                class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
+                                                Kopieren
+                                            </a>
+
                                             <!-- PDF Button -->
                                             <button
                                                 onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->id, 'objecttype' => 'invoice', 'prev' => 'D']) }}', '_blank')"

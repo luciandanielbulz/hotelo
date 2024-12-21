@@ -158,6 +158,85 @@ class InvoiceController extends Controller
     }
 
 
+    public function copy ($invoiceid){
+
+            //dd($invoiceid);
+            $client_id = Auth::user()->client_id;
+
+            $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator')->first();
+
+            $invoice_raw_number = $client->lastinvoice ?? 0; // Fallback: 0
+            $invoicemultiplikator = $client->invoicemultiplikator ?? 1000; // Standardwert für Multiplikator
+
+            $invoicenumber = now()->year * $invoicemultiplikator +1000+ $invoice_raw_number;
+
+
+
+            $invoiceId = $invoiceid;
+
+            //dd("test");
+            $invoice = Invoices::findOrFail($invoiceId);
+
+            $invoicePositions = InvoicePositions::where('invoice_id', '=',$invoiceId)
+                ->where('issoftdeleted','!=',1)
+                ->get();
+
+            //dd($invoicePositions);
+
+            $invoice = Invoices::create([
+                'customer_id' => $invoice->customer_id,
+                'date' => now(),
+                'number' => $invoicenumber,
+                'description' => $invoice->description,
+                'tax_id' => $invoice->tax_id,
+                'taxburden' => $invoice->taxburden,
+                'depositamount' => $invoice->depositamount,
+                'periodfrom' => $invoice->periodfrom,
+                'periodto' => $invoice->periodto,
+                'condition_id' => $invoice->condition_id,
+                'payed' => 0,
+                'payeddate' => '',
+                'archived' => 0,
+                'archiveddate' => '',
+                'sequence' => $invoice->sequence,
+                'comment' => $invoice->comment,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+            //dd("erstellt");
+
+            Clients::where('id', '=', $client_id)->update([
+                'lastinvoice' => $invoice_raw_number + 1, // Erhöhe den Wert um 1
+            ]);
+
+            //dd($invoice);
+            // 4. Neue InvoicePositions erstellen
+            foreach ($invoicePositions as $position) {
+                //dd($position->sequence);
+                Invoicepositions::create([
+                    'invoice_id' => $invoice->id,
+                    'amount' => $position->amount,
+                    'designation' => $position->description,
+                    'details' => $position->details,
+                    'unit_id' => $position->unit_id,
+                    'price' => $position->price,
+                    'positiontext' => $position->positiontext,
+                    'sequence' => $position->sequence,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    // Weitere Felder hier übernehmen
+                ]);
+            }
+            //dd("erledigtpos");
+
+            // 5. Erfolgsmeldung oder Weiterleitung
+            return redirect()->route('invoice.edit', ['invoice' => $invoice->id])
+            ->with('success', 'Invoice successfully created and opened in edit mode!');
+
+
+    }
+
+
     /**
      * Update the specified resource in storage.
      */
