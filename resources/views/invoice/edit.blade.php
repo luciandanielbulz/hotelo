@@ -33,10 +33,10 @@
                 </div>
 
                 <div class="border-b border-gray-900/10 pb-4">
+                    <h2 class="text-base/7 font-semibold text-gray-900">Zusätzliche Informationen</h2>
                     <livewire:invoice.comment-description :invoiceId="$invoice->id" />
                 </div>
                 <div>
-                    <h2 class="text-base/7 font-semibold text-gray-900">Positionen</h2>
                     <livewire:invoicepositions-table :invoiceId="$invoice->id"/>
                 </div>
                 <div class="mt-2 grid md:grid-cols-5 gap-x-6 gap-y-8 sm:grid-cols-1 border-b border-t border-gray-900/10 pt-2 pb-4">
