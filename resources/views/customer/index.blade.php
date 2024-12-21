@@ -47,32 +47,32 @@
                             @forelse($customers as $customer)
                                 <tr data-id="{{ $customer->id }}" class="hover:bg-indigo-100 cursor-pointer">
                                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{{ $customer->id }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">
                                         {{ $customer->customername ?? '' }}
                                         @if(!empty($customer->customername) && !empty($customer->companyname)) / @endif
                                         {{ $customer->companyname ?? '' }}
                                     </td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $customer->address }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $customer->postalcode }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $customer->location }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $customer->email }}</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $customer->address }}</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $customer->postalcode }}</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $customer->location }}</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $customer->email }}</td>
                                     <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                         <div class="flex flex-wrap gap-2 justify-end items-center">
                                             <!-- Bearbeiten Link -->
                                             <a href="{{ url('/customer/' . $customer->id . '/edit') }}"
-                                                class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
+                                                class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-black shadow-sm hover:bg-gray-200">
                                                 Bearbeiten
                                             </a>
 
                                             <!-- + Angebot Link -->
                                             <a href="{{ url('/offer/create/' . $customer->id) }}"
-                                                class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
+                                                class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-black shadow-sm hover:bg-gray-200">
                                                 + Angebot
                                             </a>
 
                                             <!-- + Rechnung Link -->
                                             <a href="{{ url('/invoice/create/' . $customer->id) }}"
-                                                class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
+                                                class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-black shadow-sm hover:bg-gray-200">
                                                 + Rechnung
                                             </a>
 
