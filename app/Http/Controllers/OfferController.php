@@ -34,7 +34,7 @@ class OfferController extends Controller
             })
             ->select('offers.id as offer_id','offers.*','customers.*')
 
-            ->paginate(15);
+            ->paginate(10);
 
         //dd($offers->all()); // Zeigt die Ergebnisse an
         return view('offer.index', compact('offers'));
