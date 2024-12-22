@@ -55,6 +55,8 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::post('/offer/updatedescription', [OfferController::class, 'updatedescription'])->name('offer.updatedescription');
     Route::post('/offer/updatecomment', [OfferController::class, 'updatecomment'])->name('offer.updatecomment');
     Route::get('/offer/create/{id}',[OfferController::class, 'create'])->name('offer.create');
+    Route::get('/offer/index_archivated',[OfferController::class, 'index_archivated'])->name('offer.index_archivated');
+
     Route::resource('offer',OfferController::class);
 
     /*Angebots-Positionen*/

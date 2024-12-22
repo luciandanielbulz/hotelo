@@ -41,11 +41,13 @@
 
 
 <body>
+
     <main>
         <div class="mx-auto max-w-8xl px-4 py-0 sm:px-6 lg:px-8">
         <!-- Linke Spalte: Überschrift -->
 
             @include('components.navigation')
+
             <div class="py-4">
 
             @if($errors->any())

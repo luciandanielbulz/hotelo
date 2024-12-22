@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-gray-800">
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
     <!-- Hauptnavigationsmenü -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current" />
+                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
 
@@ -23,26 +23,29 @@
                     @endif
 
                     @if(auth()->user()->hasPermission('view_offers'))
-                        <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
-                            <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-5 {{ request()->routeIs('offers.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
-                                <span>{{ __('Angebote') }}</span>
-                            </a>
-                            <div x-show="open" @click.away="open = false" class="absolute z-50 mt-5 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                                <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                    @if(auth()->user()->hasPermission('view_offers'))
-                                        <x-dropdown-link :href="route('offer.index')" :active="request()->routeIs('offer.index')">
-                                            {{ __('Abgebote') }}
-                                        </x-dropdown-link>
-                                    @endif
-                                    @if(auth()->user()->hasPermission('view_offers'))
-                                        <x-dropdown-link :href="route('offer.index_archivated')" :active="request()->routeIs('offer.index_archivated')">
-                                            {{ __('Archivierte Abgebote') }}
-                                        </x-dropdown-link>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    @endif
+    <div x-data="{ open: false }" class="relative sm:flex">
+        <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-0.5 pt-1 border-b-2 {{ request()->routeIs('offers.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
+            <span>{{ __('Angebote') }}</span>
+            <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                <!-- SVG path -->
+            </svg>
+        </a>
+        <div x-show="open" @click.away="open = false" class="absolute z-50 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+            <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                @if(auth()->user()->hasPermission('view_offers'))
+                    <x-dropdown-link :href="route('offer.index')" :active="request()->routeIs('offer.index')">
+                        {{ __('Abgebote') }}
+                    </x-dropdown-link>
+                @endif
+                @if(auth()->user()->hasPermission('view_offers'))
+                    <x-dropdown-link :href="route('offer.index_archivated')" :active="request()->routeIs('offer.index_archivated')">
+                        {{ __('Archivierte Abgebote') }}
+                    </x-dropdown-link>
+                @endif
+            </div>
+        </div>
+    </div>
+@endif
 
                     @if(auth()->user()->hasPermission('view_invoices'))
                         <x-nav-link :href="route('invoice.index')" :active="request()->routeIs('invoice.index')">
@@ -52,8 +55,11 @@
 
                     @if(auth()->user()->hasPermission('view_sales_analysis'))
                         <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
-                            <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
+                            <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
                                 <span>{{ __('Umsatzauswertung') }}</span>
+                                <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <!-- SVG path -->
+                                </svg>
                             </a>
                             <div x-show="open" @click.away="open = false" class="absolute z-50 mt-5 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                                 <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
@@ -83,8 +89,12 @@
                     <!-- Rollenverwaltung mit Untermenü -->
                     @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients'))
                         <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
-                            <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
+                            <a href="#" @click.prevent="open = !open"
+                            class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*') ? 'border-indigo-400 text-gray-900' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
                                 <span>{{ __('App-Einstellungen') }}</span>
+                                <svg class="ml-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <!-- SVG path -->
+                                </svg>
                             </a>
                             <!-- Dropdown-Inhalt -->
                             <div x-show="open" @click.away="open = false" class="absolute z-50 mt-5 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">

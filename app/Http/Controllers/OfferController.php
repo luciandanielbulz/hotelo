@@ -41,6 +41,30 @@ class OfferController extends Controller
 
     }
 
+    public function index_archivated(Request $request)
+    {
+        $user = Auth::user();
+        $clientId = $user->client_id;
+
+        $search = $request->input('search');
+        //dd($search);
+        // Suche oder alle Kunden abfragen
+        $offers = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
+            ->where('customers.client_id', $clientId) // auth()->user()->client_id
+            ->orderBy('number','desc')
+            ->when($search, function ($query, $search) {
+                return $query->where('customers.customername', 'like', "%$search%")
+                    ->orWhere('customers.companyname', 'like', "%$search%");
+            })
+            ->select('offers.id as offer_id','offers.*','customers.*')
+
+            ->paginate(10);
+
+        //dd($offers->all()); // Zeigt die Ergebnisse an
+        return view('offer.index_archivated', compact('offers'));
+
+    }
+
     /**
      * Show the form for creating a new resource.
      */
