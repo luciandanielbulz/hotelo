@@ -14,15 +14,16 @@
             @endif
         </div>
 
+
         <!-- Werte für Zusammenfassung -->
         <div class="m-3 text-right md:col-span-1">
             <p>{{ number_format($total_price, 2, ',', '.') }} €</p>
-            <p>{{ number_format($total_price * ($invoice->taxrate / 100), 2, ',', '.') }} €</p>
-            <p class="font-semibold border-t border-b">{{ number_format($total_price * (1 + ($invoice->taxrate / 100)), 2, ',', '.') }} €</p>
+            <p>{{ number_format($total_price * ($tax_rate / 100), 2, ',', '.') }} €</p>
+            <p class="font-semibold border-t border-b">{{ number_format($total_price * (1 + ($tax_rate / 100)), 2, ',', '.') }} €</p>
 
             @if ($depositAmount > 0)
                 <p class="border-t border-b">{{ number_format($invoice->depositamount * -1, 2, ',', '.') }} €</p>
-                <p class="font-semibold border-t border-b-2">{{ number_format($total_price * (1 + ($invoice->taxrate / 100)) - $invoice->depositamount, 2, ',', '.') }} €</p>
+                <p class="font-semibold border-t border-b-2">{{ number_format($total_price * (1 + ($tax_rate / 100)) - $invoice->depositamount, 2, ',', '.') }} €</p>
             @endif
         </div>
 

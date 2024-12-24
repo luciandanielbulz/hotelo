@@ -5,6 +5,7 @@ namespace App\Livewire\Invoice;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use App\Models\Invoices;
+use App\Models\Taxrates;
 use Illuminate\Support\Facades\DB;
 
 class Calculations extends Component
@@ -15,6 +16,7 @@ class Calculations extends Component
 
     public $invoice;
     public $total_price;
+    public $tax_rate;
 
     public function mount($invoiceId)
     {
@@ -32,8 +34,14 @@ class Calculations extends Component
     public function loadData($invoiceId)
     {
         // Lade die Rechnung mit den zugehörigen Positionen
-        $invoice = Invoices::with('invoicePositions')->find($invoiceId);
+        $invoice = Invoices::with(['invoicePositions'])->find($invoiceId);
 
+        $this->tax_rate = Taxrates::join('invoices', 'invoices.tax_id', '=', 'taxrates.id')
+            ->where('invoices.id', '=', $invoiceId)
+            ->value('taxrates.taxrate');
+
+
+        //dd($tax_rate);
         // Berechne den Gesamtpreis in PHP
         $this->total_price = $invoice->invoicePositions->sum(function ($position) {
             return $position->amount * $position->price;

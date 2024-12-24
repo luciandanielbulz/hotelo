@@ -14,4 +14,9 @@ class Taxrates extends Model
     {
         return $this->hasMany(Offers::class, 'tax_id', 'id');
     }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoices::class, 'tax_id');
+    }
 }

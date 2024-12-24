@@ -9,6 +9,13 @@ class Invoice extends Model
 {
     use HasFactory;
 
+    public function invoicePositions()
+    {
+        return $this->hasMany(InvoicePositions::class, 'invoice_id');
+    }
+
+
+
     protected $casts = [
         'date' => 'datetime',
     ];
