@@ -27,7 +27,7 @@
                     <div class="sm:col-span-6">
                         <label for="message" class="block text-sm font-medium text-gray-900">Nachricht:</label>
                         <div class="mt-2">
-                            <textarea id="message" name="message" rows="7" class="summernote block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm" required>{{ $emailbody }}</textarea>
+                            <textarea name="message" id="message" rows="20" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 focus:outline-indigo-600">{{ old('signature', $emailbody) }}</textarea>
                         </div>
                     </div>
                 </div>
@@ -45,12 +45,27 @@
         <span class="text-gray-600">Laden...</span>
     </div>
 
-    <script>
-        $(document).ready(function () {
-            // Zeige Lade-Spinner beim Absenden des Formulars
-            $('#emailForm').on('submit', function () {
-                $('#loadingSpinner').removeClass('hidden');
+    @push('styles')
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    @endpush
+
+    @push('scripts')
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#message').summernote({
+                    height: 300, // Höhe des Editors
+                    toolbar: [
+                        ['style', ['bold', 'italic', 'underline', 'clear']],
+                        ['font', ['strikethrough', 'superscript', 'subscript']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['link']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ],
+                    placeholder: 'Geben Sie hier Ihre Signatur ein...',
+                });
             });
-        });
-    </script>
+        </script>
+    @endpush
 </x-layout>

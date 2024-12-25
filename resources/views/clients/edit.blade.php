@@ -163,7 +163,7 @@
         <script>
             $(document).ready(function() {
                 $('#signature').summernote({
-                    height: 150, // Höhe des Editors
+                    height: 300, // Höhe des Editors
                     toolbar: [
                         ['style', ['bold', 'italic', 'underline', 'clear']],
                         ['font', ['strikethrough', 'superscript', 'subscript']],
