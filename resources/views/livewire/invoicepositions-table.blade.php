@@ -50,7 +50,7 @@
                                         @else
                                             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-900"><b>Positionstext</b></td>
 
-                                            <td class="whitespace-nowrap px-3 py-4 text-sm font-semibold text-gray-900 w-3/5"><b>{{ $position->details }}</b></td>
+                                            <td class="whitespace-pre-line px-3 py-4 text-sm font-semibold text-gray-900 w-3/5"><b>{{ $position->details }}</b></td>
                                             <td></td>
                                             <td></td>
                                             <td></td>

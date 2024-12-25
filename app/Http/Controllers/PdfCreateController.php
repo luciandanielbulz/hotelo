@@ -158,15 +158,15 @@ class PdfCreateController extends Controller
 
         foreach ($positions as $position) {
             $positiontablebody .= '<tr><td></td></tr>';
+            $details = nl2br($position->details) ?? '';
             if($position->positiontext == 1) {
                 $positiontablebody .= '
 
                     <tr>
-                        <td style="text-align:center; width: 100%;"><b>'.$position->details.'</b></td>
+                        <td style="text-align:center; width: 100%; white-space: pre-line;"><b>'.$details.'</b></td>
                     </tr>
                 ';
             } else {
-                $details = $position->details ?? '';
                 $positiontablebody .= '
 
                     <tr>
@@ -177,11 +177,9 @@ class PdfCreateController extends Controller
                         <td style="text-align: center; width: 15%;">'.number_format(($position->price * $position->amount), 2, ',', '') .' €</td>
                     </tr>
                     <tr>
-                        <td style="width: 9%;"></td>
-                        <td style="width: 7%;"></td>
-
-                        <td style="text-align: left; width: 54%;">'.$position->details.'</td>
                         <td style="width: 15%;"></td>
+
+                        <td style="text-align: left; width: 70%; white-space: pre-line;">'.$details.'</td>
                         <td style="width: 15%;"></td>
                     </tr>
                 ';
@@ -437,15 +435,16 @@ class PdfCreateController extends Controller
 
         foreach ($positions as $position) {
             $positiontablebody .= '<tr><td></td></tr>';
+            $details = nl2br($position->details) ?? '';
             if($position->positiontext == 1) {
+
                 $positiontablebody .= '
 
                     <tr>
-                        <td style="text-align:center; width: 100%;"><b>'.$position->details.'</b></td>
+                        <td style="text-align:center; width: 100%; white-space: pre-line;"><b>'.$details.'</b></td>
                     </tr>
                 ';
             } else {
-                $details = $position->details ?? '';
                 $positiontablebody .= '
                     <tr>
                         <td style="text-align: left; width: 9%;">'.number_format($position->amount, 2, ',', '') .'</td>
@@ -455,11 +454,8 @@ class PdfCreateController extends Controller
                         <td style="text-align: right; width: 15%;">'.number_format(($position->price * $position->amount), 2, ',', '') .' €</td>
                     </tr>
                     <tr>
-                        <td style="width: 9%;"></td>
-                        <td style="width: 7%;"></td>
-
-                        <td style="text-align: left; width: 54%;">'.$details.'</td>
                         <td style="width: 15%;"></td>
+                        <td style="text-align: left; width: 70%; white-space: pre-line;">'.$details.'</td>
                         <td style="width: 15%;"></td>
                     </tr>
                 ';
@@ -586,7 +582,7 @@ class PdfCreateController extends Controller
 
     public function sendInvoiceByEmail(Request $request)
     {
-        
+
         $request->validate([
             'invoice_id' => 'required|integer|exists:invoices,id',
             'email' => 'required|email',
