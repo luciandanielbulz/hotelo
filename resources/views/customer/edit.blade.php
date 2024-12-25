@@ -94,7 +94,7 @@
 
                 <!-- Email Body -->
                 <div class="sm:col-span-6">
-                    <label for="emailbody" class="block text-sm font-medium text-gray-900">E-Mail Text</label>
+                    <label for="emailbody" class="block text-sm font-medium text-gray-900">E-Mail Text       <br>Variablen: aktuelles_jahr, aktuelles_monat, objekt, object_mit_artikel, objektnummer</label>
                     <div class="mt-2">
                         <textarea
                             name="emailbody"

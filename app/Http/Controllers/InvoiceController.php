@@ -531,6 +531,8 @@ class InvoiceController extends Controller
             )
             ->first();
 
+            $actual_month = date('m');
+            $actual_year = date('Y');
 
         //dd($clientdata->emailsubject);
         // Platzhalter in emailsubject und emailbody ersetzen
@@ -539,6 +541,9 @@ class InvoiceController extends Controller
             '{objekt}' => 'Rechnung', // Objektart als fixer Wert
             '{object_mit_artikel}' => 'die Rechnung', // Objektart als fixer Wert
             '{objektnummer}' => $clientdata->number ?? '', // Objektnummer aus Invoices
+            '{aktuelles_monat-aktuelles_jahr}' => $actual_month . "/" . $actual_year,
+            '{akutelles_monat}' => $actual_month,
+            '{}atkuelles_jahr' => $actual_year,
         ];
 
         //dd($placeholders);
