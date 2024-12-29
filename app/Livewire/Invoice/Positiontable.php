@@ -55,7 +55,7 @@ class Positiontable extends Component
 
         $search = $request->input('search');
 
-        $invoices = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
+        $query = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
             ->where('customers.client_id', $clientId)
             ->where('invoices.archived', operator: false) // Nur nicht archivierte Angebote anzeigen
             ->orderBy('invoices.number', 'desc')
@@ -66,8 +66,10 @@ class Positiontable extends Component
                           ->orWhere('invoices.number', 'like', "%$search%");
                 });
             })
-            ->select('invoices.id as invoice_id', 'invoices.*', 'customers.*')
-            ->paginate($this->perPage);
+            ->select('invoices.id as invoice_id', 'invoices.*', 'customers.*');
+
+        $invoices = $query->paginate($this->perPage);
+        $invoices->appends(['search' => $search]);
 
         return view('livewire.invoice.positiontable', [
             'invoices' => $invoices,

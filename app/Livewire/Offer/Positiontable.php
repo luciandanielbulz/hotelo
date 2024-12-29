@@ -66,7 +66,7 @@ class Positiontable extends Component
 
         $search = $request->input('search');
 
-        $offers = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
+        $query = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
             ->where('customers.client_id', $clientId)
             ->where('offers.archived', false) // Nur nicht archivierte Angebote anzeigen
             ->orderBy('offers.number', 'desc')
@@ -77,8 +77,10 @@ class Positiontable extends Component
                           ->orWhere('offers.number', 'like', "%$search%");
                 });
             })
-            ->select('offers.id as offer_id', 'offers.*', 'customers.*')
-            ->paginate($this->perPage);
+            ->select('offers.id as offer_id', 'offers.*', 'customers.*');
+
+        $offers = $query->paginate($this->perPage);
+        $offers->appends(['search' => $search]);
 
         //dd($offers);
 

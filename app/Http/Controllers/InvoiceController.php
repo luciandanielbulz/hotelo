@@ -47,6 +47,8 @@ class InvoiceController extends Controller
 
             ->paginate(10);
 
+        $invoices->appends(['search' => $search]);
+
         //dd($offers->all()); // Zeigt die Ergebnisse an
         return view('invoice.index_archivated', compact('invoices'));
 

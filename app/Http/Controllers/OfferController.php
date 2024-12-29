@@ -46,7 +46,7 @@ class OfferController extends Controller
             ->paginate(9);
         //dd($offers->toSQL(), $offers->getBindings());
 
-
+        $offers->appends(['search' => $search]);
         //dd($offers->all()); // Zeigt die Ergebnisse an
         return view('offer.index_archivated', compact('offers'));
 
