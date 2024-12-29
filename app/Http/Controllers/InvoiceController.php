@@ -40,7 +40,8 @@ class InvoiceController extends Controller
             ->orderBy('number','desc')
             ->when($search, function ($query, $search) {
                 return $query->where('customers.customername', 'like', "%$search%")
-                    ->orWhere('customers.companyname', 'like', "%$search%");
+                    ->orWhere('customers.companyname', 'like', "%$search%")
+                    ->orWhere('invoices.number', 'like', "%$search%");
             })
             ->select('invoices.id as invoice_id','invoices.*','customers.*')
 

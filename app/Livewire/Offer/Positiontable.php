@@ -73,11 +73,14 @@ class Positiontable extends Component
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
                     $query->where('customers.customername', 'like', "%$search%")
-                          ->orWhere('customers.companyname', 'like', "%$search%");
+                          ->orWhere('customers.companyname', 'like', "%$search%")
+                          ->orWhere('offers.number', 'like', "%$search%");
                 });
             })
             ->select('offers.id as offer_id', 'offers.*', 'customers.*')
             ->paginate($this->perPage);
+
+        //dd($offers);
 
         return view('livewire.offer.positiontable', [
             'offers' => $offers,

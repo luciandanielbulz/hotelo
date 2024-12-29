@@ -38,7 +38,8 @@ class OfferController extends Controller
             ->orderBy('number','desc')
             ->when($search, function ($query, $search) {
                 return $query->where('customers.customername', 'like', "%$search%")
-                    ->orWhere('customers.companyname', 'like', "%$search%");
+                    ->orWhere('customers.companyname', 'like', "%$search%")
+                    ->orWhere('offers.number', 'like', "%$search%");
             })
             ->select('offers.id as offer_id','offers.*','customers.*')
 
