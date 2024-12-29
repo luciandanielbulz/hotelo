@@ -12,7 +12,7 @@ use Illuminate\Pagination\Paginator;
 class Positiontable extends Component
 {
     use WithPagination;
-    public $perPage = 10;
+    public $perPage = 9;
     public $search = '';
 
     public function boot()
@@ -57,7 +57,7 @@ class Positiontable extends Component
 
         $invoices = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
             ->where('customers.client_id', $clientId)
-            ->where('invoices.archived', false) // Nur nicht archivierte Angebote anzeigen
+            ->where('invoices.archived', operator: false) // Nur nicht archivierte Angebote anzeigen
             ->orderBy('invoices.number', 'desc')
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {

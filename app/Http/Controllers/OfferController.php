@@ -20,25 +20,7 @@ class OfferController extends Controller
     public function index(Request $request)
     {
 
-        $user = Auth::user();
-        $clientId = $user->client_id;
-
-        $search = $request->input('search');
-        //dd($search);
-        // Suche oder alle Kunden abfragen
-        $offers = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
-            ->where('customers.client_id', $clientId) // auth()->user()->client_id
-            ->orderBy('number','desc')
-            ->when($search, function ($query, $search) {
-                return $query->where('customers.customername', 'like', "%$search%")
-                    ->orWhere('customers.companyname', 'like', "%$search%");
-            })
-            ->select('offers.id as offer_id','offers.*','customers.*')
-
-            ->paginate(10);
-
-        //dd($offers->all()); // Zeigt die Ergebnisse an
-        return view('offer.index', compact('offers'));
+        return view('offer.index');
 
     }
 
@@ -52,7 +34,7 @@ class OfferController extends Controller
         // Suche oder alle Kunden abfragen
         $offers = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
             ->where('customers.client_id', $clientId) // auth()->user()->client_id
-            ->where('offers.archived','=','true')
+            ->where('offers.archived','=',true)
             ->orderBy('number','desc')
             ->when($search, function ($query, $search) {
                 return $query->where('customers.customername', 'like', "%$search%")
@@ -60,7 +42,9 @@ class OfferController extends Controller
             })
             ->select('offers.id as offer_id','offers.*','customers.*')
 
-            ->paginate(10);
+            ->paginate(9);
+        //dd($offers->toSQL(), $offers->getBindings());
+
 
         //dd($offers->all()); // Zeigt die Ergebnisse an
         return view('offer.index_archivated', compact('offers'));

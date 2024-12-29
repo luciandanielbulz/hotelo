@@ -13,7 +13,7 @@ class Positiontable extends Component
 {
     use WithPagination;
 
-    public $perPage = 10;
+    public $perPage = 9;
     public $search = '';
 
     // Optional: Suchparameter in der URL behalten    protected $queryString = ['search'];

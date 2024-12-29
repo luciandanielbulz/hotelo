@@ -22,39 +22,7 @@ class InvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        $client_id = Auth::user()->client_id;
-
-        $search = $request->input('search');
-
-        // Abfrage der Rechnungen mit Kundenverknüpfung und Filterung nach client_id
-        $invoices = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
-            ->leftjoin('invoicepositions', 'invoicepositions.invoice_id', '=', 'invoices.id')
-            ->where('customers.client_id', $client_id)
-            ->orderBy('invoices.number', 'desc')
-            ->when($search, function ($query, $search) {
-                return $query->where(function ($query) use ($search) {
-                    $query->where('customers.customername', 'like', "%$search%")
-                        ->orWhere('customers.companyname', 'like', "%$search%");
-                });
-            })
-            ->select(
-                'invoices.id',
-                'invoices.number',
-                'invoices.comment',
-                'customers.customername',
-                'invoices.date',
-                'invoices.description',
-                DB::raw('(SUM(invoicepositions.price * invoicepositions.amount) - COALESCE(invoices.depositamount, 0)) as total_price')
-            )
-            ->groupBy('invoices.id', 'invoices.number', 'invoices.comment', 'customers.customername', 'invoices.date', 'invoices.depositamount','invoices.description')
-            ->paginate(15);
-
-            //dd($invoices);
-
-
-        //dd($invoices->toArray());
-
-        return view('invoice.index', compact('invoices'));
+        return view('invoice.index');
     }
 
 
@@ -68,7 +36,7 @@ class InvoiceController extends Controller
         // Suche oder alle Kunden abfragen
         $invoices = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
             ->where('customers.client_id', $clientId) // auth()->user()->client_id
-            ->where('invoices.archived','=','true')
+            ->where('invoices.archived','=',true)
             ->orderBy('number','desc')
             ->when($search, function ($query, $search) {
                 return $query->where('customers.customername', 'like', "%$search%")
