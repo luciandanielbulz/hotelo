@@ -73,12 +73,12 @@
                             </a>
                             <div x-show="open" @click.away="open = false" class="absolute z-50 mt-5 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                                 <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                    @if(auth()->user()->hasPermission('manage_roles'))
+                                    @if(auth()->user()->hasPermission('view_sales_analysis'))
                                         <x-dropdown-link :href="route('sales.index')" :active="request()->routeIs('sales.index')">
                                             {{ __('Umsatz') }}
                                         </x-dropdown-link>
                                     @endif
-                                    @if(auth()->user()->hasPermission('manage_roles'))
+                                    @if(auth()->user()->hasPermission('view_sales_analysis'))
                                         <x-dropdown-link :href="route('bankdata.upload.form')" :active="request()->routeIs('bankdata.upload.form')">
                                             {{ __('Bankdatenupload') }}
                                         </x-dropdown-link>
