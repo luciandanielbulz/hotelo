@@ -101,7 +101,7 @@
         </div>
     </div>
     <div class="mt-4">
-        {{ $customers->links() }}
+        {{ $items->withQueryString()->links('pagination::bootstrap-4') }}
     </div>
 
 
