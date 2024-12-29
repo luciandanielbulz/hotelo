@@ -19,6 +19,7 @@ class OfferController extends Controller
      */
     public function index(Request $request)
     {
+
         $user = Auth::user();
         $clientId = $user->client_id;
 
@@ -51,6 +52,7 @@ class OfferController extends Controller
         // Suche oder alle Kunden abfragen
         $offers = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
             ->where('customers.client_id', $clientId) // auth()->user()->client_id
+            ->where('offers.archived','=','true')
             ->orderBy('number','desc')
             ->when($search, function ($query, $search) {
                 return $query->where('customers.customername', 'like', "%$search%")

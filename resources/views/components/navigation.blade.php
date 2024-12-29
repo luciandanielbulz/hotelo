@@ -45,9 +45,25 @@
                     @endif
 
                     @if(auth()->user()->hasPermission('view_invoices'))
-                        <x-nav-link :href="route('invoice.index')" :active="request()->routeIs('invoice.index')">
-                            {{ __('Rechnungen') }}
-                        </x-nav-link>
+                        <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
+                            <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('invoice.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
+                                <span>{{ __('Rechnungen') }}</span>
+                            </a>
+                            <div x-show="open" @click.away="open = false" class="absolute z-50 mt-5 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                                <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                    @if(auth()->user()->hasPermission('view_invoices'))
+                                        <x-dropdown-link :href="route('invoice.index')" :active="request()->routeIs('invoice.index')">
+                                            {{ __('Rechnungen') }}
+                                        </x-dropdown-link>
+                                    @endif
+                                    @if(auth()->user()->hasPermission('view_invoices'))
+                                        <x-dropdown-link :href="route('invoice.index_archivated')" :active="request()->routeIs('invoice.index_archivated')">
+                                            {{ __('Archivierte Rechnungen') }}
+                                        </x-dropdown-link>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
                     @endif
 
                     @if(auth()->user()->hasPermission('view_sales_analysis'))

@@ -56,6 +56,7 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::post('/offer/updatecomment', [OfferController::class, 'updatecomment'])->name('offer.updatecomment');
     Route::get('/offer/create/{id}',[OfferController::class, 'create'])->name('offer.create');
     Route::get('/offer/index_archivated',[OfferController::class, 'index_archivated'])->name('offer.index_archivated');
+    //Route::get('/livewire/offer/positiontable',[App\Livewire\Offer\Positiontable::class, 'render'])->name('livewire.offer.index');
 
     Route::resource('offer',OfferController::class);
 
@@ -71,6 +72,7 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::post('/invoice/updatecomment', [InvoiceController::class, 'updatecomment'])->name('invoice.updatecomment');
     Route::post('/invoice/updatedeposit', [InvoiceController::class, 'updatedeposit'])->name('invoice.updatedeposit');
     Route::get('/invoice/create/{id}',[InvoiceController::class, 'create'])->name('invoice.create');
+    Route::get('/invoice/index_archivated',[InvoiceController::class, 'index_archivated'])->name('invoice.index_archivated');
     Route::get('/invoice/copy/{id}',[InvoiceController::class, 'copy'])->name('invoice.copy');
     Route::get('/invoice/createinvoicefromoffer',[InvoiceController::class, 'createinvoicefromoffer'])->name('invoice.createinvoicefromoffer');
     Route::post('/invoice/sendmail',[InvoiceController::class, 'sendmail'])->name('invoice.sendmail');

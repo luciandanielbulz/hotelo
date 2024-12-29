@@ -57,6 +57,32 @@ class InvoiceController extends Controller
         return view('invoice.index', compact('invoices'));
     }
 
+
+    public function index_archivated(Request $request)
+    {
+        $user = Auth::user();
+        $clientId = $user->client_id;
+
+        $search = $request->input('search');
+        //dd($search);
+        // Suche oder alle Kunden abfragen
+        $invoices = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
+            ->where('customers.client_id', $clientId) // auth()->user()->client_id
+            ->where('invoices.archived','=','true')
+            ->orderBy('number','desc')
+            ->when($search, function ($query, $search) {
+                return $query->where('customers.customername', 'like', "%$search%")
+                    ->orWhere('customers.companyname', 'like', "%$search%");
+            })
+            ->select('invoices.id as invoice_id','invoices.*','customers.*')
+
+            ->paginate(10);
+
+        //dd($offers->all()); // Zeigt die Ergebnisse an
+        return view('invoice.index_archivated', compact('invoices'));
+
+    }
+
     /**
      * Show the form for creating a new resource.
      */
