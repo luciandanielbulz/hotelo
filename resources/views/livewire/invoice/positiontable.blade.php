@@ -29,7 +29,7 @@
                                     <div class="flex flex-wrap gap-2 justify-end items-center">
                                         <!-- Vorschau Button -->
                                         <button
-                                            onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->id, 'objecttype' => 'invoice', 'prev' => 'I']) }}', '_blank')"
+                                            onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->invoice_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}', '_blank')"
                                             class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
                                             Vorschau
                                         </button>
