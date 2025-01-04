@@ -297,7 +297,7 @@ class PdfCreateController extends Controller
         $objectId = $request->input('invoice_id');
         $objectType = $request->input('objecttype'); // "offer" oder "invoice"
         $preview = $request->input('prev', 0); // 0: Download, 1: Vorschau, 2: Speichern
-        dd($objectId);
+        //dd($objectId);
         //dd($request->all());
         $invoicecontent = Invoices::join('taxrates','invoices.tax_id','=','taxrates.id')
             ->where('invoices.id', $objectId)
