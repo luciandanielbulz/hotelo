@@ -53,26 +53,26 @@
                                         <div class="flex flex-wrap gap-2 justify-end items-center">
                                             <!-- Vorschau Button -->
                                             <button
-                                                onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->id, 'objecttype' => 'invoice', 'prev' => 'I']) }}', '_blank')"
+                                                onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->invoice_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}', '_blank')"
                                                 class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
                                                 Vorschau
                                             </button>
 
                                             <!-- Bearbeiten Link -->
-                                            <a href="{{ route('invoice.edit', $invoice->id) }}"
+                                            <a href="{{ route('invoice.edit', $invoice->invoice_id) }}"
                                                 class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
                                                 Bearbeiten
                                             </a>
 
                                             <!-- Kopieren Link -->
-                                            <a href="{{ route('invoice.copy', $invoice->id) }}"
+                                            <a href="{{ route('invoice.copy', $invoice->invoice_id) }}"
                                                 class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
                                                 Kopieren
                                             </a>
 
                                             <!-- PDF Button -->
                                             <button
-                                                onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->id, 'objecttype' => 'invoice', 'prev' => 'D']) }}', '_blank')"
+                                                onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->invoice_id, 'objecttype' => 'invoice', 'prev' => 'D']) }}', '_blank')"
                                                 class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
                                                 PDF
                                             </button>
@@ -80,7 +80,7 @@
                                             <!-- Senden Form -->
                                             <form action="{{ route('invoice.sendmail') }}" method="POST" class="inline">
                                                 @csrf
-                                                <input type="hidden" name="objectid" value="{{ $invoice->id }}">
+                                                <input type="hidden" name="objectid" value="{{ $invoice->invoice_id }}">
                                                 <input type="hidden" name="objecttype" value="invoice">
                                                 <button type="submit"
                                                     class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
