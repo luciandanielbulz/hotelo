@@ -43,7 +43,7 @@
                         <tbody class="divide-y divide-gray-200 bg-white">
                             @forelse($invoices as $invoice)
                                 <tr data-id="{{ $invoice->id }}" class="hover:bg-indigo-100 cursor-pointer">
-                                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm  text-black sm:pl-6">{{ $invoice->id }}</td>
+                                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm  text-black sm:pl-6">{{ $invoice->invoice_id }}</td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $invoice->number }}</td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ \Carbon\Carbon::parse($invoice->date)->translatedFormat('d.m.Y') }}</td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $invoice->customername ?? $invoice->companyname ?? 'Kein Kunde' }}</td>

@@ -289,16 +289,18 @@ class PdfCreateController extends Controller
     public function createInvoicePdf(Request $request)
     {
 
+
+
         $user = Auth::user();
         $clientId = $user->client_id;
 
         $objectId = $request->input('invoice_id');
         $objectType = $request->input('objecttype'); // "offer" oder "invoice"
         $preview = $request->input('prev', 0); // 0: Download, 1: Vorschau, 2: Speichern
-
+        dd($objectId);
         //dd($request->all());
-        $invoicecontent = Invoices::where('invoices.id', $objectId)
-            ->join('taxrates','invoices.tax_id','=','taxrates.id')
+        $invoicecontent = Invoices::join('taxrates','invoices.tax_id','=','taxrates.id')
+            ->where('invoices.id', $objectId)
             ->first(['invoices.*','taxrates.*']);
 
         //dd($invoicecontent->depositamount);
