@@ -41,8 +41,7 @@ class InvoiceController extends Controller
             ->when($search, function ($query, $search) {
                 return $query->where('customers.customername', 'like', "%$search%")
                     ->orWhere('customers.companyname', 'like', "%$search%")
-                    ->orWhere('invoices.number', 'like', "%$search%")
-                    ->orWhere('invoices.archived','=',true);
+                    ->orWhere('invoices.number', 'like', "%$search%");
             })
             ->select('invoices.id as invoice_id','invoices.*','customers.*')
 
