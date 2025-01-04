@@ -57,17 +57,16 @@ class Positiontable extends Component
 
         $query = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
             ->where('customers.client_id', $clientId)
-            ->where('invoices.archived', false) // Nur nicht archivierte Angebote anzeigen
+            ->where('invoices.archived', operator: false) // Nur nicht archivierte Angebote anzeigen
             ->orderBy('invoices.number', 'desc')
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
-                    $query->where('customers.customername', 'like', "%{$search}%")
-                        ->orWhere('customers.companyname', 'like', "%{$search}%")
-                        ->orWhere('invoices.number', 'like', "%{$search}%");
+                    $query->where('customers.customername', 'like', "%$search%")
+                          ->orWhere('customers.companyname', 'like', "%$search%")
+                          ->orWhere('invoices.number', 'like', "%$search%");
                 });
             })
-            ->select('invoices.id as invoice_id', 'invoices.*', 'customers.*')
-            ->paginate(10); // Du kannst die Anzahl der Elemente pro Seite anpassen
+            ->select('invoices.id as invoice_id', 'invoices.*', 'customers.*');
 
 
         $invoices = $query->paginate($this->perPage);
