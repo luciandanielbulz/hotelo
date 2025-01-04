@@ -73,12 +73,12 @@
                             </a>
                             <div x-show="open" @click.away="open = false" class="absolute z-50 mt-5 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                                 <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                    @if(auth()->user()->hasPermission('manage_roles'))
+                                    @if(auth()->user()->hasPermission('view_sales_analysis'))
                                         <x-dropdown-link :href="route('sales.index')" :active="request()->routeIs('sales.index')">
                                             {{ __('Umsatz') }}
                                         </x-dropdown-link>
                                     @endif
-                                    @if(auth()->user()->hasPermission('manage_roles'))
+                                    @if(auth()->user()->hasPermission('view_sales_analysis'))
                                         <x-dropdown-link :href="route('bankdata.upload.form')" :active="request()->routeIs('bankdata.upload.form')">
                                             {{ __('Bankdatenupload') }}
                                         </x-dropdown-link>
@@ -188,9 +188,11 @@
     <!-- Responsive Navigationsmenü -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            @if(auth()->user()->hasPermission('view_dashboard'))
+                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    {{ __('Dashboard') }}
+                </x-responsive-nav-link>
+            @endif
 
             @if(auth()->user()->hasPermission('view_customers'))
                 <x-responsive-nav-link :href="route('customer.index')" :active="request()->routeIs('customer.index')">
