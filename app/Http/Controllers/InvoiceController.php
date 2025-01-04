@@ -36,15 +36,16 @@ class InvoiceController extends Controller
         // Suche oder alle Kunden abfragen
         $invoices = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
             ->where('customers.client_id', $clientId) // auth()->user()->client_id
-            ->where('invoices.archived','=',true)
-            ->orderBy('number','desc')
+            ->where('invoices.archived', '=', true)
+            ->orderBy('number', 'desc')
             ->when($search, function ($query, $search) {
-                return $query->where('customers.customername', 'like', "%$search%")
-                    ->orWhere('customers.companyname', 'like', "%$search%")
-                    ->orWhere('invoices.number', 'like', "%$search%");
+                return $query->where(function ($query) use ($search) {
+                    $query->where('customers.customername', 'like', "%{$search}%")
+                        ->orWhere('customers.companyname', 'like', "%{$search}%")
+                        ->orWhere('invoices.number', 'like', "%{$search}%");
+                });
             })
-            ->select('invoices.id as invoice_id','invoices.*','customers.*')
-
+            ->select('invoices.id as invoice_id', 'invoices.*', 'customers.*')
             ->paginate(10);
 
         $invoices->appends(['search' => $search]);

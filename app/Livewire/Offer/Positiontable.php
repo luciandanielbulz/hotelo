@@ -73,11 +73,12 @@ class Positiontable extends Component
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
                     $query->where('customers.customername', 'like', "%$search%")
-                          ->orWhere('customers.companyname', 'like', "%$search%")
-                          ->orWhere('offers.number', 'like', "%$search%");
+                        ->orWhere('customers.companyname', 'like', "%$search%")
+                        ->orWhere('offers.number', 'like', "%$search%");
                 });
             })
             ->select('offers.id as offer_id', 'offers.*', 'customers.*');
+
 
         $offers = $query->paginate($this->perPage);
         $offers->appends(['search' => $search]);
