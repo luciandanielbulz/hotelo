@@ -87,6 +87,7 @@ class Positiontable extends Component
                 'invoices.archived',
                 'invoices.created_at',
                 'invoices.updated_at',
+                'invoices.date',
                 'customers.customername',
                 'customers.companyname'
             );
