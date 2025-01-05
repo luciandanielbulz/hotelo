@@ -77,6 +77,7 @@ class Positiontable extends Component
                 'invoices.created_at',
                 'invoices.updated_at',
                 'invoices.date',
+                'invoices.description',
                 'customers.customername',
                 'customers.companyname',
                 DB::raw('SUM(invoicepositions.amount * invoicepositions.price) as total_price')
@@ -88,6 +89,7 @@ class Positiontable extends Component
                 'invoices.created_at',
                 'invoices.updated_at',
                 'invoices.date',
+                'invoices.description',
                 'customers.customername',
                 'customers.companyname'
             );
