@@ -30,4 +30,17 @@ class Customer extends Model
         'client_id'
     ];
 
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
+    }
+
+    /**
+     * Beziehung zum Client (falls vorhanden).
+     */
+    public function client()
+    {
+        return $this->belongsTo(Clients::class);
+    }
+
 }

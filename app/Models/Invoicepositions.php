@@ -20,4 +20,9 @@ class Invoicepositions extends Model
 
         // Weitere Spalten hinzufügen, falls nötig
     ];
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
+    }
 }

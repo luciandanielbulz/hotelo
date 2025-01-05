@@ -8,12 +8,14 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Invoices;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
 
 class Positiontable extends Component
 {
     use WithPagination;
     public $perPage = 9;
     public $search = '';
+
 
     public function boot()
     {
@@ -48,16 +50,18 @@ class Positiontable extends Component
             session()->flash('error', 'Rechnung nicht gefunden.');
         }
     }
-    public function render(Request $request)
+    public function render()
     {
         $user = Auth::user();
         $clientId = $user->client_id;
 
-        $search = $request->input('search');
+        $search = $this->search;
 
+        // Aggregation Query zur Berechnung von total_price
         $query = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
+            ->leftJoin('invoicepositions', 'invoices.id', '=', 'invoicepositions.invoice_id')
             ->where('customers.client_id', $clientId)
-            ->where('invoices.archived', operator: false) // Nur nicht archivierte Angebote anzeigen
+            ->where('invoices.archived', false) // Nur nicht archivierte Rechnungen anzeigen
             ->orderBy('invoices.number', 'desc')
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
@@ -66,8 +70,25 @@ class Positiontable extends Component
                           ->orWhere('invoices.number', 'like', "%$search%");
                 });
             })
-            ->select('invoices.id as invoice_id', 'invoices.*', 'customers.*');
-
+            ->select(
+                'invoices.id as invoice_id',
+                'invoices.number',
+                'invoices.archived',
+                'invoices.created_at',
+                'invoices.updated_at',
+                'customers.customername',
+                'customers.companyname',
+                DB::raw('SUM(invoicepositions.amount * invoicepositions.price) as total_price')
+            )
+            ->groupBy(
+                'invoices.id',
+                'invoices.number',
+                'invoices.archived',
+                'invoices.created_at',
+                'invoices.updated_at',
+                'customers.customername',
+                'customers.companyname'
+            );
 
         $invoices = $query->paginate($this->perPage);
         $invoices->appends(['search' => $search]);

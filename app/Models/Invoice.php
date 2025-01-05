@@ -28,4 +28,20 @@ class Invoice extends Model
         'number',
 
     ];
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    public function positions()
+    {
+        return $this->hasMany(Invoicepositions::class);
+    }
+
+    public function getTotalPriceAttribute()
+    {
+        return $this->positions->sum(function ($position) {
+            return $position->amount * $position->price;
+        });
+    }
 }
