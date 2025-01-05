@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Salutations;
 use App\Models\Taxrates;
-use App\Models\Conditions;
+use App\Models\Condition;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,7 +37,7 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        $conditions = Conditions::all();
+        $conditions = Condition::all();
         $taxrates = Taxrates::all();
         $salutations = Salutations::all(); // Alle Anreden aus der DB abrufen
         return view('customer.create', compact('salutations', 'conditions', 'taxrates'));
@@ -103,7 +103,7 @@ class CustomerController extends Controller
         if ($customer->client_id !== $currentClientId) {
             abort(403, 'Sie sind nicht berechtigt, diesen Kunden zu bearbeiten.');
         }
-        $conditions = Conditions::all();
+        $conditions = Condition::all();
         $salutations = Salutations::all();
         $taxrates = Taxrates::all();
         //dd($taxrates);

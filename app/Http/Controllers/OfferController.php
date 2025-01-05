@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Offerpositions;
 use App\Models\Offers;
 use App\Models\Customer;
-use App\Models\Conditions;
+use App\Models\Condition;
 use App\Models\Clients;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; // Importiere DB, falls du es benötigs
@@ -158,7 +158,7 @@ class OfferController extends Controller
             ->first();
 
         // Bedingungen laden
-        $conditions = Conditions::all();
+        $conditions = Condition::all();
 
         // View zurückgeben
         return view('offer.edit', compact('offer', 'conditions', 'total_price'));

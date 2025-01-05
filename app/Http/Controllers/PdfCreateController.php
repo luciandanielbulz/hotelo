@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Offers;
 use App\Models\Invoices;
 use App\Models\Customer;
-use App\Models\Conditions;
+use App\Models\Condition;
 use App\Models\Taxrates;
 use App\Models\Clients;
 use App\Models\Offerpositions;
@@ -55,7 +55,7 @@ class PdfCreateController extends Controller
             ->join('units', 'offerpositions.unit_id', '=', 'units.id')
             ->sum(DB::raw('offerpositions.amount * offerpositions.price'));
 
-        $condition = Conditions::join('offers','offers.condition_id','=','conditions.id')
+        $condition = Condition::join('offers','offers.condition_id','=','conditions.id')
             ->first('conditions.*');
 
 
@@ -315,7 +315,7 @@ class PdfCreateController extends Controller
             ->join('units', 'invoicepositions.unit_id', '=', 'units.id')
             ->sum(DB::raw('invoicepositions.amount * invoicepositions.price'));
 
-        $condition = Conditions::join('invoices','invoices.condition_id','=','conditions.id')
+        $condition = Condition::join('invoices','invoices.condition_id','=','conditions.id')
             ->first('conditions.*');
 
 

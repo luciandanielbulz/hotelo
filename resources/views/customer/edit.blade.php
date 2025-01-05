@@ -17,8 +17,7 @@
                 <!-- Anrede -->
                 <div class="sm:col-span-1">
                     <x-dropdown_body name="salutation_id" id="salutation_id" value="" :options="$salutations->pluck('name', 'id')" :selected="old('salutation', $customer->salutation)" label="Anrede" placeholder="Bitte auswählen" class="w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm" />
-
-                    </div>
+                </div>
 
 
                 <!-- Titel -->

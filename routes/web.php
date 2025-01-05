@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ConditionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RolePermissionController;
@@ -88,6 +89,8 @@ Route::middleware(['auth','verified'])->group(function(){
 
     /*Sales-Analyse*/
     Route::resource('sales',SalesController::class);
+
+    Route::resource('condition',ConditionController::class);
 
     /*Benutzer*/
     Route::resource('users', UsersController::class);

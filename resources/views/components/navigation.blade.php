@@ -120,6 +120,11 @@
                                             {{ __('Klienten') }}
                                         </x-dropdown-link>
                                     @endif
+                                    @if(auth()->user()->hasPermission('view_conditions'))
+                                        <x-dropdown-link :href="route('condition.index')" :active="request()->routeIs('condition.index')">
+                                            {{ __('Konditionen') }}
+                                        </x-dropdown-link>
+                                    @endif
                                     @if(auth()->user()->hasPermission('manage_users'))
                                         <x-dropdown-link :href="route('users.index')" :active="request()->routeIs('users.index')">
                                             {{ __('Benutzer') }}
@@ -130,6 +135,7 @@
                                             {{ __('Logos') }}
                                         </x-dropdown-link>
                                     @endif
+
                                     <!-- Weitere Untermenüpunkte -->
                                 </div>
                             </div>
