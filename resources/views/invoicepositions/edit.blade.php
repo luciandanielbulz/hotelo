@@ -20,7 +20,7 @@
                         @csrf
                         @method('PUT')
                         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-4">
-                            <x-input type="number" step="0.01" name="amount" label="Menge" value="{{ old('amount', $invoicepositioncontent->amount) }}" placeholder="Geben Sie die Menge ein" />
+                            <x-input type="number" step=0.01 name="amount" label="Menge" value="{{ old('amount', $invoicepositioncontent->amount) }}" placeholder="Geben Sie die Menge ein" />
                             <x-dropdown_body name="unit_id" label="Einheit" :options="$units->pluck('unitdesignation', 'id')" selected="{{ old('unit_id', $invoicepositioncontent->unit_id) }}" />
                             <x-input type="number" step="0.01" name="price" label="Preis/EH" value="{{ old('price', $invoicepositioncontent->price) }}" placeholder="Preis eingeben" />
                             <x-input name="sequence" label="Reihenfolge" value="{{ old('sequence', $invoicepositioncontent->sequence) }}" placeholder="Reihenfolge eingeben" />

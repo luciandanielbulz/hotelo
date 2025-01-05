@@ -32,6 +32,7 @@ class InvoicepositionController extends Controller
      */
     public function store(Request $request)
     {
+        dd($request);
         // Validierung und Speicherung der neuen Position
         $validatedData = $request->validate([
             'id' => 'required|integer|exists:offerpositions,id',
