@@ -70,10 +70,10 @@ class OfferpositionController extends Controller
 
             $validated = $request->validate([
                 'id' => 'required|integer|exists:offerpositions,id',
-                'amount' => 'required|numeric|min:0',
+                'amount' => 'required|decimal:2',
                 'unit_id' => 'required|integer|exists:units,id',
                 'designation' => 'nullable|string|max:255',
-                'price' => 'required|numeric|min:0',
+                'price' => 'required|decimal:2',
                 'details' => 'nullable|string|max:1000',
                 'sequence' => 'required|integer|min:0'
             ]);
