@@ -4,6 +4,7 @@
 namespace App\Livewire\Invoice;
 
 use App\Models\Invoices;
+use App\Models\Condition;
 
 use Livewire\Component;
 
@@ -22,6 +23,8 @@ class Invoicedetails extends Component
     public $depositamount;
     public $message;
 
+    public $conditions;
+
 
     public $taxrateid;
     public $invoiceDate;
@@ -37,6 +40,8 @@ class Invoicedetails extends Component
     public function loadData($invoiceId)
     {
         $this->details = Invoices::findOrFail($invoiceId);
+
+        $this->conditions = Condition::all();
 
         $this->taxrateid = $this->details->tax_id;
         $this->depositamount = $this->details->depositamount;

@@ -316,6 +316,7 @@ class PdfCreateController extends Controller
             ->sum(DB::raw('invoicepositions.amount * invoicepositions.price'));
 
         $condition = Condition::join('invoices','invoices.condition_id','=','conditions.id')
+            ->where('invoices.id', $objectId)
             ->first('conditions.*');
 
 
