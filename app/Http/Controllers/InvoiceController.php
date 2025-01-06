@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Helpers\TemplateHelper;
 
 
 class InvoiceController extends Controller
@@ -551,22 +552,33 @@ class InvoiceController extends Controller
 
         //dd($clientdata->emailsubject);
         // Platzhalter in emailsubject und emailbody ersetzen
-        $placeholders = [
+        $variables = [
             '{signatur}' => $clientdata->signature ?? '', // Signatur aus Clients
+            '{S}' => $clientdata->signature ?? '', // Signatur aus Clients
             '{objekt}' => 'Rechnung', // Objektart als fixer Wert
+            '{O}' => 'Rechnung', // Objektart als fixer Wert
             '{objekt_mit_artikel}' => 'die Rechnung', // Objektart als fixer Wert
+            '{OA}' => 'die Rechnung', // Objektart als fixer Wert
             '{objektnummer}' => $clientdata->number ?? '', // Objektnummer aus Invoices
+            '{ON}' => $clientdata->number ?? '', // Objektnummer aus Invoices
             '{aktuelles_monat-aktuelles_jahr}' => $actual_month . "/" . $actual_year,
             '{aktueller_monatsname}' => $actual_month_name,
+            '{M0N}' => $actual_month_name,
             '{aktuelles_quartal}' => $currentQuarterName,
+            '{Q0N}' => $currentQuarterName,
             '{akutelles_monat}' => $actual_month,
-            '{atkuelles_jahr}' => $actual_year,
+            '{M0}' => $actual_month,
+            '{aktuelles_jahr}' => $actual_year,
+            '{Y0}' => $actual_year,
+
         ];
 
         //dd($placeholders);
 
-        $emailsubject = str_replace(array_keys($placeholders), array_values($placeholders), $clientdata->emailsubject);
-        $emailbody = str_replace(array_keys($placeholders), array_values($placeholders), $clientdata->emailbody);
+        //$emailsubject = str_replace(array_keys($placeholders), array_values($placeholders), $clientdata->emailsubject);
+        $emailsubject = TemplateHelper::replacePlaceholders($clientdata->emailsubject, $variables);
+        //$emailbody = str_replace(array_keys($placeholders), array_values($placeholders), $clientdata->emailbody);
+        $emailbody = TemplateHelper::replacePlaceholders($clientdata->emailbody, $variables);
 
         //dd($emailsubject);
         // Werte an die View weitergeben

@@ -93,7 +93,7 @@
 
                 <!-- Email Body -->
                 <div class="sm:col-span-6">
-                    <label for="emailbody" class="block text-sm font-medium text-gray-900">E-Mail Text       <br>Variablen: aktuelles_jahr, aktuelles_monat, objekt, objekt_mit_artikel, objektnummer, signatur, aktueller_monatsname</label>
+                    <label for="emailbody" class="block text-sm font-medium text-gray-900">E-Mail Text       <br>Variablen: aktuelles_jahr (Y0), aktuelles_monat (M0), objekt (O), objekt_mit_artikel (OA), objektnummer (ON), signatur (S), aktueller_monatsname (M0N)</label>
                     <div class="mt-2">
                         <textarea name="emailbody" id="emailbody" rows="10" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 focus:outline-indigo-600">{{ old('email_body', $customer->emailbody) }}</textarea>
 

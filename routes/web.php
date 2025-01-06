@@ -17,7 +17,6 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\LogoController;
 use App\Http\Controllers\OutgoingEmailController;
-use App\Models\OutgoingEmail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BankDataController;
 
