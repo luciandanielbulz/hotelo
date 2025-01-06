@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 
 class InvoiceController extends Controller
@@ -530,7 +531,7 @@ class InvoiceController extends Controller
             ->first();
 
             $actual_month = date('m');
-            $actual_month_name = date('F');
+            $actual_month_name =  Carbon::now()->translatedFormat('F');
             $actual_year = date('Y');
 
         //dd($clientdata->emailsubject);
