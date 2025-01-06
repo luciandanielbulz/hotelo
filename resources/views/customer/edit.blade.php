@@ -93,14 +93,10 @@
 
                 <!-- Email Body -->
                 <div class="sm:col-span-6">
-                    <label for="emailbody" class="block text-sm font-medium text-gray-900">E-Mail Text       <br>Variablen: aktuelles_jahr, aktuelles_monat, objekt, object_mit_artikel, objektnummer</label>
+                    <label for="emailbody" class="block text-sm font-medium text-gray-900">E-Mail Text       <br>Variablen: aktuelles_jahr, aktuelles_monat, objekt, objekt_mit_artikel, objektnummer, signatur</label>
                     <div class="mt-2">
-                        <textarea
-                            name="emailbody"
-                            id="emailbody"
-                            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
-                            rows="6"
-                        >{{ old('email_body', $customer->emailbody) }}</textarea>
+                        <textarea name="emailbody" id="emailbody" rows="10" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 focus:outline-indigo-600">{{ old('email_body', $customer->emailbody) }}</textarea>
+
                     </div>
                 </div>
             </div>
@@ -114,23 +110,27 @@
         </form>
     </div>
 
+    @push('styles')
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    @endpush
+
     @push('scripts')
-    <!-- Summernote Script -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            $('.summernote').summernote({
-                height: 200,
-                toolbar: [
-                    ['style', ['style']],
-                    ['font', ['bold', 'italic', 'underline', 'clear']],
-                    ['fontsize', ['fontsize']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['insert', ['link', 'picture', 'video']],
-                    ['view', ['fullscreen', 'codeview', 'help']]
-                ]
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#emailbody').summernote({
+                    height: 300, // Höhe des Editors
+                    toolbar: [
+                        ['style', ['bold', 'italic', 'underline', 'clear']],
+                        ['font', ['strikethrough', 'superscript', 'subscript']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['link']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ],
+                    placeholder: 'Geben Sie hier Ihre Signatur ein...',
+                });
             });
-        });
-    </script>
+        </script>
     @endpush
 </x-layout>

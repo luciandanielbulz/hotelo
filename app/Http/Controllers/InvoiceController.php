@@ -535,13 +535,13 @@ class InvoiceController extends Controller
         //dd($clientdata->emailsubject);
         // Platzhalter in emailsubject und emailbody ersetzen
         $placeholders = [
-            '{signature}' => $clientdata->signature ?? '', // Signatur aus Clients
+            '{signatur}' => $clientdata->signature ?? '', // Signatur aus Clients
             '{objekt}' => 'Rechnung', // Objektart als fixer Wert
-            '{object_mit_artikel}' => 'die Rechnung', // Objektart als fixer Wert
+            '{objekt_mit_artikel}' => 'die Rechnung', // Objektart als fixer Wert
             '{objektnummer}' => $clientdata->number ?? '', // Objektnummer aus Invoices
             '{aktuelles_monat-aktuelles_jahr}' => $actual_month . "/" . $actual_year,
             '{akutelles_monat}' => $actual_month,
-            '{}atkuelles_jahr' => $actual_year,
+            '{atkuelles_jahr}' => $actual_year,
         ];
 
         //dd($placeholders);
