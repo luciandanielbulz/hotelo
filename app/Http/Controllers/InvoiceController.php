@@ -533,6 +533,21 @@ class InvoiceController extends Controller
             $actual_month = date('m');
             $actual_month_name =  Carbon::now()->translatedFormat('F');
             $actual_year = date('Y');
+            $now = Carbon::now();
+
+            // Ermitteln des aktuellen Quartals (1 bis 4)
+            $currentQuarter = $now->quarter;
+
+            // Optional: Quartal als beschreibender Text
+            $quarterNames = [
+                1 => '1. Quartal (Januar - März)',
+                2 => '2. Quartal (April - Juni)',
+                3 => '3. Quartal (Juli - September)',
+                4 => '4. Quartal (Oktober - Dezember)',
+            ];
+
+            $currentQuarterName = $quarterNames[$currentQuarter];
+
 
         //dd($clientdata->emailsubject);
         // Platzhalter in emailsubject und emailbody ersetzen
@@ -543,6 +558,7 @@ class InvoiceController extends Controller
             '{objektnummer}' => $clientdata->number ?? '', // Objektnummer aus Invoices
             '{aktuelles_monat-aktuelles_jahr}' => $actual_month . "/" . $actual_year,
             '{aktueller_monatsname}' => $actual_month_name,
+            '{aktuelles_quartal}' => $currentQuarterName,
             '{akutelles_monat}' => $actual_month,
             '{atkuelles_jahr}' => $actual_year,
         ];
