@@ -530,6 +530,7 @@ class InvoiceController extends Controller
             ->first();
 
             $actual_month = date('m');
+            $actual_month_name = date('F');
             $actual_year = date('Y');
 
         //dd($clientdata->emailsubject);
@@ -540,6 +541,7 @@ class InvoiceController extends Controller
             '{objekt_mit_artikel}' => 'die Rechnung', // Objektart als fixer Wert
             '{objektnummer}' => $clientdata->number ?? '', // Objektnummer aus Invoices
             '{aktuelles_monat-aktuelles_jahr}' => $actual_month . "/" . $actual_year,
+            '{aktueller_monatsname}' => $actual_month_name,
             '{akutelles_monat}' => $actual_month,
             '{atkuelles_jahr}' => $actual_year,
         ];
