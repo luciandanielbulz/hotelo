@@ -60,6 +60,7 @@ class Positiontable extends Component
         // Aggregation Query zur Berechnung von total_price
         $query = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
             ->leftJoin('invoicepositions', 'invoices.id', '=', 'invoicepositions.invoice_id')
+            ->leftJoin('outgoingemails','outgoingemails.objectnumber','=','invoices.number')
             ->where('customers.client_id', $clientId)
             ->where('invoices.archived', false) // Nur nicht archivierte Rechnungen anzeigen
             ->orderBy('invoices.number', 'desc')
@@ -80,6 +81,7 @@ class Positiontable extends Component
                 'invoices.description',
                 'customers.customername',
                 'customers.companyname',
+                'outgoingemails.sentdate as sent_date',
                 DB::raw('SUM(invoicepositions.amount * invoicepositions.price) as total_price')
             )
             ->groupBy(
@@ -91,7 +93,8 @@ class Positiontable extends Component
                 'invoices.date',
                 'invoices.description',
                 'customers.customername',
-                'customers.companyname'
+                'customers.companyname',
+                'outgoingemails.sentdate',
             );
 
         $invoices = $query->paginate($this->perPage);

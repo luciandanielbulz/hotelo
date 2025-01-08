@@ -11,6 +11,7 @@
                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Kunde</th>
                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Beschreibung</th>
                             <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Rechnungsbetrag</th>
+                            <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">versand am</th>
                             <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                 <span class="sr-only">Actions</span>
                             </th>
@@ -25,6 +26,9 @@
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $invoice->customername ?? $invoice->companyname ?? 'Kein Kunde' }}</td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $invoice->description ?? 'Kein Kommentar' }}</td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ number_format($invoice->total_price, 2, ',', '.') }} €</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-black">
+                                    {{ $invoice->sent_date ? \Carbon\Carbon::parse($invoice->sent_date)->translatedFormat('d.m.Y h:i') : '-' }}
+                                </td>
                                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                     <div class="flex flex-wrap gap-2 justify-end items-center">
                                         <!-- Vorschau Button -->
