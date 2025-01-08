@@ -109,6 +109,8 @@ class ClientsController extends Controller
         $taxrates = Taxrates::all();
 
 
+
+
         //dd($clients);
         return view('clients.edit', compact('clients', 'taxrates'));
     }

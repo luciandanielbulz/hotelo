@@ -35,7 +35,7 @@ class OfferpositionsTable extends Component
 
         if ($position) {
             $position->delete(); // Datensatz löschen
-        } 
+        }
 
         // Positionen neu laden
         $this->loadPositions();
