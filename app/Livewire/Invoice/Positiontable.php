@@ -60,15 +60,15 @@ class Positiontable extends Component
         // Aggregation Query zur Berechnung von total_price
         $query = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
             ->leftJoin('invoicepositions', 'invoices.id', '=', 'invoicepositions.invoice_id')
-            ->leftJoin('outgoingemails','outgoingemails.objectnumber','=','invoices.number')
+            ->leftJoin(DB::raw('(SELECT objectnumber, MAX(sentdate) as latest_sentdate FROM outgoingemails GROUP BY objectnumber) as latest_emails'), 'latest_emails.objectnumber', '=', 'invoices.number')
             ->where('customers.client_id', $clientId)
             ->where('invoices.archived', false) // Nur nicht archivierte Rechnungen anzeigen
             ->orderBy('invoices.number', 'desc')
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
                     $query->where('customers.customername', 'like', "%$search%")
-                          ->orWhere('customers.companyname', 'like', "%$search%")
-                          ->orWhere('invoices.number', 'like', "%$search%");
+                        ->orWhere('customers.companyname', 'like', "%$search%")
+                        ->orWhere('invoices.number', 'like', "%$search%");
                 });
             })
             ->select(
@@ -81,7 +81,7 @@ class Positiontable extends Component
                 'invoices.description',
                 'customers.customername',
                 'customers.companyname',
-                'outgoingemails.sentdate as sent_date',
+                'latest_emails.latest_sentdate as sent_date',
                 DB::raw('SUM(invoicepositions.amount * invoicepositions.price) as total_price')
             )
             ->groupBy(
@@ -94,8 +94,9 @@ class Positiontable extends Component
                 'invoices.description',
                 'customers.customername',
                 'customers.companyname',
-                'outgoingemails.sentdate',
+                'latest_emails.latest_sentdate',
             );
+
 
         $invoices = $query->paginate($this->perPage);
         $invoices->appends(['search' => $search]);
