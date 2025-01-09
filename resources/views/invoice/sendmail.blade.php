@@ -10,34 +10,33 @@
             <input type="hidden" name="invoice_id" value="{{ $clientdata->invoice_id }}">
 
 
-            <div class="col-span-3 p-6">
+            <div class="col-span-3 px-6 pt-6">
                 <label for="email" class="block text-sm font-medium text-gray-900">E-Mail Adresse:</label>
-                <div class="mt-2">
+                <div class="mt-1">
                     <input type="email" id="email" name="email" value="{{ $clientdata->email }}" class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm" required>
                 </div>
             </div>
 
-            <div class="col-span-3 pt-2 p-6">
-                <input type="checkbox" id="copy_to_sender" name="copy_to_sender" value="1" checked
-                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
 
-                <input type="hidden" id="copy_email" name="copy_email" value="{{ $clientdata->sender_email }}">
-
-                <label for="copy_to_sender" class="ml-2 text-sm font-medium text-gray-900">
-                    Kopie an {{ $clientdata->sender_email }}
-                </label>
+            <div class="col-span-3 px-6 pt-3">
+                <label for="copy_email" class="block text-sm font-medium text-gray-900">Kopie CC:</label>
+                <div class="mt-1">
+                    <input type="email" id="copy_email" name="copy_email" value="{{ old('copy_email', $clientdata->sender_email) }}" class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm">
+                </div>
             </div>
 
-            <div class="sm:col-span-1 md:col-span-1 px-6 pb-6">
+
+
+            <div class="sm:col-span-1 md:col-span-1 px-6 pt-3 pb-6">
                 <label for="subject" class="block text-sm font-medium text-gray-900">Betreff:</label>
-                <div class="mt-2">
+                <div class="mt-1">
                     <input type="text" id="subject" name="subject" value="{{ $emailsubject }}" class="block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-blue-500 sm:text-sm" required>
                 </div>
             </div>
 
             <div class="sm:col-span-6 md:col-span-3 px-6 pb-6">
                 <label for="message" class="block text-sm font-medium text-gray-900">Nachricht:</label>
-                <div class="mt-2">
+                <div class="mt-1">
                     <textarea name="message" id="message" rows="20" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 focus:outline-indigo-600">{{ old('signature', $emailbody) }}</textarea>
                 </div>
             </div>

@@ -591,8 +591,7 @@ class PdfCreateController extends Controller
             'invoice_id' => 'required|integer|exists:invoices,id',
             'email' => 'required|email',
             'subject' => 'required|string',
-            'copy_to_sender' => 'boolean',
-            'copy_email' => 'email',
+            'copy_email' => 'nullable|email',
             'message' => 'required|string',
         ]);
 
@@ -611,11 +610,6 @@ class PdfCreateController extends Controller
 
         $email = $request->input('email'); // Empfängeradresse
         $invoiceId = $request->input('invoice_id');
-        $copyToSender = $request->boolean('copy_to_sender'); // true oder false
-        $ccEmail = $copyToSender ? $request->input('copy_email') : null;
-        if($request->input('copy_to_sender') == "1") {
-            $ccEmail = $request->input('copy_email');
-        };
         $email = $request->input('email');
         $subject = $request->input('subject');
         $senderEmail = $invoiceData->senderemail; // Absender-E-Mail aus Client-Daten
@@ -633,16 +627,29 @@ class PdfCreateController extends Controller
         //dd($ccEmail);
         try {
             // E-Mail senden
-            Mail::send([], [], function ($message) use ($invoice_number, $email, $subject, $messageBody, $pdfContent, $senderEmail, $senderName, $ccEmail) {
-                $message->from($senderEmail, $senderName) // Dynamische Absenderdaten
-                        ->to($email) // Empfängeradresse)
-                        ->subject($subject) // Betreff
-                        ->html($messageBody) // Nachricht
+            $ccEmail = $request->input('copy_email'); // kann leer oder eine gültige E-Mail sein
+
+            Mail::send([], [], function ($message) use (
+                $invoice_number,
+                $email,
+                $subject,
+                $messageBody,
+                $pdfContent,
+                $senderEmail,
+                $senderName,
+                $ccEmail
+            ) {
+                $message->from($senderEmail, $senderName)
+                        ->to($email)
+                        ->subject($subject)
+                        ->html($messageBody)
                         ->attachData($pdfContent, 'Rechnung_'.$invoice_number.'.pdf', [
                             'mime' => 'application/pdf',
                         ]);
+
+                // CC nur setzen, wenn Feld nicht leer ist
                 if (!empty($ccEmail)) {
-                    $message->cc($ccEmail);
+                    $message->bcc($ccEmail);
                 }
             });
 
