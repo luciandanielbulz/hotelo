@@ -586,12 +586,17 @@ class PdfCreateController extends Controller
     public function sendInvoiceByEmail(Request $request)
     {
 
+
         $request->validate([
             'invoice_id' => 'required|integer|exists:invoices,id',
             'email' => 'required|email',
             'subject' => 'required|string',
+            'copy_to_sender' => 'boolean',
+            'copy_email' => 'email',
             'message' => 'required|string',
         ]);
+
+
 
         $invoiceData = Invoices::join('customers', 'customers.id', '=', 'invoices.customer_id')
             ->join('clients','clients.id','=','customers.client_id')
@@ -606,6 +611,11 @@ class PdfCreateController extends Controller
 
         $email = $request->input('email'); // Empfängeradresse
         $invoiceId = $request->input('invoice_id');
+        $copyToSender = $request->boolean('copy_to_sender'); // true oder false
+        $ccEmail = $copyToSender ? $request->input('copy_email') : null;
+        if($request->input('copy_to_sender') == "1") {
+            $ccEmail = $request->input('copy_email');
+        };
         $email = $request->input('email');
         $subject = $request->input('subject');
         $senderEmail = $invoiceData->senderemail; // Absender-E-Mail aus Client-Daten
@@ -620,16 +630,20 @@ class PdfCreateController extends Controller
         $sentDate = now(); // Sendedatum speichern
         $status = false; // Status initial auf fehlgeschlagen setzen
         $invoice_number = $invoiceData->invoice_number;
+        //dd($ccEmail);
         try {
             // E-Mail senden
-            Mail::send([], [], function ($message) use ($invoice_number, $email, $subject, $messageBody, $pdfContent, $senderEmail, $senderName) {
+            Mail::send([], [], function ($message) use ($invoice_number, $email, $subject, $messageBody, $pdfContent, $senderEmail, $senderName, $ccEmail) {
                 $message->from($senderEmail, $senderName) // Dynamische Absenderdaten
-                        ->to($email) // Empfängeradresse
+                        ->to($email) // Empfängeradresse)
                         ->subject($subject) // Betreff
                         ->html($messageBody) // Nachricht
                         ->attachData($pdfContent, 'Rechnung_'.$invoice_number.'.pdf', [
                             'mime' => 'application/pdf',
                         ]);
+                if (!empty($ccEmail)) {
+                    $message->cc($ccEmail);
+                }
             });
 
             $status = true; // Status auf erfolgreich setzen, wenn kein Fehler auftritt
