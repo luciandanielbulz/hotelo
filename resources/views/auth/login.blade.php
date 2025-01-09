@@ -7,7 +7,7 @@
             <div class="flex justify-center">
                 <x-application-logo class="block h-16 w-auto fill-current text-gray-800" />
             </div>
-            <h2 class="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">Sign in to your account</h2>
+            <h2 class="mt-10 text-center text-2xl font-bold tracking-tight text-gray-900">In Ihrem Konto anmelden</h2>
         </div>
 
         <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -16,7 +16,7 @@
 
                 <!-- Email Address -->
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-900">Email address</label>
+                    <label for="email" class="block text-sm font-medium text-gray-900">Email-Adresse</label>
                     <div class="mt-2">
                         <input
                             type="email"
@@ -32,7 +32,7 @@
                 <!-- Password -->
                 <div>
                     <div class="flex items-center justify-between">
-                        <label for="password" class="block text-sm font-medium text-gray-900">Password</label>
+                        <label for="password" class="block text-sm font-medium text-gray-900">Passwort</label>
                     </div>
                     <div class="mt-2">
                         <input
@@ -50,7 +50,7 @@
                     <button
                         type="submit"
                         class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        Sign in
+                        Anmelden
                     </button>
                 </div>
             </form>
