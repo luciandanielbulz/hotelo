@@ -55,7 +55,7 @@ class SearchList extends Component
                     ->orWhere('address', 'like', '%' . $this->searchTerm . '%');
                 });
             })
-            ->limit(10)
+            ->limit(7)
             ->get();
 
 

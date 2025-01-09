@@ -54,7 +54,7 @@
         <!-- Kunden-Auswahl Modal -->
         <div x-show="openCustomerModal" @customer-updated.window="openCustomerModal = false"
             class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50" style="display: none;" x-cloak>
-                <div class="bg-white rounded-lg shadow-lg w-5/6 md:w-2/3 lg:w-3/5 h-160 p-6 overflow-y-scroll"
+                <div class="bg-white rounded-lg shadow-lg  p-6 overflow-y-scroll w-5/6 md:w-4/6 lg:w-3/5"
                     @click.away="openCustomerModal = false">
                 <h2 class="text-lg font-semibold mb-4">Kunden auswählen</h2>
 
@@ -63,8 +63,7 @@
 
                 <!-- Schließen-Button -->
                 <div class="mt-4 text-right">
-                    <button @click="openCustomerModal = false"
-                            class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+                    <button @click="openCustomerModal = false" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
                         Schließen
                     </button>
                 </div>

@@ -1,23 +1,13 @@
 <div>
     <form wire:submit.prevent="performSearch" class="flex items-center space-x-2">
-        <input
-            type="text"
-            placeholder="Kunden suchen..."
-            wire:model.defer="searchTerm"
-            class="flex-grow p-2 border border-gray-300 rounded"
-        />
-        <button
-            type="submit"
-            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-            Suchen
-        </button>
+        <input type="text" placeholder="Kunden suchen..." wire:model.defer="searchTerm"
+            class="w-64 flex-grow p-2 border border-gray-300 rounded" />
+        <button type="submit" class="w-64 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Suchen</button>
     </form>
-
-
 
     @if($customers && $customers->count())
         <!-- Tabelle für Kundendaten -->
-        <table class="min-w-full divide-y mt-3 divide-gray-200">
+        <table class="min-w-full divide-y mt-2 divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Firma</th>
