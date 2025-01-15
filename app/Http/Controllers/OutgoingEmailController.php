@@ -31,6 +31,8 @@ class OutgoingEmailController extends Controller
             ->orderBy('outgoingemails.sentdate', 'desc')
             ->paginate(18); // 18 Items pro Seite
 
+        //dd($outgoingEmails);
+
         return view('outgoingemails.index', compact('outgoingEmails', 'search'));
     }
 

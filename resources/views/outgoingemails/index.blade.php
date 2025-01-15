@@ -47,14 +47,18 @@
                                     $sendDate = new DateTime($row->sentdate);
                                     $sendDate->setTimezone(new DateTimeZone('Europe/Vienna'));
                                 @endphp
+
                                 <tr>
                                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6">{{ $type }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                        <a href="{{ $fileLink }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">{{ $row->objectnumber }}</a>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">
+                                        <!-- Link zur Datei -->
+                                        <a href="{{ route('download.file', ['filename' => $fileLink]) }}" target="_blank">
+                                            {{ $type }} öffnen
+                                        </a>
                                     </td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $customerName }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $row->getteremail }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-center text-gray-500">{{ $sendDate->format('Y-m-d H:i:s') }}</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $customerName }}</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $row->getteremail }}</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-center text-black">{{ $sendDate->format('Y-m-d H:i:s') }}</td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-center">
                                         <i class="fa-solid {{ $attachmentIcon }} {{ $attachmentColor }}"></i>
                                     </td>

@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 use PHPMailer\PHPMailer\PHPMailer;
+use Illuminate\Support\Str;
 use PHPMailer\PHPMailer\Exception;
 
 
@@ -583,97 +584,125 @@ class PdfCreateController extends Controller
 
 
 
-    public function sendInvoiceByEmail(Request $request)
-    {
+public function sendInvoiceByEmail(Request $request)
+{
+    // Validierung der Eingabedaten
+    $request->validate([
+        'invoice_id' => 'required|integer|exists:invoices,id',
+        'email' => 'required|email',
+        'subject' => 'required|string',
+        'copy_email' => 'nullable|email',
+        'message' => 'required|string',
+    ]);
 
+    // Abrufen der Rechnungsdaten mit Joins
+    $invoiceData = Invoices::join('customers', 'customers.id', '=', 'invoices.customer_id')
+        ->join('clients', 'clients.id', '=', 'customers.client_id')
+        ->where('invoices.id', '=', $request->invoice_id)
+        ->select(
+            'customers.*',
+            'invoices.*',
+            'customers.id as customer_id',
+            'clients.email as senderemail',
+            'clients.companyname as clientname',
+            'invoices.number as invoice_number'
+        )
+        ->first();
 
-        $request->validate([
-            'invoice_id' => 'required|integer|exists:invoices,id',
-            'email' => 'required|email',
-            'subject' => 'required|string',
-            'copy_email' => 'nullable|email',
-            'message' => 'required|string',
-        ]);
-
-
-
-        $invoiceData = Invoices::join('customers', 'customers.id', '=', 'invoices.customer_id')
-            ->join('clients','clients.id','=','customers.client_id')
-            ->where('invoices.id', '=', $request->invoice_id) // Expliziter Bezug auf `invoices.id`
-            ->select('customers.*', 'invoices.*', 'customers.id as customer_id', 'clients.email as senderemail', 'clients.companyname as clientname','invoices.number as invoice_number')
-            ->first();
-
-
-        if (!$invoiceData->senderemail) {
-            return response()->json(['message' => 'Client oder Absender-E-Mail nicht gefunden.'], 404);
-        }
-
-        $email = $request->input('email'); // Empfängeradresse
-        $invoiceId = $request->input('invoice_id');
-        $email = $request->input('email');
-        $subject = $request->input('subject');
-        $senderEmail = $invoiceData->senderemail; // Absender-E-Mail aus Client-Daten
-        $messageBody = $request->input('message');
-        $senderName = $invoiceData->clientname;
-
-        // PDF generieren
-        $request->merge(['prev' => 'S']);
-        $pdfResponse = $this->createInvoicePdf($request);
-        $pdfContent = $pdfResponse->getContent();
-
-        $sentDate = now(); // Sendedatum speichern
-        $status = false; // Status initial auf fehlgeschlagen setzen
-        $invoice_number = $invoiceData->invoice_number;
-        //dd($ccEmail);
-        try {
-            // E-Mail senden
-            $ccEmail = $request->input('copy_email'); // kann leer oder eine gültige E-Mail sein
-
-            Mail::send([], [], function ($message) use (
-                $invoice_number,
-                $email,
-                $subject,
-                $messageBody,
-                $pdfContent,
-                $senderEmail,
-                $senderName,
-                $ccEmail
-            ) {
-                $message->from($senderEmail, $senderName)
-                        ->to($email)
-                        ->subject($subject)
-                        ->html($messageBody)
-                        ->attachData($pdfContent, 'Rechnung_'.$invoice_number.'.pdf', [
-                            'mime' => 'application/pdf',
-                        ]);
-
-                // CC nur setzen, wenn Feld nicht leer ist
-                if (!empty($ccEmail)) {
-                    $message->bcc($ccEmail);
-                }
-            });
-
-            $status = true; // Status auf erfolgreich setzen, wenn kein Fehler auftritt
-
-        } catch (\Exception $e) {
-            \Log::error('Fehler beim E-Mail-Versand: ' . $e->getMessage());
-        }
-        //dd($invoiceData->id);
-        // Eintrag in der Tabelle `outgoingemails` erstellen
-        OutgoingEmail::create([
-            'type' => 1, // Beispiel: Typ 1 für Rechnung
-            'customer_id' => $invoiceData->customer_id, // Annahme: im Request vorhanden
-            'objectnumber' => $invoiceData->number,
-            'sentdate' => $sentDate,
-            'getteremail' => $email,
-            'filename' => 'Rechnung.pdf',
-            'withattachment' => true, // Immer mit Anhang
-            'status' => $status, // Erfolgsstatus
-            'client_id' => $request->user()->client_id, // Annahme: Client-ID aus eingeloggtem Benutzer
-        ]);
-
-        return redirect()->route('outgoingemails.index')->with('success', 'Rechnung wurde erfolgreich per E-Mail versendet.');
+    if (!$invoiceData || !$invoiceData->senderemail) {
+        return response()->json(['message' => 'Client oder Absender-E-Mail nicht gefunden.'], 404);
     }
+
+    // Zuweisen der Variablen aus dem Request und Datenbankabfrage
+    $email = $request->input('email');
+    $subject = $request->input('subject');
+    $senderEmail = $invoiceData->senderemail;
+    $messageBody = $request->input('message');
+    $senderName = $invoiceData->clientname;
+    $invoice_number = $invoiceData->invoice_number;
+
+    // PDF generieren
+    $request->merge(['prev' => 'S']);
+    $pdfResponse = $this->createInvoicePdf($request);
+    $pdfContent = $pdfResponse->getContent();
+
+    // Generiere einen zufälligen Dateinamen für die Speicherung
+    $randomFileName = Str::random(40) . '.pdf';
+
+    // Definiere das Verzeichnis und Datei-Pfad
+    $storagePath = storage_path('app/objects');
+
+    // Sicherstellen, dass das Verzeichnis existiert
+    if (!file_exists($storagePath)) {
+        mkdir($storagePath, 0755, true);
+    }
+
+    // Vollständigen Dateipfad mit zufälligem Namen
+    $filePath = $storagePath . '/' . $randomFileName;
+
+    // Speichern der PDF-Datei unter dem zufälligen Namen
+    try {
+        file_put_contents($filePath, $pdfContent);
+    } catch (\Exception $e) {
+        \Log::error('Fehler beim Speichern der PDF: ' . $e->getMessage());
+        return response()->json(['message' => 'Fehler beim Speichern der Rechnung.'], 500);
+    }
+
+    $sentDate = now();
+    $status = false;
+
+    try {
+        $ccEmail = $request->input('copy_email');
+
+        Mail::send([], [], function ($message) use (
+            $randomFileName,
+            $invoice_number,
+            $email,
+            $subject,
+            $messageBody,
+            $filePath,
+            $senderEmail,
+            $senderName,
+            $ccEmail
+        ) {
+            $message->from($senderEmail, $senderName)
+                    ->to($email)
+                    ->subject($subject)
+                    ->html($messageBody)
+                    ->attach($filePath, [
+                        // Verwende als Alias den lesbaren Namen für den Empfänger
+                        'as' => 'Rechnung_' . $invoice_number . '.pdf',
+                        'mime' => 'application/pdf',
+                    ]);
+
+            if (!empty($ccEmail)) {
+                $message->bcc($ccEmail);
+            }
+        });
+
+        $status = true;
+
+    } catch (\Exception $e) {
+        \Log::error('Fehler beim E-Mail-Versand: ' . $e->getMessage());
+    }
+
+    // Speichere den zufälligen Dateinamen in der Datenbank
+    OutgoingEmail::create([
+        'type' => 1,
+        'customer_id' => $invoiceData->customer_id,
+        'objectnumber' => $invoiceData->number,
+        'sentdate' => $sentDate,
+        'getteremail' => $email,
+        'filename' => $randomFileName,  // Speicher den zufälligen Dateinamen
+        'withattachment' => true,
+        'status' => $status,
+        'client_id' => $request->user()->client_id,
+    ]);
+
+    return redirect()->route('outgoingemails.index')->with('success', 'Rechnung wurde erfolgreich per E-Mail versendet.');
+}
+
+
 
 
 }

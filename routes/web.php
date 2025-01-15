@@ -19,6 +19,8 @@ use App\Http\Controllers\LogoController;
 use App\Http\Controllers\OutgoingEmailController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BankDataController;
+use Illuminate\Support\Facades\File;
+use Illuminate\Http\Response;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,10 +37,13 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/bankdata/upload', [BankDataController::class, 'showUploadForm'])->name('bankdata.upload.form');
-Route::post('/bankdata/upload', [BankDataController::class, 'uploadJSON'])->name('bankdata.upload');
+
 
 Route::middleware(['auth','verified'])->group(function(){
+
+	Route::get('/bankdata/upload', [BankDataController::class, 'showUploadForm'])->name('bankdata.upload.form');
+
+	Route::post('/bankdata/upload', [BankDataController::class, 'uploadJSON'])->name('bankdata.upload');
 
     /*Dashboard*/
     Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -137,6 +142,21 @@ Route::middleware(['auth','verified'])->group(function(){
         return view('admin.reset_password', compact('user'));
     })->middleware('auth')->name('users.show-reset-password');
 
+
+
+        Route::get('/download/{filename}', function ($filename) {
+            $path = storage_path('app/objects/' . $filename);
+
+            if (!File::exists($path)) {
+                abort(404);
+            }
+
+            // Optional: setze Header für den Download oder Anzeige
+            return response()->file($path, [
+                'Content-Type' => 'application/pdf',
+                // 'Content-Disposition' => 'attachment; filename="Rechnung.pdf"', // für direkten Download
+            ]);
+        })->name('download.file');
 
 });
 
