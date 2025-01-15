@@ -92,7 +92,7 @@ class UsersController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        //dd($request->all());
+        dd($request->all());
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
