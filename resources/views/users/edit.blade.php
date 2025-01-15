@@ -48,7 +48,7 @@
             <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6 border-b">
                 <!-- Email -->
                 <div class="sm:col-span-1">
-                    <x-input name="lemailogin" type="text" placeholder="Email" label="E-Mail" value="{{ old('login', $user->email) }}" />
+                    <x-input name="email" type="text" placeholder="Email" label="E-Mail" value="{{ old('login', $user->email) }}" />
                 </div>
 
                 <!-- Aktiv -->
