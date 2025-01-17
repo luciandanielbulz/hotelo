@@ -21,6 +21,10 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BankDataController;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Response;
+use App\Http\Controllers\InvoiceUploadController;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -157,6 +161,28 @@ Route::middleware(['auth','verified'])->group(function(){
                 // 'Content-Disposition' => 'attachment; filename="Rechnung.pdf"', // für direkten Download
             ]);
         })->name('download.file');
+
+        Route::get('/invoiceupload/upload', [InvoiceUploadController::class, 'create'])->name('invoiceupload.upload.create');
+        Route::post('/invoiceupload/upload', [InvoiceUploadController::class, 'store'])->name('invoiceupload.upload.store');
+        //Route::resource('invoiceupload', InvoiceUploadController::class);
+        Route::get ('/invoiceupload/index', [InvoiceUploadController::class, 'index'])->name('invoiceupload.index');
+        Route::get ('/invoiceupload/{id}/edit', [InvoiceUploadController::class, 'edit'])->name('invoiceupload.edit');
+        Route::put ('/invoiceupload/{id}', [InvoiceUploadController::class, 'update'])->name('invoiceupload.update');
+        Route::get ('/invoiceupload/{id}/show_invoice', [InvoiceUploadController::class, 'show_invoice'])->name('invoiceupload.show_invoice');
+        Route::get('/invoiceupload/{id}', [InvoiceUploadController::class, 'show'])->name('invoiceupload.show');
+        Route::get('/invoiceuploads/filter/{month}', [InvoiceUploadController::class, 'filterByMonth'])->name('invoiceupload.filterByMonth');
+
+
+
+        Route::get('/invoiceuploads/download-zip/{month}', [InvoiceUploadController::class, 'downloadZipForMonth'])
+            ->name('invoiceupload.downloadZipForMonth');
+
+        //Route::get('/invoiceuploads/download-zip/{month}', [InvoiceUploadController::class, 'testCreateZip'])
+        //    ->name('invoiceupload.downloadZipForMonth');
+
+        Route::get('/invoiceupload/filter-by-month/{month}', [InvoiceUploadController::class, 'filterByMonth'])
+            ->name('invoiceupload.filterByMonth');
+
 
 });
 

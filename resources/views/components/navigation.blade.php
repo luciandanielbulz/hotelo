@@ -61,6 +61,11 @@
                                             {{ __('Archivierte Rechnungen') }}
                                         </x-dropdown-link>
                                     @endif
+                                    @if(auth()->user()->hasPermission('view_invoices'))
+                                        <x-dropdown-link :href="route('invoiceupload.index')" :active="request()->routeIs('invoiceupload.index')">
+                                            {{ __('Ausgabenverwaltung') }}
+                                        </x-dropdown-link>
+                                    @endif
                                 </div>
                             </div>
                         </div>
