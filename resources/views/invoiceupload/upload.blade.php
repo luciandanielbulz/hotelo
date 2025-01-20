@@ -1,14 +1,13 @@
 <x-layout>
     <div class="space-y-10 divide-y divide-gray-900/10">
         <div class="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-5">
-            <div class="px-4 sm:px-0">
-                <h2 class="text-base font-semibold text-gray-900">Rechnung hochladen</h3>
-                <p class="mt-1 text-sm text-gray-600">Bitte füllen Sie die folgenden Informationen aus, um eine neue Rechnung hochzuladen.</p>
-            </div>
-
+          <div class="px-4 sm:px-0">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">Rechnung hochladen</h3>
+                <div class="mt-2 max-w-xl text-sm text-gray-500">
+                    <p>Bitte füllen Sie die folgenden Informationen aus, um eine neue Rechnung hochzuladen.</p>
+                </div>
                 <form action="{{ route('invoiceupload.upload.store') }}" method="POST" enctype="multipart/form-data" class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-3">
                     @csrf
-
                     @if(session('success'))
                         <div class="mb-4 rounded-md bg-green-50 p-4">
                             <div class="flex">
@@ -47,50 +46,43 @@
                             </div>
                         </div>
                     @endif
-
-                    <div class="px-4 py-6 sm:p-6">
-                        <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 pb-8">
-                            <div class="sm:col-span-full">
-                                <label for="invoice_pdf" class="block text-sm font-medium text-gray-700 sm:col-span-2">PDF-Datei *</label>
-                                <div class="mt-1">
-                                    <input type="file" name="invoice_pdf" id="invoice_pdf" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                                </div>
+                    <div class="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-8">
+                        <div>
+                            <label for="invoice_pdf" class="block text-sm font-medium text-gray-700">PDF-Datei *</label>
+                            <div class="mt-1">
+                                <input type="file" name="invoice_pdf" id="invoice_pdf" required
+                                       class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                            </div>
+                        </div>
+                        <div class="sm:col-span-3">
+                            <label for="invoice_date" class="block text-sm font-medium text-gray-900">Rechnungsdatum</label>
+                            <div class="mt-2">
+                                <input type="date" name="invoice_date" id="invoice_date" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                            </div>
+                        </div>
+                        <div class="sm:col-span-3">
+                            <label for="invoice_vendor" class="block text-sm font-medium text-gray-900">Lieferant</label>
+                            <div class="mt-2">
+                                <input type="text" name="invoice_vendor" id="invoice_vendor" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                            <div class="sm:col-span-2">
-                                <label for="invoice_date" class="block text-sm font-medium text-gray-900">Rechnungsdatum</label>
-                                <div class="mt-2">
-                                    <input type="date" name="invoice_date" id="invoice_date" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                                </div>
-                            </div>
-                            <div class="sm:col-span-2">
-                                <label for="invoice_vendor" class="block text-sm font-medium text-gray-900">Lieferant</label>
-                                <div class="mt-2">
-                                    <input type="text" name="invoice_vendor" id="invoice_vendor" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                                </div>
-                            </div>
-                            <div class="sm:col-span-2">
-                                <label for="invoice_number" class="block text-sm font-medium text-gray-700">Rechnungsnummer</label>
-                                <div class="mt-1">
-                                    <input type="text" name="invoice_number" id="invoice_number"
-                                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
-                                </div>
+                        <div class="sm:col-span-2">
+                            <label for="description" class="block text-sm font-medium text-gray-700">Beschreibung</label>
+                            <div class="mt-1">
+                                <textarea name="description" id="description" rows="3"
+                                          class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 outline outline-1 -outline-offset-1 outline-gray-300"></textarea>
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-7 pt-8">
-                            <div class="sm:col-span-full">
-                                <label for="description" class="block text-sm font-medium text-gray-700">Beschreibung</label>
-                                <div class="mt-1">
-                                    <textarea name="description" id="description" rows="3"
-                                            class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 outline outline-1 -outline-offset-1 outline-gray-300"></textarea>
-                                </div>
+                        <div class="sm:col-span-2">
+                            <label for="invoice_number" class="block text-sm font-medium text-gray-700">Rechnungsnummer</label>
+                            <div class="mt-1">
+                                <input type="text" name="invoice_number" id="invoice_number"
+                                       class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
                             </div>
-
                         </div>
                     </div>
-                    <div class="mt-5 flex justify-end p-8">
+                    <div class="mt-5 flex justify-end">
                         <a href="{{ route('invoiceupload.upload.create') }}"
                            class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Abbrechen

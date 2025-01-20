@@ -59,29 +59,20 @@
                                     <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                         <div class="flex flex-wrap gap-2 justify-end items-center">
                                             <!-- Bearbeiten Link -->
-                                            <a href="{{ url('/customer/' . $customer->id . '/edit') }}"
-                                                class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-black shadow-sm hover:bg-gray-200">
-                                                Bearbeiten
-                                            </a>
+                                            <a href="{{ url('/customer/' . $customer->id . '/edit') }}" class="text-indigo-600 hover:text-indigo-900 ml-4">Bearbeiten</a>
 
                                             <!-- + Angebot Link -->
-                                            <a href="{{ url('/offer/create/' . $customer->id) }}"
-                                                class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-black shadow-sm hover:bg-gray-200">
-                                                + Angebot
-                                            </a>
+                                            <a href="{{ url('/offer/create/' . $customer->id) }}" class="text-indigo-600 hover:text-indigo-900 ml-4">+Angebot</a>
 
                                             <!-- + Rechnung Link -->
-                                            <a href="{{ url('/invoice/create/' . $customer->id) }}"
-                                                class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-black shadow-sm hover:bg-gray-200">
-                                                + Rechnung
-                                            </a>
+                                            <a href="{{ url('/invoice/create/' . $customer->id) }}" class="text-indigo-600 hover:text-indigo-900 ml-4">+Rechnung</a>
 
                                             <!-- Löschen Button -->
                                             <form action="{{ url('/customer/' . $customer->id) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
-                                                    class="inline-flex items-center rounded-md bg-red-600 px-3 h-8 text-sm font-semibold text-white shadow-sm hover:bg-red-500">
+                                                class="text-red-600 hover:text-red-900 ml-4">
                                                     Löschen
                                                 </button>
                                             </form>

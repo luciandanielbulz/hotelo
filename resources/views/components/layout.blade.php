@@ -43,10 +43,10 @@
 <body>
 
     <main>
-        <div class="mx-auto max-w-8xl px-4 py-0 sm:px-6 lg:px-8">
+        <div class="container mx-auto sm:px-6 lg:px-8">
         <!-- Linke Spalte: Überschrift -->
 
-            @include('components.navigation')
+            @include('components.navigationV2')
 
             <div class="py-4">
 

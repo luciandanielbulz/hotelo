@@ -1,295 +1,244 @@
-<nav x-data="{ open: false }" class="bg-gray-800">
-    <!-- Hauptnavigationsmenü -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current" />
-                    </a>
-                </div>
+<!--
+  Navbar: dunkler Hintergrund, links Logo + Navigation,
+  rechts Profil-Icon mit Dropdown.
+  Mobile: Hamburger-Button anstatt Desktop-Navigation
+  Alpine.js: toggelt 'mobileOpen' (Mobile-Menü) und 'profileOpen' (Profil-Dropdown)
+-->
+<nav x-data="{ mobileOpen: false, profileOpen: false }" class="bg-gray-800">
+    <!-- Haupt-Container: max. Breite + Innenabstände -->
+    <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+      <div class="relative flex h-16 items-center justify-between">
 
-                <!-- Navigationslinks -->
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
+        <!-- ===================================
+             MOBILE: Hamburger-Button (links)
+             Wird nur auf kleinen Screens angezeigt
+             (sm:hidden => ab 640px wird es ausgeblendet)
+             =================================== -->
+        <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+          <button
+            type="button"
+            @click="mobileOpen = !mobileOpen"
+            class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400
+                   hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2
+                   focus:ring-inset focus:ring-white"
+            aria-controls="mobile-menu"
+            aria-expanded="false"
+          >
+            <span class="absolute -inset-0.5"></span>
+            <span class="sr-only">Open main menu</span>
 
-                    @if(auth()->user()->hasPermission('view_customers'))
-                        <x-nav-link :href="route('customer.index')" :active="request()->routeIs('customer.index')">
-                            {{ __('Kunden') }}
-                        </x-nav-link>
-                    @endif
-
-                    @if(auth()->user()->hasPermission('view_offers'))
-                        <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
-                            <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('offer.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
-                                <span>{{ __('Angebote') }}</span>
-                            </a>
-                            <div x-show="open" @click.away="open = false" class="absolute z-50 mt-5 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                                <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                    @if(auth()->user()->hasPermission('view_offers'))
-                                        <x-dropdown-link :href="route('offer.index')" :active="request()->routeIs('offer.index')">
-                                            {{ __('Abgebote') }}
-                                        </x-dropdown-link>
-                                    @endif
-                                    @if(auth()->user()->hasPermission('view_offers'))
-                                        <x-dropdown-link :href="route('offer.index_archivated')" :active="request()->routeIs('offer.index_archivated')">
-                                            {{ __('Archivierte Abgebote') }}
-                                        </x-dropdown-link>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    @if(auth()->user()->hasPermission('view_invoices'))
-                        <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
-                            <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('invoice.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
-                                <span>{{ __('Rechnungen') }}</span>
-                            </a>
-                            <div x-show="open" @click.away="open = false" class="absolute z-50 mt-5 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                                <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                    @if(auth()->user()->hasPermission('view_invoices'))
-                                        <x-dropdown-link :href="route('invoice.index')" :active="request()->routeIs('invoice.index')">
-                                            {{ __('Rechnungen') }}
-                                        </x-dropdown-link>
-                                    @endif
-                                    @if(auth()->user()->hasPermission('view_invoices'))
-                                        <x-dropdown-link :href="route('invoice.index_archivated')" :active="request()->routeIs('invoice.index_archivated')">
-                                            {{ __('Archivierte Rechnungen') }}
-                                        </x-dropdown-link>
-                                    @endif
-                                    @if(auth()->user()->hasPermission('view_invoices'))
-                                        <x-dropdown-link :href="route('invoiceupload.index')" :active="request()->routeIs('invoiceupload.index')">
-                                            {{ __('Ausgabenverwaltung') }}
-                                        </x-dropdown-link>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-                    @if(auth()->user()->hasPermission('view_sales_analysis'))
-                        <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
-                            <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('sales.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
-                                <span>{{ __('Umsatzauswertung') }}</span>
-                            </a>
-                            <div x-show="open" @click.away="open = false" class="absolute z-50 mt-5 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                                <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                    @if(auth()->user()->hasPermission('view_sales_analysis'))
-                                        <x-dropdown-link :href="route('sales.index')" :active="request()->routeIs('sales.index')">
-                                            {{ __('Umsatz') }}
-                                        </x-dropdown-link>
-                                    @endif
-                                    @if(auth()->user()->hasPermission('view_sales_analysis'))
-                                        <x-dropdown-link :href="route('bankdata.upload.form')" :active="request()->routeIs('bankdata.upload.form')">
-                                            {{ __('Bankdatenupload') }}
-                                        </x-dropdown-link>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-
-
-
-                    @if(auth()->user()->hasPermission('view_messages'))
-                        <x-nav-link :href="route('outgoingemails.index')" :active="request()->routeIs('outgoingemails.index')">
-                            {{ __('Postausgang') }}
-                        </x-nav-link>
-                    @endif
-
-                    <!-- Rollenverwaltung mit Untermenü -->
-                    @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients'))
-                        <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
-                            <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*', 'permissions.*', 'clients.*', 'users.*','logos.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
-                                <span>{{ __('App-Einstellungen') }}</span>
-                            </a>
-                            <!-- Dropdown-Inhalt -->
-                            <div x-show="open" @click.away="open = false" class="absolute z-50 mt-5 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                                <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                    @if(auth()->user()->hasPermission('manage_roles'))
-                                        <x-dropdown-link :href="route('roles.index')">
-                                            {{ __('Rollen') }}
-                                        </x-dropdown-link>
-                                    @endif
-                                    @if(auth()->user()->hasPermission('manage_permissions'))
-                                        <x-dropdown-link :href="route('permissions.index')">
-                                            {{ __('Rechte') }}
-                                        </x-dropdown-link>
-                                    @endif
-                                    @if(auth()->user()->hasPermission('view_clients'))
-                                        <x-dropdown-link :href="route('clients.index')">
-                                            {{ __('Klienten') }}
-                                        </x-dropdown-link>
-                                    @endif
-                                    @if(auth()->user()->hasPermission('view_conditions'))
-                                        <x-dropdown-link :href="route('condition.index')" :active="request()->routeIs('condition.index')">
-                                            {{ __('Konditionen') }}
-                                        </x-dropdown-link>
-                                    @endif
-                                    @if(auth()->user()->hasPermission('manage_users'))
-                                        <x-dropdown-link :href="route('users.index')" :active="request()->routeIs('users.index')">
-                                            {{ __('Benutzer') }}
-                                        </x-dropdown-link>
-                                    @endif
-                                    @if(auth()->user()->hasPermission('view_clients'))
-                                        <x-dropdown-link :href="route('logos.index')" :active="request()->routeIs('users.index')">
-                                            {{ __('Logos') }}
-                                        </x-dropdown-link>
-                                    @endif
-
-                                    <!-- Weitere Untermenüpunkte -->
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                    <!-- Ende des Untermenüs -->
-                </div>
-
-
-            <!-- Einstellungen Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ml-6 md:ml-20">
-                <x-dropdown align="right" width="60">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
-
-                            <div class="ml-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
-
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profil') }}
-                        </x-dropdown-link>
-
-                        <!-- Abmeldung -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-
-                            <x-dropdown-link :href="route('logout')"
-                                onclick="event.preventDefault();
-                                            this.closest('form').submit();">
-                                {{ __('Abmelden') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
-
-            <!-- Hamburger Menü -->
-            <div class="-mr-2 flex items-center sm:hidden">
-                <button @click="open = !open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
+            <!-- Icon, wenn Menü geschlossen ist -->
+            <svg
+              x-show="!mobileOpen"
+              class="block size-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+              data-slot="icon"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+              />
+            </svg>
+            <!-- Icon, wenn Menü geöffnet ist -->
+            <svg
+              x-show="mobileOpen"
+              class="hidden size-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              aria-hidden="true"
+              data-slot="icon"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
+
+        <!-- ===================================
+             LINKER TEIL: Logo + Desktop-Navigation
+             Flex-Container: Logo & Navlinks
+             =================================== -->
+        <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+          <!-- Logo -->
+          <div class="flex shrink-0 items-center">
+            <x-application-logo class="block h-9 w-auto fill-current" />
+          </div>
+
+          <!-- Desktop-Menü
+               hidden sm:block => auf Mobil versteckt, ab 640px (sm) sichtbar
+          -->
+          <div class="hidden sm:ml-6 sm:block">
+            <div class="flex space-x-4">
+              <!-- Beispiel-Links: Dashboard, Team, usw. -->
+              <!-- Aktiver Link: bg-gray-900 text-white -->
+              <!-- Inaktiv: text-gray-300 hover:bg-gray-700 hover:text-white -->
+              <a href="{{route('dashboard')}}" class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white">
+                Dashboard
+              </a>
+              <a href="{{route('customer.index')}}" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white" aria-current="page">
+                Kunden
+              </a>
+              <a
+                href="#"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300
+                       hover:bg-gray-700 hover:text-white"
+              >
+                Projects
+              </a>
+              <a
+                href="#"
+                class="rounded-md px-3 py-2 text-sm font-medium text-gray-300
+                       hover:bg-gray-700 hover:text-white"
+              >
+                Calendar
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===================================
+             RECHTER TEIL: User-Icon + Dropdown
+             (Notifications entfernt)
+             =================================== -->
+        <div class="absolute inset-y-0 right-0 flex items-center pr-2
+                    sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+
+          <!-- Profil-Dropdown -->
+          <div class="relative ml-3">
+            <div>
+              <!-- Button mit Personen-Icon -->
+              <button
+                type="button"
+                @click="profileOpen = !profileOpen"
+                class="relative flex rounded-full bg-gray-800 text-sm focus:outline-none
+                       focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                id="user-menu-button"
+                aria-expanded="false"
+                aria-haspopup="true"
+              >
+                <span class="absolute -inset-1.5"></span>
+                <span class="sr-only">Open user menu</span>
+                <!-- Personen-Icon (statt Avatar) -->
+                <svg
+                  class="size-8 text-gray-300"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <!-- Beispiel: Heroicon "User" -->
+                  <path
+                    d="M15.75 9A3.75 3.75 0 1112 5.25
+                       3.75 3.75 0 0115.75 9zM4.5
+                       19.5a8.25 8.25 0 0115 0"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Dropdown-Menü (auf Desktop angezeigt, wenn profileOpen = true) -->
+            <div
+              x-show="profileOpen"
+              @click.away="profileOpen = false"
+              x-transition:enter="transition ease-out duration-100"
+              x-transition:enter-start="transform opacity-0 scale-95"
+              x-transition:enter-end="transform opacity-100 scale-100"
+              x-transition:leave="transition ease-in duration-75"
+              x-transition:leave-start="transform opacity-100 scale-100"
+              x-transition:leave-end="transform opacity-0 scale-95"
+              class="absolute right-0 z-10 mt-2 w-48 origin-top-right
+                     rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5
+                     focus:outline-none"
+              role="menu"
+              aria-orientation="vertical"
+              aria-labelledby="user-menu-button"
+              tabindex="-1"
+              style="display: none;" <!-- verhindert kurzes Einblitzen -->
+            >
+              <!-- Dropdown-Einträge -->
+              <a
+                href="#"
+                class="block px-4 py-2 text-sm text-gray-700"
+                role="menuitem"
+                tabindex="-1"
+              >
+                Your Profile
+              </a>
+              <a
+                href="#"
+                class="block px-4 py-2 text-sm text-gray-700"
+                role="menuitem"
+                tabindex="-1"
+              >
+                Settings
+              </a>
+              <a
+                href="#"
+                class="block px-4 py-2 text-sm text-gray-700"
+                role="menuitem"
+                tabindex="-1"
+              >
+                Sign out
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Responsive Navigationsmenü -->
-    <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            @if(auth()->user()->hasPermission('view_dashboard'))
-                <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                    {{ __('Dashboard') }}
-                </x-responsive-nav-link>
-            @endif
-
-            @if(auth()->user()->hasPermission('view_customers'))
-                <x-responsive-nav-link :href="route('customer.index')" :active="request()->routeIs('customer.index')">
-                    {{ __('Kunden') }}
-                </x-responsive-nav-link>
-            @endif
-
-            @if(auth()->user()->hasPermission('view_offers'))
-                <x-responsive-nav-link :href="route('offer.index')" :active="request()->routeIs('offer.index')">
-                    {{ __('Angebote') }}
-                </x-responsive-nav-link>
-            @endif
-
-            @if(auth()->user()->hasPermission('view_invoices'))
-                <x-responsive-nav-link :href="route('invoice.index')" :active="request()->routeIs('invoice.index')">
-                    {{ __('Rechnungen') }}
-                </x-responsive-nav-link>
-            @endif
-
-            @if(auth()->user()->hasPermission('view_sales_analysis'))
-                <x-responsive-nav-link :href="route('sales.index')" :active="request()->routeIs('sales.index')">
-                    {{ __('Umsatz') }}
-                </x-responsive-nav-link>
-            @endif
-
-            @if(auth()->user()->hasPermission('manage_users'))
-                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
-                    {{ __('Benutzer') }}
-                </x-responsive-nav-link>
-            @endif
-
-            <!-- Rollenverwaltung mit Untermenü in mobiler Ansicht -->
-            @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients'))
-                <div x-data="{ openSubmenu: false }" class="space-y-1">
-                    <x-responsive-nav-link href="#" @click.prevent="openSubmenu = !openSubmenu" class="flex items-center">
-                        <span>{{ __('App-Einstellungen') }}</span>
-                        <svg class="ml-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                            <!-- SVG path -->
-                        </svg>
-                    </x-responsive-nav-link>
-                    <div x-show="openSubmenu" class="space-y-1 mt-2">
-                        @if(auth()->user()->hasPermission('manage_roles'))
-                            <x-responsive-nav-link :href="route('roles.index')">
-                                {{ __('Rollen') }}
-                            </x-responsive-nav-link>
-                        @endif
-                        @if(auth()->user()->hasPermission('manage_permissions'))
-                            <x-responsive-nav-link :href="route('permissions.index')">
-                                {{ __('Rechte') }}
-                            </x-responsive-nav-link>
-                        @endif
-                        @if(auth()->user()->hasPermission('view_clients'))
-                            <x-responsive-nav-link :href="route('clients.index')">
-                                {{ __('Klienten') }}
-                            </x-responsive-nav-link>
-                        @endif
-                        <!-- Weitere Untermenüpunkte -->
-                    </div>
-                </div>
-            @endif
-            <!-- Ende des Untermenüs -->
-        </div>
-
-        <!-- Responsive Einstellungen -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-            </div>
-
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profil') }}
-                </x-responsive-nav-link>
-
-                <!-- Abmeldung -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Abmelden') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
-        </div>
+    <!-- ===================================
+         MOBILES MENÜ (wenn Hamburger geklickt)
+         sm:hidden => Ab 640px wird dieses Menü nicht angezeigt
+         =================================== -->
+    <div
+      class="sm:hidden"
+      id="mobile-menu"
+      x-show="mobileOpen"
+      x-transition
+      style="display: none;"
+    >
+      <div class="space-y-1 px-2 pb-3 pt-2">
+        <!-- Entspricht der Desktop-Navigation, nur mobil -->
+        <a
+          href="#"
+          class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white"
+          aria-current="page"
+        >
+          Dashboard
+        </a>
+        <a
+          href="#"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300
+                 hover:bg-gray-700 hover:text-white"
+        >
+          Team
+        </a>
+        <a
+          href="#"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300
+                 hover:bg-gray-700 hover:text-white"
+        >
+          Projects
+        </a>
+        <a
+          href="#"
+          class="block rounded-md px-3 py-2 text-base font-medium text-gray-300
+                 hover:bg-gray-700 hover:text-white"
+        >
+          Calendar
+        </a>
+      </div>
     </div>
-</nav>
+  </nav>
