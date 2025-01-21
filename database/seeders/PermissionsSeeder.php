@@ -30,7 +30,10 @@ class PermissionsSeeder extends Seeder
             'view_clients' => 'Klienten verwalten',
             'update_settings'=> 'Einstellungen sehen',
             'logout'=>'Ausloggen',
-            'manage_permissions'=>'Rechte bearbeiten'
+            'manage_permissions'=>'Rechte bearbeiten',
+            'view_messages' => "Postausgang für gesendete Mails sehen",
+            'reset_user_password' => 'Benutzerpasswort zurücksetzen',
+            'view_conditions' => 'Konditionen bearbeiten'
         ];
 
         foreach ($permissions as $name => $description) {
