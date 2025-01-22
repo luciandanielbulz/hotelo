@@ -30,7 +30,7 @@ class PdfCreateController extends Controller
 
         public function createOfferPdf(Request $request)
     {
-
+        dd($request);
         $user = Auth::user();
         $clientId = $user->client_id;
 
