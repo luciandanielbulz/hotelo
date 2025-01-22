@@ -82,14 +82,16 @@
                     </div>
                     <!-- Email Subject -->
                     <div class="sm:col-span-full">
-                        <x-input name="emailsubject" type="text" placeholder="E-Mail Betreff" label="E-Mail Betreff" value="" />
+                        <x-input name="emailsubject" type="text" placeholder="E-Mail Betreff" label="E-Mail Betreff" value="{objekt} {objektnummer}" />
                     </div>
 
                     <!-- Email Body -->
                     <div class="sm:col-span-full">
                         <label for="emailbody" class="block text-sm font-medium text-gray-900">E-Mail Text       <br>Variablen: aktuelles_jahr (Y0), aktuelles_monat (M0), objekt (O), objekt_mit_artikel (OA), objektnummer (ON), signatur (S), aktueller_monatsname (M0N)</label>
                         <div class="mt-2">
-                            <textarea name="emailbody" id="emailbody" rows="10" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 focus:outline-indigo-600"></textarea>
+                            <textarea name="emailbody" id="emailbody" rows="10" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 focus:outline-indigo-600">
+                            Sehr geehrte Damen und Herren,<br><br>anbei {objekt_mit_artikel} {objektnummer}<br><br>{signatur}
+                            </textarea>
 
                         </div>
                     </div>
