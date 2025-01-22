@@ -67,18 +67,17 @@ class OfferpositionController extends Controller
 
         try {
             Log::info('Request data: ', $request->all()); // Debugging-Log
-
+            
             $validated = $request->validate([
                 'id' => 'required|integer|exists:offerpositions,id',
-                'amount' => 'required|decimal:2',
+                'amount' => 'required|numeric',
                 'unit_id' => 'required|integer|exists:units,id',
                 'designation' => 'nullable|string|max:255',
-                'price' => 'required|decimal:2',
+                'price' => 'required|numeric',
                 'details' => 'nullable|string|max:1000',
                 'sequence' => 'required|integer|min:0'
             ]);
 
-            //dd($validated);
             $offerposition = Offerpositions::findOrFail($validated['id']);
 
             // Felder aktualisieren
@@ -88,10 +87,10 @@ class OfferpositionController extends Controller
             $offerposition->price = $validated['price'];
             $offerposition->details = $validated['details'] ?? null;
             $offerposition->sequence = $validated['sequence'] ?? null;
-
+            
             // Speichern
             $offerposition->save();
-
+            
             // Weiterleitung zur "offer" View mit der ID des zugehörigen Angebots
             return redirect()->route('offer.edit', ['offer' => $offerposition->offer_id])
                              ->with('success', 'Steuersatz erfolgreich aktualisiert.');

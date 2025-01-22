@@ -36,11 +36,11 @@ class InvoicepositionController extends Controller
         // Validierung und Speicherung der neuen Position
         $validatedData = $request->validate([
             'id' => 'required|integer|exists:offerpositions,id',
-            'amount' => 'required|decimal:3',
+            'amount' => 'required|numeric',
             'unit_id' => 'required|integer|exists:units,id',
             'designation' => 'nullable|string|max:255',
             'description' => 'required|string|max:255',
-            'price' => 'required|decimal:3',
+            'price' => 'required|numeric',
             'sequence' => 'required|integer|min:0'
         ]);
 
