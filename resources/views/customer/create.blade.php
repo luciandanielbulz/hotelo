@@ -85,7 +85,7 @@
                         <x-input name="emailsubject" type="text" placeholder="E-Mail Betreff" label="E-Mail Betreff" value="{objekt} {objektnummer}" />
                     </div>
 
-                    <!-- Email Body -->
+                    <!-- Email Body. -->
                     <div class="sm:col-span-full">
                         <label for="emailbody" class="block text-sm font-medium text-gray-900">E-Mail Text       <br>Variablen: aktuelles_jahr (Y0), aktuelles_monat (M0), objekt (O), objekt_mit_artikel (OA), objektnummer (ON), signatur (S), aktueller_monatsname (M0N)</label>
                         <div class="mt-2">
