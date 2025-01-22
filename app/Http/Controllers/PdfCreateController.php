@@ -30,7 +30,7 @@ class PdfCreateController extends Controller
 
         public function createOfferPdf(Request $request)
     {
-        dd($request);
+        //dd($request);
         $user = Auth::user();
         $clientId = $user->client_id;
 
@@ -44,7 +44,7 @@ class PdfCreateController extends Controller
             ->join('taxrates','offers.tax_id','=','taxrates.id')
             ->first(['offers.*','taxrates.*']);
 
-        //dd($offercontent);
+        dd($offercontent);
 
         $positions = Offerpositions::where('offer_id', $objectId)
             ->join('units','offerpositions.unit_id','=','units.id')
