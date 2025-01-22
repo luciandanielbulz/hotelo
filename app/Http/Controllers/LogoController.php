@@ -71,17 +71,45 @@ class LogoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Logos $logos)
+    public function edit(Logos $logo)
     {
-        //
+        $clients = Clients::all();
+        
+        return view('logo.edit', compact('logo', 'clients'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Logos $logos)
+    public function update(Request $request, Logos $logo)
     {
-        //
+        // Validierung der Eingaben
+        //dd($request);
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,gif|max:2048', // Datei ist optional beim Update
+            'client_id' => 'required|integer'
+        ]);
+
+        // Wenn eine neue Datei hochgeladen wurde, diese speichern
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $path = $file->store('logos', 'public');
+            
+            // Alte Datei ggf. löschen, wenn gewünscht (optional)
+            // Storage::disk('public')->delete($logo->localfilename);
+
+            // Daten für das Update vorbereiten
+            $logo->filename = $file->getClientOriginalName();
+            $logo->localfilename = $path;
+        }
+        //dd($validatedData['name']);
+        // Weitere Felder aktualisieren
+        $logo->name = $validatedData['name'];
+        $logo->client_id = $validatedData['client_id'];
+        $logo->save();
+
+        return redirect()->route('logos.index')->with('success', 'Logo erfolgreich aktualisiert!');
     }
 
     /**

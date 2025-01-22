@@ -70,10 +70,12 @@ class PdfCreateController extends Controller
         //dd($logopath);
 
         //$html = view('pdf.template', compact('offercontent','positions','client', 'condition', 'customer'));
-        $imagePath = $imagePath = public_path('storage/' . $logopath->localfilename);
+        //$logoUrl = asset('storage/' . $logopath->localfilename);
+        //$imagePath = public_path('storage/' . $logopath->localfilename);
+        $localImagePath = storage_path('app/public/' . $logopath->localfilename);
         $imageHeight = $client->logoheight;
         $imageWidth = $client->logowidth;
-        //dd($imageHeight);
+        //dd($logoUrl   );
 
         $customerdata = '
             <table cellpadding="1" cellspacing="0" style="width:100%;">
@@ -225,7 +227,7 @@ class PdfCreateController extends Controller
         $pageNumber = $pdf->PageNo();
         $totalPages = $pdf->getNumPages();
         $pdf->SetFont('helvetica', '', 10);
-        $pdf->Image($imagePath, 18, 12, $imageWidth, $imageHeight);
+        $pdf->Image($localImagePath, 18, 12, $imageWidth, $imageHeight);
         $pdf->SetCreator('Venditio');
         $pdf->SetAuthor('Lucian Bulz');
         $pdf->SetTitle('Angebot' . ' ' . $offercontent->number);
@@ -332,7 +334,8 @@ class PdfCreateController extends Controller
         //dd($logopath);
 
         //$html = view('pdf.template', compact('offercontent','positions','client', 'condition', 'customer'));
-        $imagePath = $imagePath = public_path('storage/' . $logopath->localfilename);
+        //$imagePath = $imagePath = public_path('storage/' . $logopath->localfilename);
+        $localImagePath = storage_path('app/public/' . $logopath->localfilename);
         $imageHeight = $client->logoheight;
         $imageWidth = $client->logowidth;
         //dd($imageHeight);
@@ -520,7 +523,7 @@ class PdfCreateController extends Controller
         $pageNumber = $pdf->PageNo();
         $totalPages = $pdf->getNumPages();
         $pdf->SetFont('helvetica', '', 10);
-        $pdf->Image($imagePath, 18, 12, $imageWidth, $imageHeight);
+        $pdf->Image($localImagePath, 18, 12, $imageWidth, $imageHeight);
         $pdf->SetCreator('Venditio');
         $pdf->SetAuthor('{{$client->name}}');
         $pdf->SetTitle('Rechnung' . ' ' . $invoicecontent->number);
