@@ -34,26 +34,26 @@
                                         <!-- Vorschau Button -->
                                         <button
                                             onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->invoice_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}', '_blank')"
-                                            class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
+                                            class="text-indigo-600 hover:text-orange-900 ml-4">
                                             Vorschau
                                         </button>
 
                                         <!-- Bearbeiten Link -->
                                         <a href="{{ route('invoice.edit', $invoice->invoice_id) }}"
-                                            class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
+                                            class="text-indigo-600 hover:text-indigo-900 ml-4">
                                             Bearbeiten
                                         </a>
 
                                         <!-- Kopieren Link -->
                                         <a href="{{ route('invoice.copy', $invoice->invoice_id) }}"
-                                            class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
+                                            class="text-indigo-600 hover:text-indigo-900 ml-4">
                                             Kopieren
                                         </a>
 
                                         <!-- PDF Button -->
                                         <button
                                             onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->invoice_id, 'objecttype' => 'invoice', 'prev' => 'D']) }}', '_blank')"
-                                            class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
+                                            class="text-indigo-600 hover:text-orange-900 ml-4">
                                             PDF
                                         </button>
 
@@ -63,14 +63,14 @@
                                             <input type="hidden" name="objectid" value="{{ $invoice->invoice_id }}">
                                             <input type="hidden" name="objecttype" value="invoice">
                                             <button type="submit"
-                                                class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
+                                                class="text-indigo-600 hover:text-orange-900 ml-4">
                                                 Senden
                                             </button>
                                         </form>
 
                                         <button
                                             wire:click="archiveInvoice({{ $invoice->invoice_id }})"
-                                            class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
+                                            class="text-indigo-600 hover:text-orange-900 ml-4">
                                             Archiv
                                         </button>
                                     </div>

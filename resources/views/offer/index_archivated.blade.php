@@ -48,30 +48,16 @@
                                     <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                         <div class="flex flex-wrap gap-2 justify-end items-center">
                                             <!-- Vorschau Button -->
-                                            <button
-                                                onclick="window.open('{{ route('createoffer.pdf', ['offer_id' => $offer->offer_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}', '_blank')"
-                                                class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
-                                                Vorschau
-                                            </button>
+                                            <a href="{{ route('createoffer.pdf', ['offer_id' => $offer->offer_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}" class="text-indigo-600 hover:text-indigo-900 ml-4">Vorschau</a>
 
                                             <!-- Bearbeiten Button -->
-                                            <a href="{{ route('offer.edit', $offer->offer_id) }}"
-                                                class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
-                                                Bearbeiten
-                                            </a>
+                                            <a href="{{ route('offer.edit', $offer->offer_id) }}" class="text-indigo-600 hover:text-indigo-900 ml-4">Bearbeiten</a>
 
                                             <!-- Rechnung Button -->
-                                            <a href="{{ route('invoice.createinvoicefromoffer', ['offerid' => $offer->offer_id]) }}"
-                                                class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
-                                                Rechnung
-                                            </a>
+                                            <a href="{{ route('invoice.createinvoicefromoffer', ['offerid' => $offer->offer_id]) }}" class="text-indigo-600 hover:text-indigo-900 ml-4">Rechnung</a>
 
                                             <!-- PDF Button -->
-                                            <button
-                                                onclick="window.open('{{ route('createoffer.pdf', ['offer_id' => $offer->offer_id, 'objecttype' => 'invoice', 'prev' => 'D']) }}', '_blank')"
-                                                class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
-                                                PDF
-                                            </button>
+                                            <a href="{{ route('createoffer.pdf', ['offer_id' => $offer->offer_id, 'objecttype' => 'invoice', 'prev' => 'D']) }}" class="text-indigo-600 hover:text-indigo-900 ml-4">PDF</a>
 
                                             <!-- Senden Form -->
                                             <form action="" method="POST" class="inline">
@@ -79,7 +65,7 @@
                                                 <input type="hidden" name="objectid" value="{{ $offer->offer_id }}">
                                                 <input type="hidden" name="objecttype" value="offer">
                                                 <button type="submit"
-                                                    class="inline-flex items-center rounded-md bg-gray-300 px-3 h-8 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
+                                                class="text-indigo-600 hover:text-orange-900 ml-4">
                                                     Senden
                                                 </button>
                                             </form>

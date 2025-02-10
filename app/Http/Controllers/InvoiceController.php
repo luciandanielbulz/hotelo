@@ -34,10 +34,9 @@ class InvoiceController extends Controller
         $clientId = $user->client_id;
 
         $search = $request->input('search');
-        //dd($search);
-        // Suche oder alle Kunden abfragen
+        
         $invoices = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
-            ->where('customers.client_id', $clientId) // auth()->user()->client_id
+            ->where('customers.client_id', $clientId)
             ->where('invoices.archived', '=', true)
             ->orderBy('number', 'desc')
             ->when($search, function ($query, $search) {
@@ -47,14 +46,22 @@ class InvoiceController extends Controller
                         ->orWhere('invoices.number', 'like', "%{$search}%");
                 });
             })
-            ->select('invoices.id as invoice_id', 'invoices.*', 'customers.*')
+            ->select(
+                'invoices.id as invoice_id',
+                'invoices.*',
+                'customers.*',
+                DB::raw('CASE 
+                    WHEN LENGTH(invoices.description) > 25 
+                    THEN CONCAT(LEFT(invoices.description, 25), "...") 
+                    ELSE invoices.description 
+                    END as description'
+                )
+            )
             ->paginate(10);
 
         $invoices->appends(['search' => $search]);
 
-        //dd($offers->all()); // Zeigt die Ergebnisse an
         return view('invoice.index_archivated', compact('invoices'));
-
     }
 
     /**

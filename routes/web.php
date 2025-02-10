@@ -51,7 +51,7 @@ Route::middleware(['auth','verified'])->group(function(){
 
     /*Dashboard*/
     Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->name('dashboard')
+    ->name('dashboard') 
     ->middleware('permission:view_dashboard');
 
     /*Kunden*/

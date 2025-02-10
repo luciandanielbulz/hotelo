@@ -78,7 +78,11 @@ class Positiontable extends Component
                 'invoices.created_at',
                 'invoices.updated_at',
                 'invoices.date',
-                'invoices.description',
+                DB::raw("CASE 
+                    WHEN LENGTH(invoices.description) > 25 
+                    THEN CONCAT(LEFT(invoices.description, 25), '...') 
+                    ELSE invoices.description 
+                END as description"),
                 'customers.customername',
                 'customers.companyname',
                 'latest_emails.latest_sentdate as sent_date',
