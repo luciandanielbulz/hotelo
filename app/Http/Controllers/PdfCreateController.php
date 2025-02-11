@@ -30,7 +30,7 @@ class PdfCreateController extends Controller
 
         public function createOfferPdf(Request $request)
     {
-        //dd($request);
+        
         $user = Auth::user();
         $clientId = $user->client_id;
 
@@ -38,7 +38,17 @@ class PdfCreateController extends Controller
         $objectId = $request->input('offer_id');
         $objectType = $request->input('objecttype'); // "offer" oder "invoice"
         $preview = $request->input('prev', 0); // 0: Download, 1: Vorschau, 2: Speichern
-
+        //dd($objectId);
+        
+        $offer = Offers::from('offers as o')
+            ->where('o.id', $objectId)
+            ->join('customers as c', 'o.customer_id', '=', 'c.id')
+            ->where('c.client_id', $clientId)
+            ->first();
+        
+        if (!$offer) {
+            abort(403, 'Sie haben keine Berechtigung dieses Angebot zu sehen!');
+        }
 
         $offercontent = Offers::where('offers.id', $objectId)
             ->join('taxrates','offers.tax_id','=','taxrates.id')
@@ -302,6 +312,16 @@ class PdfCreateController extends Controller
         $preview = $request->input('prev', 0); // 0: Download, 1: Vorschau, 2: Speichern
         //dd($objectId);
         //dd($request->all());
+        $invoice = Invoices::from('invoices as i')
+            ->where('i.id', $objectId)
+            ->join('customers as c', 'i.customer_id', '=', 'c.id')
+            ->where('c.client_id', $clientId)
+            ->first();
+
+        if (!$invoice) {
+            abort(403, 'Sie sind nicht berechtigt diese Rechnung zu sehen!');
+        }
+
         $invoicecontent = Invoices::join('taxrates','invoices.tax_id','=','taxrates.id')
             ->where('invoices.id', $objectId)
             ->first(['invoices.*','taxrates.*']);
