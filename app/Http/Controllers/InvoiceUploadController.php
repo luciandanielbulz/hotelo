@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Clients;
 
 class InvoiceUploadController extends Controller
 {
@@ -66,8 +67,9 @@ class InvoiceUploadController extends Controller
     {
         $user = Auth::user();
         $clientId = $user->client_id;
-        $max_file_size = Clients::select('clients.max_file_size')->where('id', $clientId)->first();
-
+        $client = Clients::select('clients.max_upload_size')->where('id', $clientId)->first();
+        $max_upload_size = $client->max_upload_size;
+        //dd($max_upload_size);
         try {
             // Validierung der eingehenden Daten
             $request->validate([
@@ -76,9 +78,9 @@ class InvoiceUploadController extends Controller
                     'file',
                     'mimes:pdf',
                     'max:10240', // max. 10 MB
-                    function ($attribute, $value, $fail) {
-                        if ($value->getSize() > $max_file_size * 1024 * 1024) { // 10 MB in Bytes
-                            $fail('Die PDF-Datei darf nicht größer als ' . $max_file_size . ' MB sein.');
+                    function ($attribute, $value, $fail) use ($max_upload_size) {
+                        if ($value->getSize() > $max_upload_size * 1024 * 1024) {
+                            $fail('Die PDF-Datei darf nicht größer als ' . $max_upload_size . ' MB sein.');
                         }
                     },
                 ],
@@ -88,6 +90,7 @@ class InvoiceUploadController extends Controller
                 'invoice_number' => 'nullable|string',
             ]);
 
+            dd($request->all());
             // Datei speichern
             $path = $request->file('invoice_pdf')->store('invoices');
 
