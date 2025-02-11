@@ -466,7 +466,10 @@ class InvoiceController extends Controller
 
         $offer = Offers::findOrFail($offerId);
         $offerPositions = OfferPositions::where('offer_id', '=',$offerId)
-            ->where('issoftdeleted','!=',1)
+            ->where(function($query) {
+                $query->where('issoftdeleted', '!=', true)
+                      ->orWhereNull('issoftdeleted');
+            })
             ->get();
 
         //dd($offerPositions);
@@ -501,7 +504,6 @@ class InvoiceController extends Controller
         //dd($offerPositions);
         // 4. Neue InvoicePositions erstellen
         foreach ($offerPositions as $position) {
-            //dd($position->sequence);
             Invoicepositions::create([
                 'invoice_id' => $invoice->id,
                 'amount' => $position->amount,
@@ -510,10 +512,10 @@ class InvoiceController extends Controller
                 'unit_id' => $position->unit_id,
                 'price' => $position->price,
                 'positiontext' => $position->positiontext,
+                'description' => $position->designation,
                 'sequence' => $position->sequence,
                 'created_at' => now(),
                 'updated_at' => now(),
-                // Weitere Felder hier übernehmen
             ]);
         }
 
