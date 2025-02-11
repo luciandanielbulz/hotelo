@@ -134,6 +134,9 @@
                 <div class="sm:col-span-1">
                     <x-input name="invoicemultiplikator" type="text" placeholder="Multiplikator Rechnung" label="Multiplikator Rechnung" value="" />
                 </div>
+                <div class="sm:col-span-1">
+                    <x-input name="max_upload_size" type="text" placeholder="Max. Dateigröße" label="Max. Dateigröße" value="" />
+                </div>
             </div>
 
 

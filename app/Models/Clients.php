@@ -33,6 +33,7 @@ class Clients extends Model
         'lastoffer',
         'lastinvoice',
         'offermultiplikator',
-        'invoicemultiplikator'
+        'invoicemultiplikator',
+        'max_upload_size'
     ];
 }

@@ -65,34 +65,54 @@ class InvoiceUploadController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        //dd($user);
         $clientId = $user->client_id;
+        $max_file_size = Clients::select('clients.max_file_size')->where('id', $clientId)->first();
 
-        // Validierung der eingehenden Daten
-        $request->validate([
-            'invoice_pdf'    => 'required|file|mimes:pdf|max:10240', // max. 10 MB
-            'invoice_date'   => 'required|date',
-            'invoice_vendor' => 'required|string',
-            'description'    => 'nullable|string',
-            'invoice_number' => 'nullable|string',
-        ]);
+        try {
+            // Validierung der eingehenden Daten
+            $request->validate([
+                'invoice_pdf'    => [
+                    'required',
+                    'file',
+                    'mimes:pdf',
+                    'max:10240', // max. 10 MB
+                    function ($attribute, $value, $fail) {
+                        if ($value->getSize() > $max_file_size * 1024 * 1024) { // 10 MB in Bytes
+                            $fail('Die PDF-Datei darf nicht größer als ' . $max_file_size . ' MB sein.');
+                        }
+                    },
+                ],
+                'invoice_date'   => 'required|date',
+                'invoice_vendor' => 'required|string',
+                'description'    => 'nullable|string',
+                'invoice_number' => 'nullable|string',
+            ]);
 
-        // Datei speichern
-        $path = $request->file('invoice_pdf')->store('invoices');
+            // Datei speichern
+            $path = $request->file('invoice_pdf')->store('invoices');
 
-        //dd($clientId);
-        // Daten in der Datenbank speichern
-        InvoiceUpload::create([
-            'filepath'       => $path,
-            'invoice_date'   => $request->input('invoice_date'),
-            'description'    => $request->input('description'),
-            'invoice_number' => $request->input('invoice_number'),
-            'invoice_vendor' => $request->input('invoice_vendor'),
-            'client_id'      => $clientId,
-        ]);
+            //dd($clientId);
+            // Daten in der Datenbank speichern
+            InvoiceUpload::create([
+                'filepath'       => $path,
+                'invoice_date'   => $request->input('invoice_date'),
+                'description'    => $request->input('description'),
+                'invoice_number' => $request->input('invoice_number'),
+                'invoice_vendor' => $request->input('invoice_vendor'),
+                'client_id'      => $clientId,
+            ]);
 
-        return redirect()->route('invoiceupload.index')
-                         ->with('success', 'Rechnung erfolgreich hochgeladen!');
+            return redirect()->route('invoiceupload.index')
+                             ->with('success', 'Rechnung erfolgreich hochgeladen!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Beim Hochladen ist ein Fehler aufgetreten: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     public function index(Request $request)

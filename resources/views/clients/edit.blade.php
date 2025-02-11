@@ -134,6 +134,11 @@
                 <div class="sm:col-span-1">
                     <x-input name="invoicemultiplikator" type="text" placeholder="Multiplikator Rechnung" label="Multiplikator Rechnung" value="{{ old('postalcode', $clients->invoicemultiplikator) }}" />
                 </div>
+                <div class="sm:col-span-1">
+                    <x-input name="max_upload_size" type="number" placeholder="Max. Dateigröße" label="Max. Dateigröße" value="{{ old('max_upload_size', $clients->max_upload_size) }}" />
+                </div>
+                
+
             </div>
 
 

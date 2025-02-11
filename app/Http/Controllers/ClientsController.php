@@ -61,6 +61,7 @@ class ClientsController extends Controller
             'offermultiplikator' => ['required', 'integer'],
             'lastinvoice'    => ['required', 'integer'],
             'invoicemultiplikator' => ['required', 'integer'],
+            'max_upload_size' => ['required', 'integer'],
         ]);
 
         try {
@@ -150,6 +151,7 @@ class ClientsController extends Controller
             'offermultiplikator' => ['required', 'integer'],
             'lastinvoice' => ['required', 'integer'],
             'invoicemultiplikator' => ['required', 'integer'],
+            'max_upload_size' => ['required', 'integer'],
         ]);
 
         //dd($validatedData);
