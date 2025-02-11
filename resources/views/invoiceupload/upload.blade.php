@@ -57,13 +57,17 @@
                         <div class="sm:col-span-3">
                             <label for="invoice_date" class="block text-sm font-medium text-gray-900">Rechnungsdatum</label>
                             <div class="mt-2">
-                                <input type="date" name="invoice_date" id="invoice_date" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                                <input type="date" name="invoice_date" id="invoice_date" required 
+                                    value="{{ old('invoice_date') }}"
+                                    class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
                             </div>
                         </div>
                         <div class="sm:col-span-3">
                             <label for="invoice_vendor" class="block text-sm font-medium text-gray-900">Lieferant</label>
                             <div class="mt-2">
-                                <input type="text" name="invoice_vendor" id="invoice_vendor" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                                <input type="text" name="invoice_vendor" id="invoice_vendor" required 
+                                    value="{{ old('invoice_vendor') }}"
+                                    class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
                             </div>
                         </div>
 
@@ -71,13 +75,14 @@
                             <label for="description" class="block text-sm font-medium text-gray-700">Beschreibung</label>
                             <div class="mt-1">
                                 <textarea name="description" id="description" rows="3"
-                                          class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 outline outline-1 -outline-offset-1 outline-gray-300"></textarea>
+                                          class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 outline outline-1 -outline-offset-1 outline-gray-300">{{ old('description') }}</textarea>
                             </div>
                         </div>
                         <div class="sm:col-span-2">
                             <label for="invoice_number" class="block text-sm font-medium text-gray-700">Rechnungsnummer</label>
                             <div class="mt-1">
                                 <input type="text" name="invoice_number" id="invoice_number"
+                                       value="{{ old('invoice_number') }}"
                                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
                             </div>
                         </div>
