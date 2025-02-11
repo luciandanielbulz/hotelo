@@ -16,7 +16,7 @@
 
                 <!-- Email Address -->
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-900">Email-Adresse</label>
+                    <label for="email" class="block text-sm font-medium text-gray-900">E-Mail Adresse</label>
                     <div class="mt-2">
                         <input
                             type="email"
