@@ -48,9 +48,9 @@
                                 <tr data-id="{{ $customer->id }}" class="hover:bg-indigo-100 cursor-pointer">
                                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{{ $customer->id }}</td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-black">
-                                        {{ $customer->customername ?? '' }}
+                                        {{ strlen($customer->customername ?? '') > 40 ? substr($customer->customername, 0, 40) . '...' : ($customer->customername ?? '') }}
                                         @if(!empty($customer->customername) && !empty($customer->companyname)) / @endif
-                                        {{ $customer->companyname ?? '' }}
+                                        {{ strlen($customer->companyname ?? '') > 40 ? substr($customer->companyname, 0, 40) . '...' : ($customer->companyname ?? '') }}
                                     </td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $customer->address }}</td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $customer->postalcode }}</td>
