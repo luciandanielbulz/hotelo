@@ -23,9 +23,12 @@ class CustomerController extends Controller
         $search = $request->input('search');
 
         // Suche oder alle Kunden abfragen
-        $customers = Customer::where('client_id',$clientId)// auth()->user()->client_id)
+        $customers = Customer::where('client_id', $clientId)
             ->when($search, function($query, $search) {
-                return $query->where('customername', 'like', "%$search%");
+                return $query->where(function($q) use ($search) {
+                    $q->where('customername', 'like', "%$search%")
+                      ->orWhere('companyname', 'like', "%$search%");
+                });
             })
             ->paginate(9);
 
