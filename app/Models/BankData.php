@@ -23,6 +23,6 @@ class BankData extends Model
         'reference',
         'referencenumber',
         'client_id',
-        'category'
+        'category',
     ];
 }

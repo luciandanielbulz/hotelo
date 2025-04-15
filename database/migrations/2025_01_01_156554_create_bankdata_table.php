@@ -6,32 +6,28 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
         Schema::create('bankdata', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->string('partnername')->nullable();
+            $table->string('partnername');
             $table->string('partneriban')->nullable();
             $table->string('partnerbic')->nullable();
-            $table->double('amount')->nullable();
-            $table->string('currency')->nullable();
-            $table->string('reference',1000)->nullable();
-            $table->string('referencenumber',400)->nullable();
-            $table->foreignId('client_id')->constrained('clients');
+            $table->string('partneracount')->nullable();
+            $table->string('partnerroutingnumber')->nullable();
+            $table->decimal('amount', 10, 2);
+            $table->string('currency', 3);
+            $table->text('reference')->nullable();
+            $table->string('referencenumber')->nullable();
+            $table->foreignId('client_id')->constrained()->onDelete('cascade');
             $table->enum('category', [1, 2]);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('bankdata');
     }
-};
+}; 

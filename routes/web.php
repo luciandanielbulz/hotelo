@@ -37,28 +37,55 @@ use App\Http\Controllers\InvoiceUploadController;
 |
 */
 
+/*
+|==========================================================================
+| ÖFFENTLICHE ROUTEN
+|==========================================================================
+*/
 Route::get('/', function () {
     return view('auth.login');
 });
 
-
-
+/*
+|==========================================================================
+| GESCHÜTZTE ROUTEN (Auth & Verified Middleware)
+|==========================================================================
+*/
 Route::middleware(['auth','verified'])->group(function(){
 
-	Route::get('/bankdata/upload', [BankDataController::class, 'showUploadForm'])->name('bankdata.upload.form');
+    /*
+    |--------------------------------------------------------------------------
+    | BANKDATEN-MANAGEMENT
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/bankdata/upload', [BankDataController::class, 'showUploadForm'])->name('bankdata.upload.form');
 
-	Route::post('/bankdata/upload', [BankDataController::class, 'uploadJSON'])->name('bankdata.upload');
+    Route::post('/bankdata/upload', [BankDataController::class, 'uploadJSON'])->name('bankdata.upload');
 
-    /*Dashboard*/
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD
+    |--------------------------------------------------------------------------
+    */
     Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard') 
     ->middleware('permission:view_dashboard');
 
-    /*Kunden*/
+    /*
+    |--------------------------------------------------------------------------
+    | KUNDENVERWALTUNG
+    |--------------------------------------------------------------------------
+    */
     Route::resource('customer',CustomerController::class)->middleware('permission:view_customers');
 
-
-    /*Angebot*/
+    /*
+    |--------------------------------------------------------------------------
+    | ANGEBOTSVERWALTUNG
+    |--------------------------------------------------------------------------
+    | - CRUD-Operationen für Angebote
+    | - Positions-Management
+    | - Detail-Updates
+    */
     Route::post('/offer/updatedetails', [OfferController::class, 'updateOfferDetails'])->name('offer.updatedetails');
 
     Route::post('/offer/updatedescription', [OfferController::class, 'updatedescription'])->name('offer.updatedescription');
@@ -72,7 +99,16 @@ Route::middleware(['auth','verified'])->group(function(){
     /*Angebots-Positionen*/
     Route::resource('offerposition',OfferpositionController::class);
 
-    /*Rechnungen*/
+    /*
+    |--------------------------------------------------------------------------
+    | RECHNUNGSVERWALTUNG
+    |--------------------------------------------------------------------------
+    | - CRUD-Operationen
+    | - PDF-Erstellung
+    | - E-Mail-Versand
+    | - Positionen
+    | - Detail-Updates
+    */
     Route::post('/invoice/updatetaxrate', [InvoiceController::class, 'updatetaxrate'])->name('invoice.updatetaxrate');
     Route::post('/invoice/updateinvoicedate', [InvoiceController::class, 'updateinvoicedate'])->name('invoice.updateinvoicedate');
     Route::post('/invoice/updatenumber', [InvoiceController::class, 'updatenumber'])->name('invoice.updatenumber');
@@ -88,19 +124,29 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::post('/send-invoice/email', [PdfCreateController::class, 'sendInvoiceByEmail'])->name('sendinvoice.email');
     Route::get('/emaillist', [OutgoingEmailController::class, 'index'])->name('outgoingemails.index');
 
-
-
     Route::resource('invoice',InvoiceController::class);
 
     /*Rechnungs-Positionen*/
     Route::resource('invoiceposition', InvoicepositionController::class);
 
-    /*Sales-Analyse*/
+    /*
+    |--------------------------------------------------------------------------
+    | VERKAUFSANALYSE
+    |--------------------------------------------------------------------------
+    */
     Route::resource('sales',SalesController::class);
 
     Route::resource('condition',ConditionController::class);
 
-    /*Benutzer*/
+    /*
+    |--------------------------------------------------------------------------
+    | BENUTZERVERWALTUNG & BERECHTIGUNGEN
+    |--------------------------------------------------------------------------
+    | - Benutzer-CRUD
+    | - Rollen
+    | - Berechtigungen
+    | - Passwort-Reset
+    */
     Route::resource('users', UsersController::class);
 
     Route::resource('logos', LogoController::class);
@@ -118,7 +164,14 @@ Route::middleware(['auth','verified'])->group(function(){
     /*Klienten*/
     Route::resource('clients', ClientsController::class);
 
-    /*Middleware*/
+    /*
+    |--------------------------------------------------------------------------
+    | DOKUMENTEN-MANAGEMENT
+    |--------------------------------------------------------------------------
+    | - Logo-Verwaltung
+    | - PDF-Downloads
+    | - Rechnungs-Upload
+    */
     Route::middleware('auth')->group(function () {
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -131,7 +184,6 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::put('/users/{id}/reset-password', [UsersController::class, 'resetUserPassword'])
         ->middleware('permission:reset_user_password')
         ->name('users.reset-password');
-
 
     Route::get('/users/{id}/reset-password', function ($id) {
         // Finde den Benutzer
@@ -146,44 +198,43 @@ Route::middleware(['auth','verified'])->group(function(){
         return view('admin.reset_password', compact('user'));
     })->middleware('auth')->name('users.show-reset-password');
 
+    Route::get('/download/{filename}', function ($filename) {
+        $path = storage_path('app/objects/' . $filename);
 
+        if (!File::exists($path)) {
+            abort(404);
+        }
 
-        Route::get('/download/{filename}', function ($filename) {
-            $path = storage_path('app/objects/' . $filename);
+        // Optional: setze Header für den Download oder Anzeige
+        return response()->file($path, [
+            'Content-Type' => 'application/pdf',
+            // 'Content-Disposition' => 'attachment; filename="Rechnung.pdf"', // für direkten Download
+        ]);
+    })->name('download.file');
 
-            if (!File::exists($path)) {
-                abort(404);
-            }
+    Route::get('/invoiceupload/upload', [InvoiceUploadController::class, 'create'])->name('invoiceupload.upload.create');
+    Route::post('/invoiceupload/upload', [InvoiceUploadController::class, 'store'])->name('invoiceupload.upload.store');
+    //Route::resource('invoiceupload', InvoiceUploadController::class);
+    Route::get ('/invoiceupload/index', [InvoiceUploadController::class, 'index'])->name('invoiceupload.index');
+    Route::get ('/invoiceupload/{id}/edit', [InvoiceUploadController::class, 'edit'])->name('invoiceupload.edit');
+    Route::put ('/invoiceupload/{id}', [InvoiceUploadController::class, 'update'])->name('invoiceupload.update');
+    Route::get ('/invoiceupload/{id}/show_invoice', [InvoiceUploadController::class, 'show_invoice'])->name('invoiceupload.show_invoice');
+    Route::get('/invoiceupload/{id}', [InvoiceUploadController::class, 'show'])->name('invoiceupload.show');
+    Route::get('/invoiceuploads/filter/{month}', [InvoiceUploadController::class, 'filterByMonth'])->name('invoiceupload.filterByMonth');
 
-            // Optional: setze Header für den Download oder Anzeige
-            return response()->file($path, [
-                'Content-Type' => 'application/pdf',
-                // 'Content-Disposition' => 'attachment; filename="Rechnung.pdf"', // für direkten Download
-            ]);
-        })->name('download.file');
+    Route::get('/invoiceuploads/download-zip/{month}', [InvoiceUploadController::class, 'downloadZipForMonth'])
+        ->name('invoiceupload.downloadZipForMonth');
 
-        Route::get('/invoiceupload/upload', [InvoiceUploadController::class, 'create'])->name('invoiceupload.upload.create');
-        Route::post('/invoiceupload/upload', [InvoiceUploadController::class, 'store'])->name('invoiceupload.upload.store');
-        //Route::resource('invoiceupload', InvoiceUploadController::class);
-        Route::get ('/invoiceupload/index', [InvoiceUploadController::class, 'index'])->name('invoiceupload.index');
-        Route::get ('/invoiceupload/{id}/edit', [InvoiceUploadController::class, 'edit'])->name('invoiceupload.edit');
-        Route::put ('/invoiceupload/{id}', [InvoiceUploadController::class, 'update'])->name('invoiceupload.update');
-        Route::get ('/invoiceupload/{id}/show_invoice', [InvoiceUploadController::class, 'show_invoice'])->name('invoiceupload.show_invoice');
-        Route::get('/invoiceupload/{id}', [InvoiceUploadController::class, 'show'])->name('invoiceupload.show');
-        Route::get('/invoiceuploads/filter/{month}', [InvoiceUploadController::class, 'filterByMonth'])->name('invoiceupload.filterByMonth');
+    //Route::get('/invoiceuploads/download-zip/{month}', [InvoiceUploadController::class, 'testCreateZip'])
+    //    ->name('invoiceupload.downloadZipForMonth');
 
-
-
-        Route::get('/invoiceuploads/download-zip/{month}', [InvoiceUploadController::class, 'downloadZipForMonth'])
-            ->name('invoiceupload.downloadZipForMonth');
-
-        //Route::get('/invoiceuploads/download-zip/{month}', [InvoiceUploadController::class, 'testCreateZip'])
-        //    ->name('invoiceupload.downloadZipForMonth');
-
-        Route::get('/invoiceupload/filter-by-month/{month}', [InvoiceUploadController::class, 'filterByMonth'])
-            ->name('invoiceupload.filterByMonth');
-
-
+    Route::get('/invoiceupload/filter-by-month/{month}', [InvoiceUploadController::class, 'filterByMonth'])
+        ->name('invoiceupload.filterByMonth');
 });
 
+/*
+|==========================================================================
+| AUTH ROUTEN
+|==========================================================================
+*/
 require __DIR__.'/auth.php';
