@@ -22,7 +22,7 @@
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $offer->number }}</td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ \Carbon\Carbon::parse($offer->date)->translatedFormat('d.m.Y') }}</td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-black">
-                                    {{ str($offer->customername ?: $offer->companyname ?: 'Kein Kunde')->limit(30) }}
+                                    {{ str($offer->customername ?: $offer->companyname ?: 'Kein Kunde')->limit(40) }}
                                 </td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $offer->description ?? 'Kein Kommentar' }}</td>
                                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
