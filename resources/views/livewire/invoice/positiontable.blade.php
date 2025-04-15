@@ -23,7 +23,7 @@
                                 <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm  text-black sm:pl-6">{{ $invoice->invoice_id }}</td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $invoice->number }}</td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ \Carbon\Carbon::parse($invoice->date)->translatedFormat('d.m.Y') }}</td>
-                                <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ \Illuminate\Support\Str::limit($invoice->customername ?? $invoice->companyname ?? 'Kein Kunde', 30, '...') }}</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ \Illuminate\Support\Str::limit($invoice->customername ?? $invoice->companyname ?? 'Kein Kunde', 30, '...') }} </td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $invoice->description ?? 'Kein Kommentar' }}</td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ number_format($invoice->total_price, 2, ',', '.') }} €</td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-black">
