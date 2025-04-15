@@ -30,7 +30,7 @@ class CustomerController extends Controller
                       ->orWhere('companyname', 'like', "%$search%");
                 });
             })
-            ->orderBy('customerid', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(10);
 
         return view('customer.index', compact('customers'));
