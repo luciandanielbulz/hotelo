@@ -27,7 +27,7 @@
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $invoice->description ?? 'Kein Kommentar' }}</td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ number_format($invoice->total_price, 2, ',', '.') }} €</td>
                                 <td class="whitespace-nowrap px-3 py-4 text-sm text-black">
-                                    {{ $invoice->sent_date ? \Carbon\Carbon::parse($invoice->sent_date)->translatedFormat('d.m.Y h:i') : '-' }}
+                                    {{ $invoice->sent_date ? \Carbon\Carbon::parse($invoice->sent_date)->translatedFormat('d.m.Y H:i') : '-' }}
                                 </td>
                                 <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                     <div class="flex flex-wrap gap-2 justify-end items-center">

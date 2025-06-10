@@ -68,9 +68,10 @@ class Positiontable extends Component
         $search = $request->input('search');
 
         $query = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
+            ->leftJoin('offerpositions', 'offers.id', '=', 'offerpositions.offer_id')
             ->leftJoin(DB::raw('(SELECT objectnumber, MAX(sentdate) as latest_sentdate FROM outgoingemails GROUP BY objectnumber) as latest_emails'), 'latest_emails.objectnumber', '=', 'offers.number')
             ->where('customers.client_id', $clientId)
-            ->where('offers.archived', false) // Nur nicht archivierte Angebote anzeigen
+            ->where('offers.archived', false)
             ->orderBy('offers.number', 'desc')
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
@@ -79,7 +80,35 @@ class Positiontable extends Component
                         ->orWhere('offers.number', 'like', "%$search%");
                 });
             })
-            ->select('offers.id as offer_id', 'offers.*', 'customers.*', 'latest_emails.latest_sentdate as sent_date');
+            ->select(
+                'offers.id as offer_id',
+                'offers.number',
+                'offers.archived',
+                'offers.created_at',
+                'offers.updated_at',
+                'offers.date',
+                DB::raw("CASE 
+                    WHEN LENGTH(offers.description) > 25 
+                    THEN CONCAT(LEFT(offers.description, 25), '...') 
+                    ELSE offers.description 
+                END as description"),
+                'customers.customername',
+                'customers.companyname',
+                DB::raw("DATE_FORMAT(latest_emails.latest_sentdate, '%Y-%m-%d %H:%i:%s') as sent_date"),
+                DB::raw('SUM(offerpositions.amount * offerpositions.price) as total_price')
+            )
+            ->groupBy(
+                'offers.id',
+                'offers.number',
+                'offers.archived',
+                'offers.created_at',
+                'offers.updated_at',
+                'offers.date',
+                'offers.description',
+                'customers.customername',
+                'customers.companyname',
+                'latest_emails.latest_sentdate'
+            );
 
 
         $offers = $query->paginate($this->perPage);

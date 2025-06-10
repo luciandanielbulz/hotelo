@@ -85,7 +85,7 @@ class Positiontable extends Component
                 END as description"),
                 'customers.customername',
                 'customers.companyname',
-                'latest_emails.latest_sentdate as sent_date',
+                DB::raw("DATE_FORMAT(latest_emails.latest_sentdate, '%Y-%m-%d %H:%i:%s') as sent_date"),
                 DB::raw('SUM(invoicepositions.amount * invoicepositions.price) as total_price')
             )
             ->groupBy(
