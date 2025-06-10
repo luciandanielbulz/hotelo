@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Offers;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
 
 class Positiontable extends Component
 {
@@ -67,6 +68,7 @@ class Positiontable extends Component
         $search = $request->input('search');
 
         $query = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
+            ->leftJoin(DB::raw('(SELECT objectnumber, MAX(sentdate) as latest_sentdate FROM outgoingemails GROUP BY objectnumber) as latest_emails'), 'latest_emails.objectnumber', '=', 'offers.number')
             ->where('customers.client_id', $clientId)
             ->where('offers.archived', false) // Nur nicht archivierte Angebote anzeigen
             ->orderBy('offers.number', 'desc')
@@ -77,7 +79,7 @@ class Positiontable extends Component
                         ->orWhere('offers.number', 'like', "%$search%");
                 });
             })
-            ->select('offers.id as offer_id', 'offers.*', 'customers.*');
+            ->select('offers.id as offer_id', 'offers.*', 'customers.*', 'latest_emails.latest_sentdate as sent_date');
 
 
         $offers = $query->paginate($this->perPage);
