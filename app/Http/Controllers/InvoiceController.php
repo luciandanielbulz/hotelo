@@ -589,9 +589,13 @@ class InvoiceController extends Controller
         //$emailbody = str_replace(array_keys($placeholders), array_values($placeholders), $clientdata->emailbody);
         $emailbody = TemplateHelper::replacePlaceholders($clientdata->emailbody, $variables);
 
+        
         //dd($emailsubject);
+        // PDF Dateinamen erstellen
+        $pdf_filename = 'Rechnung_' . $clientdata->number . '.pdf';
+
         // Werte an die View weitergeben
-        return view('invoice.sendmail', compact('clientdata', 'emailsubject', 'emailbody'));
+        return view('invoice.sendmail', compact('clientdata', 'emailsubject', 'emailbody', 'pdf_filename'));
     }
 
 
