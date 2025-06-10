@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; // Importiere DB, falls du es benötigs
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use App\Helpers\TemplateHelper;
 
 class OfferController extends Controller
 {
@@ -228,6 +230,81 @@ class OfferController extends Controller
 
     public function update(Request $request, Offers $offer)
     {
+     
+     
         //
+    }
+
+    public function sendmail(Request $request) {
+        // Daten abrufen
+        $clientdata = Clients::join('customers', 'customers.client_id', '=', 'clients.id')
+            ->join('offers', 'offers.customer_id', '=', 'customers.id')
+            ->where('offers.id', '=', $request->objectid)
+            ->select(
+                'customers.email as getter_email',
+                'clients.email as sender_email',
+                'clients.*',
+                'customers.*',
+                'offers.*',
+                'offers.id as offer_id'
+            )
+            ->first();
+
+            $actual_month = date('m');
+            $actual_month_name =  Carbon::now()->translatedFormat('F');
+            $actual_year = date('Y');
+            $now = Carbon::now();
+
+            // Ermitteln des aktuellen Quartals (1 bis 4)
+            $currentQuarter = $now->quarter;
+
+            // Optional: Quartal als beschreibender Text
+            $quarterNames = [
+                1 => '1. Quartal (Januar - März)',
+                2 => '2. Quartal (April - Juni)',
+                3 => '3. Quartal (Juli - September)',
+                4 => '4. Quartal (Oktober - Dezember)',
+            ];
+
+            $currentQuarterName = $quarterNames[$currentQuarter];
+
+
+        //dd($clientdata->emailsubject);
+        // Platzhalter in emailsubject und emailbody ersetzen
+        $variables = [
+            '{signatur}' => $clientdata->signature ?? '', // Signatur aus Clients
+            '{S}' => $clientdata->signature ?? '', // Signatur aus Clients
+            '{objekt}' => 'Angebot', // Objektart als fixer Wert
+            '{O}' => 'Angebot', // Objektart als fixer Wert
+            '{objekt_mit_artikel}' => 'das Angebot', // Objektart als fixer Wert
+            '{OA}' => 'das Angebot', // Objektart als fixer Wert
+            '{objektnummer}' => $clientdata->number ?? '', // Objektnummer aus Invoices
+            '{ON}' => $clientdata->number ?? '', // Objektnummer aus Invoices
+            '{aktuelles_monat-aktuelles_jahr}' => $actual_month . "/" . $actual_year,
+            '{aktueller_monatsname}' => $actual_month_name,
+            '{M0N}' => $actual_month_name,
+            '{aktuelles_quartal}' => $currentQuarterName,
+            '{Q0N}' => $currentQuarterName,
+            '{akutelles_monat}' => $actual_month,
+            '{M0}' => $actual_month,
+            '{aktuelles_jahr}' => $actual_year,
+            '{Y0}' => $actual_year,
+
+        ];
+
+        //dd($placeholders);
+
+        //$emailsubject = str_replace(array_keys($placeholders), array_values($placeholders), $clientdata->emailsubject);
+        $emailsubject = TemplateHelper::replacePlaceholders($clientdata->emailsubject, $variables);
+        //$emailbody = str_replace(array_keys($placeholders), array_values($placeholders), $clientdata->emailbody);
+        $emailbody = TemplateHelper::replacePlaceholders($clientdata->emailbody, $variables);
+
+        
+        //dd($emailsubject);
+        // PDF Dateinamen erstellen
+        $pdf_filename = 'Angebot_' . $clientdata->number . '.pdf';
+
+        // Werte an die View weitergeben
+        return view('offer.sendmail', compact('clientdata', 'emailsubject', 'emailbody', 'pdf_filename'));
     }
 }

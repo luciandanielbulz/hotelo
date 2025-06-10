@@ -725,6 +725,124 @@ public function sendInvoiceByEmail(Request $request)
     return redirect()->route('outgoingemails.index')->with('success', 'Rechnung wurde erfolgreich per E-Mail versendet.');
 }
 
+public function sendOfferByEmail(Request $request)
+{
+    // Validierung der Eingabedaten
+    $request->validate([
+        'offer_id' => 'required|integer|exists:offers,id',
+        'email' => 'required|email',
+        'subject' => 'required|string',
+        'copy_email' => 'nullable|email',
+        'message' => 'required|string',
+    ]);
+
+    // Abrufen der Rechnungsdaten mit Joins
+    $offerData = Offers::join('customers', 'customers.id', '=', 'offers.customer_id')
+        ->join('clients', 'clients.id', '=', 'customers.client_id')
+        ->where('offers.id', '=', $request->offer_id)
+        ->select(
+            'customers.*',
+            'offers.*',
+            'customers.id as customer_id',
+            'clients.email as senderemail',
+            'clients.companyname as clientname',
+            'offers.number as offer_number'
+        )
+        ->first();
+
+    if (!$offerData || !$offerData->senderemail) {
+        return response()->json(['message' => 'Client oder Absender-E-Mail nicht gefunden.'], 404);
+    }
+
+    // Zuweisen der Variablen aus dem Request und Datenbankabfrage
+    $email = $request->input('email');
+    $subject = $request->input('subject');
+    $senderEmail = $offerData->senderemail;
+    $messageBody = $request->input('message');
+    $senderName = $offerData->clientname;
+    $offer_number = $offerData->offer_number;
+
+    // PDF generieren
+    $request->merge(['prev' => 'S']);
+    $pdfResponse = $this->createOfferPdf($request);
+    $pdfContent = $pdfResponse->getContent();
+
+    // Generiere einen zufälligen Dateinamen für die Speicherung
+    $randomFileName = Str::random(40) . '.pdf';
+
+    // Definiere das Verzeichnis und Datei-Pfad
+    $storagePath = storage_path('app/objects');
+
+    // Sicherstellen, dass das Verzeichnis existiert
+    if (!file_exists($storagePath)) {
+        mkdir($storagePath, 0755, true);
+    }
+
+    // Vollständigen Dateipfad mit zufälligem Namen
+    $filePath = $storagePath . '/' . $randomFileName;
+
+    // Speichern der PDF-Datei unter dem zufälligen Namen
+    try {
+        file_put_contents($filePath, $pdfContent);
+    } catch (\Exception $e) {
+        \Log::error('Fehler beim Speichern der PDF: ' . $e->getMessage());
+        return response()->json(['message' => 'Fehler beim Speichern der Rechnung.'], 500);
+    }
+
+    $sentDate = now();
+    $status = false;
+
+    try {
+        $ccEmail = $request->input('copy_email');
+
+        Mail::send([], [], function ($message) use (
+            $randomFileName,
+            $offer_number,
+            $email,
+            $subject,
+            $messageBody,
+            $filePath,
+            $senderEmail,
+            $senderName,
+            $ccEmail
+        ) {
+            $message->from($senderEmail, $senderName)
+                    ->to($email)
+                    ->subject($subject)
+                    ->html($messageBody)
+                    ->attach($filePath, [
+                        // Verwende als Alias den lesbaren Namen für den Empfänger
+                        'as' => 'Angebot_' . $offer_number . '.pdf',
+                        'mime' => 'application/pdf',
+                    ]);
+
+            if (!empty($ccEmail)) {
+                $message->bcc($ccEmail);
+            }
+        });
+
+        $status = true;
+
+    } catch (\Exception $e) {
+        \Log::error('Fehler beim E-Mail-Versand: ' . $e->getMessage());
+    }
+
+    // Speichere den zufälligen Dateinamen in der Datenbank
+    OutgoingEmail::create([
+        'type' => 2,
+        'customer_id' => $offerData->customer_id,
+        'objectnumber' => $offerData->number,
+        'sentdate' => $sentDate,
+        'getteremail' => $email,
+        'filename' => $randomFileName,  // Speicher den zufälligen Dateinamen
+        'withattachment' => true,
+        'status' => $status,
+        'client_id' => $request->user()->client_id,
+    ]);
+
+    return redirect()->route('outgoingemails.index')->with('success', 'Angebot wurde erfolgreich per E-Mail versendet.');
+}
+
 
 
 
