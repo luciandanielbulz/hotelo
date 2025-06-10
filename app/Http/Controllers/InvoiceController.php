@@ -24,7 +24,7 @@ class InvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        return view('invoice.index');
+        return view('invoice.index'); 
     }
 
 
@@ -181,7 +181,7 @@ class InvoiceController extends Controller
 
             $invoiceId = $invoiceid;
 
-            //dd("test");
+            //dd($invoiceId);
             $invoice = Invoices::findOrFail($invoiceId);
 
             $invoicePositions = InvoicePositions::where('invoice_id', '=',$invoiceId)
@@ -219,11 +219,11 @@ class InvoiceController extends Controller
             //dd($invoice);
             // 4. Neue InvoicePositions erstellen
             foreach ($invoicePositions as $position) {
-                //dd($position->sequence);
+                //dd($position);
                 Invoicepositions::create([
                     'invoice_id' => $invoice->id,
                     'amount' => $position->amount,
-                    'designation' => $position->description,
+                    'designation' => $position->designation,
                     'details' => $position->details,
                     'unit_id' => $position->unit_id,
                     'price' => $position->price,
