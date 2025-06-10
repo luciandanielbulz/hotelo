@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "@ckeditor/ckeditor5-build-classic": "^44.1.0",
+        "esbuild": "^0.25.5",
         "summernote": "^0.9.1"
     }
 }
