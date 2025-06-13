@@ -613,9 +613,9 @@ class PdfCreateController extends Controller
         $pdf->writeHTML($operation, true, true, false, true, 'R');
         $pdf->SetXY(15, 90);
         $pdf->SetFont('helvetica', '', 20);
-        $pdf->Cell(100, 10, 'Rechnung ' . $invoicecontent->number, 0, 1, 'L');
+        $pdf->Cell(100, 10, 'Rechnung Nr. ' . $invoicecontent->number, 0, 1, 'L');
         $pdf->SetFont('helvetica', '', 10);
-        $pdf->SetXY(134, 78);
+        $pdf->SetXY(134, 83);
         $pageinfo = '
             <table cellpadding="2" cellspacing="0" width = "182" style="border: 0.5px solid black;">
                 <tr>
