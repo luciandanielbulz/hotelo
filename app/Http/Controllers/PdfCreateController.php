@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Mail;
 use PHPMailer\PHPMailer\PHPMailer;
 use Illuminate\Support\Str;
 use PHPMailer\PHPMailer\Exception;
+use Intervention\Image\Facades\Image;
 
 
 
@@ -76,15 +77,15 @@ class PdfCreateController extends Controller
             ->where('offers.id','=',$objectId)
             ->first('customers.*');
 
-        $logopath = Logos::where('client_id','=',$clientId)->firstOrFail();
+        // Logo-Pfad aus der clients-Tabelle
+        $localImagePath = $client->logo ? storage_path('app/public/logos/' . $client->logo) : null;
+        $imageHeight = $client->logoheight;
+        $imageWidth = $client->logowidth;
         //dd($logopath);
 
         //$html = view('pdf.template', compact('offercontent','positions','client', 'condition', 'customer'));
         //$logoUrl = asset('storage/' . $logopath->localfilename);
         //$imagePath = public_path('storage/' . $logopath->localfilename);
-        $localImagePath = storage_path('app/public/' . $logopath->localfilename);
-        $imageHeight = $client->logoheight;
-        $imageWidth = $client->logowidth;
         //dd($logoUrl   );
 
         $customerdata = '
@@ -237,7 +238,36 @@ class PdfCreateController extends Controller
         $pageNumber = $pdf->PageNo();
         $totalPages = $pdf->getNumPages();
         $pdf->SetFont('helvetica', '', 10);
-        $pdf->Image($localImagePath, 18, 12, $imageWidth, $imageHeight);
+        if ($localImagePath && file_exists($localImagePath)) {
+            try {
+                // Erstelle ein temporäres Verzeichnis, falls es nicht existiert
+                $tempDir = storage_path('app/temp');
+                if (!file_exists($tempDir)) {
+                    mkdir($tempDir, 0755, true);
+                }
+
+                // Verarbeite das Bild mit Intervention/Image
+                $image = Image::make($localImagePath);
+                
+                // Konvertiere zu einem anderen Format (z.B. GIF)
+                $tempImagePath = $tempDir . '/temp_' . time() . '.gif';
+                $image->encode('gif')->save($tempImagePath);
+                
+                // Füge das Bild zum PDF hinzu
+                $pdf->Image($tempImagePath, 18, 12, $imageWidth, $imageHeight);
+                
+                // Lösche temporäre Datei
+                if (file_exists($tempImagePath)) {
+                    unlink($tempImagePath);
+                }
+            } catch (\Exception $e) {
+                \Log::error('Fehler bei der Bildverarbeitung: ' . $e->getMessage());
+                // Fallback: Versuche das Original-Bild zu verwenden
+                if (file_exists($localImagePath)) {
+                    $pdf->Image($localImagePath, 18, 12, $imageWidth, $imageHeight);
+                }
+            }
+        }
         $pdf->SetCreator('Venditio');
         $pdf->SetAuthor('Lucian Bulz');
         $pdf->SetTitle('Angebot' . ' ' . $offercontent->number);
@@ -302,7 +332,7 @@ class PdfCreateController extends Controller
     public function createInvoicePdf(Request $request)
     {
 
-
+        
 
         $user = Auth::user();
         $clientId = $user->client_id;
@@ -349,16 +379,14 @@ class PdfCreateController extends Controller
             ->where('invoices.id','=',$objectId)
             ->first('customers.*');
 
-        //$html = view('pdf.template', compact('offercontent','positions','client', 'condition', 'customer'));
-        $logopath = Logos::where('client_id','=',$clientId)->firstOrFail();
-        //dd($logopath);
-
-        //$html = view('pdf.template', compact('offercontent','positions','client', 'condition', 'customer'));
-        //$imagePath = $imagePath = public_path('storage/' . $logopath->localfilename);
-        $localImagePath = storage_path('app/public/' . $logopath->localfilename);
+        // Logo-Pfad aus der clients-Tabelle
+        $localImagePath = $client->logo ? storage_path('app/public/logos/' . $client->logo) : null;
+        //dd($localImagePath);
         $imageHeight = $client->logoheight;
         $imageWidth = $client->logowidth;
-        //dd($imageHeight);
+
+        
+        
         $customerdata = '
             <table cellpadding="1" cellspacing="0" style="width:100%;">
                 <tr>
@@ -543,7 +571,36 @@ class PdfCreateController extends Controller
         $pageNumber = $pdf->PageNo();
         $totalPages = $pdf->getNumPages();
         $pdf->SetFont('helvetica', '', 10);
-        $pdf->Image($localImagePath, 18, 12, $imageWidth, $imageHeight);
+        if ($localImagePath && file_exists($localImagePath)) {
+            try {
+                // Erstelle ein temporäres Verzeichnis, falls es nicht existiert
+                $tempDir = storage_path('app/temp');
+                if (!file_exists($tempDir)) {
+                    mkdir($tempDir, 0755, true);
+                }
+
+                // Verarbeite das Bild mit Intervention/Image
+                $image = Image::make($localImagePath);
+                
+                // Konvertiere zu einem anderen Format (z.B. GIF)
+                $tempImagePath = $tempDir . '/temp_' . time() . '.gif';
+                $image->encode('gif')->save($tempImagePath);
+                
+                // Füge das Bild zum PDF hinzu
+                $pdf->Image($tempImagePath, 18, 12, $imageWidth, $imageHeight);
+                
+                // Lösche temporäre Datei
+                if (file_exists($tempImagePath)) {
+                    unlink($tempImagePath);
+                }
+            } catch (\Exception $e) {
+                \Log::error('Fehler bei der Bildverarbeitung: ' . $e->getMessage());
+                // Fallback: Versuche das Original-Bild zu verwenden
+                if (file_exists($localImagePath)) {
+                    $pdf->Image($localImagePath, 18, 12, $imageWidth, $imageHeight);
+                }
+            }
+        }
         $pdf->SetCreator('Venditio');
         $pdf->SetAuthor('{{$client->name}}');
         $pdf->SetTitle('Rechnung' . ' ' . $invoicecontent->number);

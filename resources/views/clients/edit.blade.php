@@ -7,7 +7,7 @@
         </div>
 
         <!-- Formular -->
-        <form action="{{ route('clients.update', $clients->id) }}" method="POST" class="sm:col-span-1 md:col-span-5">
+        <form action="{{ route('clients.update', $clients->id) }}" method="POST" enctype="multipart/form-data" class="sm:col-span-1 md:col-span-5">
             @csrf
             @method('PUT')
 
@@ -106,17 +106,25 @@
             </div>
 
             <div class="grid md:grid-cols-5 sm:grid-cols-1 pb-4 gap-x-6 border-b">
-                <div class="sm:col-span-1">
-                    <x-input name="logo" type="text" placeholder="Logo" label="Logo" value="{{ old('postalcode', $clients->logo_name) }}" />
+                <div class="sm:col-span-2">
+                    <label for="logo" class="block text-sm font-medium text-gray-900">Logo</label>
+                    <div class="mt-2 flex items-center gap-x-3">
+                        <input type="file" name="logo" id="logo" accept="image/jpeg,image/png,image/jpg,image/gif" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" onchange="previewImage(this)">
+                        <div id="logo-preview" class="{{ $clients->logo ? '' : 'hidden' }}">
+                            <img id="preview" src="{{ $clients->logo ? asset('storage/logos/' . $clients->logo) : '#' }}" alt="Logo Vorschau" class="h-20 w-auto object-contain">
+                        </div>
+                    </div>
+                    @error('logo')
+                        <span class="text-sm text-red-600">{{ $message }}</span>
+                    @enderror
                 </div>
 
-
                 <div class="sm:col-span-1">
-                    <x-input name="logoheight" type="text" placeholder="Höhe" label="Höhe" value="{{ old('postalcode', $clients->logoheight) }}" />
+                    <x-input name="logoheight" type="number" placeholder="Höhe" label="Höhe" value="{{ old('logoheight', $clients->logoheight) }}" />
                 </div>
 
                 <div class="sm:col-span-1">
-                    <x-input name="logowidth" type="text" placeholder="Breite" label="Breite" value="{{ old('postalcode', $clients->logowidth) }}" />
+                    <x-input name="logowidth" type="number" placeholder="Breite" label="Breite" value="{{ old('logowidth', $clients->logowidth) }}" />
                 </div>
             </div>
 
@@ -179,6 +187,25 @@
                     placeholder: 'Geben Sie hier Ihre Signatur ein...',
                 });
             });
+
+            function previewImage(input) {
+                const preview = document.getElementById('preview');
+                const previewContainer = document.getElementById('logo-preview');
+                
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        previewContainer.classList.remove('hidden');
+                    }
+                    
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    preview.src = '#';
+                    previewContainer.classList.add('hidden');
+                }
+            }
         </script>
     @endpush
 </x-layout>

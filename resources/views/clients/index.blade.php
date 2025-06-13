@@ -16,6 +16,7 @@
                     <table class="min-w-full divide-y divide-gray-300">
                         <thead class="bg-gray-50">
                             <tr>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Logo</th>
                                 <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Firma</th>
                                 <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Adresse</th>
@@ -27,6 +28,13 @@
                         <tbody class="divide-y divide-gray-200 bg-white">
                             @forelse($clients as $client)
                                 <tr data-id="{{ $client->id }}" class="hover:bg-indigo-100 cursor-pointer">
+                                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6">
+                                        @if($client->logo)
+                                            <img src="{{ asset('storage/logos/' . $client->logo) }}" alt="Logo" class="h-10 w-auto object-contain">
+                                        @else
+                                            <span class="text-gray-400">Kein Logo</span>
+                                        @endif
+                                    </td>
                                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6">{{ $client->clientname }}</td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $client->companyname }}</td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $client->address }}</td>
