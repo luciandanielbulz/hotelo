@@ -9,20 +9,22 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('role_permission', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade'); // Verknüpfung zur Tabelle 'roles'
-            $table->foreignId('permission_id')->constrained('permissions')->onDelete('cascade'); // Verknüpfung zur Tabelle 'permissions'
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('role_permission')) {
+            Schema::create('role_permission', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('role_id')->constrained('roles')->onDelete('cascade'); // Verknüpfung zur Tabelle 'roles'
+                $table->foreignId('permission_id')->constrained('permissions')->onDelete('cascade'); // Verknüpfung zur Tabelle 'permissions'
+                $table->timestamps();
+            });
+        }
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('role_permission');
     }
