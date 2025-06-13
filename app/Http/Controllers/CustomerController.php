@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\Salutations;
 use App\Models\Taxrates;
 use App\Models\Condition;
+use App\Models\Clients;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -41,10 +42,19 @@ class CustomerController extends Controller
      */
     public function create()
     {
+        $user = Auth::user();
+        //dd($user);
+        $clientId = $user->client_id;
+
         $conditions = Condition::all();
         $taxrates = Taxrates::all();
+
+        $standardtaxrate = Clients::where('id', $clientId)->first('tax_id')->tax_id;
+        
+        //dd($standardtaxrate);
+
         $salutations = Salutations::all(); // Alle Anreden aus der DB abrufen
-        return view('customer.create', compact('salutations', 'conditions', 'taxrates'));
+        return view('customer.create', compact('salutations', 'conditions', 'taxrates', 'standardtaxrate'));
     }
 
     /**
