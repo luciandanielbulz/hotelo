@@ -34,6 +34,11 @@ class Clients extends Model
         'lastinvoice',
         'offermultiplikator',
         'invoicemultiplikator',
-        'max_upload_size'
+        'max_upload_size',
+        'company_registration_number',
+        'tax_number',
+        'management',
+        'regional_court',
+        'color'
     ];
 }

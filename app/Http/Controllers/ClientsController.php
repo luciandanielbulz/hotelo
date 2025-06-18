@@ -63,6 +63,11 @@ class ClientsController extends Controller
             'lastinvoice'    => ['required', 'integer'],
             'invoicemultiplikator' => ['required', 'integer'],
             'max_upload_size' => ['required', 'integer'],
+            'company_registration_number' => ['nullable', 'string', 'max:100'],
+            'tax_number' => ['nullable', 'string', 'max:100'],
+            'management' => ['nullable', 'string', 'max:200'],
+            'regional_court' => ['nullable', 'string', 'max:200'],
+            'color' => ['nullable', 'string', 'max:7'],
         ]);
 
         try {
@@ -158,6 +163,11 @@ class ClientsController extends Controller
                 'lastinvoice' => ['required', 'integer'],
                 'invoicemultiplikator' => ['required', 'integer'],
                 'max_upload_size' => ['required', 'integer'],
+                'company_registration_number' => ['nullable', 'string', 'max:100'],
+                'tax_number' => ['nullable', 'string', 'max:100'],
+                'management' => ['nullable', 'string', 'max:200'],
+                'regional_court' => ['nullable', 'string', 'max:200'],
+                'color' => ['nullable', 'string', 'max:7'],
             ]);
 
             // Aktualisierung des Klienten
@@ -198,6 +208,11 @@ class ClientsController extends Controller
             $client->lastinvoice = $validatedData['lastinvoice'];
             $client->invoicemultiplikator = $validatedData['invoicemultiplikator'];
             $client->max_upload_size = $validatedData['max_upload_size'];
+            $client->company_registration_number = $validatedData['company_registration_number'];
+            $client->tax_number = $validatedData['tax_number'];
+            $client->management = $validatedData['management'];
+            $client->regional_court = $validatedData['regional_court'];
+            $client->color = $validatedData['color'];
 
             $client->save();
 

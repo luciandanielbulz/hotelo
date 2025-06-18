@@ -61,30 +61,57 @@
                 </div>
             </div>
 
-            <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6 border-b">
-                <!-- Konditionen -->
-                <div class="sm:col-span-1">
-                    <x-dropdown_body name="tax_id" id="tax_id" value="" :options="$taxrates->pluck('taxrate', 'id')" :selected="old('tax_id', $clients->tax_id)" label="Steuerhöhe" placeholder="Bitte auswählen" class="w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm" />
+            <!-- Steuerliche Informationen -->
+            <div class="border-b border-gray-900/10 pb-6">
+                <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Steuerliche Informationen</h3>
+                <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6">
+                    <!-- Konditionen -->
+                    <div class="sm:col-span-1">
+                        <x-dropdown_body name="tax_id" id="tax_id" value="" :options="$taxrates->pluck('taxrate', 'id')" :selected="old('tax_id', $clients->tax_id)" label="Steuerhöhe" placeholder="Bitte auswählen" class="w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm" />
+                    </div>
+                    <div class="sm:col-span-1">
+                        <x-dropdown_body name="smallbusiness" label="Kleinunternehmer" :options="['1' => 'Ja','0' => 'Nein']" :selected="old('smallbusiness', $clients->smallbusiness)" placeholder="Bitte wählen..." required/>
+                    </div>
+                    <div class="sm:col-span-1">
+                        <x-input name="tax_number" type="text" placeholder="Steuernummer" label="Steuernummer" value="{{ old('tax_number', $clients->tax_number) }}" />
+                    </div>
+                    <div class="sm:col-span-1">
+                        <x-input name="company_registration_number" type="text" placeholder="Firmenbuchnummer" label="Firmenbuchnummer" value="{{ old('company_registration_number', $clients->company_registration_number) }}" />
+                    </div>
                 </div>
-                <div class="sm:col-span-1">
-                    <x-dropdown_body name="smallbusiness" label="Kleinunternehmer" :options="['1' => 'Ja','0' => 'Nein']" :selected="old('smallbusiness', $clients->smallbusiness)" placeholder="Bitte wählen..." required/>
+                <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6">
+                    <div class="sm:col-span-1">
+                        <x-input name="management" type="text" placeholder="Geschäftsführung" label="Geschäftsführung" value="{{ old('management', $clients->management) }}" />
+                    </div>
+                    <div class="sm:col-span-1">
+                        <x-input name="regional_court" type="text" placeholder="Handelsregistergericht" label="Handelsregistergericht" value="{{ old('regional_court', $clients->regional_court) }}" />
+                    </div>
                 </div>
             </div>
 
-            <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6 border-b">
-                <div class="sm:col-span-1">
-                    <x-input name="webpage" type="text" placeholder="Web-Seite" label="Web-Seite" value="{{ old('postalcode', $clients->webpage) }}" />
+            <!-- Webseite -->
+            <div class="border-b border-gray-900/10 pb-6">
+                <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Webseite</h3>
+                <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6">
+                    <div class="sm:col-span-1">
+                        <x-input name="webpage" type="text" placeholder="Web-Seite" label="Web-Seite" value="{{ old('webpage', $clients->webpage) }}" />
+                    </div>
                 </div>
             </div>
-            <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6 border-b">
-                <div class="sm:col-span-1">
-                    <x-input name="bank" type="text" placeholder="Bankname" label="Bankname" value="{{ old('postalcode', $clients->bank) }}" />
-                </div>
-                <div class="sm:col-span-1">
-                    <x-input name="accountnumber" type="text" placeholder="Kontonummer" label="Kontonummer" value="{{ old('postalcode', $clients->accountnumber) }}" />
-                </div>
-                <div class="sm:col-span-1">
-                    <x-input name="bic" type="text" placeholder="BIC" label="BIC" value="{{ old('postalcode', $clients->bic) }}" />
+
+            <!-- Bankverbindung -->
+            <div class="border-b border-gray-900/10 pb-6">
+                <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Bankverbindung</h3>
+                <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6">
+                    <div class="sm:col-span-1">
+                        <x-input name="bank" type="text" placeholder="Bankname" label="Bankname" value="{{ old('bank', $clients->bank) }}" />
+                    </div>
+                    <div class="sm:col-span-1">
+                        <x-input name="accountnumber" type="text" placeholder="Kontonummer" label="Kontonummer" value="{{ old('accountnumber', $clients->accountnumber) }}" />
+                    </div>
+                    <div class="sm:col-span-1">
+                        <x-input name="bic" type="text" placeholder="BIC" label="BIC" value="{{ old('bic', $clients->bic) }}" />
+                    </div>
                 </div>
             </div>
 
@@ -92,68 +119,98 @@
             <input type="hidden" name="style" value="{{ old('style', $clients->style) }}">
             <input type="hidden" name="id" value="{{ $clients->id }}">
 
-            <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6 border-b">
-                <!-- Signatur mit Summernote -->
-                <div class="sm:col-span-6">
-                    <label for="signature" class="block text-sm font-medium text-gray-900">Signatur</label>
-                    <div class="mt-2">
-                        <textarea name="signature" id="signature" rows="3" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 focus:outline-indigo-600">{{ old('signature', $clients->signature) }}</textarea>
-                        @error('signature')
+            <!-- Signatur -->
+            <div class="border-b border-gray-900/10 pb-6">
+                <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Signatur</h3>
+                <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6">
+                    <div class="sm:col-span-6">
+                        <label for="signature" class="block text-sm font-medium text-gray-900">Signatur</label>
+                        <div class="mt-2">
+                            <textarea name="signature" id="signature" rows="3" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 focus:outline-indigo-600">{{ old('signature', $clients->signature) }}</textarea>
+                            @error('signature')
+                                <span class="text-sm text-red-600">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Logo -->
+            <div class="border-b border-gray-900/10 pb-6">
+                <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Logo</h3>
+                <div class="grid md:grid-cols-5 sm:grid-cols-1 pb-4 gap-x-6">
+                    <div class="sm:col-span-2">
+                        <label for="logo" class="block text-sm font-medium text-gray-900">Logo</label>
+                        <div class="mt-2 flex items-center gap-x-3">
+                            <input type="file" name="logo" id="logo" accept="image/jpeg,image/png,image/jpg,image/gif" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" onchange="previewImage(this)">
+                            <div id="logo-preview" class="{{ $clients->logo ? '' : 'hidden' }}">
+                                <img id="preview" src="{{ $clients->logo ? asset('storage/logos/' . $clients->logo) : '#' }}" alt="Logo Vorschau" class="h-20 w-auto object-contain">
+                            </div>
+                        </div>
+                        @error('logo')
                             <span class="text-sm text-red-600">{{ $message }}</span>
                         @enderror
                     </div>
-                </div>
-            </div>
 
-            <div class="grid md:grid-cols-5 sm:grid-cols-1 pb-4 gap-x-6 border-b">
-                <div class="sm:col-span-2">
-                    <label for="logo" class="block text-sm font-medium text-gray-900">Logo</label>
-                    <div class="mt-2 flex items-center gap-x-3">
-                        <input type="file" name="logo" id="logo" accept="image/jpeg,image/png,image/jpg,image/gif" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" onchange="previewImage(this)">
-                        <div id="logo-preview" class="{{ $clients->logo ? '' : 'hidden' }}">
-                            <img id="preview" src="{{ $clients->logo ? asset('storage/logos/' . $clients->logo) : '#' }}" alt="Logo Vorschau" class="h-20 w-auto object-contain">
-                        </div>
+                    <div class="sm:col-span-1">
+                        <x-input name="logoheight" type="number" placeholder="Höhe" label="Höhe" value="{{ old('logoheight', $clients->logoheight) }}" />
                     </div>
-                    @error('logo')
-                        <span class="text-sm text-red-600">{{ $message }}</span>
-                    @enderror
-                </div>
 
-                <div class="sm:col-span-1">
-                    <x-input name="logoheight" type="number" placeholder="Höhe" label="Höhe" value="{{ old('logoheight', $clients->logoheight) }}" />
-                </div>
-
-                <div class="sm:col-span-1">
-                    <x-input name="logowidth" type="number" placeholder="Breite" label="Breite" value="{{ old('logowidth', $clients->logowidth) }}" />
+                    <div class="sm:col-span-1">
+                        <x-input name="logowidth" type="number" placeholder="Breite" label="Breite" value="{{ old('logowidth', $clients->logowidth) }}" />
+                    </div>
                 </div>
             </div>
 
-            <div class="grid md:grid-cols-5 sm:grid-cols-1 pb-4 gap-x-6 border-b">
-                <div class="sm:col-span-1">
-                    <x-input name="lastoffer" type="text" placeholder="Letzte Angebotsnummer" label="Letzte Angebotsnummer" value="{{ old('postalcode', $clients->lastoffer) }}" />
-                </div>
-                <div class="sm:col-span-1">
-                    <x-input name="offermultiplikator" type="text" placeholder="Multiplikator Angebot" label="Multiplikator Angebot" value="{{ old('postalcode', $clients->offermultiplikator) }}" />
-                </div>
-
-                <div class="sm:col-span-1">
-                    <x-input name="lastinvoice" type="text" placeholder="Letzte Rechnungsnummer" label="Letzte Rechnungsnummer" value="{{ old('postalcode', $clients->lastinvoice) }}" />
-                </div>
-                <div class="sm:col-span-1">
-                    <x-input name="invoicemultiplikator" type="text" placeholder="Multiplikator Rechnung" label="Multiplikator Rechnung" value="{{ old('postalcode', $clients->invoicemultiplikator) }}" />
-                </div>
-                <div class="sm:col-span-1">
-                    <x-input name="max_upload_size" type="number" placeholder="Max. Dateigröße" label="Max. Dateigröße" value="{{ old('max_upload_size', $clients->max_upload_size) }}" />
-                </div>
+            <!-- Nummerierung -->
+            <div class="border-t border-gray-200 pt-6">
+                <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Nummerierung</h3>
                 
+                <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                    <div class="sm:col-span-3">
+                        <x-input-label for="lastoffer" value="Letzte Angebotsnummer" />
+                        <x-text-input id="lastoffer" name="lastoffer" type="number" class="mt-1 block w-full" :value="old('lastoffer', $clients->lastoffer)" required autofocus />
+                        <x-input-error class="mt-2" :messages="$errors->get('lastoffer')" />
+                    </div>
 
+                    <div class="sm:col-span-3">
+                        <x-input-label for="offermultiplikator" value="Angebot Multiplikator" />
+                        <x-text-input id="offermultiplikator" name="offermultiplikator" type="number" class="mt-1 block w-full" :value="old('offermultiplikator', $clients->offermultiplikator)" required autofocus />
+                        <x-input-error class="mt-2" :messages="$errors->get('offermultiplikator')" />
+                    </div>
+
+                    <div class="sm:col-span-3">
+                        <x-input-label for="lastinvoice" value="Letzte Rechnungsnummer" />
+                        <x-text-input id="lastinvoice" name="lastinvoice" type="number" class="mt-1 block w-full" :value="old('lastinvoice', $clients->lastinvoice)" required autofocus />
+                        <x-input-error class="mt-2" :messages="$errors->get('lastinvoice')" />
+                    </div>
+
+                    <div class="sm:col-span-3">
+                        <x-input-label for="invoicemultiplikator" value="Rechnung Multiplikator" />
+                        <x-text-input id="invoicemultiplikator" name="invoicemultiplikator" type="number" class="mt-1 block w-full" :value="old('invoicemultiplikator', $clients->invoicemultiplikator)" required autofocus />
+                        <x-input-error class="mt-2" :messages="$errors->get('invoicemultiplikator')" />
+                    </div>
+
+                    <div class="sm:col-span-3">
+                        <x-input-label for="max_upload_size" value="Maximale Upload-Größe (MB)" />
+                        <x-text-input id="max_upload_size" name="max_upload_size" type="number" class="mt-1 block w-full" :value="old('max_upload_size', $clients->max_upload_size)" required autofocus />
+                        <x-input-error class="mt-2" :messages="$errors->get('max_upload_size')" />
+                    </div>
+                </div>
             </div>
 
-
-
-
-
-
+            <!-- Farbe -->
+            <div class="border-t border-gray-200 pt-6">
+                <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Farbe</h3>
+                
+                <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                    <div class="sm:col-span-3">
+                        <x-input-label for="color" value="Farbe für Rechnungen und Angebote" />
+                        <x-text-input id="color" name="color" type="color" class="mt-1 block w-full h-12" :value="old('color', $clients->color)" required autofocus />
+                        <x-input-error class="mt-2" :messages="$errors->get('color')" />
+                    </div>
+                </div>
+            </div>
 
             <!-- Schaltflächen -->
             <div class="flex items-center justify-end gap-x-6  px-4 py-4 sm:px-8">
