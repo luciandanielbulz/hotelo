@@ -241,7 +241,7 @@ class PdfCreateController extends Controller
         //dd($positiontablebody);
 
         $positionsum = '
-            <table cellpadding="2" cellspacing="0.5" width = "533" style="border-top: 0.5px solid black;">
+            <table cellpadding="2" cellspacing="0.5" width = "533" style="border-top: 0.5px solid '.$client->color.';">
                 <tr>
                     <td style="text-align: left; width: 18%;"></td>
                     <td style="text-align: left; width: 67%; color: '.$client->color.';">Gesamtbetrag netto</td>
@@ -590,23 +590,25 @@ class PdfCreateController extends Controller
         $positiontablebody .= '</table>';
         //dd($positiontablebody);
 
+        
+
 
         $positionsum = '
-            <table cellpadding="2" cellspacing="0" width = "533" style="border-top: 0.1px solid black;">
+            <table cellpadding="2" cellspacing="0.5" width = "533" style="border-top: 0.5px solid '.$client->color.';">
                 <tr>
-                    <td style="text-align: left; width: 70%;"></td>
-                    <td style="text-align: left; width: 15%;">Netto:</td>
-                    <td style="text-align: right; width: 15%;">'.number_format($totalSum, 2, ',', '').' EUR</td>
+                    <td style="text-align: left; width: 18%;"></td>
+                    <td style="text-align: left; width: 67%; color: '.$client->color.';">Gesamtbetrag netto</td>
+                    <td style="text-align: right; width: 15%; color: '.$client->color.';">'.number_format($totalSum, 2, ',', '').' EUR</td>
                 </tr>
                 <tr>
-                    <td style="text-align: left; width: 70%;"></td>
-                    <td style="text-align: left; width: 15%; border-bottom: 0.5px solid black;">'.$invoicecontent->taxrate .'% Ust:</td>
-                    <td style="text-align: right; width: 15%; border-bottom: 0.5px solid black;">'.number_format($totalSum*$invoicecontent->taxrate/100, 2, ',', '').' EUR</td>
+                    <td style="text-align: left; width: 18%;"></td>
+                    <td style="text-align: left; width: 67%;">zzgl. Umsatzsteuer '.$invoicecontent->taxrate .'%</td>
+                    <td style="text-align: right; width: 15%;">'.number_format($totalSum*$invoicecontent->taxrate/100, 2, ',', '').' EUR</td>
                 </tr>
                 <tr>
-                    <td style="text-align: left; width: 70%;"></td>
-                    <td style="text-align: left; width: 15%; border-bottom: 1px solid black;">Brutto:</td>
-                    <td style="text-align: right; width: 15%; border-bottom: 1px solid black;">'.number_format($totalSum*($invoicecontent->taxrate/100+1), 2, ',', '').' EUR</td>
+                    <td style="text-align: left; width: 18%;"></td>
+                    <td style="text-align: left; width: 67%; color: '.$client->color.'; font-family: segoebd; font-weight: bold;">Gesamtbetrag brutto</td>
+                    <td style="text-align: right; width: 15%; color: '.$client->color.'; font-family: segoebd; font-weight: bold;">'.number_format($totalSum*($invoicecontent->taxrate/100+1), 2, ',', '').' EUR</td>
                 </tr>
             </table>';
 
