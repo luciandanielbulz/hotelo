@@ -324,7 +324,7 @@ class PdfCreateController extends Controller
         $pdf->writeHTML($offerinfo, true, true, false, true, 'R');
 
         //Eigene Daten über den Kunden
-        $pdf->SetXY(10, 50);
+        $pdf->SetXY(10, 45);
         $pdf->SetFont('arial', '', 7);
         $pdf->writeHTML($clientdata, true, true, false, true, 'R');
         
@@ -727,7 +727,7 @@ class PdfCreateController extends Controller
         $pdf->SetMargins(15, 15, 15);
         
         //Eigene Daten über den Kunden
-        $pdf->SetXY(10, 50);
+        $pdf->SetXY(10, 45);
         $pdf->SetFont($font, '', 7);
         $pdf->writeHTML($clientdata, true, true, false, true, 'R');
         
