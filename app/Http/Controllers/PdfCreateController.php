@@ -636,15 +636,15 @@ class PdfCreateController extends Controller
     
         $pdf = new MyPDF();
 
-        $pdf->AddFont('nunitosans', 'B', 'nunitosans.php');
-        $pdf->SetFont('nunitosans', 'B', 10); // Normalschnitt
+        $pdf->AddFont('segoe', 'B', 'segoe.php');
+        $pdf->SetFont('segoe', 'B', 10); // Normalschnitt
 
         $pdf->setCustomFooterText($footer);
 
         $pdf->AddPage();
         $pageNumber = $pdf->PageNo();
         $totalPages = $pdf->getNumPages();
-        $pdf->SetFont('nunitosans', '', 9);
+        $pdf->SetFont('segoe', '', 9);
         
         if ($localImagePath && file_exists($localImagePath)) {
             try {
