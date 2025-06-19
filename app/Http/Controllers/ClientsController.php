@@ -68,6 +68,7 @@ class ClientsController extends Controller
             'management' => ['nullable', 'string', 'max:200'],
             'regional_court' => ['nullable', 'string', 'max:200'],
             'color' => ['nullable', 'string', 'max:7'],
+            'invoice_number_format' => ['nullable', 'string', 'max:50'],
         ]);
 
         try {
@@ -104,10 +105,10 @@ class ClientsController extends Controller
      */
     public function show(Clients $clients)
     {
-        //
+        // 
     }
 
-    /**
+    /** 
      * Show the form for editing the specified resource.
      */
     public function edit($client_id)
@@ -168,6 +169,7 @@ class ClientsController extends Controller
                 'management' => ['nullable', 'string', 'max:200'],
                 'regional_court' => ['nullable', 'string', 'max:200'],
                 'color' => ['nullable', 'string', 'max:7'],
+                'invoice_number_format' => ['nullable', 'string', 'max:50'],
             ]);
 
             // Aktualisierung des Klienten
@@ -213,6 +215,7 @@ class ClientsController extends Controller
             $client->management = $validatedData['management'];
             $client->regional_court = $validatedData['regional_court'];
             $client->color = $validatedData['color'];
+            $client->invoice_number_format = $validatedData['invoice_number_format'];
 
             $client->save();
 

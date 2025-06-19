@@ -29,6 +29,8 @@ class Invoicedetails extends Component
     public $taxrateid;
     public $invoiceDate;
     public $invoiceNumber;
+    public $periodfrom;
+    public $periodto;
 
 
     public function mount($invoiceId)
@@ -48,6 +50,8 @@ class Invoicedetails extends Component
         $this->invoiceDate = $this->details->date ? Carbon::parse($this->details->date)->format('Y-m-d') : '';
         $this->invoiceNumber = $this->details->number;
         $this->condition_id = $this->details->condition_id;
+        $this->periodfrom = $this->details->periodfrom ? Carbon::parse($this->details->periodfrom)->format('Y-m-d') : '';
+        $this->periodto = $this->details->periodto ? Carbon::parse($this->details->periodto)->format('Y-m-d') : '';
         //dd($this->taxrateid);
     }
 
@@ -59,6 +63,8 @@ class Invoicedetails extends Component
             'invoiceDate' => 'required|date',
             'invoiceNumber' => 'required|numeric',
             'condition_id' => 'required|integer',
+            'periodfrom' => 'nullable|date',
+            'periodto' => 'nullable|date|after_or_equal:periodfrom',
         ]);
 
         //dd("test");
@@ -67,6 +73,8 @@ class Invoicedetails extends Component
         $invoice->date = $this->invoiceDate;
         $invoice->number = $this->invoiceNumber;
         $invoice->condition_id = $this->condition_id;
+        $invoice->periodfrom = $this->periodfrom;
+        $invoice->periodto = $this->periodto;
         $invoice->save();
 
         //dd($invoice);
@@ -82,6 +90,8 @@ class Invoicedetails extends Component
             'invoiceDate' => $this->invoiceDate,
             'invoiceNumber' => $this->invoiceNumber,
             'condition' => $this->condition_id,
+            'periodfrom' => $this->periodfrom,
+            'periodto' => $this->periodto,
         ]);
 
         return redirect()->to(request()->header('Referer')); // Zur aktuellen URL zurück

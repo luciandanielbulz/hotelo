@@ -150,18 +150,18 @@ class PdfCreateController extends Controller
             </table>';
 
             $operation = '
-            <table cellpadding="0.5" width="197" style="border: 0.5px solid white; width: 100%;">
+            <table cellpadding="0.5" width="100%" style="border: 0.5px solid white;">
                 
                 <tr>
-                    <td style="text-align: left;">Zahlungskonditionen:</td>
+                    <td style="text-align: left;">Zahlungskonditionen</td>
                     <td style="text-align: right;">' . ($condition->conditionname ?? '') . '</td>
                 </tr>
                 <tr>
-                    <td style="text-align: left;">Ihre Kundennummer:</td>
-                    <td style="text-align: right;">' . ($customer->customernumber ?? '') . '</td>
+                    <td style="text-align: left;">Ihre Kundennummer</td>
+                    <td style="text-align: right;">' . ($customer->customer_number ?? '') . '</td>
                 </tr>
                 <tr>
-                    <td style="text-align: left;">Ihre USt-ID:</td>
+                    <td style="text-align: left;">Ihre USt-Id.</td>
                     <td style="text-align: right;">' . ($customer->vat_number ?? '') . '</td>
                 </tr>
             </table>';
@@ -169,7 +169,7 @@ class PdfCreateController extends Controller
         $formattedDate = \Carbon\Carbon::parse($offercontent->date)->format('d.m.Y');
 
         $offerNumber = '
-            <table cellpadding="0.5" cellspacing="0" width = "197">
+            <table cellpadding="0.5" cellspacing="0" width = "100%">
                 <tr>
                     <td style="text-align: left;">Angebots-Nr.</td>
                     <td style="text-align: right;">' . $offercontent->number . '</td>
@@ -177,7 +177,7 @@ class PdfCreateController extends Controller
             </table>';
 
         $offerinfo = '
-            <table cellpadding="0.5" cellspacing="0" width = "197">
+            <table cellpadding="0.5" cellspacing="0" width = "100%">
                 <tr>
                     <td style="text-align: left;">Angebotsdatum</td>
                     <td style="text-align: right;">'.$formattedDate.'</td>
@@ -188,22 +188,87 @@ class PdfCreateController extends Controller
                 </tr>
             </table>';
 
-        $footer = $client->companyname.", ".$client->address.", ".$client->postalcode." ".$client->location.", Tel.: ".$client->phone.", E-Mail: ".$client->email.", \n".$client->regional_court.", FN-Nr.: ".$client->company_registration_number.", USt.-ID: ".$client->vat_number.", Steuer-Nr.: ".$client->tax_number.", \nGeschäftsführung: ".$client->management.", Bank: ".$client->bank.", IBAN: ".$client->accountnumber.", BIC: ".$client->bic;
+        $footer = '
+            <table cellpadding="0" cellspacing="0" width="100%" style="font-size: 8px; color: grey">
+                <tr>
+                    <td width="25%" style="vertical-align: top;">
+                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            <tr>
+                                <td style="text-align: left;">'.($client->companyname ?: '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->address ?: '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->postalcode && $client->location ? $client->postalcode.' '.$client->location : '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">Österreich</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="25%" style="vertical-align: top;">
+                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            <tr>
+                                <td style="text-align: left;">'.($client->phone ? 'Tel.: '.$client->phone : '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->email ? 'E.Mail: '.$client->email : '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->webpage ? 'Web: '.$client->webpage : '').'</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="25%" style="vertical-align: top;">
+                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            <tr>
+                                <td style="text-align: left;">'.($client->regional_court ?: '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->company_registration_number ? 'FN-Nr.:'.$client->company_registration_number : '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->vat_number ? 'Steuer-Nr.: '.$client->vat_number : '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->tax_number ? 'Steuer-Nr.: '.$client->tax_number : '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->management ? 'Geschäftsführung: '.htmlspecialchars_decode($client->management) : '').'</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="25%" style="vertical-align: top;">
+                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            <tr>
+                                <td style="text-align: left;">'.($client->bank ?: '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->accountnumber ? 'IBAN: '.$client->accountnumber : '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->bic ? 'BIC: '.$client->bic : '').'</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>';
 
         $positiontableheader = '
-            <table cellpadding="2" cellspacing="0" width = "533" style=" background-color: '.$client->color.';">
+            <table cellpadding="2" cellspacing="0" width = "100%" style=" background-color: '.$client->color.';">
                 <tr>
-                    <td style="text-align: left; width: 9%; color: '.$color.'; font-family: segoebd;">Menge</td>
-                    <td style="text-align: left; width: 9%; color: '.$color.'; font-family: segoebd;">Einheit</td>
-                    <td style="text-align: left; width: 52%; color: '.$color.'; font-family: segoebd;">Bezeichnung</td>
-                    <td style="text-align: right; width: 15%; color: '.$color.'; font-family: segoebd;">Einzelpreis</td>
+                    <td style="text-align: left; width: 7%; color: '.$color.'; font-family: segoebd;">Pos.</td>
+                    <td style="text-align: left; width: 54%; color: '.$color.'; font-family: segoebd;">Bezeichnung</td>
+                    <td style="text-align: left; width: 12%; color: '.$color.'; font-family: segoebd;">Menge</td>
+                    <td style="text-align: right; width: 12%; color: '.$color.'; font-family: segoebd;">Einzelpreis</td>
                     <td style="text-align: right; width: 15%; color: '.$color.'; font-family: segoebd;">Betrag</td>
                 </tr>
             </table>';
 
-        $positiontablebody = '<table cellpadding="2" cellspacing="0" width = "533" >'; //style="border: 0.5px solid black;"
+        $positiontablebody = '<table cellpadding="2" cellspacing="0" width = "100%" >'; //style="border: 0.5px solid black;"
 
-
+        $positionNumber = 1; // Zähler für Positionsnummern
 
         foreach ($positions as $position) {
             $positiontablebody .= '<tr><td></td></tr>';
@@ -212,28 +277,29 @@ class PdfCreateController extends Controller
                 $positiontablebody .= '
 
                     <tr>
+                        
                         <td style="text-align:center; width: 100%; white-space: pre-line;"><b>'.$details.'</b></td>
                     </tr>
                 ';
             } else {
                 $positiontablebody .= '
-
                     <tr>
-                        <td style="text-align: left; width: 9%;">'.number_format($position->amount, 2, ',', '') .'</td>
-                        <td style="text-align: left; width: 9%;">'.$position->unitdesignation.'</td>
-                        <td style="text-align: left; width: 52%;">'.$position->designation.'</td>
-                        <td style="text-align: right; width: 15%;">'.number_format($position->price, 2, ',', '') .' EUR</td>
+                        <td style="text-align: center; width: 7%;">'.$positionNumber.'.</td>
+                        <td style="text-align: left; width: 54%;">'.$position->designation.'</td>
+                        <td style="text-align: left; width: 12%;">'.number_format($position->amount, 2, ',', '') .' '.$position->unitdesignation.'</td>
+                        <td style="text-align: right; width: 12%;">'.number_format($position->price, 2, ',', '') .' EUR</td>
                         <td style="text-align: right; width: 15%;">'.number_format(($position->price * $position->amount), 2, ',', '') .' EUR</td>
                     </tr>
                     <tr>
-                        <td style="width: 15%;"></td>
-
-                        <td style="text-align: left; width: 70%; white-space: pre-line;">'.$details.'</td>
+                        <td style="width: 7%;"></td>
+                        <td style="text-align: left; width: 54%; white-space: pre-line;">'.$details.'</td>
+                        <td style="width: 12%;"></td>
+                        <td style="width: 12%;"></td>
                         <td style="width: 15%;"></td>
                     </tr>
                 ';
+                $positionNumber++; // Erhöhe die Positionsnummer nur bei normalen Positionen
             }
-
         }
 
 
@@ -241,7 +307,7 @@ class PdfCreateController extends Controller
         //dd($positiontablebody);
 
         $positionsum = '
-            <table cellpadding="2" cellspacing="0.5" width = "533" style="border-top: 0.5px solid '.$client->color.';">
+            <table cellpadding="2" cellspacing="0.5" width = "100%" style="border-top: 0.5px solid '.$client->color.';">
                 <tr>
                     <td style="text-align: left; width: 18%;"></td>
                     <td style="text-align: left; width: 67%; color: '.$client->color.';">Gesamtbetrag netto</td>
@@ -263,21 +329,13 @@ class PdfCreateController extends Controller
         // PDF erstellen
         $pdf = new MyPDF();
 
-        $pdf->setCustomFooterText($footer);
-
         $pdf->AddPage();
         
         // Definiere Seitennummern nach dem Hinzufügen der ersten Seite
         $pageNumber = $pdf->PageNo();
         $totalPages = $pdf->getNumPages();
 
-        $pageinfo = '
-            <table cellpadding="0.5" cellspacing="0" width = "70">
-                <tr>
-                    <td style="text-align: left;">Seite</td>
-                    <td style="text-align: right;">'.$pageNumber.' von '.$totalPages.'</td>
-                </tr>
-            </table>';
+        
 
         $pdf->SetFont('arial', '', 10);
         if ($localImagePath && file_exists($localImagePath)) {
@@ -313,13 +371,13 @@ class PdfCreateController extends Controller
         $pdf->SetCreator('Venditio');
         $pdf->SetAuthor('Venditio');
         $pdf->SetTitle('Angebot' . ' ' . $offercontent->number);
-        $pdf->SetMargins(15, 15, 15);
+        $pdf->SetMargins(10, 0, 10);
 
         $pdf->SetFont($fontbold, '', 12);
-        $pdf->SetXY(128, 44);
+        $pdf->SetXY(123, 44);
         $pdf->writeHTML($offerNumber, true, true, false, true, 'R');
         
-        $pdf->SetXY(128, 51);
+        $pdf->SetXY(123, 51);
         $pdf->SetFont($font, '', 10);
         $pdf->writeHTML($offerinfo, true, true, false, true, 'R');
 
@@ -332,15 +390,13 @@ class PdfCreateController extends Controller
         $pdf->SetXY(10, 55);
         $pdf->writeHTML($customerdata, true, true, false, true, 'R');
         
-        $pdf->SetXY(128, 61);
+        $pdf->SetXY(123, 61);
         $pdf->SetFont($font, '', 10);
         $pdf->writeHTML($operation, true, true, false, true, 'R');
         
-        $pdf->SetXY(172, 75);
-        $pdf->SetFont($font, '', 10);
-        $pdf->writeHTML($pageinfo, true, true, false, true, 'R');
+        
 
-        $pdf->SetXY(15, 90);
+        $pdf->SetXY(10, 90);
         $pdf->SetFont($font, 'B', 20);
         $pdf->Cell(100, 10, 'Angebot ' . $offercontent->number, 0, 1, 'L');
         
@@ -360,6 +416,8 @@ class PdfCreateController extends Controller
         $pdf->writeHTML($positionsum, true, true, false, true, 'R');
         $pdf->writeHTML('<br><br>Bei Annahme des Angebots bitten wir um Unterfertigung<br><br><br><br>_____________________________________________<br>   Unterschrift Kunde', true, true, true, true, 'L');
 
+        // Footer als echten PDF-Footer deklarieren
+        $pdf->setCustomFooterHTML($footer);
 
         //dd($preview);
 
@@ -516,18 +574,18 @@ class PdfCreateController extends Controller
             }
 
             $operation = '
-            <table cellpadding="0.5" width="197" style="border: 0.5px solid white; width: 100%;">
+            <table cellpadding="0.5" width="100%" style="border: 0.5px solid white;">
                 
                 <tr>
-                    <td style="text-align: left;">Zahlungskonditionen:</td>
+                    <td style="text-align: left;">Zahlungskonditionen</td>
                     <td style="text-align: right;">' . ($condition->conditionname ?? '') . '</td>
                 </tr>
                 <tr>
-                    <td style="text-align: left;">Ihre Kundennummer:</td>
-                    <td style="text-align: right;">' . ($customer->customernumber ?? '') . '</td>
+                    <td style="text-align: left;">Ihre Kundennummer</td>
+                    <td style="text-align: right;">' . ($customer->customer_number ?? '') . '</td>
                 </tr>
                 <tr>
-                    <td style="text-align: left;">Ihre USt-ID:</td>
+                    <td style="text-align: left;">Ihre USt-ID</td>
                     <td style="text-align: right;">' . ($customer->vat_number ?? '') . '</td>
                 </tr>
             </table>';
@@ -543,19 +601,19 @@ class PdfCreateController extends Controller
         
 
         $positiontableheader = '
-            <table cellpadding="2" cellspacing="0" width = "533" style=" background-color: '.$client->color.';">
+            <table cellpadding="2" cellspacing="0" width = "100%" style=" background-color: '.$client->color.';">
                 <tr>
-                    <td style="text-align: left; width: 9%; color: '.$color.'; font-family: segoebd;">Menge</td>
-                    <td style="text-align: left; width: 9%; color: '.$color.'; font-family: segoebd;">Einheit</td>
-                    <td style="text-align: left; width: 52%; color: '.$color.'; font-family: segoebd;">Bezeichnung</td>
-                    <td style="text-align: right; width: 15%; color: '.$color.'; font-family: segoebd;">Einzelpreis</td>
-                    <td style="text-align: right; width: 15%; color: '.$color.'; font-family: segoebd;">Betrag</td>
+                    <td style="text-align: left; width: 7%; color: '.$color.'; font-family: segoebd;">Pos.</td>
+                    <td style="text-align: left; width: 54%; color: '.$color.'; font-family: segoebd;">Bezeichnung</td>
+                    <td style="text-align: left; width: 12%; color: '.$color.'; font-family: segoebd;">Menge</td>
+                    <td style="text-align: right; width: 12%; color: '.$color.'; font-family: segoebd;">Einzelpreis</td>
+                    <td style="text-align: right; width: 15%; color: '.$color.'; font-family: segoebd;">Gesamtpreis</td>
                 </tr>
             </table>';
 
-        $positiontablebody = '<table cellpadding="2" cellspacing="0" width = "533" >'; //style="border: 0.5px solid black;"
+        $positiontablebody = '<table cellpadding="2" cellspacing="0" width = "100%" >'; //style="border: 0.5px solid black;"
 
-
+        $positionNumber = 1; // Zähler für Positionsnummern
 
         foreach ($positions as $position) {
             $positiontablebody .= '<tr><td></td></tr>';
@@ -571,18 +629,21 @@ class PdfCreateController extends Controller
             } else {
                 $positiontablebody .= '
                     <tr>
-                        <td style="text-align: left; width: 9%;">'.number_format($position->amount, 2, ',', '') .'</td>
-                        <td style="text-align: left; width: 9%;">'.$position->unitdesignation.'</td>
-                        <td style="text-align: left; width: 52%;">'.$position->designation.'</td>
-                        <td style="text-align: right; width: 15%;">'.number_format($position->price, 2, ',', '') .' EUR</td>
+                        <td style="text-align: center; width: 7%;">'.$positionNumber.'.</td>
+                        <td style="text-align: left; width: 54%;">'.$position->designation.'</td>
+                        <td style="text-align: left; width: 12%;">'.number_format($position->amount, 2, ',', '') .' '.$position->unitdesignation.'</td>
+                        <td style="text-align: right; width: 12%;">'.number_format($position->price, 2, ',', '') .' EUR</td>
                         <td style="text-align: right; width: 15%;">'.number_format(($position->price * $position->amount), 2, ',', '') .' EUR</td>
                     </tr>
                     <tr>
-                        <td style="width: 15%;"></td>
-                        <td style="text-align: left; width: 70%; white-space: pre-line;">'.$details.'</td>
+                        <td style="width: 7%;"></td>
+                        <td style="text-align: left; width: 54%; white-space: pre-line;">'.$details.'</td>
+                        <td style="width: 12%;"></td>
+                        <td style="width: 12%;"></td>
                         <td style="width: 15%;"></td>
                     </tr>
                 ';
+                $positionNumber++; // Erhöhe die Positionsnummer nur bei normalen Positionen
             }
         }
 
@@ -594,31 +655,100 @@ class PdfCreateController extends Controller
 
 
         $positionsum = '
-            <table cellpadding="2" cellspacing="0.5" width = "533" style="border-top: 0.5px solid '.$client->color.';">
+            <table cellpadding="2" cellspacing="0" width = "100%" style="border-top: 0.5px solid '.$client->color.';">
                 <tr>
-                    <td style="text-align: left; width: 18%;"></td>
-                    <td style="text-align: left; width: 67%; color: '.$client->color.';">Gesamtbetrag netto</td>
+                    <td style="text-align: left; width: 7%;"></td>
+                    <td style="text-align: left; width: 78%; color: '.$client->color.';">Gesamtbetrag netto</td>
                     <td style="text-align: right; width: 15%; color: '.$client->color.';">'.number_format($totalSum, 2, ',', '').' EUR</td>
                 </tr>
                 <tr>
-                    <td style="text-align: left; width: 18%;"></td>
-                    <td style="text-align: left; width: 67%;">zzgl. Umsatzsteuer '.$invoicecontent->taxrate .'%</td>
+                    <td style="text-align: left; width: 7%;"></td>
+                    <td style="text-align: left; width: 78%;">zzgl. Umsatzsteuer '.$invoicecontent->taxrate .'%</td>
                     <td style="text-align: right; width: 15%;">'.number_format($totalSum*$invoicecontent->taxrate/100, 2, ',', '').' EUR</td>
                 </tr>
                 <tr>
-                    <td style="text-align: left; width: 18%;"></td>
-                    <td style="text-align: left; width: 67%; color: '.$client->color.'; font-family: segoebd; font-weight: bold;">Gesamtbetrag brutto</td>
+                    <td style="text-align: left; width: 7%;"></td>
+                    <td style="text-align: left; width: 78%; color: '.$client->color.'; font-family: segoebd; font-weight: bold;">Gesamtbetrag brutto</td>
                     <td style="text-align: right; width: 15%; color: '.$client->color.'; font-family: segoebd; font-weight: bold;">'.number_format($totalSum*($invoicecontent->taxrate/100+1), 2, ',', '').' EUR</td>
                 </tr>
             </table>';
 
 
-            $footer = $client->companyname.", ".$client->address.", ".$client->postalcode." ".$client->location.", Tel.: ".$client->phone.", E-Mail: ".$client->email.", \n".$client->regional_court.", FN-Nr.: ".$client->company_registration_number.", USt.-ID: ".$client->vat_number.", Steuer-Nr.: ".$client->tax_number.", \nGeschäftsführung: ".$client->management.", Bank: ".$client->bank.", IBAN: ".$client->accountnumber.", BIC: ".$client->bic;
+            $footer = '
+            <table cellpadding="0" cellspacing="0" width="100%" style="font-size: 8px; color: grey">
+                <tr>
+                    <td width="25%" style="vertical-align: top;">
+                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            <tr>
+                                <td style="text-align: left;">'.($client->companyname ?: '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->address ?: '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->postalcode && $client->location ? $client->postalcode.' '.$client->location : '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">Österreich</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="25%" style="vertical-align: top;">
+                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            <tr>
+                                <td style="text-align: left;">'.($client->phone ? 'Tel.: '.$client->phone : '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->email ? 'E.Mail: '.$client->email : '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->webpage ? 'Web: '.$client->webpage : '').'</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="25%" style="vertical-align: top;">
+                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            <tr>
+                                <td style="text-align: left;">'.($client->bank ?: '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->accountnumber ? 'IBAN: '.$client->accountnumber : '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->bic ? 'BIC: '.$client->bic : '').'</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td width="25%" style="vertical-align: top;">
+                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            <tr>
+                                <td style="text-align: left;">'.($client->regional_court ?: '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->company_registration_number ? 'FN-Nr.:'.$client->company_registration_number : '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->vat_number ? 'Steuer-Nr.: '.$client->vat_number : '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->tax_number ? 'Steuer-Nr.: '.$client->tax_number : '').'</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;">'.($client->management ? 'Geschäftsführung: '.htmlspecialchars_decode($client->management) : '').'</td>
+                            </tr>
+                        </table>
+                    </td>
+                    
+                </tr>
+            </table>';
+            
+            
+            //$client->companyname.", ".$client->address.", ".$client->postalcode." ".$client->location.", Tel.: ".$client->phone.", E-Mail: ".$client->email.", \n".$client->regional_court.", FN-Nr.: ".$client->company_registration_number.", USt.-ID: ".$client->vat_number.", Steuer-Nr.: ".$client->tax_number.", \nGeschäftsführung: ".$client->management.", Bank: ".$client->bank.", IBAN: ".$client->accountnumber.", BIC: ".$client->bic;
 
 
             if ($invoicecontent->depositamount > 0) {
                 $positionsum .= '
-                    <table cellpadding="2" cellspacing="0" width = "533">
+                    <table cellpadding="2" cellspacing="0" width = "100%">
                         <tr>
                             <td style="text-align: left; width: 70%;"></td>
                             <td style="text-align: left; width: 15%; border-bottom: 0.5px solid black;">Anzahlung</td>
@@ -640,8 +770,6 @@ class PdfCreateController extends Controller
 
         $pdf->AddFont('segoe', 'B', 'segoe.php');
         $pdf->SetFont('segoe', 'B', 10); // Normalschnitt
-
-        $pdf->setCustomFooterText($footer);
 
         $pdf->AddPage();
         $pageNumber = $pdf->PageNo();
@@ -680,43 +808,42 @@ class PdfCreateController extends Controller
         }
 
         $invoiceinfo = '
-            <table cellpadding="0.5" cellspacing="0" width = "197">
+            <table cellpadding="0.5" cellspacing="0" width = "100%">
                 <tr>
-                    <td style="text-align: left;">Rechnungsdatum</td>
-                    <td style="text-align: right;">'.$formattedDate.'</td>
+                    <td style="text-align: left; width: 42%;">Rechnungsdatum</td>
+                    <td style="text-align: right; width: 58%;">'.$formattedDate.'</td>
                 </tr>
                 <tr>
-                    <td style="text-align: left;">Leistungszeitraum</td>
-                    <td style="text-align: right;">' . ($formattedPeriodFrom ?? '') . ' - ' . ($formattedPeriodTo ?? '') . '</td>
+                    <td style="text-align: left; width: 42%;">Leistungszeitraum</td>
+                    <td style="text-align: right; width: 58%;">' . ($formattedPeriodFrom ?? '') . ' - ' . ($formattedPeriodTo ?? '') . '</td>
                 </tr>
                 
             </table>';
 
         $pageinfo = '
-            <table cellpadding="0.5" cellspacing="0" width = "70">
+            <table cellpadding="0.5" cellspacing="0" width = "100%">
                 <tr>
-                    <td style="text-align: left;">Seite</td>
-                    <td style="text-align: right;">'.$pageNumber.' von '.$totalPages.'</td>
+                    <td style="text-align: right; width: 100%;">Seite '.$pageNumber.' von '.$totalPages.'</td>
                 </tr>
             </table>';
 
         $invoiceNumber = '
-            <table cellpadding="0.5" cellspacing="0" width = "197">
+            <table cellpadding="0.5" cellspacing="0" width = "100%">
                 <tr>
-                    <td style="text-align: left;">Rechnungs-Nr.</td>
-                    <td style="text-align: right;">' . $invoicecontent->number . '</td>
+                    <td style="text-align: left; width: 40%;">Rechnungs-Nr.</td>
+                    <td style="text-align: right; width: 60%;">' . $invoicecontent->number . '</td>
                 </tr>
             </table>';
 
         $invoicetext = '
-            <table cellpadding="2" cellspacing="0" width = "533">
+            <table cellpadding="2" cellspacing="0" width = "100%">
                 <tr>
                     <td style="text-align: left;">Vielen Dank für Ihren Auftrag und das damit verbundene Vertrauen! Hiermit stellen wir Ihnen die folgenden Leistungen in Rechnung:</td>
                 </tr>
             </table>';
 
         $biginvoicenumber = '
-            <table cellpadding="2" cellspacing="0" width = "533">
+            <table cellpadding="2" cellspacing="0" width = "100%">
                 <tr>
                     <td style="text-align: left; color: '.$client->color.';">Rechnung Nr. ' . $invoicecontent->number . '</td>
                 </tr>
@@ -726,7 +853,7 @@ class PdfCreateController extends Controller
         $pdf->SetAuthor('{{$client->name}}');
         
         $pdf->SetTitle('Rechnung' . ' ' . $invoicecontent->number);
-        $pdf->SetMargins(15, 15, 15);
+        $pdf->SetMargins(10, 10, 10, 10);
         
         //Eigene Daten über den Kunden
         $pdf->SetXY(10, 45);
@@ -742,23 +869,23 @@ class PdfCreateController extends Controller
         //$pdf->SetXY(128, 12);
         //$pdf->writeHTML($clienttable, true, true, false, true, 'R');
         $pdf->SetFont($fontbold, '', 10);
-        $pdf->SetXY(128, 44);
+        $pdf->SetXY(123, 44);
         $pdf->writeHTML($invoiceNumber, true, true, false, true, 'R');
         
         //Rechnungsdatum und Leistungszeitraum
-        $pdf->SetXY(128, 51);
+        $pdf->SetXY(123, 51);
         $pdf->SetFont($font, '', 10);
         $pdf->writeHTML($invoiceinfo, true, true, false, true, 'R');
         
         //Zahlungskonditionen, Kundennummer, USt-ID
-        $pdf->SetXY(128, 61);
+        $pdf->SetXY(123, 62);
         $pdf->SetFont($font, '', 10);
         $pdf->writeHTML($operation, true, true, false, true, 'R');
         
         //Seite
-        $pdf->SetXY(172, 75);
-        $pdf->SetFont($font, '', 10);
-        $pdf->writeHTML($pageinfo, true, true, false, true, 'R');
+        //$pdf->SetXY(172, 267);
+        //$pdf->SetFont($font, '', 10);
+        //$pdf->writeHTML($pageinfo, true, true, false, true, 'R');
 
         //Rechnungsnummer groß links
         $pdf->SetXY(10, 90);
@@ -769,25 +896,33 @@ class PdfCreateController extends Controller
         
 
         $pdf->SetXY(10, 105);
-        $pdf->SetFont($font, '', 9.5);
+        $pdf->SetFont($font, '', 10);
         $pdf->writeHTML($invoicetext, true, true, false, true, 'R');
         
         //$pdf->multiCell(190, 10, $invoicetext, 0, 'L', 0, 1);
         
         $pdf->SetXY(10, 115);
-        $pdf->SetFont($fontbold, '', 9.5);
+        $pdf->SetFont($fontbold, '', 10);
         $pdf->writeHTML($positiontableheader, true, true, false, true, 'R');
         
         $pdf->SetXY(10, 120);
-        $pdf->SetFont($font, '', 9.5);
+        $pdf->SetFont($font, '', 10);
         $pdf->writeHTML($positiontablebody, true, true, false, true, 'R');
 
         $pdf->writeHTML($positionsum, true, true, false, true, 'R');
         if ($client->smallbusiness) {
-            $pdf->writeHTML('<br><br>Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG', true, true, true, true, 'L');
+            $pdf->writeHTML('<br><br><br><br>
+            <table cellpadding="2" cellspacing="0" width = "100%">
+                <tr>
+                    <td style="text-align: left; width: 7%;"></td>
+                    <td style="text-align: left; width: 93%;">Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG</td>
+                </tr>
+            </table>', true, true, true, true, 'L');
         }
 
-
+        // Footer als echten PDF-Footer deklarieren
+        
+        $pdf->setCustomFooterHTML($footer);
 
         $outputMode = $preview ?? 'I'; // Standardmodus ist 'I', falls $preview nicht gesetzt ist
 

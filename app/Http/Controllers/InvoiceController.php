@@ -73,12 +73,11 @@ class InvoiceController extends Controller
 
         $customer = Customer::where('id','=',$customer_id)->first();
 
-        $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator')->first();
+        $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator', 'invoice_number_format')->first();
 
         $invoice_raw_number = $client->lastinvoice ?? 0; // Fallback: 0
-        $invoicemultiplikator = $client->invoicemultiplikator ?? 1000; // Standardwert für Multiplikator
 
-        $invoicenumber = now()->year * $invoicemultiplikator +1000+ $invoice_raw_number;
+        $invoicenumber = $client->generateInvoiceNumber();
 
         $invoice = Invoices::create([
             'customer_id' => $customer_id,
@@ -170,12 +169,11 @@ class InvoiceController extends Controller
             //dd($invoiceid);
             $client_id = Auth::user()->client_id;
 
-            $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator')->first();
+            $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator', 'invoice_number_format')->first();
 
             $invoice_raw_number = $client->lastinvoice ?? 0; // Fallback: 0
-            $invoicemultiplikator = $client->invoicemultiplikator ?? 1000; // Standardwert für Multiplikator
 
-            $invoicenumber = now()->year * $invoicemultiplikator +1000+ $invoice_raw_number;
+            $invoicenumber = $client->generateInvoiceNumber();
 
 
 
@@ -448,12 +446,11 @@ class InvoiceController extends Controller
 
         $client_id = Auth::user()->client_id;
 
-        $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator')->first();
+        $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator', 'invoice_number_format')->first();
 
         $invoice_raw_number = $client->lastinvoice ?? 0; // Fallback: 0
-        $invoicemultiplikator = $client->invoicemultiplikator ?? 1000; // Standardwert für Multiplikator
 
-        $invoicenumber = now()->year * $invoicemultiplikator +1000+ $invoice_raw_number;
+        $invoicenumber = $client->generateInvoiceNumber();
 
         //dd($invoicemultiplikator);
         $request->validate([

@@ -12,6 +12,7 @@ class Customer extends Model
     protected $fillable = [
         'companyname',
         'customername',
+        'customer_number',
         'address',
         'postalcode',
         'location',
@@ -20,6 +21,7 @@ class Customer extends Model
         'fax',
         'email',
         'tax_id',
+        'vat_number',
         'condition_id',
         'salutation_id',
         'title',

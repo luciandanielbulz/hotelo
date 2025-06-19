@@ -52,8 +52,8 @@
             <div class="grid md:grid-cols-2 sm:grid-cols-1 pb-4 gap-x-6">
                 <!-- Datei hochladen -->
                 <div class="sm:col-span-1">
-                    <label for="filename" class="block text-sm font-medium text-gray-900">Neues Logo hochladen (optional)</label>
-                    <div class="mt-2">
+                    <label for="filename" class="block text-sm/6 font-medium text-gray-900 mb-1">Neues Logo hochladen (optional)</label>
+                    <div class="mt-1">
                         <input type="file" name="file" id="filename" class="block w-full text-gray-900 focus:outline-indigo-600">
                         <p class="text-sm text-gray-500 mt-1">Aktuelle Datei: {{ $logo->filename }}</p>
                     </div>

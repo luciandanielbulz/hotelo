@@ -16,7 +16,7 @@
         type="{{ $type }}"
         name="{{ $name }}"
         id="{{ $name }}"
-        value="{{ $value }}"
+        value="{!! $value !!}"
         @if($step)
             step="{{ $step }}"
         @endif

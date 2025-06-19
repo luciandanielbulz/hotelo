@@ -31,15 +31,15 @@
                 </div>
 
                 <div class="sm:col-span-1">
-                    <x-dropdown_body name="client_id" id="client_id" value="" :options="$clients->pluck('clientname', 'id')" :selected="1" label="Steuerhöhe" placeholder="Bitte auswählen" class="w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm" />
+                    <x-dropdown_body name="client_id" id="client_id" value="" :options="$clients->pluck('clientname', 'id')" :selected="1" label="Klient" placeholder="Bitte auswählen" class="w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm" />
                 </div>
 
             </div>
             <div class="grid md:grid-cols-2 sm:grid-cols-1 pb-4 gap-x-6">
                     <!-- Datei hochladen -->
                     <div class="sm:col-span-1">
-                        <label for="filename" class="block text-sm font-medium text-gray-900">Datei hochladen</label>
-                        <div class="mt-2">
+                        <label for="filename" class="block text-sm/6 font-medium text-gray-900 mb-1">Datei hochladen</label>
+                        <div class="mt-1">
                             <input type="file" name="file" id="filename" required class="block w-full text-gray-900 focus:outline-indigo-600">
 
                         </div>

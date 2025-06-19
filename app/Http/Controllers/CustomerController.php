@@ -28,7 +28,8 @@ class CustomerController extends Controller
             ->when($search, function($query, $search) {
                 return $query->where(function($q) use ($search) {
                     $q->where('customername', 'like', "%$search%")
-                      ->orWhere('companyname', 'like', "%$search%");
+                      ->orWhere('companyname', 'like', "%$search%")
+                      ->orWhere('customer_number', 'like', "%$search%");
                 });
             })
             ->orderBy('id', 'desc')
@@ -69,10 +70,10 @@ class CustomerController extends Controller
         //dd($clientId);
         // Validierung der Formulardaten
         $validatedData = $request->validate([
-
             'title' => ['nullable', 'string', 'max:50'],
             'customername' => ['nullable', 'string', 'max:200', 'required_without:companyname'],
             'companyname' => ['nullable', 'string', 'max:200', 'required_without:customername'],
+            'customer_number' => ['nullable', 'string', 'max:50'],
             'address' => ['required', 'string', 'max:200'],
             'postalcode' => ['required', 'integer'],
             'location' => ['required', 'string', 'max:200'],
@@ -81,6 +82,7 @@ class CustomerController extends Controller
             'phone' => ['nullable', 'string', 'max:30'],
             'fax' => ['nullable', 'string', 'max:200'],
             'email' => ['nullable', 'string', 'max:200'],
+            'vat_number' => ['nullable', 'string', 'max:100'],
             'condition_id' => ['required', 'integer'],
             'salutation_id' => ['required', 'integer'],
             'emailsubject' => ['nullable', 'string', 'max:200'],
@@ -136,6 +138,7 @@ class CustomerController extends Controller
                 'title' => ['nullable', 'string', 'max:50'],
                 'customername' => ['nullable', 'string', 'max:200', 'required_without:companyname'],
                 'companyname' => ['nullable', 'string', 'max:200', 'required_without:customername'],
+                'customer_number' => ['nullable', 'string', 'max:50'],
                 'address' => ['required', 'string', 'max:200'],
                 'postalcode' => ['required', 'string', 'max:10'],
                 'location' => ['required', 'string', 'max:200'],
@@ -144,6 +147,7 @@ class CustomerController extends Controller
                 'phone' => ['nullable', 'string', 'max:30'],
                 'fax' => ['nullable', 'string', 'max:200'],
                 'email' => ['nullable', 'string', 'max:200'],
+                'vat_number' => ['nullable', 'string', 'max:100'],
                 'condition_id' => ['required', 'integer'],
                 'salutation_id' => ['required', 'integer'],
                 'emailsubject' => ['nullable', 'string', 'max:300'],

@@ -33,6 +33,11 @@
                 <div>
                     <div class="flex items-center justify-between">
                         <label for="password" class="block text-sm font-medium text-gray-900">Passwort</label>
+                        <div class="text-sm">
+                            <a href="{{ route('password.request') }}" class="font-semibold text-indigo-600 hover:text-indigo-500">
+                                Passwort vergessen?
+                            </a>
+                        </div>
                     </div>
                     <div class="mt-2">
                         <input

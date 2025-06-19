@@ -123,9 +123,9 @@
                 <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Signatur</h3>
                 <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6">
                     <div class="sm:col-span-6">
-                        <label for="signature" class="block text-sm font-medium text-gray-900">Signatur</label>
-                        <div class="mt-2">
-                            <textarea name="signature" id="signature" rows="3" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 focus:outline-indigo-600">{{ old('signature') }}</textarea>
+                        <label for="signature" class="block text-sm/6 font-medium text-gray-900 mb-1">Signatur</label>
+                        <div class="mt-1">
+                            <textarea name="signature" id="signature" rows="3" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">{{ old('signature') }}</textarea>
                             @error('signature')
                                 <span class="text-sm text-red-600">{{ $message }}</span>
                             @enderror
@@ -139,8 +139,8 @@
                 <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Logo</h3>
                 <div class="grid md:grid-cols-5 sm:grid-cols-1 pb-4 gap-x-6">
                     <div class="sm:col-span-2">
-                        <label for="logo" class="block text-sm font-medium text-gray-900">Logo</label>
-                        <div class="mt-2 flex items-center gap-x-3">
+                        <label for="logo" class="block text-sm/6 font-medium text-gray-900 mb-1">Logo</label>
+                        <div class="mt-1 flex items-center gap-x-3">
                             <input type="file" name="logo" id="logo" accept="image/jpeg,image/png,image/jpg,image/gif" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" onchange="previewImage(this)">
                             <div id="logo-preview" class="hidden">
                                 <img id="preview" src="#" alt="Logo Vorschau" class="h-20 w-auto object-contain">
@@ -167,33 +167,36 @@
                 
                 <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div class="sm:col-span-3">
-                        <x-input-label for="lastoffer" value="Letzte Angebotsnummer" />
-                        <x-text-input id="lastoffer" name="lastoffer" type="number" class="mt-1 block w-full" :value="old('lastoffer', $client->lastoffer ?? 0)" required autofocus />
-                        <x-input-error class="mt-2" :messages="$errors->get('lastoffer')" />
+                        <x-input name="lastoffer" type="number" placeholder="Letzte Angebotsnummer" label="Letzte Angebotsnummer" value="{{ old('lastoffer', $client->lastoffer ?? 0) }}" />
                     </div>
 
                     <div class="sm:col-span-3">
-                        <x-input-label for="offermultiplikator" value="Angebot Multiplikator" />
-                        <x-text-input id="offermultiplikator" name="offermultiplikator" type="number" class="mt-1 block w-full" :value="old('offermultiplikator', $client->offermultiplikator ?? 1)" required autofocus />
-                        <x-input-error class="mt-2" :messages="$errors->get('offermultiplikator')" />
+                        <x-input name="offermultiplikator" type="number" placeholder="Angebot Multiplikator" label="Angebot Multiplikator" value="{{ old('offermultiplikator', $client->offermultiplikator ?? 1) }}" />
                     </div>
 
                     <div class="sm:col-span-3">
-                        <x-input-label for="lastinvoice" value="Letzte Rechnungsnummer" />
-                        <x-text-input id="lastinvoice" name="lastinvoice" type="number" class="mt-1 block w-full" :value="old('lastinvoice', $client->lastinvoice ?? 0)" required autofocus />
-                        <x-input-error class="mt-2" :messages="$errors->get('lastinvoice')" />
+                        <x-input name="lastinvoice" type="number" placeholder="Letzte Rechnungsnummer" label="Letzte Rechnungsnummer" value="{{ old('lastinvoice', $client->lastinvoice ?? 0) }}" />
                     </div>
 
                     <div class="sm:col-span-3">
-                        <x-input-label for="invoicemultiplikator" value="Rechnung Multiplikator" />
-                        <x-text-input id="invoicemultiplikator" name="invoicemultiplikator" type="number" class="mt-1 block w-full" :value="old('invoicemultiplikator', $client->invoicemultiplikator ?? 1)" required autofocus />
-                        <x-input-error class="mt-2" :messages="$errors->get('invoicemultiplikator')" />
+                        <x-input name="invoicemultiplikator" type="number" placeholder="Rechnung Multiplikator" label="Rechnung Multiplikator" value="{{ old('invoicemultiplikator', $client->invoicemultiplikator ?? 1) }}" />
                     </div>
 
                     <div class="sm:col-span-3">
-                        <x-input-label for="maxuploadsize" value="Maximale Upload-Größe (MB)" />
-                        <x-text-input id="maxuploadsize" name="maxuploadsize" type="number" class="mt-1 block w-full" :value="old('maxuploadsize', $client->maxuploadsize ?? 10)" required autofocus />
-                        <x-input-error class="mt-2" :messages="$errors->get('maxuploadsize')" />
+                        <x-input name="maxuploadsize" type="number" placeholder="Maximale Upload-Größe (MB)" label="Maximale Upload-Größe (MB)" value="{{ old('maxuploadsize', $client->maxuploadsize ?? 10) }}" />
+                    </div>
+
+                    <div class="sm:col-span-6">
+                        <label for="invoice_number_format" class="block text-sm/6 font-medium text-gray-900 mb-1">Rechnungsnummer-Format</label>
+                        <select name="invoice_number_format" id="invoice_number_format" class="mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                            <option value="YYYY*1000+N" {{ old('invoice_number_format') == 'YYYY*1000+N' ? 'selected' : '' }}>Jahr*1000+Nummer (z.B. 2025001)</option>
+                            <option value="YYYYNN" {{ old('invoice_number_format') == 'YYYYNN' ? 'selected' : '' }}>Jahr + Nummer (z.B. 20250001)</option>
+                            <option value="YY*1000+N" {{ old('invoice_number_format') == 'YY*1000+N' ? 'selected' : '' }}>Jahr(2-stellig)*1000+Nummer (z.B. 25001)</option>
+                            <option value="YYYY_MM+N" {{ old('invoice_number_format') == 'YYYY_MM+N' ? 'selected' : '' }}>Jahr_Monat+Nummer (z.B. 2025_01001)</option>
+                            <option value="N" {{ old('invoice_number_format') == 'N' ? 'selected' : '' }}>Nur fortlaufende Nummer (z.B. 1, 2, 3...)</option>
+                            <option value="custom" {{ old('invoice_number_format') == 'custom' ? 'selected' : '' }}>Benutzerdefiniert</option>
+                        </select>
+                        <p class="mt-1 text-sm text-gray-600">Wählen Sie das Format für die automatische Rechnungsnummerierung.</p>
                     </div>
                 </div>
             </div>
@@ -204,9 +207,7 @@
                 
                 <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div class="sm:col-span-3">
-                        <x-input-label for="color" value="Farbe für Rechnungen und Angebote" />
-                        <x-text-input id="color" name="color" type="color" class="mt-1 block w-full h-12" :value="old('color', $client->color ?? '#000000')" required autofocus />
-                        <x-input-error class="mt-2" :messages="$errors->get('color')" />
+                        <x-input name="color" type="color" placeholder="Farbe für Rechnungen und Angebote" label="Farbe für Rechnungen und Angebote" value="{{ old('color', $client->color ?? '#000000') }}" />
                     </div>
                 </div>
             </div>

@@ -48,10 +48,26 @@
             </div>
         </div>
 
+        <!-- Leistungszeitraum von -->
+        <div >
+            <label for="periodfrom" class="block text-sm/6 font-medium text-gray-900">Leistungszeitraum von</label>
+            <div class="mt-1">
+                <input type="date" name="periodfrom" id="periodfrom" wire:model="periodfrom" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
+            </div>
+        </div>
+
+        <!-- Leistungszeitraum bis -->
+        <div >
+            <label for="periodto" class="block text-sm/6 font-medium text-gray-900">Leistungszeitraum bis</label>
+            <div class="mt-1">
+                <input type="date" name="periodto" id="periodto" wire:model="periodto" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
+            </div>
+        </div>
+
         <div>
             <label for="invoiceNumber" class="block text-sm/6 font-medium text-gray-900">Nummer</label>
             <div class="mt-1">
-                <input type="number" name="invoiceNumber" id="invoiceNumber" wire:model="invoiceNumber"  class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
+                <input type="string" name="invoiceNumber" id="invoiceNumber" wire:model="invoiceNumber"  class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
             </div>
         </div>
 

@@ -31,6 +31,11 @@
                         <x-input name="companyname" type="text" placeholder="Firmenname" label="Firmenname" value="" />
                     </div>
 
+                    <!-- Kundennummer -->
+                    <div class="sm:col-span-2">
+                        <x-input name="customer_number" type="text" placeholder="Kundennummer" label="Kundennummer" value="" />
+                    </div>
+
                     <!-- Adresse -->
                     <div class="sm:col-span-3">
                         <x-input name="address" type="text" placeholder="Adresse" label="Adresse" value="" />
@@ -89,9 +94,9 @@
 
                     <!-- Email Body. -->
                     <div class="sm:col-span-full">
-                        <label for="emailbody" class="block text-sm font-medium text-gray-900">E-Mail Text       <br>Variablen: aktuelles_jahr (Y0), aktuelles_monat (M0), objekt (O), objekt_mit_artikel (OA), objektnummer (ON), signatur (S), aktueller_monatsname (M0N)</label>
-                        <div class="mt-2">
-                            <textarea name="emailbody" id="emailbody" rows="10" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 focus:outline-indigo-600">
+                        <label for="emailbody" class="block text-sm/6 font-medium text-gray-900 mb-1">E-Mail Text       <br>Variablen: aktuelles_jahr (Y0), aktuelles_monat (M0), objekt (O), objekt_mit_artikel (OA), objektnummer (ON), signatur (S), aktueller_monatsname (M0N)</label>
+                        <div class="mt-1">
+                            <textarea name="emailbody" id="emailbody" rows="10" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
                             Sehr geehrte Damen und Herren,<br><br>anbei {objekt_mit_artikel} {objektnummer}<br><br>{signatur}
                             </textarea>
 
