@@ -73,7 +73,7 @@ class InvoiceController extends Controller
 
         $customer = Customer::where('id','=',$customer_id)->first();
 
-        $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator', 'invoice_number_format')->first();
+        $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator', 'invoice_number_format', 'tax_id')->first();
 
         $invoice_raw_number = $client->lastinvoice ?? 0; // Fallback: 0
 
@@ -83,7 +83,7 @@ class InvoiceController extends Controller
             'customer_id' => $customer_id,
             'number' => $invoicenumber,
             'description' => '',
-            'tax_id' => 1,
+            'tax_id' => $client->tax_id, // Steuersatz vom Client übernehmen
             'condition_id' => $customer->condition_id,
         ]);
 
@@ -169,7 +169,7 @@ class InvoiceController extends Controller
             //dd($invoiceid);
             $client_id = Auth::user()->client_id;
 
-            $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator', 'invoice_number_format')->first();
+            $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator', 'invoice_number_format', 'tax_id')->first();
 
             $invoice_raw_number = $client->lastinvoice ?? 0; // Fallback: 0
 
@@ -193,7 +193,7 @@ class InvoiceController extends Controller
                 'date' => now(),
                 'number' => $invoicenumber,
                 'description' => $invoice->description,
-                'tax_id' => $invoice->tax_id,
+                'tax_id' => $invoice->tax_id ?? $client->tax_id, // Fallback auf Client-Steuersatz
                 'taxburden' => $invoice->taxburden,
                 'depositamount' => $invoice->depositamount,
                 'periodfrom' => $invoice->periodfrom,
