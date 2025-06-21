@@ -139,6 +139,9 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::resource('sales',SalesController::class);
 
     Route::resource('condition',ConditionController::class);
+    Route::get('condition-trashed', [ConditionController::class, 'trashed'])->name('condition.trashed');
+    Route::patch('condition/{id}/restore', [ConditionController::class, 'restore'])->name('condition.restore');
+    Route::delete('condition/{id}/force-delete', [ConditionController::class, 'forceDelete'])->name('condition.force-delete');
 
     /*
     |--------------------------------------------------------------------------

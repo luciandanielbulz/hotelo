@@ -159,8 +159,9 @@ class OfferController extends Controller
             ->where('offers.id', '=', $offer->id)
             ->first();
 
-        // Bedingungen laden
-        $conditions = Condition::all();
+        // Bedingungen laden (nur aktive für aktuellen Client)
+        $user = Auth::user();
+        $conditions = Condition::where('client_id', $user->client_id)->get();
 
         // View zurückgeben
         return view('offer.edit', compact('offer', 'conditions', 'total_price'));

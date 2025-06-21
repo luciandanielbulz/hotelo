@@ -28,16 +28,11 @@
                     <x-input name="conditionname" type="text" placeholder="Name" label="Name" value="{{ old('conditionname', $condition->conditionname) }}" required />
                 </div>
 
-                <div class="mb-4 mt-4 sm:col-span-1">
-                    <label for="client_id" class="block text-sm font-medium text-gray-700">Client</label>
-                    <select name="client_id" id="client_id" class="w-full appearance-none rounded-md bg-white py-2 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm" required>
-                        <option value="">-- Wähle einen Client --</option>
-                        @foreach($clients as $client)
-                            <option value="{{ $client->id }}" {{ (old('client_id', $condition->client_id) == $client->id) ? 'selected' : '' }}>
-                                {{ $client->clientname }}
-                            </option>
-                        @endforeach
-                    </select>
+                <!-- Client wird automatisch basierend auf dem eingeloggten User gesetzt -->
+                <div class="mb-4 mt-4 sm:col-span-1 p-3 bg-gray-50 rounded-md">
+                    <div class="text-sm font-medium text-gray-700">Client</div>
+                    <div class="text-sm text-gray-900">{{ $condition->client->clientname ?? 'Unbekannt' }}</div>
+                    <div class="text-xs text-gray-500 mt-1">Der Client kann nicht geändert werden.</div>
                 </div>
             </div>
 

@@ -47,7 +47,7 @@ class CustomerController extends Controller
         //dd($user);
         $clientId = $user->client_id;
 
-        $conditions = Condition::all();
+        $conditions = Condition::where('client_id', $clientId)->get(); // Automatisch nur aktive durch SoftDeletes
         $taxrates = Taxrates::all();
 
         $standardtaxrate = Clients::where('id', $clientId)->first('tax_id')->tax_id;
@@ -119,7 +119,7 @@ class CustomerController extends Controller
         if ($customer->client_id !== $currentClientId) {
             abort(403, 'Sie sind nicht berechtigt, diesen Kunden zu bearbeiten.');
         }
-        $conditions = Condition::all();
+        $conditions = Condition::where('client_id', $currentClientId)->get(); // Automatisch nur aktive durch SoftDeletes
         $salutations = Salutations::all();
         $taxrates = Taxrates::all();
         //dd($taxrates);

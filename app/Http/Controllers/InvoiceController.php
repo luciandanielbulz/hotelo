@@ -156,8 +156,9 @@ class InvoiceController extends Controller
             ->select(DB::raw('SUM(invoicepositions.amount * invoicepositions.price) as total_price'))
             ->first();
 
-        // Bedingungen laden
-        $conditions = Condition::all();
+        // Bedingungen laden (nur aktive für aktuellen Client)
+        $user = Auth::user();
+        $conditions = Condition::where('client_id', $user->client_id)->get();
 
         // View zurückgeben
         return view('invoice.edit', compact('invoice', 'conditions', 'invoicepositions', 'total_price'));
@@ -247,7 +248,48 @@ class InvoiceController extends Controller
      */
     public function update(Request $request, Invoices $invoice)
     {
-        //
+        $user = Auth::user();
+        
+        // Überprüfen, ob die Rechnung zum aktuellen Client gehört
+        $customer = Customer::find($invoice->customer_id);
+        if (!$customer || $customer->client_id !== $user->client_id) {
+            abort(403, 'Sie sind nicht berechtigt, diese Rechnung zu bearbeiten.');
+        }
+
+        // Validierung der Eingaben
+        $validated = $request->validate([
+            'description' => 'nullable|string|max:500',
+            'condition_id' => 'required|integer|exists:conditions,id',
+            'tax_id' => 'required|integer|exists:taxrates,id',
+            'date' => 'required|date',
+            'number' => 'required|string|max:100',
+            'depositamount' => 'nullable|numeric|min:0',
+            'periodfrom' => 'nullable|date',
+            'periodto' => 'nullable|date|after_or_equal:periodfrom',
+            'comment' => 'nullable|string|max:1000',
+        ]);
+
+        // Condition-Zugehörigkeit überprüfen
+        $condition = Condition::find($validated['condition_id']);
+        if (!$condition || $condition->client_id !== $user->client_id) {
+            abort(403, 'Diese Bedingung gehört nicht zu Ihrem Client.');
+        }
+
+        // Update der Rechnung
+        $invoice->update([
+            'description' => $validated['description'],
+            'condition_id' => $validated['condition_id'],
+            'tax_id' => $validated['tax_id'],
+            'date' => $validated['date'],
+            'number' => $validated['number'],
+            'depositamount' => $validated['depositamount'],
+            'periodfrom' => !empty($validated['periodfrom']) ? $validated['periodfrom'] : null,
+            'periodto' => !empty($validated['periodto']) ? $validated['periodto'] : null,
+            'comment' => $validated['comment'],
+        ]);
+
+        return redirect()->route('invoice.edit', $invoice->id)
+            ->with('success', 'Rechnung erfolgreich aktualisiert!');
     }
 
     /**

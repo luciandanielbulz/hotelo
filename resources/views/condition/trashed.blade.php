@@ -1,12 +1,11 @@
 <x-layout>
     <div class="sm:flex sm:items-center sm:max-w-7xl">
         <div class="sm:flex-auto">
-            <h1 class="text-base font-semibold text-gray-900">Bedingungen</h1>
-            <p class="mt-2 text-sm text-gray-700">Verwalte deine Bedingungen effizient und schnell.</p>
+            <h1 class="text-base font-semibold text-gray-900">Gelöschte Bedingungen</h1>
+            <p class="mt-2 text-sm text-gray-700">Übersicht aller gelöschten Bedingungen. Diese können wiederhergestellt oder permanent gelöscht werden.</p>
         </div>
-        <div class="mt-4 sm:ml-auto sm:mt-0 sm:flex-none space-x-2">
-            <a href="{{ route('condition.trashed') }}" class="inline-block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">📁 Papierkorb</a>
-            <a href="{{ route('condition.create') }}" class="inline-block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">+ Neue Bedingung</a>
+        <div class="mt-4 sm:ml-auto sm:mt-0 sm:flex-none">
+            <a href="{{ route('condition.index') }}" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">← Zurück zur Übersicht</a>
         </div>
     </div>
 
@@ -39,25 +38,28 @@
                                 <tr>
                                     <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">ID</th>
                                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Name</th>
-                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Erstellt am</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Gelöscht am</th>
                                     <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Aktionen</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-200 bg-white">
                                 @foreach($conditions as $condition)
-                                    <tr class="hover:bg-indigo-100">
+                                    <tr class="hover:bg-red-50">
                                         <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6">{{ $condition->id }}</td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $condition->conditionname }}</td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                            {{ optional($condition->created_at)->format('d.m.Y') ?? '-' }}
+                                            {{ optional($condition->deleted_at)->format('d.m.Y H:i') ?? '-' }}
                                         </td>
                                         <td class="whitespace-nowrap px-3 py-4 text-right text-sm">
-                                            <a href="{{ route('condition.show', $condition->id) }}" class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 mr-2">Anzeigen</a>
-                                            <a href="{{ route('condition.edit', $condition->id) }}" class="rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200 mr-2">Bearbeiten</a>
-                                            <form action="{{ route('condition.destroy', $condition->id) }}" method="POST" style="display:inline-block;" onsubmit="console.log('Form submitted for condition ID:', {{ $condition->id }}); return confirm('Bist du sicher, dass du diese Bedingung löschen möchtest?');">
+                                            <form action="{{ route('condition.restore', $condition->id) }}" method="POST" style="display:inline-block;">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 mr-2">Wiederherstellen</button>
+                                            </form>
+                                            <form action="{{ route('condition.force-delete', $condition->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Bist du sicher, dass du diese Bedingung PERMANENT löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden!');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-900" onclick="console.log('Delete button clicked for condition:', {{ $condition->id }});">Löschen</button>
+                                                <button type="submit" class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-900">Permanent löschen</button>
                                             </form>
                                         </td>
                                     </tr>
@@ -67,9 +69,13 @@
                     </div>
                 </div>
             </div>
-
+        </div>
         @else
-            <div class="mt-4 text-center text-gray-500">Keine Bedingungen gefunden.</div>
+            <div class="mt-4 text-center text-gray-500">
+                <div class="text-lg">🗑️</div>
+                <div class="mt-2">Keine gelöschten Bedingungen gefunden.</div>
+                <div class="text-sm text-gray-400 mt-1">Alle deine Bedingungen sind aktiv.</div>
+            </div>
         @endif
     </div>
-</x-layout>
+</x-layout> 

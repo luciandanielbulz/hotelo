@@ -28,16 +28,11 @@
                             <input type="text" name="conditionname" id="conditionname" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="Bedingungsname eingeben" value="{{ old('conditionname') }}" required>
                         </div>
 
-                        <div class="mb-4">
-                            <label for="client_id" class="block text-sm font-medium text-gray-700">Client</label>
-                            <select name="client_id" id="client_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
-                                <option value="">-- Wähle einen Client --</option>
-                                @foreach($clients as $client)
-                                    <option value="{{ $client->id }}" {{ old('client_id') == $client->id ? 'selected' : '' }}>
-                                        {{ $client->clientname }}
-                                    </option>
-                                @endforeach
-                            </select>
+                        <!-- Client wird automatisch basierend auf dem eingeloggten User gesetzt -->
+                        <div class="mb-4 p-3 bg-gray-50 rounded-md">
+                            <div class="text-sm font-medium text-gray-700">Client</div>
+                            <div class="text-sm text-gray-900">{{ $clients->first()->clientname ?? 'Unbekannt' }}</div>
+                            <div class="text-xs text-gray-500 mt-1">Der Client wird automatisch basierend auf Ihrem Konto zugewiesen.</div>
                         </div>
 
                         <div class="mb-4 flex items-center">

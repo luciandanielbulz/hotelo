@@ -38,29 +38,54 @@ class Offerdetails extends Component
 
     public function updateDetails()
     {
-        $this->validate([
-            'taxrateid' => 'required|integer',
-            'offerDate' => 'required|date',
-            'offerNumber' => 'required|integer',
-        ]);
+        try {
+            \Log::info('updateDetails gestartet', [
+                'offerId' => $this->offerId,
+                'taxrateid' => $this->taxrateid,
+                'offerDate' => $this->offerDate,
+                'offerNumber' => $this->offerNumber,
+            ]);
 
-        $offer = Offers::findOrFail($this->offerId);
-        $offer->tax_id = $this->taxrateid;
-        $offer->date = $this->offerDate;
-        $offer->number = $this->offerNumber;
-        $offer->save();
+            $this->validate([
+                'taxrateid' => 'required|integer',
+                'offerDate' => 'required|date',
+                'offerNumber' => 'required|string|max:100',
+            ]);
 
-        $this->dispatch('comment-updated', [
-            'message' => 'Details erfolgreich aktualisiert.'
-        ]);
-        // Debugging hinzufügen
-        \Log::info('Daten aktualisiert:', [
-            'taxrateid' => $this->taxrateid,
-            'offerDate' => $this->offerDate,
-            'offerNumber' => $this->offerNumber,
-        ]);
+            $offer = Offers::findOrFail($this->offerId);
+            
+            \Log::info('Vor dem Update:', [
+                'alte_nummer' => $offer->number,
+                'neue_nummer' => $this->offerNumber,
+            ]);
+            
+            $offer->tax_id = $this->taxrateid;
+            $offer->date = $this->offerDate;
+            $offer->number = $this->offerNumber;
+            $saved = $offer->save();
+            
+            \Log::info('Nach dem Update:', [
+                'gespeichert' => $saved,
+                'nummer' => $offer->number,
+            ]);
 
-        $this->loadData($this->offerId);
+            $this->message = 'Details erfolgreich aktualisiert.';
+            
+            $this->dispatch('comment-updated', [
+                'message' => 'Details erfolgreich aktualisiert.'
+            ]);
+            
+            $this->loadData($this->offerId);
+            
+        } catch (\Exception $e) {
+            \Log::error('Fehler beim Speichern der Offer-Details: ' . $e->getMessage(), [
+                'exception' => $e,
+                'offerId' => $this->offerId,
+                'offerNumber' => $this->offerNumber,
+            ]);
+            
+            $this->message = 'Fehler beim Speichern: ' . $e->getMessage();
+        }
     }
 
     public function render()
