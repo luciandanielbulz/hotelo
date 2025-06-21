@@ -321,7 +321,7 @@ class PdfCreateController extends Controller
                 <tr>
                     <td style="text-align: left; width: 18%;"></td>
                     <td style="text-align: left; width: 67%; color: '.$client->color.'; font-family: segoebd; font-weight: bold;">Gesamtbetrag brutto</td>
-                    <td style="text-align: right; width: 15%; color: '.$client->color.'; font-family: segoebd; font-weight: bold;">'.number_format($totalSum*($offercontent->taxrate/100+1), 2, ',', '').' EUR</td>
+                    <td style="text-align: right; width: 15%; color: '.$client->color.'; font-family: segoebd; font-weight: bold; font-size: 11px;">'.number_format($totalSum*($offercontent->taxrate/100+1), 2, ',', '').' EUR</td>
                 </tr>
             </table>';
 
@@ -668,8 +668,8 @@ class PdfCreateController extends Controller
                 </tr>
                 <tr>
                     <td style="text-align: left; width: 7%;"></td>
-                    <td style="text-align: left; width: 78%; color: '.$client->color.'; font-family: segoebd; font-weight: bold;">Gesamtbetrag brutto</td>
-                    <td style="text-align: right; width: 15%; color: '.$client->color.'; font-family: segoebd; font-weight: bold;">'.number_format($totalSum*($invoicecontent->taxrate/100+1), 2, ',', '').' EUR</td>
+                    <td style="text-align: left; width: 78%; color: '.$client->color.'; font-family: segoebd; font-weight: bold; font-size: 11px;">Gesamtbetrag brutto</td>
+                    <td style="text-align: right; width: 15%; color: '.$client->color.'; font-family: segoebd; font-weight: bold; font-size: 11px;">'.number_format($totalSum*($invoicecontent->taxrate/100+1), 2, ',', '').' EUR</td>
                 </tr>
             </table>';
 
@@ -751,13 +751,13 @@ class PdfCreateController extends Controller
                     <table cellpadding="2" cellspacing="0" width = "100%">
                         <tr>
                             <td style="text-align: left; width: 70%;"></td>
-                            <td style="text-align: left; width: 15%; border-bottom: 0.5px solid black;">Anzahlung</td>
-                            <td style="text-align: right; width: 15%; border-bottom: 0.5px solid black;">-'.number_format($invoicecontent->depositamount, 2, ',', '').' EUR</td>
+                            <td style="text-align: left; width: 15%; border-bottom: 0.5px solid black; font-size: 10px;">Anzahlung</td>
+                            <td style="text-align: right; width: 15%; border-bottom: 0.5px solid black; font-size: 10px;">-'.number_format($invoicecontent->depositamount, 2, ',', '').' EUR</td>
                         </tr>
                         <tr>
                             <td style="text-align: left; width: 70%;"></td>
-                            <td style="text-align: left; width: 15%; border-bottom: 2px solid black;">Zu zahlen:</td>
-                            <td style="text-align: right; width: 15%; border-bottom: 2px solid black;">'.number_format($totalSum*($invoicecontent->taxrate/100+1)-$invoicecontent->depositamount, 2, ',', '').' EUR</td>
+                            <td style="text-align: left; width: 15%; border-bottom: 2px solid '.$client->color.'; color: '.$client->color.'; font-family: segoebd; font-size: 11px;">Zu zahlen:</td>
+                            <td style="text-align: right; width: 15%; border-bottom: 2px solid '.$client->color.'; color: '.$client->color.';   font-family: segoebd; font-size: 11px;">'.number_format($totalSum*($invoicecontent->taxrate/100+1)-$invoicecontent->depositamount, 2, ',', '').' EUR</td>
                         </tr>
                     </table>';
             }
