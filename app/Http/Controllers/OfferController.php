@@ -65,7 +65,7 @@ class OfferController extends Controller
 
         $customer = Customer::where('id','=',$customer_id)->first();
 
-        $client = Clients::where('id', '=', $client_id)->select('lastoffer', 'offermultiplikator')->first();
+        $client = Clients::where('id', '=', $client_id)->select('lastoffer', 'offermultiplikator', 'tax_id')->first();
 
         $offer_raw_number = $client->lastoffer ?? 0; // Fallback: 0
         $offermultiplikator = $client->offermultiplikator ?? 1000; // Standardwert für Multiplikator
@@ -79,7 +79,7 @@ class OfferController extends Controller
             'customer_id' => $customer_id,
             'number' => $offernumber, // Verwende die berechnete Angebotsnummer
             'description' => 'test',
-            'tax_id' => 1,
+            'tax_id' => $client->tax_id ?? 1, // Verwende Client-Steuersatz oder Fallback
             'condition_id' => $customer->condition_id,
         ]);
 
