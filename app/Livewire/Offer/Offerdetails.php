@@ -19,6 +19,13 @@ class Offerdetails extends Component
     public $taxrateid;
     public $offerDate;
     public $offerNumber;
+    
+    // Test-Funktion für Debugging
+    public function testFunction()
+    {
+        $this->message = 'TEST: Button funktioniert! Livewire ist aktiv.';
+        \Log::info('=== TEST FUNKTION AUFGERUFEN ===');
+    }
 
 
     public function mount($offerId)
@@ -39,18 +46,40 @@ class Offerdetails extends Component
     public function updateDetails()
     {
         try {
-            \Log::info('updateDetails gestartet', [
+            // Debug Message sofort setzen um zu sehen ob die Funktion überhaupt aufgerufen wird
+            $this->message = 'Funktion wurde aufgerufen - Verarbeitung läuft...';
+            
+            
+            \Log::info('=== ANGEBOT updateDetails gestartet ===', [
                 'offerId' => $this->offerId,
                 'taxrateid' => $this->taxrateid,
                 'offerDate' => $this->offerDate,
                 'offerNumber' => $this->offerNumber,
+                'all_properties' => [
+                    'offerId' => $this->offerId,
+                    'taxrateid' => $this->taxrateid,
+                    'offerDate' => $this->offerDate,
+                    'offerNumber' => $this->offerNumber,
+                    'message' => $this->message,
+                ]
+            ]);
+
+            \Log::info('=== ANGEBOT vor Validierung ===', [
+                'taxrateid' => $this->taxrateid,
+                'taxrateid_type' => gettype($this->taxrateid),
+                'offerDate' => $this->offerDate,
+                'offerDate_type' => gettype($this->offerDate),
+                'offerNumber' => $this->offerNumber,
+                'offerNumber_type' => gettype($this->offerNumber),
             ]);
 
             $this->validate([
                 'taxrateid' => 'required|integer',
                 'offerDate' => 'required|date',
-                'offerNumber' => 'required|string|max:100',
+                'offerNumber' => 'required|numeric',
             ]);
+            
+            \Log::info('=== ANGEBOT Validierung erfolgreich ===');
 
             $offer = Offers::findOrFail($this->offerId);
             
@@ -71,9 +100,7 @@ class Offerdetails extends Component
 
             $this->message = 'Details erfolgreich aktualisiert.';
             
-            $this->dispatch('comment-updated', [
-                'message' => 'Details erfolgreich aktualisiert.'
-            ]);
+            // Event-Dispatch entfernt - Erfolgsmeldung wird jetzt nur noch in der Komponente angezeigt
             
             $this->loadData($this->offerId);
             

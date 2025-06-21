@@ -88,7 +88,7 @@
 
         document.addEventListener('comment-updated', (event) => {
             console.log(event.detail[0].message);
-            alert(event.detail[0].message);
+            // Alert entfernt - Erfolgsmeldung wird jetzt nur noch in der Komponente angezeigt
         });
     </script>
 </x-layout>

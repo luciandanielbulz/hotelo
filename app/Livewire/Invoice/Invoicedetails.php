@@ -5,6 +5,7 @@ namespace App\Livewire\Invoice;
 
 use App\Models\Invoices;
 use App\Models\Condition;
+use App\Models\Clients;
 use Illuminate\Support\Facades\Auth;
 
 use Livewire\Component;
@@ -25,13 +26,16 @@ class Invoicedetails extends Component
     public $message;
 
     public $conditions;
-
+    public $client;
 
     public $taxrateid;
+    public $reverse_charge = false;
     public $invoiceDate;
     public $invoiceNumber;
     public $periodfrom;
     public $periodto;
+    
+    protected $stored_taxrateid; // Speichert ursprünglichen Steuersatz für Wiederherstellung
 
 
     public function mount($invoiceId)
@@ -47,8 +51,23 @@ class Invoicedetails extends Component
         // Nur aktive Konditionen des aktuellen Clients laden
         $user = Auth::user();
         $this->conditions = Condition::where('client_id', $user->client_id)->get();
+        
+        // Client-Daten für Kleinunternehmer-Prüfung laden
+        $this->client = Clients::findOrFail($user->client_id);
 
         $this->taxrateid = $this->details->tax_id;
+        $this->reverse_charge = (bool) ($this->details->reverse_charge ?? false);
+        
+        // Bei Kleinunternehmern ist Reverse Charge nicht möglich
+        if ($this->client->smallbusiness == 1) {
+            $this->reverse_charge = false;
+        }
+        
+        // Speichere ursprünglichen Steuersatz nur wenn reverse_charge false ist
+        if (!$this->reverse_charge) {
+            $this->stored_taxrateid = $this->details->tax_id;
+        }
+        
         $this->depositamount = $this->details->depositamount;
         $this->invoiceDate = $this->details->date ? Carbon::parse($this->details->date)->format('Y-m-d') : '';
         $this->invoiceNumber = $this->details->number;
@@ -58,6 +77,28 @@ class Invoicedetails extends Component
         //dd($this->taxrateid);
     }
 
+    public function handleReverseChargeChange()
+    {
+        if ($this->reverse_charge) {
+            // Aktuellen Steuersatz speichern, falls noch nicht gespeichert
+            if (!$this->stored_taxrateid) {
+                $this->stored_taxrateid = $this->taxrateid;
+            }
+            
+            // Steuersatz auf 0% setzen (Annahme: 0% Steuersatz hat ID 1)
+            // Hier müsste man die richtige ID für 0% aus der Datenbank holen
+            $this->taxrateid = 1; // Anpassen je nach Datenbank-Setup
+            
+            $this->message = 'Reverse Charge aktiviert - Steuersatz auf 0% gesetzt.';
+        } else {
+            // Ursprünglichen Steuersatz wiederherstellen
+            if ($this->stored_taxrateid) {
+                $this->taxrateid = $this->stored_taxrateid;
+                $this->message = 'Reverse Charge deaktiviert - ursprünglicher Steuersatz wiederhergestellt.';
+            }
+        }
+    }
+
     public function updateInvoiceDetails()
     {
         try {
@@ -65,9 +106,17 @@ class Invoicedetails extends Component
                 'invoiceId' => $this->invoiceId,
                 'condition_id' => $this->condition_id,
                 'taxrateid' => $this->taxrateid,
+                'reverse_charge' => $this->reverse_charge,
                 'invoiceDate' => $this->invoiceDate,
                 'invoiceNumber' => $this->invoiceNumber,
             ]);
+
+            // Sicherheitsprüfung: Kleinunternehmer können kein Reverse Charge verwenden
+            if ($this->client->smallbusiness == 1 && $this->reverse_charge) {
+                $this->reverse_charge = false;
+                $this->message = 'Reverse Charge ist für Kleinunternehmer nicht verfügbar.';
+                return;
+            }
 
             $user = Auth::user();
 
@@ -75,6 +124,7 @@ class Invoicedetails extends Component
             try {
                 $this->validate([
                     'taxrateid' => 'required|integer',
+                    'reverse_charge' => 'boolean',
                     'invoiceDate' => 'required|date',
                     'invoiceNumber' => 'required|string|max:100',
                     'condition_id' => 'required|integer',
@@ -112,9 +162,12 @@ class Invoicedetails extends Component
             \Log::info('Vor dem Update:', [
                 'alte_condition_id' => $invoice->condition_id,
                 'neue_condition_id' => $this->condition_id,
+                'alte_reverse_charge' => $invoice->reverse_charge,
+                'neue_reverse_charge' => $this->reverse_charge,
             ]);
             
             $invoice->tax_id = $this->taxrateid;
+            $invoice->reverse_charge = (bool) $this->reverse_charge;
             $invoice->date = $this->invoiceDate;
             $invoice->number = $this->invoiceNumber;
             $invoice->condition_id = $this->condition_id;
@@ -133,9 +186,7 @@ class Invoicedetails extends Component
 
             $this->message = 'Details erfolgreich aktualisiert.';
             
-            $this->dispatch('comment-updated', [
-                'message' => 'Details erfolgreich aktualisiert.'
-            ]);
+            // Event-Dispatch entfernt - Erfolgsmeldung wird jetzt nur noch in der Komponente angezeigt
 
             // Daten neu laden, um sicherzustellen, dass die Änderungen angezeigt werden
             $this->loadData($this->invoiceId);

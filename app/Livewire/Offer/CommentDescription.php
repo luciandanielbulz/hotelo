@@ -29,27 +29,37 @@ class CommentDescription extends Component
 
     public function updateCommentDescription()
     {
-        $this->validate([
-            'comment' => 'nullable|string',
-            'description' => 'nullable|string'
-        ]);
+        try {
+            $this->validate([
+                'comment' => 'nullable|string',
+                'description' => 'nullable|string'
+            ]);
 
-        $offer = Offers::findOrFail($this->offerId);
-        $offer->comment = $this->comment;
-        $offer->description = $this->description;
-        $offer->save();
+            $offer = Offers::findOrFail($this->offerId);
+            $offer->comment = $this->comment;
+            $offer->description = $this->description;
+            $offer->save();
 
-        $this->dispatch('comment-updated', [
-            'message' => 'Zusatzinformationen erfolgreich aktualisiert.'
-        ]);
+            $this->message = 'Zusatzinformationen erfolgreich aktualisiert.';
 
-        // Debugging hinzufügen
-        \Log::info('Daten aktualisiert:', [
-            'comment' => $this->comment,
-            'description' => $this->description
-        ]);
+            // Event-Dispatch entfernt - Erfolgsmeldung wird jetzt nur noch in der Komponente angezeigt
 
-        $this->loadData($this->offerId);
+            // Debugging hinzufügen
+            \Log::info('Daten aktualisiert:', [
+                'comment' => $this->comment,
+                'description' => $this->description
+            ]);
+
+            $this->loadData($this->offerId);
+            
+        } catch (\Exception $e) {
+            \Log::error('Fehler beim Speichern der Zusätzlichen Informationen: ' . $e->getMessage(), [
+                'exception' => $e,
+                'offerId' => $this->offerId,
+            ]);
+            
+            $this->message = 'Fehler beim Speichern: ' . $e->getMessage();
+        }
     }
 
     public function render()

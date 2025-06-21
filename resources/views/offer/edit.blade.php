@@ -26,7 +26,7 @@
                 </div>
 
                 <div class="border-b border-gray-900/10 pb-4">
-                    <h2 class="text-base/7 font-semibold text-gray-900">Rechnungsdetails</h2>
+                    <h2 class="text-base/7 font-semibold text-gray-900">Angebotsdetails</h2>
                     <livewire:offer.offerdetails :offerId="$offer->id" />
 
 
@@ -65,7 +65,7 @@
     <script>
         document.addEventListener('comment-updated', (event) => {
             console.log(event.detail[0].message);
-            alert(event.detail[0].message);
+            // Alert entfernt - Erfolgsmeldung wird jetzt nur noch in der Komponente angezeigt
         });
     </script>
 

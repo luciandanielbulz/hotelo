@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('conditions', function (Blueprint $table) {
-            $table->softDeletes();
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->boolean('reverse_charge')->default(false)->after('tax_id')->comment('Reverse Charge (Steuerschuldnerschaft des Leistungsempfängers)');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('conditions', function (Blueprint $table) {
-            $table->dropSoftDeletes();
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->dropColumn('reverse_charge');
         });
     }
 };

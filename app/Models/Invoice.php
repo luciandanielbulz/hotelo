@@ -23,6 +23,7 @@ class Invoice extends Model
         'customer_id',
         'number',
         'tax_id',
+        'reverse_charge',
         'condition_id',
         'invoice_id',
         'number',

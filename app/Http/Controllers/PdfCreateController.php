@@ -257,29 +257,37 @@ class PdfCreateController extends Controller
     /**
      * Generiert Positionssummen-Tabelle
      */
-    private function generatePositionSum($totalSum, $taxRate, $client, $type = 'offer')
+    private function generatePositionSum($totalSum, $taxRate, $client, $type = 'offer', $reverseCharge = false)
     {
         $leftWidth = $type === 'invoice' ? '7%' : '18%';
         $middleWidth = $type === 'invoice' ? '78%' : '67%';
         
-        return '
+        $html = '
             <table cellpadding="2" cellspacing="0" width = "100%" style="border-top: 0.5px solid '.$client->color.';">
                 <tr>
                     <td style="text-align: left; width: '.$leftWidth.';"></td>
                     <td style="text-align: left; width: '.$middleWidth.'; color: '.$client->color.';">Gesamtbetrag netto</td>
                     <td style="text-align: right; width: 15%; color: '.$client->color.';">'.number_format($totalSum, 2, ',', '').' EUR</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left; width: '.$leftWidth.';"></td>
-                    <td style="text-align: left; width: '.$middleWidth.';">zzgl. Umsatzsteuer '.$taxRate .'%</td>
-                    <td style="text-align: right; width: 15%;">'.number_format($totalSum*$taxRate/100, 2, ',', '').' EUR</td>
-                </tr>
+                </tr>';
+        
+        $html .= '
+            <tr>
+                <td style="text-align: left; width: '.$leftWidth.';"></td>
+                <td style="text-align: left; width: '.$middleWidth.';">zzgl. Umsatzsteuer '.($reverseCharge ? '0' : $taxRate) .'%</td>
+                <td style="text-align: right; width: 15%;">'.number_format($reverseCharge ? 0 : $totalSum*$taxRate/100, 2, ',', '').' EUR</td>
+            </tr>';
+        
+
+        
+        $html .= '
                 <tr>
                     <td style="text-align: left; width: '.$leftWidth.';"></td>
                     <td style="text-align: left; width: '.$middleWidth.'; color: '.$client->color.'; font-family: segoebd; font-weight: bold;'.($type === 'invoice' ? ' font-size: 11px;' : '').'">Gesamtbetrag brutto</td>
-                    <td style="text-align: right; width: 15%; color: '.$client->color.'; font-family: segoebd; font-weight: bold;'.($type === 'invoice' ? ' font-size: 11px;' : '').'">'.number_format($totalSum*($taxRate/100+1), 2, ',', '').' EUR</td>
+                    <td style="text-align: right; width: 15%; color: '.$client->color.'; font-family: segoebd; font-weight: bold;'.($type === 'invoice' ? ' font-size: 11px;' : '').'">'.number_format($reverseCharge ? $totalSum : $totalSum*($taxRate/100+1), 2, ',', '').' EUR</td>
                 </tr>
             </table>';
+            
+        return $html;
     }
 
     /**
@@ -775,7 +783,7 @@ class PdfCreateController extends Controller
 
         $positiontablebody = $this->generatePositionTableBody($positions);
 
-        $positionsum = $this->generatePositionSum($totalSum, $invoicecontent->taxrate, $client, $objectType);
+        $positionsum = $this->generatePositionSum($totalSum, $invoicecontent->taxrate, $client, $objectType, $invoicecontent->reverse_charge ?? false);
 
 
             $footer = $this->generateFooter($client);
@@ -785,6 +793,7 @@ class PdfCreateController extends Controller
 
 
             if ($invoicecontent->depositamount > 0) {
+                $totalWithTax = ($invoicecontent->reverse_charge ?? false) ? $totalSum : $totalSum*($invoicecontent->taxrate/100+1);
                 $positionsum .= '
                     <table cellpadding="2" cellspacing="0" width = "100%">
                         <tr>
@@ -795,7 +804,7 @@ class PdfCreateController extends Controller
                         <tr>
                             <td style="text-align: left; width: 70%;"></td>
                             <td style="text-align: left; width: 15%; border-bottom: 2px solid '.$client->color.'; color: '.$client->color.'; font-family: segoebd; font-size: 11px;">Zu zahlen:</td>
-                            <td style="text-align: right; width: 15%; border-bottom: 2px solid '.$client->color.'; color: '.$client->color.';   font-family: segoebd; font-size: 11px;">'.number_format($totalSum*($invoicecontent->taxrate/100+1)-$invoicecontent->depositamount, 2, ',', '').' EUR</td>
+                            <td style="text-align: right; width: 15%; border-bottom: 2px solid '.$client->color.'; color: '.$client->color.';   font-family: segoebd; font-size: 11px;">'.number_format($totalWithTax-$invoicecontent->depositamount, 2, ',', '').' EUR</td>
                         </tr>
                     </table>';
             }
@@ -919,12 +928,22 @@ class PdfCreateController extends Controller
         $pdf->writeHTML($positiontablebody, true, true, false, true, 'R');
 
         $pdf->writeHTML($positionsum, true, true, false, true, 'R');
+        
+        // Kleinunternehmer-Hinweis oder Reverse Charge Hinweis
         if ($client->smallbusiness) {
             $pdf->writeHTML('<br><br><br><br>
             <table cellpadding="2" cellspacing="0" width = "100%">
                 <tr>
                     <td style="text-align: left; width: 7%;"></td>
                     <td style="text-align: left; width: 93%;">Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG</td>
+                </tr>
+            </table>', true, true, true, true, 'L');
+        } elseif ($invoicecontent->reverse_charge ?? false) {
+            $pdf->writeHTML('<br><br><br><br>
+            <table cellpadding="2" cellspacing="0" width = "100%">
+                <tr>
+                    <td style="text-align: left; width: 7%;"></td>
+                    <td style="text-align: left; width: 93%;">Umsatzsteuer wird gemäß § 13b UStG vom Leistungsempfänger geschuldet</td>
                 </tr>
             </table>', true, true, true, true, 'L');
         }

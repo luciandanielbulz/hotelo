@@ -30,28 +30,37 @@ class CommentDescription extends Component
 
     public function updateCommentDescription()
     {
-        $this->validate([
-            'comment' => 'nullable|string',
-            'description' => 'nullable|string'
-        ]);
+        try {
+            $this->validate([
+                'comment' => 'nullable|string',
+                'description' => 'nullable|string'
+            ]);
 
-        $invoice = Invoices::findOrFail($this->invoiceId);
-        $invoice->comment = $this->comment;
-        $invoice->description = $this->description;
-        $invoice->save();
+            $invoice = Invoices::findOrFail($this->invoiceId);
+            $invoice->comment = $this->comment;
+            $invoice->description = $this->description;
+            $invoice->save();
 
-        $this->dispatch('comment-updated', [
-            'message' => 'Zusätzliche Informationen erfolgreich aktualisiert.'
-        ]);
+            $this->message = 'Zusätzliche Informationen erfolgreich aktualisiert.';
 
+            // Event-Dispatch entfernt - Erfolgsmeldung wird jetzt nur noch in der Komponente angezeigt
 
-        // Debugging hinzufügen
-        \Log::info('Daten aktualisiert:', [
-            'comment' => $this->comment,
-            'description' => $this->description
-        ]);
+            // Debugging hinzufügen
+            \Log::info('Daten aktualisiert:', [
+                'comment' => $this->comment,
+                'description' => $this->description
+            ]);
 
-        $this->loadData($this->invoiceId);
+            $this->loadData($this->invoiceId);
+            
+        } catch (\Exception $e) {
+            \Log::error('Fehler beim Speichern der Zusätzlichen Informationen: ' . $e->getMessage(), [
+                'exception' => $e,
+                'invoiceId' => $this->invoiceId,
+            ]);
+            
+            $this->message = 'Fehler beim Speichern: ' . $e->getMessage();
+        }
     }
 
     public function render()

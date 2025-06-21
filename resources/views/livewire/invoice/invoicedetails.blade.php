@@ -1,4 +1,4 @@
-<form wire:submit='updateInvoiceDetails'>
+<form wire:submit.prevent='updateInvoiceDetails'>
 
     @if($message)
         @if(str_contains($message, 'Fehler') || str_contains($message, 'fehlgeschlagen'))
@@ -59,7 +59,7 @@
         </div>
 
         <!-- Datum -->
-        <div >
+        <div > 
             <label for="invoiceDate" class="block text-sm/6 font-medium text-gray-900">Rechnungsdatum</label>
             <div class="mt-1">
                 <input type="date" name="invoiceDate" id="invoiceDate" wire:model="invoiceDate" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
@@ -115,10 +115,26 @@
                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
             @enderror
         </div>
+
+        <!-- Reverse Charge - nur anzeigen wenn NICHT Kleinunternehmer -->
+        @if($client && $client->smallbusiness == 0)
+        <div class="flex items-center">
+            <div class="flex h-6 items-center">
+                <input id="reverse_charge" name="reverse_charge" type="checkbox" wire:model.live="reverse_charge" wire:change="handleReverseChargeChange" value="1" {{ $reverse_charge ? 'checked' : '' }} class="size-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600">
+            </div>
+            <div class="ml-3 text-sm/6">
+                <label for="reverse_charge" class="font-medium text-gray-900">Reverse Charge</label>
+                <p class="text-gray-500">Steuerschuldnerschaft des Leistungsempfängers</p>
+                @if($reverse_charge)
+                    <p class="text-orange-600 text-xs mt-1 font-medium">⚠️ Steuersatz wird automatisch auf 0% gesetzt</p>
+                @endif
+            </div>
+        </div>
+        @endif
     </div>
     <div class="grid md:grid-cols-4 gap-x-6 gap-y-8 sm:grid-cols-1 mt-4">
         <div >
-            <button class="inline-block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Speichern</button>
+            <button type="submit" class="inline-block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Speichern</button>
         </div>
 
     </div>

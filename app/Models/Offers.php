@@ -16,10 +16,10 @@ class Offers extends Model
     protected $fillable = [
         'customer_id',
         'number',
+        'date',
         'tax_id',
         'condition_id',
         'offer_id',
-        'number',
         'comment',
         'description'
     ];
