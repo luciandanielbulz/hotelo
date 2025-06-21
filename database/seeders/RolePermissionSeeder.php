@@ -33,7 +33,8 @@ class RolePermissionSeeder extends Seeder
             'view_clients',
             'update_settings',
             'logout',
-            'manage_permissions'
+            'manage_permissions',
+            'edit_my_client_settings'
         ];
 
         foreach ($permissions as $permissionName) {
@@ -43,7 +44,7 @@ class RolePermissionSeeder extends Seeder
             $adminRole->permissions()->syncWithoutDetaching($permission->id);
 
             // Verknüpfung mit Editor-Rolle (nur bestimmte Berechtigungen)
-            if ($permissionName === 'edit_posts') {
+            if (in_array($permissionName, ['edit_posts', 'view_dashboard', 'view_customers', 'view_offers', 'view_invoices', 'edit_my_client_settings'])) {
                 $editorRole->permissions()->syncWithoutDetaching($permission->id);
             }
         }

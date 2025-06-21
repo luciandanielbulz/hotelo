@@ -39,6 +39,8 @@
                         </li>
                     @endif
 
+
+
                     @if($user && $user->hasPermission('view_offers'))
                         <!-- Angebote Dropdown -->
                         <li>
@@ -120,7 +122,7 @@
                     @endif
 
                     <!-- App-Einstellungen Dropdown -->
-                    @if($user && ($user->hasPermission('manage_roles') || $user->hasPermission('manage_permissions') || $user->hasPermission('view_clients')))
+                    @if($user && ($user->hasPermission('manage_roles') || $user->hasPermission('manage_permissions') || $user->hasPermission('view_clients') || $user->hasPermission('edit_my_client_settings')))
                         <li>
                             <button @click="openSubmenu = !openSubmenu" class="group flex w-full items-center gap-x-3 rounded-md p-2 text-sm font-semibold text-indigo-200 hover:bg-indigo-700 hover:text-white focus:outline-none">
                                 <!-- SVG Icon -->
@@ -158,6 +160,11 @@
                                 @if($user->hasPermission('view_clients'))
                                     <a href="{{ route('logos.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium text-indigo-200 hover:bg-indigo-700 hover:text-white">
                                         Logos
+                                    </a>
+                                @endif
+                                @if($user->hasPermission('edit_my_client_settings'))
+                                    <a href="{{ route('clients.my-settings') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium text-indigo-200 hover:bg-indigo-700 hover:text-white">
+                                        Firmen-Einstellungen
                                     </a>
                                 @endif
                             </div>

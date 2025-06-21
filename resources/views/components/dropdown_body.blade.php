@@ -1,3 +1,12 @@
+@props([
+    'name',
+    'label',
+    'options' => [],
+    'selected' => null,
+    'placeholder' => null,
+    'required' => false,
+])
+
 <div class="mt-1">
     <label for="{{ $name }}" class="block text-sm/6 font-medium text-gray-900 mb-1">
         {{ $label }}
@@ -7,8 +16,14 @@
         <select
             id="{{ $name }}"
             name="{{ $name }}"
-            class="block w-full appearance-none rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+            @if($required)
+                required
+            @endif
+            class="block w-full appearance-none rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 @error($name) border-red-500 outline-red-500 @enderror">
 
+            @if($placeholder)
+                <option value="">{{ $placeholder }}</option>
+            @endif
             @foreach ($options as $optionValue => $optionLabel)
                 <option value="{{ $optionValue }}" {{ $selected == $optionValue ? 'selected' : '' }}>
                     {{ $optionLabel }}
@@ -25,4 +40,8 @@
             <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
         </svg>
     </div>
+    
+    @error($name)
+        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+    @enderror
 </div>

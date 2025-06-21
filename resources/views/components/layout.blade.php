@@ -49,17 +49,6 @@
             @include('components.navigationV2')
 
             <div class="py-4">
-
-            @if($errors->any())
-                <div style="color: red;">
-                    <h4>Es sind Fehler aufgetreten:</h4>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
             {{ $slot }}
 
 

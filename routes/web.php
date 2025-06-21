@@ -165,6 +165,12 @@ Route::middleware(['auth','verified'])->group(function(){
 
     /*Klienten*/
     Route::resource('clients', ClientsController::class);
+    
+    /*Persönliche Klienten-Einstellungen*/
+    Route::get('/my-client-settings', [ClientsController::class, 'myClientSettings'])->name('clients.my-settings')
+        ->middleware('permission:edit_my_client_settings');
+    Route::put('/my-client-settings', [ClientsController::class, 'updateMyClientSettings'])->name('clients.update-my-settings')
+        ->middleware('permission:edit_my_client_settings');
 
     /*
     |--------------------------------------------------------------------------

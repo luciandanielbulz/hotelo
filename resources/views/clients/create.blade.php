@@ -13,17 +13,17 @@
             <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6">
                 <!-- Name -->
                 <div class="sm:col-span-1">
-                    <x-input name="clientname" type="text" placeholder="Name" label="Name" value="{{ old('clientname') }}" />
+                    <x-input name="clientname" type="text" placeholder="Name" label="Name" value="{{ old('clientname') }}"  />
                 </div>
 
                 <!-- Firma -->
                 <div class="sm:col-span-1">
-                    <x-input name="companyname" type="text" placeholder="Firma" label="Firma" value="{{ old('companyname') }}" />
+                    <x-input name="companyname" type="text" placeholder="Firma" label="Firma" value="{{ old('companyname') }}"  />
                 </div>
 
                 <!-- Firmenart -->
                 <div class="sm:col-span-1">
-                    <x-input name="business" type="text" placeholder="Firmenart" label="Firmenart" value="{{ old('business') }}" />
+                    <x-input name="business" type="text" placeholder="Firmenart" label="Firmenart" value="{{ old('business') }}"  />
                 </div>
 
                 <!-- UID -->
@@ -35,28 +35,28 @@
             <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6 border-b">
                 <!-- Adresse -->
                 <div class="sm:col-span-1">
-                    <x-input name="address" type="text" placeholder="Adresse" label="Adresse" value="{{ old('address') }}" />
+                    <x-input name="address" type="text" placeholder="Adresse" label="Adresse" value="{{ old('address') }}"  />
                 </div>
 
                 <!-- Postleitzahl -->
                 <div class="sm:col-span-1">
-                    <x-input name="postalcode" type="text" placeholder="Postleitzahl" label="Postleitzahl" value="{{ old('postalcode') }}" />
+                    <x-input name="postalcode" type="text" placeholder="Postleitzahl" label="Postleitzahl" value="{{ old('postalcode') }}"  />
                 </div>
 
                 <!-- Ort -->
                 <div class="sm:col-span-1">
-                    <x-input name="location" type="text" placeholder="Ort" label="Ort" value="{{ old('location') }}" />
+                    <x-input name="location" type="text" placeholder="Ort" label="Ort" value="{{ old('location') }}"  />
                 </div>
             </div>
             <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6 border-b">
                 <!-- Email -->
                 <div class="sm:col-span-1">
-                    <x-input name="email" type="text" placeholder="Email" label="Email" value="{{ old('email') }}" />
+                    <x-input name="email" type="email" placeholder="Email" label="Email" value="{{ old('email') }}"  />
                 </div>
 
                 <!-- Telefon -->
                 <div class="sm:col-span-1">
-                    <x-input name="phone" type="text" placeholder="Telefon" label="Telefon" value="{{ old('phone') }}" />
+                    <x-input name="phone" type="text" placeholder="Telefon" label="Telefon" value="{{ old('phone') }}"  />
                 </div>
             </div>
 
@@ -66,10 +66,10 @@
                 <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6">
                     <!-- Konditionen -->
                     <div class="sm:col-span-1">
-                        <x-dropdown_body name="tax_id" id="tax_id" value="{{ old('tax_id') }}" :options="$taxrates->pluck('taxrate', 'id')" :selected="old('tax_id', 1)" label="Steuerhöhe" placeholder="Bitte auswählen" class="w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm" />
+                        <x-dropdown_body name="tax_id" id="tax_id" value="{{ old('tax_id') }}" :options="$taxrates->pluck('taxrate', 'id')" :selected="old('tax_id', 1)" label="Steuerhöhe" placeholder="Bitte auswählen" class="w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"  />
                     </div>
                     <div class="sm:col-span-1">
-                        <x-dropdown_body name="smallbusiness" label="Kleinunternehmer" :options="['1' => 'Ja','0' => 'Nein']" :selected="old('smallbusiness', 1)" placeholder="Bitte wählen..." required/>
+                        <x-dropdown_body name="smallbusiness" label="Kleinunternehmer" :options="['1' => 'Ja','0' => 'Nein']" :selected="old('smallbusiness', 1)" placeholder="Bitte wählen..." />
                     </div>
                     <div class="sm:col-span-1">
                         <x-input name="tax_number" type="text" placeholder="Steuernummer" label="Steuernummer" value="{{ old('tax_number') }}" />
@@ -103,13 +103,13 @@
                 <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Bankverbindung</h3>
                 <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6">
                     <div class="sm:col-span-1">
-                        <x-input name="bank" type="text" placeholder="Bankname" label="Bankname" value="{{ old('bank') }}" />
+                        <x-input name="bank" type="text" placeholder="Bankname" label="Bankname" value="{{ old('bank') }}"  />
                     </div>
                     <div class="sm:col-span-1">
-                        <x-input name="accountnumber" type="text" placeholder="Kontonummer" label="Kontonummer" value="{{ old('accountnumber') }}" />
+                        <x-input name="accountnumber" type="text" placeholder="Kontonummer" label="Kontonummer" value="{{ old('accountnumber') }}"  />
                     </div>
                     <div class="sm:col-span-1">
-                        <x-input name="bic" type="text" placeholder="BIC" label="BIC" value="{{ old('bic') }}" />
+                        <x-input name="bic" type="text" placeholder="BIC" label="BIC" value="{{ old('bic') }}"  />
                     </div>
                 </div>
             </div>
@@ -125,9 +125,9 @@
                     <div class="sm:col-span-6">
                         <label for="signature" class="block text-sm/6 font-medium text-gray-900 mb-1">Signatur</label>
                         <div class="mt-1">
-                            <textarea name="signature" id="signature" rows="3" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">{{ old('signature') }}</textarea>
+                            <textarea name="signature" id="signature" rows="3" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 @error('signature') border-red-500 outline-red-500 @enderror">{{ old('signature') }}</textarea>
                             @error('signature')
-                                <span class="text-sm text-red-600">{{ $message }}</span>
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
                     </div>
@@ -141,13 +141,13 @@
                     <div class="sm:col-span-2">
                         <label for="logo" class="block text-sm/6 font-medium text-gray-900 mb-1">Logo</label>
                         <div class="mt-1 flex items-center gap-x-3">
-                            <input type="file" name="logo" id="logo" accept="image/jpeg,image/png,image/jpg,image/gif" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" onchange="previewImage(this)">
+                            <input type="file" name="logo" id="logo" accept="image/jpeg,image/png,image/jpg,image/gif" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none @error('logo') border-red-500 @enderror" onchange="previewImage(this)">
                             <div id="logo-preview" class="hidden">
                                 <img id="preview" src="#" alt="Logo Vorschau" class="h-20 w-auto object-contain">
                             </div>
                         </div>
                         @error('logo')
-                            <span class="text-sm text-red-600">{{ $message }}</span>
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -167,28 +167,28 @@
                 
                 <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div class="sm:col-span-3">
-                        <x-input name="lastoffer" type="number" placeholder="Letzte Angebotsnummer" label="Letzte Angebotsnummer" value="{{ old('lastoffer', $client->lastoffer ?? 0) }}" />
+                        <x-input name="lastoffer" type="number" placeholder="Letzte Angebotsnummer" label="Letzte Angebotsnummer" value="{{ old('lastoffer', $client->lastoffer ?? 0) }}"  />
                     </div>
 
                     <div class="sm:col-span-3">
-                        <x-input name="offermultiplikator" type="number" placeholder="Angebot Multiplikator" label="Angebot Multiplikator" value="{{ old('offermultiplikator', $client->offermultiplikator ?? 1) }}" />
+                        <x-input name="offermultiplikator" type="number" placeholder="Angebot Multiplikator" label="Angebot Multiplikator" value="{{ old('offermultiplikator', $client->offermultiplikator ?? 1) }}"  />
                     </div>
 
                     <div class="sm:col-span-3">
-                        <x-input name="lastinvoice" type="number" placeholder="Letzte Rechnungsnummer" label="Letzte Rechnungsnummer" value="{{ old('lastinvoice', $client->lastinvoice ?? 0) }}" />
+                        <x-input name="lastinvoice" type="number" placeholder="Letzte Rechnungsnummer" label="Letzte Rechnungsnummer" value="{{ old('lastinvoice', $client->lastinvoice ?? 0) }}"  />
                     </div>
 
                     <div class="sm:col-span-3">
-                        <x-input name="invoicemultiplikator" type="number" placeholder="Rechnung Multiplikator" label="Rechnung Multiplikator" value="{{ old('invoicemultiplikator', $client->invoicemultiplikator ?? 1) }}" />
+                        <x-input name="invoicemultiplikator" type="number" placeholder="Rechnung Multiplikator" label="Rechnung Multiplikator" value="{{ old('invoicemultiplikator', $client->invoicemultiplikator ?? 1) }}"  />
                     </div>
 
                     <div class="sm:col-span-3">
-                        <x-input name="maxuploadsize" type="number" placeholder="Maximale Upload-Größe (MB)" label="Maximale Upload-Größe (MB)" value="{{ old('maxuploadsize', $client->maxuploadsize ?? 10) }}" />
+                        <x-input name="max_upload_size" type="number" placeholder="Maximale Upload-Größe (MB)" label="Maximale Upload-Größe (MB)" value="{{ old('max_upload_size', $client->max_upload_size ?? 10) }}"  />
                     </div>
 
                     <div class="sm:col-span-6">
                         <label for="invoice_number_format" class="block text-sm/6 font-medium text-gray-900 mb-1">Rechnungsnummer-Format</label>
-                        <select name="invoice_number_format" id="invoice_number_format" class="mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                        <select name="invoice_number_format" id="invoice_number_format" class="mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 @error('invoice_number_format') border-red-500 outline-red-500 @enderror">
                             <option value="YYYY*1000+N" {{ old('invoice_number_format') == 'YYYY*1000+N' ? 'selected' : '' }}>Jahr*1000+Nummer (z.B. 2025001)</option>
                             <option value="YYYYNN" {{ old('invoice_number_format') == 'YYYYNN' ? 'selected' : '' }}>Jahr + Nummer (z.B. 20250001)</option>
                             <option value="YY*1000+N" {{ old('invoice_number_format') == 'YY*1000+N' ? 'selected' : '' }}>Jahr(2-stellig)*1000+Nummer (z.B. 25001)</option>
@@ -196,6 +196,9 @@
                             <option value="N" {{ old('invoice_number_format') == 'N' ? 'selected' : '' }}>Nur fortlaufende Nummer (z.B. 1, 2, 3...)</option>
                             <option value="custom" {{ old('invoice_number_format') == 'custom' ? 'selected' : '' }}>Benutzerdefiniert</option>
                         </select>
+                        @error('invoice_number_format')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                         <p class="mt-1 text-sm text-gray-600">Wählen Sie das Format für die automatische Rechnungsnummerierung.</p>
                     </div>
                 </div>

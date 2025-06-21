@@ -22,6 +22,8 @@
                         </x-nav-link>
                     @endif
 
+
+
                     @if(auth()->user()->hasPermission('view_offers'))
                         <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
                             <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('offer.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
@@ -102,7 +104,7 @@
                     @endif
 
                     <!-- Rollenverwaltung mit Untermenü -->
-                    @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients'))
+                    @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('edit_my_client_settings'))
                         <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
                             <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*', 'permissions.*', 'clients.*', 'users.*','logos.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
                                 <span>{{ __('App-Einstellungen') }}</span>
@@ -138,6 +140,11 @@
                                     @if(auth()->user()->hasPermission('view_clients'))
                                         <x-dropdown-link :href="route('logos.index')" :active="request()->routeIs('users.index')">
                                             {{ __('Logos') }}
+                                        </x-dropdown-link>
+                                    @endif
+                                    @if(auth()->user()->hasPermission('edit_my_client_settings'))
+                                        <x-dropdown-link :href="route('clients.my-settings')" :active="request()->routeIs('clients.my-settings')">
+                                            {{ __('Firmen-Einstellungen') }}
                                         </x-dropdown-link>
                                     @endif
 
@@ -236,7 +243,7 @@
             @endif
 
             <!-- Rollenverwaltung mit Untermenü in mobiler Ansicht -->
-            @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients'))
+            @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('edit_my_client_settings'))
                 <div x-data="{ openSubmenu: false }" class="space-y-1">
                     <x-responsive-nav-link href="#" @click.prevent="openSubmenu = !openSubmenu" class="flex items-center">
                         <span>{{ __('App-Einstellungen') }}</span>
@@ -258,6 +265,11 @@
                         @if(auth()->user()->hasPermission('view_clients'))
                             <x-responsive-nav-link :href="route('clients.index')">
                                 {{ __('Klienten') }}
+                            </x-responsive-nav-link>
+                        @endif
+                        @if(auth()->user()->hasPermission('edit_my_client_settings'))
+                            <x-responsive-nav-link :href="route('clients.my-settings')">
+                                {{ __('Firmen-Einstellungen') }}
                             </x-responsive-nav-link>
                         @endif
                         <!-- Weitere Untermenüpunkte -->

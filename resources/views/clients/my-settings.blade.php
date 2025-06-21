@@ -2,12 +2,12 @@
     <div class="grid grid-cols-1 gap-x-8 border-b border-gray-900/10 pb-12 md:grid-cols-7 sm:grid-cols-1">
         <!-- Linke Spalte: Überschrift -->
         <div class="py-2 px-4 sm:px-0">
-            <h2 class="text-base font-semibold text-gray-900">Klienten bearbeiten</h2>
-            <p class="mt-1 text-sm text-gray-600">Bitte aktualisieren Sie die Informationen des Klienten.</p>
+            <h2 class="text-base font-semibold text-gray-900">Firmen-Einstellungen</h2>
+            <p class="mt-1 text-sm text-gray-600">Bearbeiten Sie hier Ihre Firmen-Einstellungen.</p>
         </div>
 
         <!-- Formular -->
-        <form action="{{ route('clients.update', $clients->id) }}" method="POST" enctype="multipart/form-data" class="sm:col-span-1 md:col-span-5">
+        <form action="{{ route('clients.update-my-settings') }}" method="POST" enctype="multipart/form-data" class="sm:col-span-1 md:col-span-5">
             @csrf
             @method('PUT')
 
@@ -117,7 +117,6 @@
 
             <!-- Versteckte Felder -->
             <input type="hidden" name="style" value="{{ old('style', $clients->style) }}">
-            <input type="hidden" name="id" value="{{ $clients->id }}">
 
             <!-- Signatur -->
             <div class="border-b border-gray-900/10 pb-6">
@@ -218,9 +217,9 @@
 
             <!-- Schaltflächen -->
             <div class="flex items-center justify-end gap-x-6  px-4 py-4 sm:px-8">
-                <a href="{{ route('clients.index') }}" class="text-sm font-semibold text-gray-900">Abbrechen</a>
+                <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-gray-900">Abbrechen</a>
                 <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-indigo-600">
-                    Änderungen speichern
+                    Einstellungen speichern
                 </button>
             </div>
         </form>
@@ -269,4 +268,4 @@
             }
         </script>
     @endpush
-</x-layout>
+</x-layout> 

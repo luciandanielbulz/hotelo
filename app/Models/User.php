@@ -37,6 +37,12 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_id');
     }
 
+    // Beziehung zum Client
+    public function client()
+    {
+        return $this->belongsTo(Clients::class, 'client_id');
+    }
+
     // Prüfen, ob der Benutzer eine bestimmte Rolle hat
     public function hasRole($role)
     {
