@@ -32,7 +32,373 @@ use Intervention\Image\Facades\Image;
 class PdfCreateController extends Controller
 {
 
-        public function createOfferPdf(Request $request)
+    /**
+     * Generiert eine intelligente Fußzeile für PDFs
+     * Leere Felder werden übersprungen und Zeilen rücken nach oben
+     */
+    private function generateFooter($client)
+    {
+        // Spalte 1: Firmenadresse
+        $addressRows = [];
+        if (!empty($client->companyname)) {
+            $addressRows[] = '<tr><td style="text-align: left;">' . htmlspecialchars($client->companyname) . '</td></tr>';
+        }
+        if (!empty($client->address)) {
+            $addressRows[] = '<tr><td style="text-align: left;">' . htmlspecialchars($client->address) . '</td></tr>';
+        }
+        if (!empty($client->postalcode) && !empty($client->location)) {
+            $addressRows[] = '<tr><td style="text-align: left;">' . htmlspecialchars($client->postalcode . ' ' . $client->location) . '</td></tr>';
+        }
+        // Österreich als feste Zeile, falls gewünscht
+        $addressRows[] = '<tr><td style="text-align: left;">Österreich</td></tr>';
+
+        // Spalte 2: Kontaktdaten
+        $contactRows = [];
+        if (!empty($client->phone)) {
+            $contactRows[] = '<tr><td style="text-align: left;">Tel.: ' . htmlspecialchars($client->phone) . '</td></tr>';
+        }
+        if (!empty($client->email)) {
+            $contactRows[] = '<tr><td style="text-align: left;">E.Mail: ' . htmlspecialchars($client->email) . '</td></tr>';
+        }
+        if (!empty($client->webpage)) {
+            $contactRows[] = '<tr><td style="text-align: left;">Web: ' . htmlspecialchars($client->webpage) . '</td></tr>';
+        }
+
+        // Spalte 3: Rechtliche Informationen
+        $legalRows = [];
+        if (!empty($client->regional_court)) {
+            $legalRows[] = '<tr><td style="text-align: left;">' . htmlspecialchars($client->regional_court) . '</td></tr>';
+        }
+        if (!empty($client->company_registration_number)) {
+            $legalRows[] = '<tr><td style="text-align: left;">FN-Nr.: ' . htmlspecialchars($client->company_registration_number) . '</td></tr>';
+        }
+        if (!empty($client->vat_number)) {
+            $legalRows[] = '<tr><td style="text-align: left;">USt.-ID: ' . htmlspecialchars($client->vat_number) . '</td></tr>';
+        }
+        if (!empty($client->tax_number)) {
+            $legalRows[] = '<tr><td style="text-align: left;">Steuer-Nr.: ' . htmlspecialchars($client->tax_number) . '</td></tr>';
+        }
+        if (!empty($client->management)) {
+            $legalRows[] = '<tr><td style="text-align: left;">Geschäftsführung: ' . htmlspecialchars_decode($client->management) . '</td></tr>';
+        }
+
+        // Spalte 4: Bankdaten
+        $bankRows = [];
+        if (!empty($client->bank)) {
+            $bankRows[] = '<tr><td style="text-align: left;">' . htmlspecialchars($client->bank) . '</td></tr>';
+        }
+        if (!empty($client->accountnumber)) {
+            $bankRows[] = '<tr><td style="text-align: left;">IBAN: ' . htmlspecialchars($client->accountnumber) . '</td></tr>';
+        }
+        if (!empty($client->bic)) {
+            $bankRows[] = '<tr><td style="text-align: left;">BIC: ' . htmlspecialchars($client->bic) . '</td></tr>';
+        }
+
+        // Footer zusammenbauen
+        $footer = '
+            <table cellpadding="0" cellspacing="0" width="100%" style="font-size: 8px; color: grey">
+                <tr>
+                    <td width="25%" style="vertical-align: top;">
+                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            ' . implode('', $addressRows) . '
+                        </table>
+                    </td>
+                    <td width="25%" style="vertical-align: top;">
+                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            ' . implode('', $contactRows) . '
+                        </table>
+                    </td>
+                    <td width="25%" style="vertical-align: top;">
+                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            ' . implode('', $legalRows) . '
+                        </table>
+                    </td>
+                    <td width="25%" style="vertical-align: top;">
+                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            ' . implode('', $bankRows) . '
+                        </table>
+                    </td>
+                </tr>
+            </table>';
+
+        return $footer;
+    }
+
+    /**
+     * Verarbeitet und fügt Logo zum PDF hinzu
+     */
+    private function processLogo($pdf, $localImagePath)
+    {
+        if ($localImagePath && file_exists($localImagePath)) {
+            try {
+                // Erstelle ein temporäres Verzeichnis, falls es nicht existiert
+                $tempDir = storage_path('app/temp');
+                if (!file_exists($tempDir)) {
+                    mkdir($tempDir, 0755, true);
+                }
+
+                // Verarbeite das Bild mit Intervention/Image
+                $image = Image::make($localImagePath);
+                
+                // Konvertiere zu einem anderen Format (z.B. GIF)
+                $tempImagePath = $tempDir . '/temp_' . time() . '.gif';
+                $image->encode('gif')->save($tempImagePath);
+                
+                // Füge das Bild zum PDF hinzu
+                $pdf->Image($tempImagePath, 18, 12, 0, 30);
+                
+                // Lösche temporäre Datei
+                if (file_exists($tempImagePath)) {
+                    unlink($tempImagePath);
+                }
+            } catch (\Exception $e) {
+                \Log::error('Fehler bei der Bildverarbeitung: ' . $e->getMessage());
+                // Fallback: Versuche das Original-Bild zu verwenden
+                if (file_exists($localImagePath)) {
+                    $pdf->Image($localImagePath, 18, 12, 0, 30);
+                }
+            }
+        }
+    }
+
+    /**
+     * Formatiert Datum mit Carbon
+     */
+    private function formatDate($date)
+    {
+        return $date ? \Carbon\Carbon::parse($date)->format('d.m.Y') : '';
+    }
+
+    /**
+     * Generiert Kundendaten-Tabelle
+     */
+    private function generateCustomerData($customer)
+    {
+        return '
+            <table cellpadding="0" cellspacing="0" style="width:100%;">
+                <tr>
+                    <td style="text-align: left;">' . ($customer->companyname ?? '') . '</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">' . ($customer->customername ?? '') . '</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">' . ($customer->address ?? '') . '</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">' . ($customer->postalcode ?? '') . ' ' . ($customer->location ?? '') . '</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left;">' . ($customer->country ?? '') . '</td>
+                </tr>
+            </table>';
+    }
+
+    /**
+     * Generiert Positionstabellen-Header
+     */
+    private function generatePositionTableHeader($client, $color, $type = 'offer')
+    {
+        $lastColumnText = $type === 'invoice' ? 'Gesamtpreis' : 'Betrag';
+        
+        return '
+            <table cellpadding="2" cellspacing="0" width = "100%" style=" background-color: '.$client->color.';">
+                <tr>
+                    <td style="text-align: left; width: 7%; color: '.$color.'; font-family: segoebd;">Pos.</td>
+                    <td style="text-align: left; width: 54%; color: '.$color.'; font-family: segoebd;">Bezeichnung</td>
+                    <td style="text-align: left; width: 12%; color: '.$color.'; font-family: segoebd;">Menge</td>
+                    <td style="text-align: right; width: 12%; color: '.$color.'; font-family: segoebd;">Einzelpreis</td>
+                    <td style="text-align: right; width: 15%; color: '.$color.'; font-family: segoebd;">'.$lastColumnText.'</td>
+                </tr>
+            </table>';
+    }
+
+    /**
+     * Generiert Positionstabellen-Body
+     */
+    private function generatePositionTableBody($positions)
+    {
+        $positiontablebody = '<table cellpadding="2" cellspacing="0" width = "100%" >';
+        $positionNumber = 1;
+
+        foreach ($positions as $position) {
+            $positiontablebody .= '<tr><td></td></tr>';
+            $details = nl2br($position->details) ?? '';
+            
+            if($position->positiontext == 1) {
+                $positiontablebody .= '
+                    <tr>
+                        <td style="text-align:center; width: 100%; white-space: pre-line;"><b>'.$details.'</b></td>
+                    </tr>';
+            } else {
+                $positiontablebody .= '
+                    <tr>
+                        <td style="text-align: center; width: 7%;">'.$positionNumber.'.</td>
+                        <td style="text-align: left; width: 54%;">'.$position->designation.'</td>
+                        <td style="text-align: left; width: 12%;">'.number_format($position->amount, 2, ',', '') .' '.$position->unitdesignation.'</td>
+                        <td style="text-align: right; width: 12%;">'.number_format($position->price, 2, ',', '') .' EUR</td>
+                        <td style="text-align: right; width: 15%;">'.number_format(($position->price * $position->amount), 2, ',', '') .' EUR</td>
+                    </tr>
+                    <tr>
+                        <td style="width: 7%;"></td>
+                        <td style="text-align: left; width: 54%; white-space: pre-line;">'.$details.'</td>
+                        <td style="width: 12%;"></td>
+                        <td style="width: 12%;"></td>
+                        <td style="width: 15%;"></td>
+                    </tr>';
+                $positionNumber++;
+            }
+        }
+
+        $positiontablebody .= '</table>';
+        return $positiontablebody;
+    }
+
+    /**
+     * Generiert Positionssummen-Tabelle
+     */
+    private function generatePositionSum($totalSum, $taxRate, $client, $type = 'offer')
+    {
+        $leftWidth = $type === 'invoice' ? '7%' : '18%';
+        $middleWidth = $type === 'invoice' ? '78%' : '67%';
+        
+        return '
+            <table cellpadding="2" cellspacing="0" width = "100%" style="border-top: 0.5px solid '.$client->color.';">
+                <tr>
+                    <td style="text-align: left; width: '.$leftWidth.';"></td>
+                    <td style="text-align: left; width: '.$middleWidth.'; color: '.$client->color.';">Gesamtbetrag netto</td>
+                    <td style="text-align: right; width: 15%; color: '.$client->color.';">'.number_format($totalSum, 2, ',', '').' EUR</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; width: '.$leftWidth.';"></td>
+                    <td style="text-align: left; width: '.$middleWidth.';">zzgl. Umsatzsteuer '.$taxRate .'%</td>
+                    <td style="text-align: right; width: 15%;">'.number_format($totalSum*$taxRate/100, 2, ',', '').' EUR</td>
+                </tr>
+                <tr>
+                    <td style="text-align: left; width: '.$leftWidth.';"></td>
+                    <td style="text-align: left; width: '.$middleWidth.'; color: '.$client->color.'; font-family: segoebd; font-weight: bold;'.($type === 'invoice' ? ' font-size: 11px;' : '').'">Gesamtbetrag brutto</td>
+                    <td style="text-align: right; width: 15%; color: '.$client->color.'; font-family: segoebd; font-weight: bold;'.($type === 'invoice' ? ' font-size: 11px;' : '').'">'.number_format($totalSum*($taxRate/100+1), 2, ',', '').' EUR</td>
+                </tr>
+            </table>';
+    }
+
+    /**
+     * Generiert generische E-Mail-Versand-Logik
+     */
+    private function sendDocumentByEmail($request, $documentType)
+    {
+        // Validierung der Eingabedaten
+        $documentIdField = $documentType . '_id';
+        $request->validate([
+            $documentIdField => 'required|integer|exists:' . $documentType . 's,id',
+            'email' => 'required|email',
+            'subject' => 'required|string',
+            'copy_email' => 'nullable|email',
+            'message' => 'required|string',
+        ]);
+
+        // Dynamische Datenabfrage basierend auf Dokumenttyp
+        $modelClass = $documentType === 'invoice' ? Invoices::class : Offers::class;
+        $tableName = $documentType . 's';
+        
+        $documentData = $modelClass::join('customers', 'customers.id', '=', $tableName . '.customer_id')
+            ->join('clients', 'clients.id', '=', 'customers.client_id')
+            ->where($tableName . '.id', '=', $request->input($documentIdField))
+            ->select(
+                'customers.*',
+                $tableName . '.*',
+                'customers.id as customer_id',
+                'clients.email as senderemail',
+                'clients.companyname as clientname',
+                $tableName . '.number as document_number'
+            )
+            ->first();
+
+        if (!$documentData || !$documentData->senderemail) {
+            return response()->json(['message' => 'Client oder Absender-E-Mail nicht gefunden.'], 404);
+        }
+
+        // Variablen zuweisen
+        $email = $request->input('email');
+        $subject = $request->input('subject');
+        $senderEmail = $documentData->senderemail;
+        $messageBody = $request->input('message');
+        $senderName = $documentData->clientname;
+        $documentNumber = $documentData->document_number;
+
+        // PDF generieren
+        $request->merge(['prev' => 'S']);
+        $pdfMethod = 'create' . ucfirst($documentType) . 'Pdf';
+        $pdfResponse = $this->$pdfMethod($request);
+        $pdfContent = $pdfResponse->getContent();
+
+        // Datei speichern und versenden
+        $randomFileName = Str::random(40) . '.pdf';
+        $storagePath = storage_path('app/objects');
+        
+        if (!file_exists($storagePath)) {
+            mkdir($storagePath, 0755, true);
+        }
+
+        $filePath = $storagePath . '/' . $randomFileName;
+
+        try {
+            file_put_contents($filePath, $pdfContent);
+        } catch (\Exception $e) {
+            \Log::error('Fehler beim Speichern der PDF: ' . $e->getMessage());
+            return response()->json(['message' => 'Fehler beim Speichern des Dokuments.'], 500);
+        }
+
+        $sentDate = now();
+        $status = false;
+
+        try {
+            $ccEmail = $request->input('copy_email');
+            $documentNameGerman = $documentType === 'invoice' ? 'Rechnung' : 'Angebot';
+
+            Mail::send([], [], function ($message) use (
+                $randomFileName, $documentNumber, $email, $subject, $messageBody, 
+                $filePath, $senderEmail, $senderName, $ccEmail, $documentNameGerman
+            ) {
+                $message->from($senderEmail, $senderName)
+                        ->to($email)
+                        ->subject($subject)
+                        ->html($messageBody)
+                        ->attach($filePath, [
+                            'as' => $documentNameGerman . '_' . $documentNumber . '.pdf',
+                            'mime' => 'application/pdf',
+                        ]);
+
+                if (!empty($ccEmail)) {
+                    $message->bcc($ccEmail);
+                }
+            });
+
+            $status = true;
+
+        } catch (\Exception $e) {
+            \Log::error('Fehler beim E-Mail-Versand: ' . $e->getMessage());
+        }
+
+        // Datenbankeintraag
+        OutgoingEmail::create([
+            'type' => $documentType === 'invoice' ? 1 : 2,
+            'customer_id' => $documentData->customer_id,
+            'objectnumber' => $documentData->number,
+            'sentdate' => $sentDate,
+            'getteremail' => $email,
+            'filename' => $randomFileName,
+            'withattachment' => true,
+            'status' => $status,
+            'client_id' => $request->user()->client_id,
+        ]);
+
+        $documentNameGerman = $documentType === 'invoice' ? 'Rechnung' : 'Angebot';
+        return redirect()->route('outgoingemails.index')
+                        ->with('success', $documentNameGerman . ' wurde erfolgreich per E-Mail versendet.');
+    }
+
+    public function createOfferPdf(Request $request)
     {
         
         $user = Auth::user();
@@ -106,24 +472,7 @@ class PdfCreateController extends Controller
                 </tr>
             </table>';
 
-        $customerdata = '
-            <table cellpadding="0" cellspacing="0" style="width:100%;">
-                <tr>
-                    <td style="text-align: left;">' . ($customer->companyname ?? '') . '</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left;">' . ($customer->customername ?? '') . '</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left;">' . ($customer->address ?? '') . '</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left;">' . ($customer->postalcode ?? '') . ' ' . ($customer->location ?? '') . '</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left;">' . ($customer->country ?? '') . '</td>
-                </tr>
-            </table>';
+        $customerdata = $this->generateCustomerData($customer);
         $clienttable = '
             <table cellpadding="2" cellspacing="0" width = "222" style=" background-color: rgb(243, 243, 243);">
                 <tr>
@@ -166,7 +515,7 @@ class PdfCreateController extends Controller
                 </tr>
             </table>';
 
-        $formattedDate = \Carbon\Carbon::parse($offercontent->date)->format('d.m.Y');
+        $formattedDate = $this->formatDate($offercontent->date);
 
         $offerNumber = '
             <table cellpadding="0.5" cellspacing="0" width = "100%">
@@ -188,143 +537,13 @@ class PdfCreateController extends Controller
                 </tr>
             </table>';
 
-        $footer = '
-            <table cellpadding="0" cellspacing="0" width="100%" style="font-size: 8px; color: grey">
-                <tr>
-                    <td width="25%" style="vertical-align: top;">
-                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
-                            <tr>
-                                <td style="text-align: left;">'.($client->companyname ?: '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->address ?: '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->postalcode && $client->location ? $client->postalcode.' '.$client->location : '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">Österreich</td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td width="25%" style="vertical-align: top;">
-                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
-                            <tr>
-                                <td style="text-align: left;">'.($client->phone ? 'Tel.: '.$client->phone : '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->email ? 'E.Mail: '.$client->email : '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->webpage ? 'Web: '.$client->webpage : '').'</td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td width="25%" style="vertical-align: top;">
-                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
-                            <tr>
-                                <td style="text-align: left;">'.($client->regional_court ?: '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->company_registration_number ? 'FN-Nr.:'.$client->company_registration_number : '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->vat_number ? 'Steuer-Nr.: '.$client->vat_number : '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->tax_number ? 'Steuer-Nr.: '.$client->tax_number : '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->management ? 'Geschäftsführung: '.htmlspecialchars_decode($client->management) : '').'</td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td width="25%" style="vertical-align: top;">
-                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
-                            <tr>
-                                <td style="text-align: left;">'.($client->bank ?: '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->accountnumber ? 'IBAN: '.$client->accountnumber : '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->bic ? 'BIC: '.$client->bic : '').'</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>';
+        $footer = $this->generateFooter($client);
 
-        $positiontableheader = '
-            <table cellpadding="2" cellspacing="0" width = "100%" style=" background-color: '.$client->color.';">
-                <tr>
-                    <td style="text-align: left; width: 7%; color: '.$color.'; font-family: segoebd;">Pos.</td>
-                    <td style="text-align: left; width: 54%; color: '.$color.'; font-family: segoebd;">Bezeichnung</td>
-                    <td style="text-align: left; width: 12%; color: '.$color.'; font-family: segoebd;">Menge</td>
-                    <td style="text-align: right; width: 12%; color: '.$color.'; font-family: segoebd;">Einzelpreis</td>
-                    <td style="text-align: right; width: 15%; color: '.$color.'; font-family: segoebd;">Betrag</td>
-                </tr>
-            </table>';
+        $positiontableheader = $this->generatePositionTableHeader($client, $color, $objectType);
 
-        $positiontablebody = '<table cellpadding="2" cellspacing="0" width = "100%" >'; //style="border: 0.5px solid black;"
+        $positiontablebody = $this->generatePositionTableBody($positions);
 
-        $positionNumber = 1; // Zähler für Positionsnummern
-
-        foreach ($positions as $position) {
-            $positiontablebody .= '<tr><td></td></tr>';
-            $details = nl2br($position->details) ?? '';
-            if($position->positiontext == 1) {
-                $positiontablebody .= '
-
-                    <tr>
-                        
-                        <td style="text-align:center; width: 100%; white-space: pre-line;"><b>'.$details.'</b></td>
-                    </tr>
-                ';
-            } else {
-                $positiontablebody .= '
-                    <tr>
-                        <td style="text-align: center; width: 7%;">'.$positionNumber.'.</td>
-                        <td style="text-align: left; width: 54%;">'.$position->designation.'</td>
-                        <td style="text-align: left; width: 12%;">'.number_format($position->amount, 2, ',', '') .' '.$position->unitdesignation.'</td>
-                        <td style="text-align: right; width: 12%;">'.number_format($position->price, 2, ',', '') .' EUR</td>
-                        <td style="text-align: right; width: 15%;">'.number_format(($position->price * $position->amount), 2, ',', '') .' EUR</td>
-                    </tr>
-                    <tr>
-                        <td style="width: 7%;"></td>
-                        <td style="text-align: left; width: 54%; white-space: pre-line;">'.$details.'</td>
-                        <td style="width: 12%;"></td>
-                        <td style="width: 12%;"></td>
-                        <td style="width: 15%;"></td>
-                    </tr>
-                ';
-                $positionNumber++; // Erhöhe die Positionsnummer nur bei normalen Positionen
-            }
-        }
-
-
-        $positiontablebody .= '</table>';
-        //dd($positiontablebody);
-
-        $positionsum = '
-            <table cellpadding="2" cellspacing="0.5" width = "100%" style="border-top: 0.5px solid '.$client->color.';">
-                <tr>
-                    <td style="text-align: left; width: 18%;"></td>
-                    <td style="text-align: left; width: 67%; color: '.$client->color.';">Gesamtbetrag netto</td>
-                    <td style="text-align: right; width: 15%; color: '.$client->color.';">'.number_format($totalSum, 2, ',', '').' EUR</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left; width: 18%;"></td>
-                    <td style="text-align: left; width: 67%;">zzgl. Umsatzsteuer '.$offercontent->taxrate .'%</td>
-                    <td style="text-align: right; width: 15%;">'.number_format($totalSum*$offercontent->taxrate/100, 2, ',', '').' EUR</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left; width: 18%;"></td>
-                    <td style="text-align: left; width: 67%; color: '.$client->color.'; font-family: segoebd; font-weight: bold;">Gesamtbetrag brutto</td>
-                    <td style="text-align: right; width: 15%; color: '.$client->color.'; font-family: segoebd; font-weight: bold; font-size: 11px;">'.number_format($totalSum*($offercontent->taxrate/100+1), 2, ',', '').' EUR</td>
-                </tr>
-            </table>';
-
+        $positionsum = $this->generatePositionSum($totalSum, $offercontent->taxrate, $client, $objectType);
 
         // PDF erstellen
         $pdf = new MyPDF();
@@ -338,36 +557,7 @@ class PdfCreateController extends Controller
         
 
         $pdf->SetFont('arial', '', 10);
-        if ($localImagePath && file_exists($localImagePath)) {
-            try {
-                // Erstelle ein temporäres Verzeichnis, falls es nicht existiert
-                $tempDir = storage_path('app/temp');
-                if (!file_exists($tempDir)) {
-                    mkdir($tempDir, 0755, true);
-                }
-
-                // Verarbeite das Bild mit Intervention/Image
-                $image = Image::make($localImagePath);
-                
-                // Konvertiere zu einem anderen Format (z.B. GIF)
-                $tempImagePath = $tempDir . '/temp_' . time() . '.gif';
-                $image->encode('gif')->save($tempImagePath);
-                
-                // Füge das Bild zum PDF hinzu
-                $pdf->Image($tempImagePath, 18, 12, 0, 30);
-                
-                // Lösche temporäre Datei
-                if (file_exists($tempImagePath)) {
-                    unlink($tempImagePath);
-                }
-            } catch (\Exception $e) {
-                \Log::error('Fehler bei der Bildverarbeitung: ' . $e->getMessage());
-                // Fallback: Versuche das Original-Bild zu verwenden
-                if (file_exists($localImagePath)) {
-                    $pdf->Image($localImagePath, 18, 12, 0, 30);
-                }
-            }
-        }
+        $this->processLogo($pdf, $localImagePath);
         $pdf->SetCreator('Venditio');
         $pdf->SetAuthor('Venditio');
         $pdf->SetTitle('Angebot' . ' ' . $offercontent->number);
@@ -516,24 +706,7 @@ class PdfCreateController extends Controller
                 </tr>
             </table>';
         
-        $customerdata = '
-            <table cellpadding="0" cellspacing="0" style="width:100%;">
-                <tr>
-                    <td style="text-align: left;">' . ($customer->companyname ?? '') . '</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left;">' . ($customer->customername ?? '') . '</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left;">' . ($customer->address ?? '') . '</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left;">' . ($customer->postalcode ?? '') . ' ' . ($customer->location ?? '') . '</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left;">' . ($customer->country ?? '') . '</td>
-                </tr>
-            </table>';
+        $customerdata = $this->generateCustomerData($customer);
         $clienttable = '
             <table cellpadding="2" cellspacing="0" width = "222" style=" background-color: rgb(243, 243, 243);">
                 <tr>
@@ -592,155 +765,20 @@ class PdfCreateController extends Controller
 
 
 
-        $formattedDate = $invoicecontent && $invoicecontent->date
-            ? \Carbon\Carbon::parse($invoicecontent->date)->format('d.m.Y')
-            : '';
+        $formattedDate = $this->formatDate($invoicecontent->date ?? null);
 
 
 
         
 
-        $positiontableheader = '
-            <table cellpadding="2" cellspacing="0" width = "100%" style=" background-color: '.$client->color.';">
-                <tr>
-                    <td style="text-align: left; width: 7%; color: '.$color.'; font-family: segoebd;">Pos.</td>
-                    <td style="text-align: left; width: 54%; color: '.$color.'; font-family: segoebd;">Bezeichnung</td>
-                    <td style="text-align: left; width: 12%; color: '.$color.'; font-family: segoebd;">Menge</td>
-                    <td style="text-align: right; width: 12%; color: '.$color.'; font-family: segoebd;">Einzelpreis</td>
-                    <td style="text-align: right; width: 15%; color: '.$color.'; font-family: segoebd;">Gesamtpreis</td>
-                </tr>
-            </table>';
+        $positiontableheader = $this->generatePositionTableHeader($client, $color, $objectType);
 
-        $positiontablebody = '<table cellpadding="2" cellspacing="0" width = "100%" >'; //style="border: 0.5px solid black;"
+        $positiontablebody = $this->generatePositionTableBody($positions);
 
-        $positionNumber = 1; // Zähler für Positionsnummern
-
-        foreach ($positions as $position) {
-            $positiontablebody .= '<tr><td></td></tr>';
-            $details = nl2br($position->details) ?? '';
-            if($position->positiontext == 1) {
-
-                $positiontablebody .= '
-
-                    <tr>
-                        <td style="text-align:center; width: 100%; white-space: pre-line;"><b>'.$details.'</b></td>
-                    </tr>
-                ';
-            } else {
-                $positiontablebody .= '
-                    <tr>
-                        <td style="text-align: center; width: 7%;">'.$positionNumber.'.</td>
-                        <td style="text-align: left; width: 54%;">'.$position->designation.'</td>
-                        <td style="text-align: left; width: 12%;">'.number_format($position->amount, 2, ',', '') .' '.$position->unitdesignation.'</td>
-                        <td style="text-align: right; width: 12%;">'.number_format($position->price, 2, ',', '') .' EUR</td>
-                        <td style="text-align: right; width: 15%;">'.number_format(($position->price * $position->amount), 2, ',', '') .' EUR</td>
-                    </tr>
-                    <tr>
-                        <td style="width: 7%;"></td>
-                        <td style="text-align: left; width: 54%; white-space: pre-line;">'.$details.'</td>
-                        <td style="width: 12%;"></td>
-                        <td style="width: 12%;"></td>
-                        <td style="width: 15%;"></td>
-                    </tr>
-                ';
-                $positionNumber++; // Erhöhe die Positionsnummer nur bei normalen Positionen
-            }
-        }
+        $positionsum = $this->generatePositionSum($totalSum, $invoicecontent->taxrate, $client, $objectType);
 
 
-        $positiontablebody .= '</table>';
-        //dd($positiontablebody);
-
-        
-
-
-        $positionsum = '
-            <table cellpadding="2" cellspacing="0" width = "100%" style="border-top: 0.5px solid '.$client->color.';">
-                <tr>
-                    <td style="text-align: left; width: 7%;"></td>
-                    <td style="text-align: left; width: 78%; color: '.$client->color.';">Gesamtbetrag netto</td>
-                    <td style="text-align: right; width: 15%; color: '.$client->color.';">'.number_format($totalSum, 2, ',', '').' EUR</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left; width: 7%;"></td>
-                    <td style="text-align: left; width: 78%;">zzgl. Umsatzsteuer '.$invoicecontent->taxrate .'%</td>
-                    <td style="text-align: right; width: 15%;">'.number_format($totalSum*$invoicecontent->taxrate/100, 2, ',', '').' EUR</td>
-                </tr>
-                <tr>
-                    <td style="text-align: left; width: 7%;"></td>
-                    <td style="text-align: left; width: 78%; color: '.$client->color.'; font-family: segoebd; font-weight: bold; font-size: 11px;">Gesamtbetrag brutto</td>
-                    <td style="text-align: right; width: 15%; color: '.$client->color.'; font-family: segoebd; font-weight: bold; font-size: 11px;">'.number_format($totalSum*($invoicecontent->taxrate/100+1), 2, ',', '').' EUR</td>
-                </tr>
-            </table>';
-
-
-            $footer = '
-            <table cellpadding="0" cellspacing="0" width="100%" style="font-size: 8px; color: grey">
-                <tr>
-                    <td width="25%" style="vertical-align: top;">
-                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
-                            <tr>
-                                <td style="text-align: left;">'.($client->companyname ?: '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->address ?: '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->postalcode && $client->location ? $client->postalcode.' '.$client->location : '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">Österreich</td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td width="25%" style="vertical-align: top;">
-                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
-                            <tr>
-                                <td style="text-align: left;">'.($client->phone ? 'Tel.: '.$client->phone : '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->email ? 'E.Mail: '.$client->email : '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->webpage ? 'Web: '.$client->webpage : '').'</td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td width="25%" style="vertical-align: top;">
-                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
-                            <tr>
-                                <td style="text-align: left;">'.($client->bank ?: '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->accountnumber ? 'IBAN: '.$client->accountnumber : '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->bic ? 'BIC: '.$client->bic : '').'</td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td width="25%" style="vertical-align: top;">
-                        <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
-                            <tr>
-                                <td style="text-align: left;">'.($client->regional_court ?: '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->company_registration_number ? 'FN-Nr.:'.$client->company_registration_number : '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->vat_number ? 'Steuer-Nr.: '.$client->vat_number : '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->tax_number ? 'Steuer-Nr.: '.$client->tax_number : '').'</td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;">'.($client->management ? 'Geschäftsführung: '.htmlspecialchars_decode($client->management) : '').'</td>
-                            </tr>
-                        </table>
-                    </td>
-                    
-                </tr>
-            </table>';
+            $footer = $this->generateFooter($client);
             
             
             //$client->companyname.", ".$client->address.", ".$client->postalcode." ".$client->location.", Tel.: ".$client->phone.", E-Mail: ".$client->email.", \n".$client->regional_court.", FN-Nr.: ".$client->company_registration_number.", USt.-ID: ".$client->vat_number.", Steuer-Nr.: ".$client->tax_number.", \nGeschäftsführung: ".$client->management.", Bank: ".$client->bank.", IBAN: ".$client->accountnumber.", BIC: ".$client->bic;
@@ -776,36 +814,7 @@ class PdfCreateController extends Controller
         $totalPages = $pdf->getNumPages();
         $pdf->SetFont('segoe', '', 9);
         
-        if ($localImagePath && file_exists($localImagePath)) {
-            try {
-                // Erstelle ein temporäres Verzeichnis, falls es nicht existiert
-                $tempDir = storage_path('app/temp');
-                if (!file_exists($tempDir)) {
-                    mkdir($tempDir, 0755, true);
-                }
-
-                // Verarbeite das Bild mit Intervention/Image
-                $image = Image::make($localImagePath);
-                
-                // Konvertiere zu einem anderen Format (z.B. GIF)
-                $tempImagePath = $tempDir . '/temp_' . time() . '.gif';
-                $image->encode('gif')->save($tempImagePath);
-                
-                // Füge das Bild zum PDF hinzu
-                $pdf->Image($tempImagePath, 18, 12, 0, 30);
-                
-                // Lösche temporäre Datei
-                if (file_exists($tempImagePath)) {
-                    unlink($tempImagePath);
-                }
-            } catch (\Exception $e) {
-                \Log::error('Fehler bei der Bildverarbeitung: ' . $e->getMessage());
-                // Fallback: Versuche das Original-Bild zu verwenden
-                if (file_exists($localImagePath)) {
-                    $pdf->Image($localImagePath, 18, 12,  0, 30);
-                }
-            }
-        }
+        $this->processLogo($pdf, $localImagePath);
 
         $invoiceinfo = '
             <table cellpadding="0.5" cellspacing="0" width = "100%">
@@ -947,238 +956,12 @@ class PdfCreateController extends Controller
 
 public function sendInvoiceByEmail(Request $request)
 {
-    // Validierung der Eingabedaten
-    $request->validate([
-        'invoice_id' => 'required|integer|exists:invoices,id',
-        'email' => 'required|email',
-        'subject' => 'required|string',
-        'copy_email' => 'nullable|email',
-        'message' => 'required|string',
-    ]);
-
-    // Abrufen der Rechnungsdaten mit Joins
-    $invoiceData = Invoices::join('customers', 'customers.id', '=', 'invoices.customer_id')
-        ->join('clients', 'clients.id', '=', 'customers.client_id')
-        ->where('invoices.id', '=', $request->invoice_id)
-        ->select(
-            'customers.*',
-            'invoices.*',
-            'customers.id as customer_id',
-            'clients.email as senderemail',
-            'clients.companyname as clientname',
-            'invoices.number as invoice_number'
-        )
-        ->first();
-
-    if (!$invoiceData || !$invoiceData->senderemail) {
-        return response()->json(['message' => 'Client oder Absender-E-Mail nicht gefunden.'], 404);
-    }
-
-    // Zuweisen der Variablen aus dem Request und Datenbankabfrage
-    $email = $request->input('email');
-    $subject = $request->input('subject');
-    $senderEmail = $invoiceData->senderemail;
-    $messageBody = $request->input('message');
-    $senderName = $invoiceData->clientname;
-    $invoice_number = $invoiceData->invoice_number;
-
-    // PDF generieren
-    $request->merge(['prev' => 'S']);
-    $pdfResponse = $this->createInvoicePdf($request);
-    $pdfContent = $pdfResponse->getContent();
-
-    // Generiere einen zufälligen Dateinamen für die Speicherung
-    $randomFileName = Str::random(40) . '.pdf';
-
-    // Definiere das Verzeichnis und Datei-Pfad
-    $storagePath = storage_path('app/objects');
-
-    // Sicherstellen, dass das Verzeichnis existiert
-    if (!file_exists($storagePath)) {
-        mkdir($storagePath, 0755, true);
-    }
-
-    // Vollständigen Dateipfad mit zufälligem Namen
-    $filePath = $storagePath . '/' . $randomFileName;
-
-    // Speichern der PDF-Datei unter dem zufälligen Namen
-    try {
-        file_put_contents($filePath, $pdfContent);
-    } catch (\Exception $e) {
-        \Log::error('Fehler beim Speichern der PDF: ' . $e->getMessage());
-        return response()->json(['message' => 'Fehler beim Speichern der Rechnung.'], 500);
-    }
-
-    $sentDate = now();
-    $status = false;
-
-    try {
-        $ccEmail = $request->input('copy_email');
-
-        Mail::send([], [], function ($message) use (
-            $randomFileName,
-            $invoice_number,
-            $email,
-            $subject,
-            $messageBody,
-            $filePath,
-            $senderEmail,
-            $senderName,
-            $ccEmail
-        ) {
-            $message->from($senderEmail, $senderName)
-                    ->to($email)
-                    ->subject($subject)
-                    ->html($messageBody)
-                    ->attach($filePath, [
-                        // Verwende als Alias den lesbaren Namen für den Empfänger
-                        'as' => 'Rechnung_' . $invoice_number . '.pdf',
-                        'mime' => 'application/pdf',
-                    ]);
-
-            if (!empty($ccEmail)) {
-                $message->bcc($ccEmail);
-            }
-        });
-
-        $status = true;
-
-    } catch (\Exception $e) {
-        \Log::error('Fehler beim E-Mail-Versand: ' . $e->getMessage());
-    }
-
-    // Speichere den zufälligen Dateinamen in der Datenbank
-    OutgoingEmail::create([
-        'type' => 1,
-        'customer_id' => $invoiceData->customer_id,
-        'objectnumber' => $invoiceData->number,
-        'sentdate' => $sentDate,
-        'getteremail' => $email,
-        'filename' => $randomFileName,  // Speicher den zufälligen Dateinamen
-        'withattachment' => true,
-        'status' => $status,
-        'client_id' => $request->user()->client_id,
-    ]);
-
-    return redirect()->route('outgoingemails.index')->with('success', 'Rechnung wurde erfolgreich per E-Mail versendet.');
+    return $this->sendDocumentByEmail($request, 'invoice');
 }
 
 public function sendOfferByEmail(Request $request)
 {
-    // Validierung der Eingabedaten
-    $request->validate([
-        'offer_id' => 'required|integer|exists:offers,id',
-        'email' => 'required|email',
-        'subject' => 'required|string',
-        'copy_email' => 'nullable|email',
-        'message' => 'required|string',
-    ]);
-
-    // Abrufen der Rechnungsdaten mit Joins
-    $offerData = Offers::join('customers', 'customers.id', '=', 'offers.customer_id')
-        ->join('clients', 'clients.id', '=', 'customers.client_id')
-        ->where('offers.id', '=', $request->offer_id)
-        ->select(
-            'customers.*',
-            'offers.*',
-            'customers.id as customer_id',
-            'clients.email as senderemail',
-            'clients.companyname as clientname',
-            'offers.number as offer_number'
-        )
-        ->first();
-
-    if (!$offerData || !$offerData->senderemail) {
-        return response()->json(['message' => 'Client oder Absender-E-Mail nicht gefunden.'], 404);
-    }
-
-    // Zuweisen der Variablen aus dem Request und Datenbankabfrage
-    $email = $request->input('email');
-    $subject = $request->input('subject');
-    $senderEmail = $offerData->senderemail;
-    $messageBody = $request->input('message');
-    $senderName = $offerData->clientname;
-    $offer_number = $offerData->offer_number;
-
-    // PDF generieren
-    $request->merge(['prev' => 'S']);
-    $pdfResponse = $this->createOfferPdf($request);
-    $pdfContent = $pdfResponse->getContent();
-
-    // Generiere einen zufälligen Dateinamen für die Speicherung
-    $randomFileName = Str::random(40) . '.pdf';
-
-    // Definiere das Verzeichnis und Datei-Pfad
-    $storagePath = storage_path('app/objects');
-
-    // Sicherstellen, dass das Verzeichnis existiert
-    if (!file_exists($storagePath)) {
-        mkdir($storagePath, 0755, true);
-    }
-
-    // Vollständigen Dateipfad mit zufälligem Namen
-    $filePath = $storagePath . '/' . $randomFileName;
-
-    // Speichern der PDF-Datei unter dem zufälligen Namen
-    try {
-        file_put_contents($filePath, $pdfContent);
-    } catch (\Exception $e) {
-        \Log::error('Fehler beim Speichern der PDF: ' . $e->getMessage());
-        return response()->json(['message' => 'Fehler beim Speichern der Rechnung.'], 500);
-    }
-
-    $sentDate = now();
-    $status = false;
-
-    try {
-        $ccEmail = $request->input('copy_email');
-
-        Mail::send([], [], function ($message) use (
-            $randomFileName,
-            $offer_number,
-            $email,
-            $subject,
-            $messageBody,
-            $filePath,
-            $senderEmail,
-            $senderName,
-            $ccEmail
-        ) {
-            $message->from($senderEmail, $senderName)
-                    ->to($email)
-                    ->subject($subject)
-                    ->html($messageBody)
-                    ->attach($filePath, [
-                        // Verwende als Alias den lesbaren Namen für den Empfänger
-                        'as' => 'Angebot_' . $offer_number . '.pdf',
-                        'mime' => 'application/pdf',
-                    ]);
-
-            if (!empty($ccEmail)) {
-                $message->bcc($ccEmail);
-            }
-        });
-
-        $status = true;
-
-    } catch (\Exception $e) {
-        \Log::error('Fehler beim E-Mail-Versand: ' . $e->getMessage());
-    }
-
-    // Speichere den zufälligen Dateinamen in der Datenbank
-    OutgoingEmail::create([
-        'type' => 2,
-        'customer_id' => $offerData->customer_id,
-        'objectnumber' => $offerData->number,
-        'sentdate' => $sentDate,
-        'getteremail' => $email,
-        'filename' => $randomFileName,  // Speicher den zufälligen Dateinamen
-        'withattachment' => true,
-        'status' => $status,
-        'client_id' => $request->user()->client_id,
-    ]);
-
-    return redirect()->route('outgoingemails.index')->with('success', 'Angebot wurde erfolgreich per E-Mail versendet.');
+    return $this->sendDocumentByEmail($request, 'offer');
 }
 
 
