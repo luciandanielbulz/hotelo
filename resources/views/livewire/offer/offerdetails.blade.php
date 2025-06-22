@@ -80,9 +80,6 @@
 
             <div >
                 <button type="submit" onclick="console.log('ANGEBOT Button geklickt!'); console.log('Daten:', {taxrateid: @js($taxrateid), offerDate: @js($offerDate), offerNumber: @js($offerNumber)});" class="inline-block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Speichern</button>
-                
-                <!-- TEST BUTTON -->
-                <button type="button" wire:click="testFunction" class="ml-2 inline-block rounded-md bg-green-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-green-500">TEST</button>
             </div>
 
         </div>

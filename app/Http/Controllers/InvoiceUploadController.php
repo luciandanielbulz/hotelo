@@ -90,7 +90,6 @@ class InvoiceUploadController extends Controller
                 'invoice_number' => 'nullable|string',
             ]);
 
-            dd($request->all());
             // Datei speichern
             $path = $request->file('invoice_pdf')->store('invoices');
 
