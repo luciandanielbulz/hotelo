@@ -815,8 +815,6 @@ class PdfCreateController extends Controller
     
         $pdf = new MyPDF();
 
-        $pdf->AddFont('segoe', 'B', 'segoe.php');
-        $pdf->SetFont('segoe', 'B', 10); // Normalschnitt
 
         $pdf->AddPage();
         $pageNumber = $pdf->PageNo();
