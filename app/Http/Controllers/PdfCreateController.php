@@ -592,7 +592,12 @@ class PdfCreateController extends Controller
             </tr>';
 
         if ($client->smallbusiness) {
-            // Kleinunternehmer: keine Umsatzsteuer
+            // Kleinunternehmer: Umsatzsteuer anzeigen aber als nicht berechnet
+            $html .= '<tr>
+                <td></td>
+                <td>zzgl. Umsatzsteuer ' . $taxRate . '%</td>
+                <td class="text-right">0,00 EUR</td>
+            </tr>';
             $finalLabel = 'Gesamtbetrag';
             $finalAmount = $totalSum;
         } elseif (!$reverseCharge) {
@@ -807,8 +812,13 @@ class PdfCreateController extends Controller
             </tr>';
 
         if ($client->smallbusiness) {
-            // Kleinunternehmer: keine Umsatzsteuer
-            $html .= '<tr class="total-final">
+            // Kleinunternehmer: Umsatzsteuer anzeigen aber als nicht berechnet
+            $html .= '<tr>
+                <td></td>
+                <td>zzgl. Umsatzsteuer ' . $taxRate . '%</td>
+                <td class="text-right">0,00 EUR</td>
+            </tr>
+            <tr class="total-final">
                 <td></td>
                 <td>Gesamtbetrag</td>
                 <td class="text-right">' . number_format($totalSum, 2, ',', '') . ' EUR</td>
