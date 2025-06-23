@@ -74,9 +74,9 @@ class PdfCreateController extends Controller
         $canvas = $pdf->getDomPDF()->getCanvas();
         $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
             $font = $fontMetrics->get_font('helvetica');
-            $size = 8;
+            $size = 10;
             $pageText = 'Seite ' . $pageNumber . ' von ' . $pageCount;
-            $y = 810;
+            $y = 710;
             $x = 500;
             $canvas->text($x, $y, $pageText, $font, $size, array(0.5, 0.5, 0.5));
         });
@@ -145,9 +145,9 @@ class PdfCreateController extends Controller
         $canvas = $pdf->getDomPDF()->getCanvas();
         $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
             $font = $fontMetrics->get_font('helvetica');
-            $size = 8;
+            $size = 10;
             $pageText = 'Seite ' . $pageNumber . ' von ' . $pageCount;
-            $y = 810;
+            $y = 710;
             $x = 500;
             $canvas->text($x, $y, $pageText, $font, $size, array(0.5, 0.5, 0.5));
         });
@@ -392,26 +392,26 @@ class PdfCreateController extends Controller
 
         // Footer zusammenbauen
         $footer = '
-            <div style="position: fixed; bottom: 0; left: 0; right: 0; padding: 10px; border-top: 1px solid #ccc; background: white;">
-                <table cellpadding="0" cellspacing="0" width="100%" style="font-size: 8px; color: grey">
+            <div style="position: fixed; bottom: 0; left: 0; right: 0; padding: 10px; border-top: 0px solid #ccc; background: white;">
+                <table cellpadding="0" cellspacing="0" width="100%" style="font-size: 11px; color: grey">
                     <tr>
                         <td width="25%" style="vertical-align: top;">
-                            <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            <table cellpadding="0.5" cellspacing="1" width="100%" style=" color: grey">
                                 ' . implode('', $addressRows) . '
                             </table>
                         </td>
                         <td width="25%" style="vertical-align: top;">
-                            <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            <table cellpadding="0.5" cellspacing="1" width="100%" style=" color: grey">
                                 ' . implode('', $contactRows) . '
                             </table>
                         </td>
                         <td width="25%" style="vertical-align: top;">
-                            <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            <table cellpadding="0.5" cellspacing="1" width="100%" style=" color: grey">
                                 ' . implode('', $legalRows) . '
                             </table>
                         </td>
                         <td width="25%" style="vertical-align: top;">
-                            <table cellpadding="0.5" cellspacing="1" width="100%" style="font-size: 8px; color: grey">
+                            <table cellpadding="0.5" cellspacing="1" width="100%" style=" color: grey">
                                 ' . implode('', $bankRows) . '
                             </table>
                         </td>
