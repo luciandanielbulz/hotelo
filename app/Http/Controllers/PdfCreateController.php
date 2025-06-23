@@ -46,27 +46,27 @@ class PdfCreateController extends Controller
             'operation_info' => '11px',
             
             // Kundenadresse
-            'customer_address' => '13px',
+            'customer_address' => '12px',
             
             // Dokumenttitel
-            'document_title' => '21px',
+            'document_title' => '20px',
             
             // Einleitungstext
-            'intro_text' => '13px',
+            'intro_text' => '12px',
             
             // Positionstabelle
-            'positions_header' => '13px',
-            'positions_body' => '13px',
-            'positions_details' => '13px',
+            'positions_header' => '12px',
+            'positions_body' => '12px',
+            'positions_details' => '12px',
             
             // Summentabelle
-            'totals' => '13px',
+            'totals' => '12px',
             
             // Footer
-            'footer' => '12px',
+            'footer' => '11px',
             
             // Verschiedene Hinweise
-            'tax_notice' => '13px',
+            'tax_notice' => '12px',
             'signature' => '11px',
             
             // Seitennummerierung
@@ -121,7 +121,7 @@ class PdfCreateController extends Controller
             $font = $fontMetrics->get_font('helvetica');
             $size = intval($fontSizes['page_number']); // px entfernen und zu int konvertieren
             $pageText = 'Seite ' . $pageNumber . ' von ' . $pageCount;
-            $y = 720;
+            $y = 730;
             $x = 500;
             $canvas->text($x, $y, $pageText, $font, $size, array(0.5, 0.5, 0.5));
         });
@@ -193,7 +193,7 @@ class PdfCreateController extends Controller
             $font = $fontMetrics->get_font('helvetica');
             $size = intval($fontSizes['page_number']); // px entfernen und zu int konvertieren
             $pageText = 'Seite ' . $pageNumber . ' von ' . $pageCount;
-            $y = 720;
+            $y = 730;
             $x = 500;
             $canvas->text($x, $y, $pageText, $font, $size, array(0.5, 0.5, 0.5));
         });
