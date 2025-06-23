@@ -666,7 +666,7 @@ class PdfCreateController extends Controller
         body { font-family:  Roboto, sans-serif;font-size: 12px; line-height: 1.2; margin: 0; padding: 0; margin-bottom: 60px; }
         .header { width: 100%; position: relative; height: 110px; margin-bottom: 30px; }
         .logo { position: absolute; top: 0; left: 0; max-height: 50px; max-width: 150px; }
-        .company-info { position: absolute; top: 145px; left: 0; font-size: 8px; color: black; }
+        .company-info { position: absolute; top: 135px; left: 0; font-size: 8px; color: black; }
         
         .document-info { position: absolute; top: 150px; right: 0; width: 250px; text-align: right;}
         .document-info table { width: 100%; border-collapse: collapse; font-size: 10px; }
@@ -699,7 +699,7 @@ class PdfCreateController extends Controller
         // Header
         $html .= '<div class="header">';
         if ($logoPath) {
-            $html .= '<img src="' . $logoPath . '" alt="Logo" style="position: absolute; top: 0; left: 0; max-height: 60px; max-width: 200px; height: auto; width: auto;">';
+            $html .= '<img src="' . $logoPath . '" alt="Logo" style="position: absolute; top: 0; right: 0; max-height: 100px; max-width: 200px; height: auto; width: auto;">';
         } else {
             // Fallback: Firmenname als "Logo"  
             $html .= '<div style="position: absolute; top: 0; left: 0; font-size: 16px; font-weight: bold; color: ' . $clientColor . ';">' . 
