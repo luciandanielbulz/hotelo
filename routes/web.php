@@ -123,7 +123,7 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::post('/invoice/sendmail',[InvoiceController::class, 'sendmail'])->name('invoice.sendmail');
     Route::post('/offer/sendmail',[OfferController::class, 'sendmail'])->name('offer.sendmail');
     Route::post('/send-invoice/email', [PdfCreateController::class, 'sendInvoiceByEmail'])->name('sendinvoice.email');
-    Route::post('/send-offer/email', [PdfCreateController::class, 'sendOfferByEmail'])->name('sendoffer.email');
+Route::post('/send-offer/email', [PdfCreateController::class, 'sendOfferByEmail'])->name('sendoffer.email');
     Route::get('/emaillist', [OutgoingEmailController::class, 'index'])->name('outgoingemails.index');
 
     Route::resource('invoice',InvoiceController::class);
@@ -190,7 +190,7 @@ Route::middleware(['auth','verified'])->group(function(){
     });
 
     Route::get('/createOfferPdf', [PdfCreateController::class,'createOfferPdf'])->name('createoffer.pdf');
-    Route::get('/createInvoicePdf', [PdfCreateController::class,'createInvoicePdf'])->name('createinvoice.pdf');
+Route::get('/createInvoicePdf', [PdfCreateController::class,'createInvoicePdf'])->name('createinvoice.pdf');
 
     Route::put('/users/{id}/reset-password', [UsersController::class, 'resetUserPassword'])
         ->middleware('permission:reset_user_password')
