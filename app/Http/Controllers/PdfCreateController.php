@@ -30,6 +30,50 @@ use Barryvdh\DomPDF\Facade\Pdf;
 class PdfCreateController extends Controller
 {
     /**
+     * Zentrale Konfiguration für Schriftgrößen
+     * Hier können alle Schriftgrößen für PDFs verwaltet werden
+     */
+    private function getFontSizes()
+    {
+        return [
+            // Grundschriftgröße
+            'base' => '12px',
+            
+            // Kopfbereich
+            'company_info' => '10px',
+            'document_info_large' => '15px',
+            'document_info_small' => '11px',
+            'operation_info' => '11px',
+            
+            // Kundenadresse
+            'customer_address' => '13px',
+            
+            // Dokumenttitel
+            'document_title' => '21px',
+            
+            // Einleitungstext
+            'intro_text' => '13px',
+            
+            // Positionstabelle
+            'positions_header' => '13px',
+            'positions_body' => '13px',
+            'positions_details' => '13px',
+            
+            // Summentabelle
+            'totals' => '13px',
+            
+            // Footer
+            'footer' => '12px',
+            
+            // Verschiedene Hinweise
+            'tax_notice' => '13px',
+            'signature' => '11px',
+            
+            // Seitennummerierung
+            'page_number' => '11px',
+        ];
+    }
+    /**
      * Erstellt ein Angebots-PDF mit DomPDF
      */
     public function createOfferPdf(Request $request)
@@ -71,10 +115,11 @@ class PdfCreateController extends Controller
         $pdf->render();
         
         // Seitennummerierung nach dem Rendern hinzufügen
+        $fontSizes = $this->getFontSizes();
         $canvas = $pdf->getDomPDF()->getCanvas();
-        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) use ($fontSizes) {
             $font = $fontMetrics->get_font('helvetica');
-            $size = 10;
+            $size = intval($fontSizes['page_number']); // px entfernen und zu int konvertieren
             $pageText = 'Seite ' . $pageNumber . ' von ' . $pageCount;
             $y = 730;
             $x = 500;
@@ -142,10 +187,11 @@ class PdfCreateController extends Controller
         $pdf->render();
         
         // Seitennummerierung nach dem Rendern hinzufügen
+        $fontSizes = $this->getFontSizes();
         $canvas = $pdf->getDomPDF()->getCanvas();
-        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) {
+        $canvas->page_script(function ($pageNumber, $pageCount, $canvas, $fontMetrics) use ($fontSizes) {
             $font = $fontMetrics->get_font('helvetica');
-            $size = 10;
+            $size = intval($fontSizes['page_number']); // px entfernen und zu int konvertieren
             $pageText = 'Seite ' . $pageNumber . ' von ' . $pageCount;
             $y = 730;
             $x = 500;
@@ -455,6 +501,7 @@ class PdfCreateController extends Controller
         
         $clientColor = $client->color ?? '#000000';
         $headerTextColor = $clientColor !== '#000000' ? 'white' : 'black';
+        $fontSizes = $this->getFontSizes();
         
         $html = '<!DOCTYPE html>
 <html>
@@ -463,31 +510,31 @@ class PdfCreateController extends Controller
     <title>Rechnung ' . htmlspecialchars($invoice->number) . '</title>
     <style>
         @page { margin: 10mm; }
-        body { font-family:  Roboto, sans-serif;font-size: 12px; line-height: 1.2; margin: 0; padding: 0; margin-bottom: 60px; }
+        body { font-family:  Roboto, sans-serif;font-size: ' . $fontSizes['base'] . '; line-height: 1.2; margin: 0; padding: 0; margin-bottom: 60px; }
         .header { width: 100%; position: relative; height: 110px; margin-bottom: 30px; }
         .logo { position: absolute; top: 0; left: 0; height: 40px; max-width: 150px; }
-        .company-info { position: absolute; top: 135px; left: 0; font-size: 10px; color: black; }
+        .company-info { position: absolute; top: 135px; left: 0; font-size: ' . $fontSizes['company_info'] . '; color: black; }
         
         .document-info { position: absolute; top: 150px; right: 0; width: 250px; text-align: right;}
-        .document-info table { width: 100%; border-collapse: collapse; font-size: 10px; }
+        .document-info table { width: 100%; border-collapse: collapse; font-size: ' . $fontSizes['document_info_small'] . '; }
         .document-info td { padding: 2px 5px;}
         
         .operation-info { position: absolute; top: 215px; right: 0; width: 250px; text-align: right;}
-        .operation-info table { width: 100%; border-collapse: collapse; font-size: 10px;}
+        .operation-info table { width: 100%; border-collapse: collapse; font-size: ' . $fontSizes['operation_info'] . ';}
         .operation-info td { padding: 2px 5px; }
         
-        .customer-address { margin: 20px 0; margin-top: 75px; width: 50%; font-size: 12px;}
+        .customer-address { margin: 20px 0; margin-top: 75px; width: 50%; font-size: ' . $fontSizes['customer_address'] . ';}
         .customer-address table { width: 100%; border-collapse: collapse; }
         .customer-address td { padding: 2px 0; border: none; }
-        .document-title { font-size: 20px; font-weight: bold; margin: 30px 0 15px 0; margin-top: 50px; color: ' . $clientColor . '; }
-        .intro-text { margin: 15px 0; font-size: 12px;}
+        .document-title { font-size: ' . $fontSizes['document_title'] . '; font-weight: bold; margin: 30px 0 15px 0; margin-top: 50px; color: ' . $clientColor . '; }
+        .intro-text { margin: 15px 0; font-size: ' . $fontSizes['intro_text'] . ';}
         .positions-table { width: 100%; border-collapse: collapse; margin: 20px 0; margin-top: 0px; }
         .positions-header { background-color: ' . $clientColor . '; color: ' . $headerTextColor . '; font-weight: bold; }
-        .positions-header td { padding: 5px; font-size: 12px; }
-        .positions-body td { padding: 5px; vertical-align: top; font-size: 12px; }
+        .positions-header td { padding: 5px; font-size: ' . $fontSizes['positions_header'] . '; }
+        .positions-body td { padding: 5px; vertical-align: top; font-size: ' . $fontSizes['positions_body'] . '; }
         .totals-table { width: 100%; border-collapse: collapse; border-top: 1px solid ' . $clientColor . '}
-        .totals-table td { padding: 3px 5px; font-size: 12px; }
-        .total-final { font-weight: bold; color: ' . $clientColor . '; font-size: 12px; }
+        .totals-table td { padding: 3px 5px; font-size: ' . $fontSizes['totals'] . '; }
+        .total-final { font-weight: bold; color: ' . $clientColor . '; font-size: ' . $fontSizes['totals'] . '; }
         .text-right { text-align: right; }
         .text-center { text-align: center; }
         .reverse-charge-note { font-weight: bold; color: red; margin: 10px 0; }
@@ -511,10 +558,10 @@ class PdfCreateController extends Controller
                  htmlspecialchars($client->location) . '</div>';
         
         $html .= '<div class="document-info">
-            <table style="font-size: 14px;">
+            <table style="font-size: ' . $fontSizes['document_info_large'] . ';">
                 <tr><td class="text-left">Rechnungs-Nr.</td><td class="text-right">' . htmlspecialchars(($client->invoice_prefix ?? '') . $invoice->number) . '</td></tr>
             </table>
-            <table style="font-size: 10px;">
+            <table style="font-size: ' . $fontSizes['document_info_small'] . ';">
                 <tr><td class="text-left">Rechnungsdatum</td><td class="text-right">' . htmlspecialchars($formattedDate) . '</td></tr>';
         
         if ($formattedPeriodFrom && $formattedPeriodTo) {
