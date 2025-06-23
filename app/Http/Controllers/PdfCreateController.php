@@ -70,7 +70,7 @@ class PdfCreateController extends Controller
             'signature' => '11px',
             
             // Seitennummerierung
-            'page_number' => '10px',
+            'page_number' => '9px',
         ];
     }
     /**
