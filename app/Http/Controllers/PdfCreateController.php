@@ -82,7 +82,7 @@ class PdfCreateController extends Controller
         });
         
         // Je nach Modus ausgeben
-        $filename = 'Angebot_' . $data['offer']->number . '.pdf';
+        $filename = 'Angebot_' . ($client->offer_prefix ?? '') . $data['offer']->number . '.pdf';
         $pdfOutput = $pdf->getDomPDF()->output();
         
         switch ($preview) {
@@ -153,7 +153,7 @@ class PdfCreateController extends Controller
         });
 
         // Je nach Modus ausgeben
-        $filename = 'Rechnung_' . $data['invoice']->number . '.pdf';
+        $filename = 'Rechnung_' . ($client->invoice_prefix ?? '') . $data['invoice']->number . '.pdf';
         $pdfOutput = $pdf->getDomPDF()->output();
         
         switch ($preview) {
@@ -496,7 +496,7 @@ class PdfCreateController extends Controller
         
         $html .= '<div class="document-info">
             <table style="font-size: 14px;">
-                <tr><td class="text-left">Rechnungs-Nr.</td><td class="text-right">' . htmlspecialchars($invoice->number) . '</td></tr>
+                <tr><td class="text-left">Rechnungs-Nr.</td><td class="text-right">' . htmlspecialchars(($client->invoice_prefix ?? '') . $invoice->number) . '</td></tr>
             </table>
             <table style="font-size: 10px;">
                 <tr><td class="text-left">Rechnungsdatum</td><td class="text-right">' . htmlspecialchars($formattedDate) . '</td></tr>';
@@ -534,7 +534,7 @@ class PdfCreateController extends Controller
         $html .= '</table></div>';
 
         // Document Title
-        $html .= '<div class="document-title">Rechnung Nr. ' . htmlspecialchars($invoice->number) . '</div>';
+        $html .= '<div class="document-title">Rechnung Nr. ' . htmlspecialchars(($client->invoice_prefix ?? '') . $invoice->number) . '</div>';
 
         // Intro Text
         $html .= '<div class="intro-text">Vielen Dank für Ihren Auftrag und das damit verbundene Vertrauen! Hiermit stellen wir Ihnen die folgenden Leistungen in Rechnung:</div>';
@@ -713,7 +713,7 @@ class PdfCreateController extends Controller
         
         $html .= '<div class="document-info">
             <table style="font-size: 14px;">
-                <tr><td class="text-left">Angebots-Nr.</td><td class="text-right">' . htmlspecialchars($offer->number) . '</td></tr>
+                <tr><td class="text-left">Angebots-Nr.</td><td class="text-right">' . htmlspecialchars(($client->offer_prefix ?? '') . $offer->number) . '</td></tr>
             </table>
             <table style="font-size: 10px;">
                 <tr><td class="text-left">Angebotsdatum</td><td class="text-right">' . htmlspecialchars($formattedDate) . '</td></tr>
@@ -746,7 +746,7 @@ class PdfCreateController extends Controller
         $html .= '</table></div>';
 
         // Document Title
-        $html .= '<div class="document-title">Angebot ' . htmlspecialchars($offer->number) . '</div>';
+        $html .= '<div class="document-title">Angebot ' . htmlspecialchars(($client->offer_prefix ?? '') . $offer->number) . '</div>';
 
         // Intro Text
         $html .= '<div class="intro-text">Unter Einhaltung unserer allg. Geschäftsbedingungen, erlauben wir uns, Ihnen folgendes Angebot zu unterbreiten:</div>';
@@ -908,16 +908,25 @@ class PdfCreateController extends Controller
             $ccEmail = $request->input('copy_email');
             $documentNameGerman = $documentType === 'invoice' ? 'Rechnung' : 'Angebot';
 
+            // Client-Daten für Präfixe laden
+            $client = Clients::find($request->user()->client_id);
+            $prefix = '';
+            if ($documentType === 'invoice') {
+                $prefix = $client->invoice_prefix ?? '';
+            } elseif ($documentType === 'offer') {
+                $prefix = $client->offer_prefix ?? '';
+            }
+
             Mail::send([], [], function ($message) use (
                 $randomFileName, $documentData, $email, $subject, $messageBody, 
-                $filePath, $ccEmail, $documentNameGerman
+                $filePath, $ccEmail, $documentNameGerman, $prefix
             ) {
                 $message->from($documentData->senderemail, $documentData->clientname)
                         ->to($email)
                         ->subject($subject)
                         ->html($messageBody)
                         ->attach($filePath, [
-                            'as' => $documentNameGerman . '_' . $documentData->document_number . '.pdf',
+                            'as' => $documentNameGerman . '_' . $prefix . $documentData->document_number . '.pdf',
                             'mime' => 'application/pdf',
                         ]);
 

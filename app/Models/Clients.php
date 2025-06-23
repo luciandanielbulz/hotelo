@@ -40,7 +40,9 @@ class Clients extends Model
         'management',
         'regional_court',
         'color',
-        'invoice_number_format'
+        'invoice_number_format',
+        'invoice_prefix',
+        'offer_prefix'
     ];
 
     /**
@@ -74,6 +76,41 @@ class Clients extends Model
             
             default: // 'YYYY*1000+N'
                 return $year * $multiplier + 1000 + $rawNumber;
+        }
+    }
+
+    /**
+     * Generiert die nächste Angebotsnummer basierend auf dem gewählten Format
+     * Verwendet das gleiche Format wie Rechnungen, aber mit Angebots-spezifischen Werten
+     */
+    public function generateOfferNumber()
+    {
+        $format = $this->invoice_number_format ?? 'YYYY*1000+N'; // Verwendet das gleiche Format wie Rechnungen
+        $rawNumber = $this->lastoffer ?? 0;
+        $multiplier = $this->offermultiplikator ?? 1000;
+        $year = now()->year;
+        $shortYear = substr($year, -2);
+
+        switch ($format) {
+            case 'YYYYNN':
+                return $year . str_pad($rawNumber + 1, 4, '0', STR_PAD_LEFT);
+            
+            case 'YY*1000+N':
+                return $shortYear * $multiplier + 6000 + $rawNumber; // +6000 für Angebote (wie im ursprünglichen Code)
+            
+            case 'YYYY_MM+N':
+                $month = str_pad(now()->month, 2, '0', STR_PAD_LEFT);
+                return $year . '_' . $month . str_pad($rawNumber + 1, 3, '0', STR_PAD_LEFT);
+            
+            case 'N':
+                return $rawNumber + 1;
+            
+            case 'custom':
+                // Hier kann später eine benutzerdefinierte Logik implementiert werden
+                return $year * $multiplier + 6000 + $rawNumber;
+            
+            default: // 'YYYY*1000+N'
+                return $year * $multiplier + 6000 + $rawNumber; // +6000 für Angebote
         }
     }
 }

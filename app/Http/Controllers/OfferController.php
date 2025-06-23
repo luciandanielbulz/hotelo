@@ -65,12 +65,11 @@ class OfferController extends Controller
 
         $customer = Customer::where('id','=',$customer_id)->first();
 
-        $client = Clients::where('id', '=', $client_id)->select('lastoffer', 'offermultiplikator', 'tax_id')->first();
+        $client = Clients::where('id', '=', $client_id)->select('lastoffer', 'offermultiplikator', 'invoice_number_format', 'tax_id')->first();
 
         $offer_raw_number = $client->lastoffer ?? 0; // Fallback: 0
-        $offermultiplikator = $client->offermultiplikator ?? 1000; // Standardwert für Multiplikator
 
-        $offernumber = now()->year * $offermultiplikator +6000+ $offer_raw_number;
+        $offernumber = $client->generateOfferNumber();
 
 
 

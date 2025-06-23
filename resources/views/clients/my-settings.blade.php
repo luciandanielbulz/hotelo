@@ -201,6 +201,16 @@
                         @enderror
                         <p class="mt-1 text-sm text-gray-600">Wählen Sie das Format für die automatische Rechnungsnummerierung.</p>
                     </div>
+
+                    <div class="sm:col-span-3">
+                        <x-input name="invoice_prefix" type="text" placeholder="R-" label="Rechnungs-Präfix" value="{{ old('invoice_prefix', $clients->invoice_prefix) }}" />
+                        <p class="mt-1 text-sm text-gray-600">Präfix für Rechnungsnummern (z.B. "R-", "RECH-")</p>
+                    </div>
+
+                    <div class="sm:col-span-3">
+                        <x-input name="offer_prefix" type="text" placeholder="A-" label="Angebots-Präfix" value="{{ old('offer_prefix', $clients->offer_prefix) }}" />
+                        <p class="mt-1 text-sm text-gray-600">Präfix für Angebotsnummern (z.B. "A-", "ANG-")</p>
+                    </div>
                 </div>
             </div>
 

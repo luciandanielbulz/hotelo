@@ -70,6 +70,8 @@ class ClientsController extends Controller
             'regional_court' => ['nullable', 'string', 'max:200'],
             'color' => ['nullable', 'string', 'max:7'],
             'invoice_number_format' => ['nullable', 'string', 'max:50'],
+            'invoice_prefix' => ['nullable', 'string', 'max:10'],
+            'offer_prefix' => ['nullable', 'string', 'max:10'],
         ]);
 
         try {
@@ -168,6 +170,8 @@ class ClientsController extends Controller
             'regional_court' => ['nullable', 'string', 'max:200'],
             'color' => ['nullable', 'string', 'max:7'],
             'invoice_number_format' => ['nullable', 'string', 'max:50'],
+            'invoice_prefix' => ['nullable', 'string', 'max:10'],
+            'offer_prefix' => ['nullable', 'string', 'max:10'],
         ]);
 
         try {
@@ -215,6 +219,8 @@ class ClientsController extends Controller
             $client->regional_court = $validatedData['regional_court'];
             $client->color = $validatedData['color'];
             $client->invoice_number_format = $validatedData['invoice_number_format'];
+            $client->invoice_prefix = $validatedData['invoice_prefix'] ?? null;
+            $client->offer_prefix = $validatedData['offer_prefix'] ?? null;
 
             $client->save();
 
@@ -294,6 +300,8 @@ class ClientsController extends Controller
             'regional_court' => ['nullable', 'string', 'max:200'],
             'color' => ['nullable', 'string', 'max:7'],
             'invoice_number_format' => ['nullable', 'string', 'max:50'],
+            'invoice_prefix' => ['nullable', 'string', 'max:10'],
+            'offer_prefix' => ['nullable', 'string', 'max:10'],
         ]);
 
         try {
@@ -341,6 +349,8 @@ class ClientsController extends Controller
             $client->regional_court = $validatedData['regional_court'];
             $client->color = $validatedData['color'];
             $client->invoice_number_format = $validatedData['invoice_number_format'];
+            $client->invoice_prefix = $validatedData['invoice_prefix'] ?? null;
+            $client->offer_prefix = $validatedData['offer_prefix'] ?? null;
 
             $client->save();
 
