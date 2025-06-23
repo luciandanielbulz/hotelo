@@ -70,7 +70,7 @@ class PdfCreateController extends Controller
             'signature' => '11px',
             
             // Seitennummerierung
-            'page_number' => '11px',
+            'page_number' => '10px',
         ];
     }
     /**
@@ -121,7 +121,7 @@ class PdfCreateController extends Controller
             $font = $fontMetrics->get_font('helvetica');
             $size = intval($fontSizes['page_number']); // px entfernen und zu int konvertieren
             $pageText = 'Seite ' . $pageNumber . ' von ' . $pageCount;
-            $y = 730;
+            $y = 720;
             $x = 500;
             $canvas->text($x, $y, $pageText, $font, $size, array(0.5, 0.5, 0.5));
         });
@@ -193,7 +193,7 @@ class PdfCreateController extends Controller
             $font = $fontMetrics->get_font('helvetica');
             $size = intval($fontSizes['page_number']); // px entfernen und zu int konvertieren
             $pageText = 'Seite ' . $pageNumber . ' von ' . $pageCount;
-            $y = 730;
+            $y = 720;
             $x = 500;
             $canvas->text($x, $y, $pageText, $font, $size, array(0.5, 0.5, 0.5));
         });
