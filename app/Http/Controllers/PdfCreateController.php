@@ -330,10 +330,12 @@ class PdfCreateController extends Controller
 
     /**
      * Generiert eine intelligente Fußzeile für PDFs
-     * Leere Felder werden übersprungen und Zeilen rücken nach oben
+     * Leere Spalten werden ausgeblendet und verbleibende Spalten rücken nach links
      */
     private function generateFooter($client)
     {
+        $columns = [];
+        
         // Spalte 1: Firmenadresse
         $addressRows = [];
         if (!empty($client->companyname)) {
@@ -347,6 +349,11 @@ class PdfCreateController extends Controller
         }
         // Österreich als feste Zeile, falls gewünscht
         $addressRows[] = '<tr><td style="text-align: left;">Österreich</td></tr>';
+        
+        if (!empty($addressRows)) {
+            $columns[] = '<table cellpadding="0.5" cellspacing="1" width="100%" style="color: grey">' . 
+                        implode('', $addressRows) . '</table>';
+        }
 
         // Spalte 2: Kontaktdaten
         $contactRows = [];
@@ -358,6 +365,11 @@ class PdfCreateController extends Controller
         }
         if (!empty($client->webpage)) {
             $contactRows[] = '<tr><td style="text-align: left;">Web: ' . htmlspecialchars($client->webpage) . '</td></tr>';
+        }
+        
+        if (!empty($contactRows)) {
+            $columns[] = '<table cellpadding="0.5" cellspacing="1" width="100%" style="color: grey">' . 
+                        implode('', $contactRows) . '</table>';
         }
 
         // Spalte 3: Rechtliche Informationen
@@ -377,6 +389,11 @@ class PdfCreateController extends Controller
         if (!empty($client->management)) {
             $legalRows[] = '<tr><td style="text-align: left;">Geschäftsführung: ' . htmlspecialchars_decode($client->management) . '</td></tr>';
         }
+        
+        if (!empty($legalRows)) {
+            $columns[] = '<table cellpadding="0.5" cellspacing="1" width="100%" style="color: grey">' . 
+                        implode('', $legalRows) . '</table>';
+        }
 
         // Spalte 4: Bankdaten
         $bankRows = [];
@@ -389,32 +406,31 @@ class PdfCreateController extends Controller
         if (!empty($client->bic)) {
             $bankRows[] = '<tr><td style="text-align: left;">BIC: ' . htmlspecialchars($client->bic) . '</td></tr>';
         }
+        
+        if (!empty($bankRows)) {
+            $columns[] = '<table cellpadding="0.5" cellspacing="1" width="100%" style="color: grey">' . 
+                        implode('', $bankRows) . '</table>';
+        }
 
+        // Dynamische Spaltenbreite berechnen
+        $columnCount = count($columns);
+        if ($columnCount === 0) {
+            return ''; // Kein Footer wenn keine Daten vorhanden
+        }
+        
+        $columnWidth = floor(100 / $columnCount);
+        
         // Footer zusammenbauen
         $footer = '
             <div style="position: fixed; bottom: 0; left: 0; right: 0; padding: 10px; border-top: 0px solid #ccc; background: white;">
                 <table cellpadding="0" cellspacing="0" width="100%" style="font-size: 11px; color: grey">
-                    <tr>
-                        <td width="25%" style="vertical-align: top;">
-                            <table cellpadding="0.5" cellspacing="1" width="100%" style=" color: grey">
-                                ' . implode('', $addressRows) . '
-                            </table>
-                        </td>
-                        <td width="25%" style="vertical-align: top;">
-                            <table cellpadding="0.5" cellspacing="1" width="100%" style=" color: grey">
-                                ' . implode('', $contactRows) . '
-                            </table>
-                        </td>
-                        <td width="25%" style="vertical-align: top;">
-                            <table cellpadding="0.5" cellspacing="1" width="100%" style=" color: grey">
-                                ' . implode('', $legalRows) . '
-                            </table>
-                        </td>
-                        <td width="25%" style="vertical-align: top;">
-                            <table cellpadding="0.5" cellspacing="1" width="100%" style=" color: grey">
-                                ' . implode('', $bankRows) . '
-                            </table>
-                        </td>
+                    <tr>';
+        
+        foreach ($columns as $column) {
+            $footer .= '<td width="' . $columnWidth . '%" style="vertical-align: top;">' . $column . '</td>';
+        }
+        
+        $footer .= '
                     </tr>
                 </table>
             </div>';
