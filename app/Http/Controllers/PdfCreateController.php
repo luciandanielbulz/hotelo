@@ -591,22 +591,27 @@ class PdfCreateController extends Controller
                 number_format($totalSum, 2, ',', '') . ' EUR</td>
             </tr>';
 
-        if (!$reverseCharge) {
+        if ($client->smallbusiness) {
+            // Kleinunternehmer: keine Umsatzsteuer
+            $finalLabel = 'Gesamtbetrag';
+            $finalAmount = $totalSum;
+        } elseif (!$reverseCharge) {
             $html .= '<tr>
                 <td></td>
                 <td>zzgl. Umsatzsteuer ' . $taxRate . '%</td>
                 <td class="text-right">' . number_format($totalSum * $taxRate / 100, 2, ',', '') . ' EUR</td>
             </tr>';
+            $finalLabel = 'Gesamtbetrag brutto';
+            $finalAmount = $totalSum * ($taxRate / 100 + 1);
         } else {
             $html .= '<tr>
                 <td></td>
                 <td>zzgl. Umsatzsteuer ' . $taxRate . '%</td>
                 <td class="text-right">' . number_format($totalSum * $taxRate / 100, 2, ',', '') . ' EUR</td>
             </tr>';
+            $finalLabel = 'Gesamtbetrag netto (Reverse Charge)';
+            $finalAmount = $totalSum;
         }
-
-        $finalLabel = $reverseCharge ? 'Gesamtbetrag netto (Reverse Charge)' : 'Gesamtbetrag brutto';
-        $finalAmount = $reverseCharge ? $totalSum : $totalSum * ($taxRate / 100 + 1);
 
         $html .= '<tr class="total-final">
             <td></td>
@@ -633,7 +638,10 @@ class PdfCreateController extends Controller
 
         $html .= '</table>';
 
-        if ($reverseCharge) {
+        // Steuerliche Hinweise
+        if ($client->smallbusiness) {
+            $html .= '<div style="margin-top: 20px; font-size: 12px;">Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG</div>';
+        } elseif ($reverseCharge) {
             $html .= '<div style="margin-top: 20px; font-size: 12px;">Gemäß § 13b UStG liegt die Steuerschuldnerschaft beim Leistungsempfänger.</div>';
         }
 
@@ -796,8 +804,17 @@ class PdfCreateController extends Controller
                 <td style="width: 80%; color: ' . $clientColor . ';">Gesamtbetrag netto</td>
                 <td style="width: 15%; text-align: right; color: ' . $clientColor . ';">' . 
                 number_format($totalSum, 2, ',', '') . ' EUR</td>
-            </tr>
-            <tr>
+            </tr>';
+
+        if ($client->smallbusiness) {
+            // Kleinunternehmer: keine Umsatzsteuer
+            $html .= '<tr class="total-final">
+                <td></td>
+                <td>Gesamtbetrag</td>
+                <td class="text-right">' . number_format($totalSum, 2, ',', '') . ' EUR</td>
+            </tr>';
+        } else {
+            $html .= '<tr>
                 <td></td>
                 <td>zzgl. Umsatzsteuer ' . $taxRate . '%</td>
                 <td class="text-right">' . number_format($totalSum * $taxRate / 100, 2, ',', '') . ' EUR</td>
@@ -806,8 +823,15 @@ class PdfCreateController extends Controller
                 <td></td>
                 <td>Gesamtbetrag brutto</td>
                 <td class="text-right">' . number_format($totalSum * ($taxRate / 100 + 1), 2, ',', '') . ' EUR</td>
-            </tr>
-        </table>';
+            </tr>';
+        }
+
+        $html .= '</table>';
+
+        // Steuerliche Hinweise für Angebote
+        if ($client->smallbusiness) {
+            $html .= '<div style="margin-top: 20px; font-size: 12px;">Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG</div>';
+        }
 
         // Signature Section
         $html .= '<div class="signature-section">
