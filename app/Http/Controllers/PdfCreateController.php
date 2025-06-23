@@ -731,6 +731,7 @@ class PdfCreateController extends Controller
         
         $clientColor = $client->color ?? '#000000';
         $headerTextColor = $clientColor !== '#000000' ? 'white' : 'black';
+        $fontSizes = $this->getFontSizes();
         
         $html = '<!DOCTYPE html>
 <html>
