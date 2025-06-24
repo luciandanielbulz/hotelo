@@ -26,7 +26,8 @@ class DashboardController extends Controller
 
         $this->addTileIfPermitted($tiles, $permissions, "view_customers", "/customer", "fa-solid fa-people-group", "Kunden", "#e0ebfc", "Kundenliste", 1);
         $this->addTileIfPermitted($tiles, $permissions, "view_offers", "/offer", "fa-regular fa-envelope", "Meine Angebote", "#e1ebfc", "Angeboteliste...", 3);
-        $this->addTileIfPermitted($tiles, $permissions, "view_invoices", "/invoice", "fa-solid fa-file-invoice", "Meine Rechnungen", "#fce8e8", "Liste der Zeitnachweise...", 5);
+        $this->addTileIfPermitted($tiles, $permissions, "view_invoices", "/invoice", "fa-solid fa-file-invoice", "Meine Rechnungen", "#fce8e8", "Liste der Zeitnachweise...", 4);
+        $this->addTileIfPermitted($tiles, $permissions, "view_invoice_uploads", "/invoiceupload/index", "fa-solid fa-file-arrow-up", "Rechnungs-Upload", "#e8f4fd", "Rechnungen hochladen und verwalten", 5);
         $this->addTileIfPermitted($tiles, $permissions, "view_sales_analysis", "/sales", "fa-solid fa-magnifying-glass-chart", "Umsatzauswertung", "#fce8e8", "Liste der Umsätze...", 6);
         $this->addTileIfPermitted($tiles, $permissions, "view_email_list", "/emaillist", "fa-solid fa-envelope-open-text", "E-Mail Liste", "#f8f9fa", "Hier werden die gesendeten Objekte angezeigt", 7);
         $this->addTileIfPermitted($tiles, $permissions, "manage_users", "/users", "fa-solid fa-user-gear", "Benutzerverwaltung", "#f0fcfc", "Benutzer werden hier bearbeitet", 9);

@@ -12,8 +12,8 @@ class RolePermissionSeeder extends Seeder
     public function run()
     {
         // Rollen erstellen oder existierende abrufen
-        $adminRole = Role::firstOrCreate(['name' => 'admin'], ['description' => 'Administrator mit vollen Rechten']);
-        $editorRole = Role::firstOrCreate(['name' => 'editor'], ['description' => 'Editor mit Bearbeitungsrechten']);
+        $adminRole = Role::firstOrCreate(['name' => 'Administrator'], ['description' => 'Administrator mit vollen Rechten']);
+        $editorRole = Role::firstOrCreate(['name' => 'Superuser'], ['description' => 'Editor mit Bearbeitungsrechten']);
 
         // Berechtigungen erstellen oder existierende abrufen
         $permissions = [
@@ -26,6 +26,7 @@ class RolePermissionSeeder extends Seeder
             'view_customers',
             'view_offers',
             'view_invoices',
+            'view_invoice_uploads',
             'view_sales_analysis',
             'view_email_list',
             'manage_users',
@@ -44,7 +45,7 @@ class RolePermissionSeeder extends Seeder
             $adminRole->permissions()->syncWithoutDetaching($permission->id);
 
             // Verknüpfung mit Editor-Rolle (nur bestimmte Berechtigungen)
-            if (in_array($permissionName, ['edit_posts', 'view_dashboard', 'view_customers', 'view_offers', 'view_invoices', 'edit_my_client_settings'])) {
+            if (in_array($permissionName, ['edit_posts', 'view_dashboard', 'view_customers', 'view_offers', 'view_invoices', 'view_invoice_uploads', 'edit_my_client_settings'])) {
                 $editorRole->permissions()->syncWithoutDetaching($permission->id);
             }
         }

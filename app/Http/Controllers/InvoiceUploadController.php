@@ -42,7 +42,11 @@ class InvoiceUploadController extends Controller
         // Prüfen ob Rechnung zum Client gehört
         $invoice = InvoiceUpload::where('client_id', $clientId)
             ->where('id', $id)
-            ->firstOrFail();
+            ->first();
+
+        if (!$invoice) {
+            abort(403, 'Sie haben keine Berechtigung, diese Rechnung zu bearbeiten.');
+        }
 
         // Beispiel: Felder validieren
         $validatedData = $request->validate([
@@ -166,7 +170,11 @@ class InvoiceUploadController extends Controller
         // Prüfen ob Rechnung zum Client gehört
         $invoice = InvoiceUpload::where('client_id', $clientId)
             ->where('id', $id)
-            ->firstOrFail();
+            ->first();
+
+        if (!$invoice) {
+            abort(403, 'Sie haben keine Berechtigung, diese Rechnung anzuzeigen.');
+        }
 
         return view('invoiceupload.show', compact('invoice'));
     }
