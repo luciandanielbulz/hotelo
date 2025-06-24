@@ -137,14 +137,11 @@
             <!-- Logo -->
             <div class="border-b border-gray-900/10 pb-6">
                 <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Logo</h3>
-                <div class="grid md:grid-cols-5 sm:grid-cols-1 pb-4 gap-x-6">
+                <div class="grid md:grid-cols-3 sm:grid-cols-1 pb-4 gap-x-6">
                     <div class="sm:col-span-2">
                         <label for="logo" class="block text-sm/6 font-medium text-gray-900 mb-1">Logo</label>
                         <div class="mt-1 flex items-center gap-x-3">
                             <input type="file" name="logo" id="logo" accept="image/jpeg,image/png,image/jpg,image/gif" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none @error('logo') border-red-500 @enderror" onchange="previewImage(this)">
-                            <div id="logo-preview" class="{{ $clients->logo ? '' : 'hidden' }}">
-                                <img id="preview" src="{{ $clients->logo ? asset('storage/logos/' . $clients->logo) : '#' }}" alt="Logo Vorschau" class="h-20 w-auto object-contain">
-                            </div>
                         </div>
                         @error('logo')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -152,11 +149,16 @@
                     </div>
 
                     <div class="sm:col-span-1">
-                        <x-input name="logoheight" type="number" placeholder="Höhe" label="Höhe" value="{{ old('logoheight', $clients->logoheight) }}" />
-                    </div>
-
-                    <div class="sm:col-span-1">
-                        <x-input name="logowidth" type="number" placeholder="Breite" label="Breite" value="{{ old('logowidth', $clients->logowidth) }}" />
+                        @if($clients->logo)
+                            <div class="mt-1">
+                                <p class="text-sm font-medium text-gray-900 mb-2">Aktuelles Logo:</p>
+                                <img src="{{ asset('storage/logos/' . $clients->logo) }}" alt="Aktuelles Logo" class="h-20 w-auto object-contain border rounded">
+                            </div>
+                        @endif
+                        <div id="logo-preview" class="hidden mt-2">
+                            <p class="text-sm font-medium text-gray-900 mb-2">Neues Logo:</p>
+                            <img id="preview" src="#" alt="Logo Vorschau" class="h-20 w-auto object-contain border rounded">
+                        </div>
                     </div>
                 </div>
             </div>
