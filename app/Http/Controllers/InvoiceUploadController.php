@@ -21,16 +21,12 @@ class InvoiceUploadController extends Controller
     public function edit($id)
     {
         $user = Auth::user();
-
         $clientId = $user->client_id;
 
-
-
-        $invoice = InvoiceUpload::where('invoice_uploads.client_id', $clientId)
-            ->where('invoice_uploads.id', $id)
-            ->first();
-            //->select('invoice_uploads.*', 'invoice_uploads.id as invoice_id');
-
+        // Prüfen ob Rechnung zum Client gehört
+        $invoice = InvoiceUpload::where('client_id', $clientId)
+            ->where('id', $id)
+            ->firstOrFail();
 
         // Hier kannst du ggf. weitere Daten laden,
         // etwa Dropdown-Werte oder ähnliches.
@@ -40,7 +36,13 @@ class InvoiceUploadController extends Controller
 
     public function update(Request $request, $id)
     {
-        $invoice = InvoiceUpload::findOrFail($id);
+        $user = Auth::user();
+        $clientId = $user->client_id;
+
+        // Prüfen ob Rechnung zum Client gehört
+        $invoice = InvoiceUpload::where('client_id', $clientId)
+            ->where('id', $id)
+            ->firstOrFail();
 
         // Beispiel: Felder validieren
         $validatedData = $request->validate([
@@ -158,24 +160,34 @@ class InvoiceUploadController extends Controller
     }
 
     public function show($id){
+        $user = Auth::user();
+        $clientId = $user->client_id;
 
-        $invoice = InvoiceUpload::findOrFail($id);
+        // Prüfen ob Rechnung zum Client gehört
+        $invoice = InvoiceUpload::where('client_id', $clientId)
+            ->where('id', $id)
+            ->firstOrFail();
 
         return view('invoiceupload.show', compact('invoice'));
     }
 
     public function filterByMonth($month)
     {
+        $user = Auth::user();
+        $clientId = $user->client_id;
+
         // Wandle den Monat in ein Carbon-Objekt um
         $month = \Carbon\Carbon::parse($month);
 
-        // Filtere Rechnungen nach Monat und Jahr
-        $invoiceuploads = InvoiceUpload::whereMonth('invoice_date', $month->month)
+        // Filtere Rechnungen nach Monat und Jahr - NUR eigene Client-Daten
+        $invoiceuploads = InvoiceUpload::where('client_id', $clientId)
+                                        ->whereMonth('invoice_date', $month->month)
                                         ->whereYear('invoice_date', $month->year)
                                         ->paginate(15);
 
         // Gib die gefilterten Rechnungen und die Monatsliste an die View zurück
         $months = InvoiceUpload::selectRaw('YEAR(invoice_date) as year, MONTH(invoice_date) as month')
+                            ->where('client_id', $clientId)       // wichtig, damit nur eigene Invoices berücksichtigt werden
                             ->distinct()
                             ->orderBy('invoice_date', 'desc')
                             ->get()
@@ -188,12 +200,26 @@ class InvoiceUploadController extends Controller
 
     public function show_invoice($id)
     {
-        $invoice = InvoiceUpload::findOrFail($id);
+        
+        $user = Auth::user();
+        $clientId = $user->client_id;
+        //dd($clientId);
+
+        // Prüfen ob Rechnung zum Client gehört
+        $invoice = InvoiceUpload::where('client_id', $clientId)
+            ->where('id', $id)
+            ->first();
+
+        if (!$invoice) {
+            abort(403, 'Sie haben keine Berechtigung, diese Rechnung anzuzeigen.');
+        }
+
+               //dd($invoice);
 
         $path = storage_path('app/' . $invoice->filepath);
 
         if (!file_exists($path)) {
-            abort(404);
+            abort(404, 'Die angeforderte Datei wurde nicht gefunden oder ist nicht verfügbar.');
         }
 
         return response()->file($path, [
@@ -203,6 +229,8 @@ class InvoiceUploadController extends Controller
 
     public function downloadZipForMonth($month)
     {
+        $user = Auth::user();
+        $clientId = $user->client_id;
 
         // 1) Monat parsen
         $parsedMonth = \Carbon\Carbon::parse($month);
@@ -227,9 +255,9 @@ class InvoiceUploadController extends Controller
             return back()->withErrors(['msg' => 'Fehler beim Erstellen der ZIP: ' . $res]);
         }
 
-        // 6) Beispieldateien hinzufügen
-        // Hier kannst Du z. B. alle Dateien laden, die in diesem Monat hochgeladen wurden:
-        $invoices = InvoiceUpload::whereYear('invoice_date', $parsedMonth->year)
+        // 6) Beispieldateien hinzufügen - NUR eigene Client-Daten
+        $invoices = InvoiceUpload::where('client_id', $clientId)
+            ->whereYear('invoice_date', $parsedMonth->year)
             ->whereMonth('invoice_date', $parsedMonth->month)
             ->get();
 
