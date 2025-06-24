@@ -137,11 +137,6 @@
                                             {{ __('Benutzer') }}
                                         </x-dropdown-link>
                                     @endif
-                                    @if(auth()->user()->hasPermission('view_clients'))
-                                        <x-dropdown-link :href="route('logos.index')" :active="request()->routeIs('users.index')">
-                                            {{ __('Logos') }}
-                                        </x-dropdown-link>
-                                    @endif
                                     @if(auth()->user()->hasPermission('edit_my_client_settings'))
                                         <x-dropdown-link :href="route('clients.my-settings')" :active="request()->routeIs('clients.my-settings')">
                                             {{ __('Firmen-Einstellungen') }}
