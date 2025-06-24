@@ -116,16 +116,8 @@ class ClientsController extends Controller
      */
     public function edit($client_id)
     {
-        $clients=Clients::where('clients.id','=',$client_id)
-            ->leftjoin('logos','clients.id','=','logos.client_id')
-            ->orderBy('clientname')
-            ->select('clients.*', 'logos.name as logo_name')
-            ->first();
-
+        $clients = Clients::findOrFail($client_id);
         $taxrates = Taxrates::all();
-
-
-
 
         //dd($clients);
         return view('clients.edit', compact('clients', 'taxrates'));

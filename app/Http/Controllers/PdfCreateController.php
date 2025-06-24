@@ -467,9 +467,10 @@ class PdfCreateController extends Controller
         $columnWidth = floor(100 / $columnCount);
         
         // Footer zusammenbauen
+        $fontSizes = $this->getFontSizes();
         $footer = '
             <div style="position: fixed; bottom: 0; left: 0; right: 0; padding: 10px; border-top: 0px solid #ccc; background: white;">
-                <table cellpadding="0" cellspacing="0" width="100%" style="font-size: 11px; color: grey">
+                <table cellpadding="0" cellspacing="0" width="100%" style="font-size: ' . $fontSizes['footer'] . '; color: grey">
                     <tr>';
         
         foreach ($columns as $column) {
@@ -630,7 +631,7 @@ class PdfCreateController extends Controller
                     <td style="font-weight: bold;">' . htmlspecialchars($position->designation);
                 
                 if ($position->details) {
-                    $html .= '<div style="font-size: 12px; font-weight: normal; color: #000; margin-top: 3px;">' . 
+                    $html .= '<div style="font-size: ' . $fontSizes['positions_details'] . '; font-weight: normal; color: #000; margin-top: 3px;">' . 
                              nl2br(htmlspecialchars($position->details)) . '</div>';
                 }
                 
@@ -708,9 +709,9 @@ class PdfCreateController extends Controller
 
         // Steuerliche Hinweise
         if ($client->smallbusiness) {
-            $html .= '<div style="margin-top: 20px; font-size: 12px;">Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG</div>';
+            $html .= '<div style="margin-top: 20px; font-size: ' . $fontSizes['tax_notice'] . ';">Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG</div>';
         } elseif ($reverseCharge) {
-            $html .= '<div style="margin-top: 20px; font-size: 12px;">Gemäß § 13b UStG liegt die Steuerschuldnerschaft beim Leistungsempfänger.</div>';
+            $html .= '<div style="margin-top: 20px; font-size: ' . $fontSizes['tax_notice'] . ';">Gemäß § 13b UStG liegt die Steuerschuldnerschaft beim Leistungsempfänger.</div>';
         }
 
         // Footer hinzufügen
@@ -740,34 +741,34 @@ class PdfCreateController extends Controller
     <title>Angebot ' . htmlspecialchars($offer->number) . '</title>
     <style>
         @page { margin: 10mm; }
-        body { font-family:  Roboto, sans-serif;font-size: 12px; line-height: 1.2; margin: 0; padding: 0; margin-bottom: 60px; }
+        body { font-family:  Roboto, sans-serif;font-size: ' . $fontSizes['base'] . '; line-height: 1.2; margin: 0; padding: 0; margin-bottom: 60px; }
         .header { width: 100%; position: relative; height: 110px; margin-bottom: 30px; }
         .logo { position: absolute; top: 0; left: 0; max-height: 50px; max-width: 150px; }
-        .company-info { position: absolute; top: 135px; left: 0; font-size: 8px; color: black; }
+        .company-info { position: absolute; top: 135px; left: 0; font-size: ' . $fontSizes['company_info'] . '; color: black; }
         
         .document-info { position: absolute; top: 150px; right: 0; width: 250px; text-align: right;}
-        .document-info table { width: 100%; border-collapse: collapse; font-size: 10px; }
+        .document-info table { width: 100%; border-collapse: collapse; font-size: ' . $fontSizes['document_info_small'] . '; }
         .document-info td { padding: 2px 5px;}
         
         .operation-info { position: absolute; top: 215px; right: 0; width: 250px; text-align: right;}
-        .operation-info table { width: 100%; border-collapse: collapse; font-size: 10px;}
+        .operation-info table { width: 100%; border-collapse: collapse; font-size: ' . $fontSizes['operation_info'] . ';}
         .operation-info td { padding: 2px 5px; }
         
-        .customer-address { margin: 20px 0; margin-top: 75px; width: 50%; font-size: 12px;}
+        .customer-address { margin: 20px 0; margin-top: 75px; width: 50%; font-size: ' . $fontSizes['customer_address'] . ';}
         .customer-address table { width: 100%; border-collapse: collapse; }
         .customer-address td { padding: 2px 0; border: none; }
-        .document-title { font-size: 20px; font-weight: bold; margin: 30px 0 15px 0; margin-top: 50px; color: ' . $clientColor . '; }
-        .intro-text { margin: 15px 0; font-size: 12px;}
+        .document-title { font-size: ' . $fontSizes['document_title'] . '; font-weight: bold; margin: 30px 0 15px 0; margin-top: 50px; color: ' . $clientColor . '; }
+        .intro-text { margin: 15px 0; font-size: ' . $fontSizes['intro_text'] . ';}
         .positions-table { width: 100%; border-collapse: collapse; margin: 20px 0; margin-top: 0px; }
         .positions-header { background-color: ' . $clientColor . '; color: ' . $headerTextColor . '; font-weight: bold; }
-        .positions-header td { padding: 5px; font-size: 12px; }
-        .positions-body td { padding: 5px; vertical-align: top; font-size: 12px; }
+        .positions-header td { padding: 5px; font-size: ' . $fontSizes['positions_header'] . '; }
+        .positions-body td { padding: 5px; vertical-align: top; font-size: ' . $fontSizes['positions_body'] . '; }
         .totals-table { width: 100%; border-collapse: collapse; border-top: 1px solid ' . $clientColor . '}
-        .totals-table td { padding: 3px 5px; font-size: 12px; }
-        .total-final { font-weight: bold; color: ' . $clientColor . '; font-size: 12px; }
+        .totals-table td { padding: 3px 5px; font-size: ' . $fontSizes['totals'] . '; }
+        .total-final { font-weight: bold; color: ' . $clientColor . '; font-size: ' . $fontSizes['totals'] . '; }
         .text-right { text-align: right; }
         .text-center { text-align: center; }
-        .signature-section { margin-top: 40px; font-size: 10px; }
+        .signature-section { margin-top: 40px; font-size: ' . $fontSizes['signature'] . '; }
         .signature-line { margin-top: 30px; border-bottom: 1px solid black; width: 300px; height: 20px; }
     </style>
 </head>
@@ -789,10 +790,10 @@ class PdfCreateController extends Controller
                  htmlspecialchars($client->location) . '</div>';
         
         $html .= '<div class="document-info">
-            <table style="font-size: 14px;">
+            <table style="font-size: ' . $fontSizes['document_info_large'] . ';">
                 <tr><td class="text-left">Angebots-Nr.</td><td class="text-right">' . htmlspecialchars(($client->offer_prefix ?? '') . $offer->number) . '</td></tr>
             </table>
-            <table style="font-size: 10px;">
+            <table style="font-size: ' . $fontSizes['document_info_small'] . ';">
                 <tr><td class="text-left">Angebotsdatum</td><td class="text-right">' . htmlspecialchars($formattedDate) . '</td></tr>
                 <tr><td class="text-left">Gültigkeitsdauer</td><td class="text-right">3 Wochen</td></tr>
             </table>
@@ -851,7 +852,7 @@ class PdfCreateController extends Controller
                     <td style="font-weight: bold;">' . htmlspecialchars($position->designation);
                 
                 if ($position->details) {
-                    $html .= '<div style="font-size: 12px; font-weight: normal; color: #000; margin-top: 3px;">' . 
+                    $html .= '<div style="font-size: ' . $fontSizes['positions_details'] . '; font-weight: normal; color: #000; margin-top: 3px;">' . 
                              nl2br(htmlspecialchars($position->details)) . '</div>';
                 }
                 
@@ -904,7 +905,7 @@ class PdfCreateController extends Controller
 
         // Steuerliche Hinweise für Angebote
         if ($client->smallbusiness) {
-            $html .= '<div style="margin-top: 20px; font-size: 12px;">Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG</div>';
+            $html .= '<div style="margin-top: 20px; font-size: ' . $fontSizes['tax_notice'] . ';">Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG</div>';
         }
 
         // Signature Section
