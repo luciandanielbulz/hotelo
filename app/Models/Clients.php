@@ -26,8 +26,6 @@ class Clients extends Model
         'bic',
         'smallbusiness',
         'logo',
-        'logoheight',
-        'logowidth',
         'signature',
         'style',
         'lastoffer',

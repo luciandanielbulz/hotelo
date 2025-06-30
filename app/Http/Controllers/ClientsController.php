@@ -90,8 +90,6 @@ class ClientsController extends Controller
             'bic'            => ['required', 'string'],
             'smallbusiness'  => ['required', 'boolean'],
             'logo'           => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'logoheight'     => ['nullable', 'integer', 'max:500'],
-            'logowidth'      => ['nullable', 'integer', 'max:500'],
             'signature'      => ['nullable', 'string', 'max:1000'],
             'style'          => ['nullable', 'string', 'max:500'],
             'lastoffer'      => ['required', 'integer'],
@@ -181,8 +179,6 @@ class ClientsController extends Controller
             'bic' => ['required', 'string'],
             'smallbusiness' => ['required', 'boolean'],
             'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'logoheight' => ['nullable', 'integer', 'max:500'],
-            'logowidth' => ['nullable', 'integer', 'max:500'],
             'signature' => ['nullable', 'string', 'max:1000'],
             'style' => ['nullable', 'string', 'max:500'],
             'lastoffer' => ['required', 'integer'],
@@ -235,8 +231,6 @@ class ClientsController extends Controller
             $client->vat_number = $validatedData['vat_number'];
             $client->bic = $validatedData['bic'];
             $client->smallbusiness = $validatedData['smallbusiness'];
-            $client->logoheight = $validatedData['logoheight'];
-            $client->logowidth = $validatedData['logowidth'];
             $client->signature = $validatedData['signature'];
             $client->style = $validatedData['style'];
             $client->lastoffer = $validatedData['lastoffer'];
@@ -317,8 +311,6 @@ class ClientsController extends Controller
             'bic' => ['required', 'string'],
             'smallbusiness' => ['required', 'boolean'],
             'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'logoheight' => ['nullable', 'integer', 'max:500'],
-            'logowidth' => ['nullable', 'integer', 'max:500'],
             'signature' => ['nullable', 'string', 'max:1000'],
             'style' => ['nullable', 'string', 'max:500'],
             'lastoffer' => ['required', 'integer'],
@@ -366,8 +358,6 @@ class ClientsController extends Controller
             $client->vat_number = $validatedData['vat_number'];
             $client->bic = $validatedData['bic'];
             $client->smallbusiness = $validatedData['smallbusiness'];
-            $client->logoheight = $validatedData['logoheight'];
-            $client->logowidth = $validatedData['logowidth'];
             $client->signature = $validatedData['signature'];
             $client->style = $validatedData['style'];
             $client->lastoffer = $validatedData['lastoffer'];
