@@ -1,4 +1,86 @@
 <x-layout>
+    <!-- Versionshinweis (Ausklapbar) -->
+    <div class="mb-6">
+        <div class="bg-blue-50 border border-blue-200 rounded-lg overflow-hidden">
+            <!-- Kompakte Anzeige -->
+            <button type="button" 
+                    class="w-full p-3 flex justify-between items-center hover:bg-blue-100 transition-colors"
+                    onclick="toggleVersionInfo()">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-4 w-4 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-2">
+                        <span class="text-sm font-medium text-blue-800">
+                            Version {{ $clients->version }}
+                            @if($clients->is_active)
+                                <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 ml-1">
+                                    Aktiv
+                                </span>
+                            @endif
+                        </span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="text-xs text-blue-600">Details anzeigen</span>
+                    <svg id="version-chevron" class="h-4 w-4 text-blue-500 transform transition-transform duration-200" 
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </div>
+            </button>
+            
+            <!-- Erweiterte Details (standardmäßig versteckt) -->
+            <div id="version-details" class="hidden border-t border-blue-200 bg-blue-25 p-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="text-sm font-medium text-blue-800 mb-2">Versionsinformationen</h4>
+                        <div class="space-y-1 text-sm text-blue-700">
+                            <p><span class="font-medium">Aktuelle Version:</span> {{ $clients->version }}</p>
+                            <p><span class="font-medium">Gültig seit:</span> {{ $clients->valid_from->format('d.m.Y H:i') }}</p>
+                            @if(!$clients->is_active)
+                                <p><span class="font-medium">Status:</span> <span class="text-amber-600">Archiviert</span></p>
+                            @endif
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col justify-center">
+                        <div class="space-y-2">
+                            <a href="{{ route('clients.versions', $clients) }}" 
+                               class="inline-flex items-center justify-center px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Versionshistorie anzeigen
+                            </a>
+                            
+                            <div class="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded text-center">
+                                <span class="font-medium">Hinweis:</span> Änderungen erstellen Version {{ $clients->version + 1 }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function toggleVersionInfo() {
+        const details = document.getElementById('version-details');
+        const chevron = document.getElementById('version-chevron');
+        
+        if (details.classList.contains('hidden')) {
+            details.classList.remove('hidden');
+            chevron.style.transform = 'rotate(180deg)';
+        } else {
+            details.classList.add('hidden');
+            chevron.style.transform = 'rotate(0deg)';
+        }
+    }
+    </script>
+
     <div class="grid grid-cols-1 gap-x-8 border-b border-gray-900/10 pb-12 md:grid-cols-7 sm:grid-cols-1">
         <!-- Linke Spalte: Überschrift -->
         <div class="py-2 px-4 sm:px-0">

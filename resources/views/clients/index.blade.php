@@ -40,8 +40,14 @@
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $client->address }}</td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $client->postalcode }} - {{ $client->location }}</td>
                                     <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $client->email }}</td>
-                                    <td class="text-right whitespace-nowrap px-3 py-4 text-sm">
-                                        <a href="{{ route('clients.edit', $client->id) }}" class="rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">Bearbeiten</a>
+                                    <td class="text-right whitespace-nowrap px-3 py-4 text-sm space-x-2">
+                                        <a href="{{ route('clients.edit', $client->id) }}" class="rounded-md bg-blue-100 px-3 py-2 text-sm font-semibold text-blue-700 shadow-sm hover:bg-blue-200">Bearbeiten</a>
+                                        <a href="{{ route('clients.versions', $client->id) }}" class="rounded-md bg-gray-100 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
+                                            Versionen 
+                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-gray-200 text-gray-700 ml-1">
+                                                v{{ $client->version }}
+                                            </span>
+                                        </a>
                                     </td>
                                 </tr>
                             @empty

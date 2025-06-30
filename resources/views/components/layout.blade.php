@@ -58,8 +58,10 @@
             <br>
             <br>
         </div>
-        @livewireScripts
-
+    </div>
+    </main>
+    
+    @livewireScripts
+    @stack('scripts')
 </body>
-@stack('scripts')
 </html>

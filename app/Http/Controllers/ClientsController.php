@@ -8,6 +8,7 @@ use App\Models\Taxrates;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class ClientsController extends Controller
 {
@@ -50,8 +51,9 @@ class ClientsController extends Controller
      */
     public function index()
     {
-
-        $clients=Clients::orderBy('clientname')
+        // Nur aktive Clients anzeigen (neueste Versionen)
+        $clients = Clients::active()
+            ->orderBy('clientname')
             ->paginate(15);
         //dd($clients);
         return view('clients.index', compact('clients'));
@@ -198,59 +200,34 @@ class ClientsController extends Controller
 
         try {
             // Client-Objekt ist bereits durch Route Model Binding verfügbar
-            Log::info('Client Update gestartet für ID: ' . $client->id);
+            Log::info('Client Update gestartet für ID: ' . $client->id . ' (Version: ' . $client->version . ')');
+
+            // Bereite die neuen Daten vor
+            $newData = $validatedData;
 
             // Logo hochladen, falls vorhanden
             if ($request->hasFile('logo')) {
                 Log::info('Logo-Datei gefunden im Update, starte Upload...');
                 $logoName = $this->uploadLogo($request->file('logo'));
                 if ($logoName) {
-                    $client->logo = $logoName;
-                    Log::info('Logo wurde dem Client-Objekt zugewiesen: ' . $logoName);
+                    $newData['logo'] = $logoName;
+                    Log::info('Logo wurde für neue Version vorbereitet: ' . $logoName);
                 } else {
                     return redirect()->back()->withErrors(['logo' => 'Logo konnte nicht hochgeladen werden.'])->withInput();
                 }
             } else {
                 Log::info('Keine Logo-Datei im Request gefunden');
+                // Behalte das aktuelle Logo für die neue Version
+                $newData['logo'] = $client->logo;
             }
 
-            // Aktualisiere die restlichen Felder
-            $client->clientname = $validatedData['clientname'];
-            $client->companyname = $validatedData['companyname'];
-            $client->business = $validatedData['business'];
-            $client->address = $validatedData['address'];
-            $client->postalcode = $validatedData['postalcode'];
-            $client->location = $validatedData['location'];
-            $client->email = $validatedData['email'];
-            $client->phone = $validatedData['phone'];
-            $client->tax_id = $validatedData['tax_id'];
-            $client->webpage = $validatedData['webpage'];
-            $client->bank = $validatedData['bank'];
-            $client->accountnumber = $validatedData['accountnumber'];
-            $client->vat_number = $validatedData['vat_number'];
-            $client->bic = $validatedData['bic'];
-            $client->smallbusiness = $validatedData['smallbusiness'];
-            $client->signature = $validatedData['signature'];
-            $client->style = $validatedData['style'];
-            $client->lastoffer = $validatedData['lastoffer'];
-            $client->offermultiplikator = $validatedData['offermultiplikator'];
-            $client->lastinvoice = $validatedData['lastinvoice'];
-            $client->invoicemultiplikator = $validatedData['invoicemultiplikator'];
-            $client->max_upload_size = $validatedData['max_upload_size'];
-            $client->company_registration_number = $validatedData['company_registration_number'];
-            $client->tax_number = $validatedData['tax_number'];
-            $client->management = $validatedData['management'];
-            $client->regional_court = $validatedData['regional_court'];
-            $client->color = $validatedData['color'];
-            $client->invoice_number_format = $validatedData['invoice_number_format'];
-            $client->invoice_prefix = $validatedData['invoice_prefix'] ?? null;
-            $client->offer_prefix = $validatedData['offer_prefix'] ?? null;
-
-            $client->save();
-            Log::info('Client erfolgreich gespeichert mit Logo: ' . $client->logo);
+            // Erstelle eine neue Version des Clients
+            $newVersion = $client->createNewVersion($newData);
+            
+            Log::info('Neue Client-Version erstellt: ID ' . $newVersion->id . ' (Version: ' . $newVersion->version . ')');
 
             // Erfolgreiche Aktualisierung, Weiterleitung zur Übersicht
-            return redirect()->route('clients.index')->with('success', 'Klient erfolgreich aktualisiert.');
+            return redirect()->route('clients.index')->with('success', 'Neue Client-Version (v' . $newVersion->version . ') erfolgreich erstellt.');
         } catch (\Exception $e) {
             // Fehlerbehandlung und Logging
             Log::error('Fehler beim Aktualisieren des Klienten: ' . $e->getMessage(), [
@@ -269,6 +246,127 @@ class ClientsController extends Controller
     public function destroy(Clients $clients)
     {
         //
+    }
+
+    /**
+     * Zeigt die Versionshistorie eines Clients
+     */
+    public function showVersionHistory(Clients $client)
+    {
+        // Hole alle Versionen dieses Clients
+        $versions = $client->allVersions()->get();
+        
+        return view('clients.version-history', compact('client', 'versions'));
+    }
+
+    /**
+     * Zeigt eine spezifische Version eines Clients
+     */
+    public function showVersion(Clients $client, $version)
+    {
+        $parentId = $client->parent_client_id ?? $client->id;
+        
+        $specificVersion = Clients::where(function($query) use ($parentId) {
+                                    $query->where('id', $parentId)
+                                          ->orWhere('parent_client_id', $parentId);
+                                })
+                                ->where('version', $version)
+                                ->firstOrFail();
+                                
+        return view('clients.show-version', compact('specificVersion', 'client'));
+    }
+
+    /**
+     * Löscht eine spezifische Version eines Clients
+     */
+    public function deleteVersion(Clients $client, $version)
+    {
+        $parentId = $client->parent_client_id ?? $client->id;
+        
+        // Finde die zu löschende Version
+        $versionToDelete = Clients::where(function($query) use ($parentId) {
+                                    $query->where('id', $parentId)
+                                          ->orWhere('parent_client_id', $parentId);
+                                })
+                                ->where('version', $version)
+                                ->firstOrFail();
+
+        try {
+            DB::beginTransaction();
+
+            // Sicherheitsprüfungen
+            $this->validateVersionDeletion($versionToDelete, $parentId);
+
+            Log::info('Lösche Client-Version: ID ' . $versionToDelete->id . ' (Version: ' . $version . ')');
+
+            // Wenn es die aktive Version ist, mache die vorherige Version aktiv
+            if ($versionToDelete->is_active) {
+                $this->reactivatePreviousVersion($parentId, $version);
+            }
+
+            // Lösche die Version
+            $versionToDelete->delete();
+
+            DB::commit();
+
+            return redirect()->route('clients.versions', $client->id)
+                           ->with('success', 'Version ' . $version . ' wurde erfolgreich gelöscht.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Fehler beim Löschen der Client-Version: ' . $e->getMessage());
+            
+            return redirect()->back()
+                           ->withErrors(['error' => 'Fehler beim Löschen: ' . $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Validiert ob eine Version gelöscht werden kann
+     */
+    private function validateVersionDeletion($versionToDelete, $parentId)
+    {
+        // Prüfe ob es die einzige Version ist
+        $totalVersions = Clients::where(function($query) use ($parentId) {
+                                    $query->where('id', $parentId)
+                                          ->orWhere('parent_client_id', $parentId);
+                                })->count();
+
+        if ($totalVersions <= 1) {
+            throw new \Exception('Die einzige Version eines Clients kann nicht gelöscht werden.');
+        }
+
+        // TODO: Hier könnten später Prüfungen hinzugefügt werden, ob die Version
+        // bereits in Rechnungen oder Angeboten verwendet wird
+        // Beispiel:
+        // $usedInInvoices = Invoice::where('client_version_id', $versionToDelete->id)->exists();
+        // if ($usedInInvoices) {
+        //     throw new \Exception('Diese Version kann nicht gelöscht werden, da sie bereits in Rechnungen verwendet wird.');
+        // }
+    }
+
+    /**
+     * Reaktiviert die vorherige Version wenn die aktive Version gelöscht wird
+     */
+    private function reactivatePreviousVersion($parentId, $deletedVersion)
+    {
+        // Finde die höchste Version die kleiner als die gelöschte Version ist
+        $previousVersion = Clients::where(function($query) use ($parentId) {
+                                    $query->where('id', $parentId)
+                                          ->orWhere('parent_client_id', $parentId);
+                                })
+                                ->where('version', '<', $deletedVersion)
+                                ->orderBy('version', 'desc')
+                                ->first();
+
+        if ($previousVersion) {
+            $previousVersion->update([
+                'is_active' => true,
+                'valid_to' => null
+            ]);
+            
+            Log::info('Version ' . $previousVersion->version . ' wurde reaktiviert als aktive Version');
+        }
     }
 
     /**
