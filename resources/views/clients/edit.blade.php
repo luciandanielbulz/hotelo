@@ -117,7 +117,6 @@
 
             <!-- Versteckte Felder -->
             <input type="hidden" name="style" value="{{ old('style', $clients->style) }}">
-            <input type="hidden" name="id" value="{{ $clients->id }}">
 
             <!-- Signatur -->
             <div class="border-b border-gray-900/10 pb-6">

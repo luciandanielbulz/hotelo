@@ -165,7 +165,6 @@ class ClientsController extends Controller
     {
         // Validierung der Eingabedaten - AUSSERHALB des try-catch!
         $validatedData = $request->validate([
-            'id' => ['required', 'integer'],
             'clientname' => ['required', 'string', 'max:50'],
             'companyname' => ['required', 'string', 'max:200', 'min:1'],
             'business' => ['required', 'string', 'max:100'],
@@ -202,17 +201,22 @@ class ClientsController extends Controller
         ]);
 
         try {
-            // Aktualisierung des Klienten
-            $client = Clients::findOrFail($validatedData['id']);
+            // Verwende das bereits durch Route Model Binding bereitgestellte Client-Objekt
+            $client = $clients;
+            Log::info('Client Update gestartet für ID: ' . $client->id);
 
             // Logo hochladen, falls vorhanden
             if ($request->hasFile('logo')) {
+                Log::info('Logo-Datei gefunden im Update, starte Upload...');
                 $logoName = $this->uploadLogo($request->file('logo'));
                 if ($logoName) {
                     $client->logo = $logoName;
+                    Log::info('Logo wurde dem Client-Objekt zugewiesen: ' . $logoName);
                 } else {
                     return redirect()->back()->withErrors(['logo' => 'Logo konnte nicht hochgeladen werden.'])->withInput();
                 }
+            } else {
+                Log::info('Keine Logo-Datei im Request gefunden');
             }
 
             // Aktualisiere die restlichen Felder
@@ -250,6 +254,7 @@ class ClientsController extends Controller
             $client->offer_prefix = $validatedData['offer_prefix'] ?? null;
 
             $client->save();
+            Log::info('Client erfolgreich gespeichert mit Logo: ' . $client->logo);
 
             // Erfolgreiche Aktualisierung, Weiterleitung zur Übersicht
             return redirect()->route('clients.index')->with('success', 'Klient erfolgreich aktualisiert.');
