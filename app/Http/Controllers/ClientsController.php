@@ -147,9 +147,9 @@ class ClientsController extends Controller
     /** 
      * Show the form for editing the specified resource.
      */
-    public function edit($client_id)
+    public function edit(Clients $client)
     {
-        $clients = Clients::findOrFail($client_id);
+        $clients = $client; // Für Konsistenz mit der Blade-Vorlage
         $taxrates = Taxrates::all();
 
         //dd($clients);
@@ -159,7 +159,7 @@ class ClientsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Clients $clients)
+    public function update(Request $request, Clients $client)
     {
         // Validierung der Eingabedaten - AUSSERHALB des try-catch!
         $validatedData = $request->validate([
@@ -197,8 +197,7 @@ class ClientsController extends Controller
         ]);
 
         try {
-            // Verwende das bereits durch Route Model Binding bereitgestellte Client-Objekt
-            $client = $clients;
+            // Client-Objekt ist bereits durch Route Model Binding verfügbar
             Log::info('Client Update gestartet für ID: ' . $client->id);
 
             // Logo hochladen, falls vorhanden
