@@ -7,9 +7,44 @@ use Illuminate\Http\Request;
 use App\Models\Taxrates;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ClientsController extends Controller
 {
+    /**
+     * Logo hochladen und Verzeichnis erstellen falls nötig
+     * 
+     * @param \Illuminate\Http\UploadedFile $file
+     * @return string|false Logo-Dateiname oder false bei Fehler
+     */
+    private function uploadLogo($file)
+    {
+        try {
+            // Stelle sicher, dass das logos Verzeichnis existiert
+            if (!Storage::disk('public')->exists('logos')) {
+                Storage::disk('public')->makeDirectory('logos');
+                Log::info('Logos Verzeichnis erstellt');
+            }
+
+            // Generiere einen eindeutigen Dateinamen
+            $logoName = time() . '_' . $file->getClientOriginalName();
+            
+            // Speichere das Logo
+            $logoPath = $file->storeAs('logos', $logoName, 'public');
+            
+            if ($logoPath) {
+                Log::info('Logo erfolgreich hochgeladen: ' . $logoName);
+                return $logoName;
+            } else {
+                Log::error('Logo Upload fehlgeschlagen');
+                return false;
+            }
+        } catch (\Exception $e) {
+            Log::error('Fehler beim Logo Upload: ' . $e->getMessage());
+            return false;
+        }
+    }
+
     /**
      * Display a listing of the resourc
      */
@@ -77,12 +112,12 @@ class ClientsController extends Controller
         try {
             // Logo hochladen, falls vorhanden
             if ($request->hasFile('logo')) {
-                // Generiere einen eindeutigen Dateinamen
-                $logoName = time() . '_' . $request->file('logo')->getClientOriginalName();
-                // Speichere das Logo im public/logos Verzeichnis
-                $request->file('logo')->storeAs('logos', $logoName, 'public');
-                // Speichere nur den Dateinamen in der Datenbank
-                $validatedData['logo'] = $logoName;
+                $logoName = $this->uploadLogo($request->file('logo'));
+                if ($logoName) {
+                    $validatedData['logo'] = $logoName;
+                } else {
+                    return redirect()->back()->withErrors(['logo' => 'Logo konnte nicht hochgeladen werden.'])->withInput();
+                }
             }
 
             // Neuen Klienten erstellen
@@ -172,12 +207,12 @@ class ClientsController extends Controller
 
             // Logo hochladen, falls vorhanden
             if ($request->hasFile('logo')) {
-                // Generiere einen eindeutigen Dateinamen
-                $logoName = time() . '_' . $request->file('logo')->getClientOriginalName();
-                // Speichere das Logo im public/logos Verzeichnis
-                $request->file('logo')->storeAs('logos', $logoName, 'public');
-                // Speichere nur den Dateinamen in der Datenbank
-                $client->logo = $logoName;
+                $logoName = $this->uploadLogo($request->file('logo'));
+                if ($logoName) {
+                    $client->logo = $logoName;
+                } else {
+                    return redirect()->back()->withErrors(['logo' => 'Logo konnte nicht hochgeladen werden.'])->withInput();
+                }
             }
 
             // Aktualisiere die restlichen Felder
@@ -302,12 +337,12 @@ class ClientsController extends Controller
 
             // Logo hochladen, falls vorhanden
             if ($request->hasFile('logo')) {
-                // Generiere einen eindeutigen Dateinamen
-                $logoName = time() . '_' . $request->file('logo')->getClientOriginalName();
-                // Speichere das Logo im public/logos Verzeichnis
-                $request->file('logo')->storeAs('logos', $logoName, 'public');
-                // Speichere nur den Dateinamen in der Datenbank
-                $client->logo = $logoName;
+                $logoName = $this->uploadLogo($request->file('logo'));
+                if ($logoName) {
+                    $client->logo = $logoName;
+                } else {
+                    return redirect()->back()->withErrors(['logo' => 'Logo konnte nicht hochgeladen werden.'])->withInput();
+                }
             }
 
             // Aktualisiere die restlichen Felder
