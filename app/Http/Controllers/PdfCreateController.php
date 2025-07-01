@@ -266,7 +266,13 @@ class PdfCreateController extends Controller
             $client = Clients::where('id', $offer->client_version_id)->first();
         } else {
             // Fallback: Verwende aktuelle aktive Version (für alte Angebote ohne client_version_id)
-            $client = Clients::active()->where('id', $clientId)->first();
+            $userClient = Clients::find($clientId);
+            $client = $userClient ? $userClient->getCurrentVersion() : null;
+        }
+
+        // Sicherheitsprüfung: Client muss existieren
+        if (!$client) {
+            throw new \Exception('Client-Daten für Angebot nicht gefunden. Offer ID: ' . $objectId . ', Client ID: ' . $clientId);
         }
 
         // Lade Client-Settings (Präfixe und andere statische Daten)
@@ -327,7 +333,13 @@ class PdfCreateController extends Controller
             $client = Clients::where('id', $invoice->client_version_id)->first();
         } else {
             // Fallback: Verwende aktuelle aktive Version (für alte Rechnungen ohne client_version_id)
-            $client = Clients::active()->where('id', $clientId)->first();
+            $userClient = Clients::find($clientId);
+            $client = $userClient ? $userClient->getCurrentVersion() : null;
+        }
+
+        // Sicherheitsprüfung: Client muss existieren
+        if (!$client) {
+            throw new \Exception('Client-Daten für Rechnung nicht gefunden. Invoice ID: ' . $objectId . ', Client ID: ' . $clientId);
         }
 
         // Lade Client-Settings (Präfixe und andere statische Daten)
