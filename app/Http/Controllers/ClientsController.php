@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Clients;
+use App\Models\ClientSettings;
 use Illuminate\Http\Request;
 use App\Models\Taxrates;
 use Illuminate\Support\Facades\Log;
@@ -51,6 +52,7 @@ class ClientsController extends Controller
      */
     public function index()
     {
+        
         // Nur aktive Clients anzeigen (neueste Versionen)
         $clients = Clients::active()
             ->orderBy('clientname')
@@ -76,56 +78,92 @@ class ClientsController extends Controller
     {
         // Validierung der Eingabedaten
         $validatedData = $request->validate([
-            'clientname'     => ['required', 'string', 'max:50'],
-            'companyname'    => ['required', 'string', 'max:200'],
-            'business'       => ['required', 'string', 'max:100'],
-            'address'        => ['required', 'string', 'max:200'],
-            'postalcode'     => ['required', 'integer'],
-            'location'       => ['required', 'string', 'max:200'],
-            'email'          => ['required', 'email', 'max:200'],
-            'phone'          => ['required', 'string', 'max:200'],
-            'tax_id'         => ['required', 'integer', 'exists:taxrates,id'],
-            'webpage'        => ['nullable', 'string', 'max:30'],
-            'bank'           => ['required', 'string', 'max:200'],
-            'accountnumber'  => ['required', 'string', 'max:200'],
-            'vat_number'     => ['nullable', 'string'],
-            'bic'            => ['required', 'string'],
-            'smallbusiness'  => ['required', 'boolean'],
-            'logo'           => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
-            'signature'      => ['nullable', 'string', 'max:1000'],
-            'style'          => ['nullable', 'string', 'max:500'],
-            'lastoffer'      => ['required', 'integer'],
-            'offermultiplikator' => ['required', 'integer'],
-            'lastinvoice'    => ['required', 'integer'],
-            'invoicemultiplikator' => ['required', 'integer'],
-            'max_upload_size' => ['required', 'integer'],
+            // Client-Daten (versioniert)
+            'clientname' => ['required', 'string', 'max:50'],
+            'companyname' => ['required', 'string', 'max:200'],
+            'business' => ['required', 'string', 'max:100'],
+            'address' => ['required', 'string', 'max:200'],
+            'postalcode' => ['required', 'integer'],
+            'location' => ['required', 'string', 'max:200'],
+            'email' => ['required', 'email', 'max:200'],
+            'phone' => ['required', 'string', 'max:200'],
+            'tax_id' => ['required', 'integer', 'exists:taxrates,id'],
+            'webpage' => ['nullable', 'string', 'max:30'],
+            'bank' => ['required', 'string', 'max:200'],
+            'accountnumber' => ['required', 'string', 'max:200'],
+            'vat_number' => ['nullable', 'string'],
+            'bic' => ['required', 'string'],
+            'smallbusiness' => ['required', 'boolean'],
+            'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
+            'signature' => ['nullable', 'string', 'max:1000'],
+            'style' => ['nullable', 'string', 'max:500'],
             'company_registration_number' => ['nullable', 'string', 'max:100'],
             'tax_number' => ['nullable', 'string', 'max:100'],
             'management' => ['nullable', 'string', 'max:200'],
             'regional_court' => ['nullable', 'string', 'max:200'],
             'color' => ['nullable', 'string', 'max:7'],
+            
+            // ClientSettings-Daten (statisch)
+            'lastoffer' => ['required', 'integer'],
+            'offermultiplikator' => ['required', 'integer'],
+            'lastinvoice' => ['required', 'integer'],
+            'invoicemultiplikator' => ['required', 'integer'],
+            'max_upload_size' => ['required', 'integer'],
             'invoice_number_format' => ['nullable', 'string', 'max:50'],
             'invoice_prefix' => ['nullable', 'string', 'max:10'],
             'offer_prefix' => ['nullable', 'string', 'max:10'],
         ]);
 
         try {
+            DB::beginTransaction();
+            
+            // 1. Client-Daten trennen
+            $clientData = collect($validatedData)->except([
+                'lastoffer', 'offermultiplikator', 'lastinvoice', 
+                'invoicemultiplikator', 'invoice_number_format', 
+                'max_upload_size', 'invoice_prefix', 'offer_prefix'
+            ])->toArray();
+
             // Logo hochladen, falls vorhanden
             if ($request->hasFile('logo')) {
                 $logoName = $this->uploadLogo($request->file('logo'));
                 if ($logoName) {
-                    $validatedData['logo'] = $logoName;
+                    $clientData['logo'] = $logoName;
                 } else {
+                    DB::rollBack();
                     return redirect()->back()->withErrors(['logo' => 'Logo konnte nicht hochgeladen werden.'])->withInput();
                 }
             }
 
-            // Neuen Klienten erstellen
-            Clients::create($validatedData);
+            // 2. Neuen Client erstellen (erste Version)
+            $clientData['is_active'] = true;
+            $clientData['version'] = 1;
+            $clientData['valid_from'] = now();
+            $clientData['valid_to'] = null;
+            $clientData['parent_client_id'] = null;
+            
+            $client = Clients::create($clientData);
+
+            // 3. ClientSettings erstellen
+            ClientSettings::create([
+                'client_id' => $client->id,
+                'lastinvoice' => $validatedData['lastinvoice'],
+                'lastoffer' => $validatedData['lastoffer'],
+                'invoicemultiplikator' => $validatedData['invoicemultiplikator'],
+                'offermultiplikator' => $validatedData['offermultiplikator'],
+                'invoice_number_format' => $validatedData['invoice_number_format'],
+                'max_upload_size' => $validatedData['max_upload_size'],
+                'invoice_prefix' => $validatedData['invoice_prefix'],
+                'offer_prefix' => $validatedData['offer_prefix'],
+            ]);
+
+            DB::commit();
 
             // Erfolgreiche Erstellung, Weiterleitung zur Übersicht
             return redirect()->route('clients.index')->with('success', 'Klient erfolgreich erstellt.');
         } catch (\Exception $e) {
+            DB::rollBack();
+            
             // Fehlerbehandlung und Logging
             Log::error('Fehler beim Erstellen des Klienten: ' . $e->getMessage(), [
                 'request_data' => $request->all(),
@@ -154,17 +192,18 @@ class ClientsController extends Controller
         $clients = $client; // Für Konsistenz mit der Blade-Vorlage
         $taxrates = Taxrates::all();
 
-        //dd($clients);
         return view('clients.edit', compact('clients', 'taxrates'));
     }
 
     /**
      * Update the specified resource in storage.
+     * Behandelt sowohl versionierte Daten (Client) als auch statische Daten (ClientSettings)
      */
     public function update(Request $request, Clients $client)
     {
-        // Validierung der Eingabedaten - AUSSERHALB des try-catch!
+        // Validierung der Eingabedaten - getrennt für Client und Settings
         $validatedData = $request->validate([
+            // Client-Daten (versioniert)
             'clientname' => ['required', 'string', 'max:50'],
             'companyname' => ['required', 'string', 'max:200', 'min:1'],
             'business' => ['required', 'string', 'max:100'],
@@ -183,52 +222,70 @@ class ClientsController extends Controller
             'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'signature' => ['nullable', 'string', 'max:1000'],
             'style' => ['nullable', 'string', 'max:500'],
-            'lastoffer' => ['required', 'integer'],
-            'offermultiplikator' => ['required', 'integer'],
-            'lastinvoice' => ['required', 'integer'],
-            'invoicemultiplikator' => ['required', 'integer'],
-            'max_upload_size' => ['required', 'integer'],
             'company_registration_number' => ['nullable', 'string', 'max:100'],
             'tax_number' => ['nullable', 'string', 'max:100'],
             'management' => ['nullable', 'string', 'max:200'],
             'regional_court' => ['nullable', 'string', 'max:200'],
             'color' => ['nullable', 'string', 'max:7'],
-            'invoice_number_format' => ['nullable', 'string', 'max:50'],
-            'invoice_prefix' => ['nullable', 'string', 'max:10'],
-            'offer_prefix' => ['nullable', 'string', 'max:10'],
         ]);
 
         try {
-            // Client-Objekt ist bereits durch Route Model Binding verfügbar
+            DB::beginTransaction();
+            
             Log::info('Client Update gestartet für ID: ' . $client->id . ' (Version: ' . $client->version . ')');
 
-            // Bereite die neuen Daten vor
-            $newData = $validatedData;
+            // 1. Client-Daten (versioniert) - Neue Version erstellen
+            $clientData = $validatedData;
 
             // Logo hochladen, falls vorhanden
             if ($request->hasFile('logo')) {
                 Log::info('Logo-Datei gefunden im Update, starte Upload...');
                 $logoName = $this->uploadLogo($request->file('logo'));
                 if ($logoName) {
-                    $newData['logo'] = $logoName;
+                    $clientData['logo'] = $logoName;
                     Log::info('Logo wurde für neue Version vorbereitet: ' . $logoName);
                 } else {
+                    DB::rollBack();
                     return redirect()->back()->withErrors(['logo' => 'Logo konnte nicht hochgeladen werden.'])->withInput();
                 }
             } else {
                 Log::info('Keine Logo-Datei im Request gefunden');
                 // Behalte das aktuelle Logo für die neue Version
-                $newData['logo'] = $client->logo;
+                $clientData['logo'] = $client->logo;
             }
 
-            // Erstelle eine neue Version des Clients
-            $newVersion = $client->createNewVersion($newData);
+            // Erstelle nur neue Version wenn sich Client-Daten geändert haben
+            $hasClientChanges = false;
+            foreach ($clientData as $key => $value) {
+                if ($key !== 'logo' && isset($client->{$key}) && $client->{$key} != $value) {
+                    $hasClientChanges = true;
+                    break;
+                }
+            }
             
-            Log::info('Neue Client-Version erstellt: ID ' . $newVersion->id . ' (Version: ' . $newVersion->version . ')');
+            if ($request->hasFile('logo')) {
+                $hasClientChanges = true;
+            }
+            
+            $newVersion = null;
+            if ($hasClientChanges) {
+                $newVersion = $client->createNewVersion($clientData);
+                Log::info('Neue Client-Version erstellt: ID ' . $newVersion->id . ' (Version: ' . $newVersion->version . ')');
+            }
+            
+            DB::commit();
 
-            // Erfolgreiche Aktualisierung, Weiterleitung zur Übersicht
-            return redirect()->route('clients.index')->with('success', 'Neue Client-Version (v' . $newVersion->version . ') erfolgreich erstellt.');
+            // Erfolgreiche Aktualisierung
+            $message = 'Client erfolgreich aktualisiert.';
+            if ($newVersion) {
+                $message = 'Neue Client-Version (v' . $newVersion->version . ') erfolgreich erstellt.';
+            } else {
+                $message = 'Keine Änderungen erkannt.';
+            }
+            
+            return redirect()->route('clients.index')->with('success', $message);
         } catch (\Exception $e) {
+            DB::rollBack();
             // Fehlerbehandlung und Logging
             Log::error('Fehler beim Aktualisieren des Klienten: ' . $e->getMessage(), [
                 'request_data' => $request->all(),
@@ -376,8 +433,20 @@ class ClientsController extends Controller
     {
         $user = Auth::user();
         
-        // Hole den Client des aktuellen Benutzers
-        $clients = Clients::where('id', $user->client_id)->firstOrFail();
+        // Hole zunächst den Client (egal ob aktiv oder nicht)
+        $userClient = Clients::find($user->client_id);
+        
+        if (!$userClient) {
+            abort(403, 'Client nicht gefunden');
+        }
+        
+        // Hole die aktuelle aktive Version des Clients
+        $clients = $userClient->getCurrentVersion();
+        
+        if (!$clients) {
+            abort(403, 'Keine aktive Version des Clients gefunden');
+        }
+        
         $taxrates = Taxrates::all();
 
         return view('clients.my-settings', compact('clients', 'taxrates'));
@@ -385,12 +454,13 @@ class ClientsController extends Controller
 
     /**
      * Aktualisiert die Client-Einstellungen des aktuell eingeloggten Benutzers
+     * NUR versionierte Daten, KEINE Nummerierungseinstellungen
      */
     public function updateMyClientSettings(Request $request)
     {
         $user = Auth::user();
         
-        // Validierung der Eingabedaten
+        // Validierung der Eingabedaten (NUR versionierte Daten, OHNE statische Einstellungen!)
         $validatedData = $request->validate([
             'clientname' => ['required', 'string', 'max:50'],
             'companyname' => ['required', 'string', 'max:200', 'min:1'],
@@ -410,24 +480,27 @@ class ClientsController extends Controller
             'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'signature' => ['nullable', 'string', 'max:1000'],
             'style' => ['nullable', 'string', 'max:500'],
-            'lastoffer' => ['required', 'integer'],
-            'offermultiplikator' => ['required', 'integer'],
-            'lastinvoice' => ['required', 'integer'],
-            'invoicemultiplikator' => ['required', 'integer'],
-            'max_upload_size' => ['required', 'integer'],
             'company_registration_number' => ['nullable', 'string', 'max:100'],
             'tax_number' => ['nullable', 'string', 'max:100'],
             'management' => ['nullable', 'string', 'max:200'],
             'regional_court' => ['nullable', 'string', 'max:200'],
             'color' => ['nullable', 'string', 'max:7'],
-            'invoice_number_format' => ['nullable', 'string', 'max:50'],
-            'invoice_prefix' => ['nullable', 'string', 'max:10'],
-            'offer_prefix' => ['nullable', 'string', 'max:10'],
         ]);
 
         try {
-            // Hole NUR den Client des aktuellen Benutzers (Sicherheit!)
-            $client = Clients::where('id', $user->client_id)->firstOrFail();
+            // Hole zunächst den Client (egal ob aktiv oder nicht)
+            $userClient = Clients::find($user->client_id);
+            
+            if (!$userClient) {
+                throw new \Exception('Client nicht gefunden');
+            }
+            
+            // Hole die aktuelle aktive Version des Clients
+            $client = $userClient->getCurrentVersion();
+            
+            if (!$client) {
+                throw new \Exception('Keine aktive Version des Clients gefunden');
+            }
 
             // Logo hochladen, falls vorhanden
             if ($request->hasFile('logo')) {
@@ -439,39 +512,41 @@ class ClientsController extends Controller
                 }
             }
 
-            // Aktualisiere die restlichen Felder
-            $client->clientname = $validatedData['clientname'];
-            $client->companyname = $validatedData['companyname'];
-            $client->business = $validatedData['business'];
-            $client->address = $validatedData['address'];
-            $client->postalcode = $validatedData['postalcode'];
-            $client->location = $validatedData['location'];
-            $client->email = $validatedData['email'];
-            $client->phone = $validatedData['phone'];
-            $client->tax_id = $validatedData['tax_id'];
-            $client->webpage = $validatedData['webpage'];
-            $client->bank = $validatedData['bank'];
-            $client->accountnumber = $validatedData['accountnumber'];
-            $client->vat_number = $validatedData['vat_number'];
-            $client->bic = $validatedData['bic'];
-            $client->smallbusiness = $validatedData['smallbusiness'];
-            $client->signature = $validatedData['signature'];
-            $client->style = $validatedData['style'];
-            $client->lastoffer = $validatedData['lastoffer'];
-            $client->offermultiplikator = $validatedData['offermultiplikator'];
-            $client->lastinvoice = $validatedData['lastinvoice'];
-            $client->invoicemultiplikator = $validatedData['invoicemultiplikator'];
-            $client->max_upload_size = $validatedData['max_upload_size'];
-            $client->company_registration_number = $validatedData['company_registration_number'];
-            $client->tax_number = $validatedData['tax_number'];
-            $client->management = $validatedData['management'];
-            $client->regional_court = $validatedData['regional_court'];
-            $client->color = $validatedData['color'];
-            $client->invoice_number_format = $validatedData['invoice_number_format'];
-            $client->invoice_prefix = $validatedData['invoice_prefix'] ?? null;
-            $client->offer_prefix = $validatedData['offer_prefix'] ?? null;
-
-            $client->save();
+            // Erstelle neue Version statt direkter Aktualisierung (falls sich etwas geändert hat)
+            $hasChanges = false;
+            $changesToCheck = [
+                'clientname', 'companyname', 'business', 'address', 'postalcode', 
+                'location', 'email', 'phone', 'tax_id', 'webpage', 'bank', 
+                'accountnumber', 'vat_number', 'bic', 'smallbusiness', 'signature', 
+                'style', 'company_registration_number', 'tax_number', 'management', 
+                'regional_court', 'color'
+            ];
+            
+            foreach ($changesToCheck as $field) {
+                if (isset($validatedData[$field]) && $client->{$field} != $validatedData[$field]) {
+                    $hasChanges = true;
+                    break;
+                }
+            }
+            
+            // Prüfe auch Logo-Änderung
+            if ($request->hasFile('logo')) {
+                $hasChanges = true;
+            }
+            
+            if ($hasChanges) {
+                // Erstelle neue Version mit geänderten Daten
+                $newVersionData = $validatedData;
+                if ($request->hasFile('logo')) {
+                    $logoName = $this->uploadLogo($request->file('logo'));
+                    if (!$logoName) {
+                        return redirect()->back()->withErrors(['logo' => 'Logo konnte nicht hochgeladen werden.'])->withInput();
+                    }
+                    $newVersionData['logo'] = $logoName;
+                }
+                
+                                 $client->createNewVersion($newVersionData);
+             }
 
             // Erfolgreiche Aktualisierung
             return redirect()->route('clients.my-settings')->with('success', 'Ihre Client-Einstellungen wurden erfolgreich aktualisiert.');

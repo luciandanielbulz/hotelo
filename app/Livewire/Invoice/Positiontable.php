@@ -60,10 +60,18 @@ class Positiontable extends Component
         // Aggregation Query zur Berechnung von total_price
         $query = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
             ->leftJoin('invoicepositions', 'invoices.id', '=', 'invoicepositions.invoice_id')
+            ->leftJoin('clients', 'invoices.client_version_id', '=', 'clients.id') // Join für Client-Version
             ->leftJoin(DB::raw('(SELECT objectnumber, MAX(sentdate) as latest_sentdate FROM outgoingemails GROUP BY objectnumber) as latest_emails'), 'latest_emails.objectnumber', '=', 'invoices.number')
-            ->where('customers.client_id', $clientId)
+            ->where(function($query) use ($clientId) {
+                // Zeige Rechnungen an, wenn:
+                // 1. Der Customer zu diesem Client gehört (alte Logik)
+                // 2. ODER die Rechnung mit einer Client-Version erstellt wurde, die zu diesem Client gehört (neue Logik)
+                $query->where('customers.client_id', $clientId)
+                      ->orWhere('clients.id', $clientId)
+                      ->orWhere('clients.parent_client_id', $clientId);
+            })
             ->where('invoices.archived', false) // Nur nicht archivierte Rechnungen anzeigen
-            ->orderBy('invoices.number', 'desc')
+            ->orderBy('invoices.id', 'desc')
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
                     $query->where('customers.customername', 'like', "%$search%")
@@ -78,14 +86,10 @@ class Positiontable extends Component
                 'invoices.created_at',
                 'invoices.updated_at',
                 'invoices.date',
-                DB::raw("CASE 
-                    WHEN LENGTH(invoices.description) > 25 
-                    THEN CONCAT(LEFT(invoices.description, 25), '...') 
-                    ELSE invoices.description 
-                END as description"),
+                'invoices.description',
                 'customers.customername',
                 'customers.companyname',
-                DB::raw("DATE_FORMAT(latest_emails.latest_sentdate, '%Y-%m-%d %H:%i:%s') as sent_date"),
+                DB::raw('latest_emails.latest_sentdate as sent_date'),
                 DB::raw('SUM(invoicepositions.amount * invoicepositions.price) as total_price')
             )
             ->groupBy(
@@ -98,9 +102,8 @@ class Positiontable extends Component
                 'invoices.description',
                 'customers.customername',
                 'customers.companyname',
-                'latest_emails.latest_sentdate',
+                'latest_emails.latest_sentdate'
             );
-
 
         $invoices = $query->paginate($this->perPage);
         $invoices->appends(['search' => $search]);

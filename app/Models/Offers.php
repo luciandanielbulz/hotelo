@@ -15,6 +15,7 @@ class Offers extends Model
     ];
     protected $fillable = [
         'customer_id',
+        'client_version_id',
         'number',
         'date',
         'tax_id',
@@ -23,4 +24,12 @@ class Offers extends Model
         'comment',
         'description'
     ];
+
+    /**
+     * Beziehung zur Client-Version
+     */
+    public function clientVersion()
+    {
+        return $this->belongsTo(Clients::class, 'client_version_id');
+    }
 }

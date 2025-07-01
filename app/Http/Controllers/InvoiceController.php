@@ -7,6 +7,7 @@ use App\Models\Invoicepositions;
 use App\Models\Invoices;
 use App\Models\Condition;
 use App\Models\Clients;
+use App\Models\ClientSettings;
 use App\Models\Offers;
 use App\Models\Offerpositions;
 use Illuminate\Http\Request;
@@ -36,9 +37,17 @@ class InvoiceController extends Controller
         $search = $request->input('search');
         
         $invoices = Invoices::join('customers', 'invoices.customer_id', '=', 'customers.id')
-            ->where('customers.client_id', $clientId)
+            ->leftJoin('clients', 'invoices.client_version_id', '=', 'clients.id') // Join für Client-Version
+            ->where(function($query) use ($clientId) {
+                // Zeige Rechnungen an, wenn:
+                // 1. Der Customer zu diesem Client gehört (alte Logik)
+                // 2. ODER die Rechnung mit einer Client-Version erstellt wurde, die zu diesem Client gehört (neue Logik)
+                $query->where('customers.client_id', $clientId)
+                      ->orWhere('clients.id', $clientId)
+                      ->orWhere('clients.parent_client_id', $clientId);
+            })
             ->where('invoices.archived', '=', true)
-            ->orderBy('number', 'desc')
+            ->orderBy('invoices.id', 'desc')
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
                     $query->where('customers.customername', 'like', "%{$search}%")
@@ -73,24 +82,48 @@ class InvoiceController extends Controller
 
         $customer = Customer::where('id','=',$customer_id)->first();
 
-        $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator', 'invoice_number_format', 'tax_id')->first();
+        // Hole die aktuelle aktive Client-Version (berücksichtige parent_client_id)
+        $client = Clients::active()
+            ->where(function($query) use ($client_id) {
+                $query->where('id', $client_id)
+                      ->orWhere('parent_client_id', $client_id);
+            })
+            ->select('id', 'tax_id')
+            ->first();
+        
+        // Fallback: Falls keine aktive Version gefunden wird, suche den ursprünglichen Client
+        if (!$client) {
+            $client = Clients::where('id', '=', $client_id)->select('id', 'tax_id')->first();
+        }
 
-        $invoice_raw_number = $client->lastinvoice ?? 0; // Fallback: 0
+        if (!$client) {
+            abort(404, 'Client nicht gefunden.');
+        }
 
-        $invoicenumber = $client->generateInvoiceNumber();
+        // Hole die Einstellungen vom ursprünglichen Client (nicht von der Version)
+        $originalClientId = $client->parent_client_id ?? $client_id;
+        $clientSettings = ClientSettings::where('client_id', $originalClientId)->first();
+        
+        if (!$clientSettings) {
+            abort(404, 'Client-Einstellungen nicht gefunden.');
+        }
+
+        $invoice_raw_number = $clientSettings->lastinvoice ?? 0;
+        $invoicenumber = $clientSettings->generateInvoiceNumber();
 
         $invoice = Invoices::create([
             'customer_id' => $customer_id,
+            'client_version_id' => $client->id, // Speichere die aktuelle Client-Version
             'number' => $invoicenumber,
             'description' => '',
             'tax_id' => $client->tax_id, // Steuersatz vom Client übernehmen
             'condition_id' => $customer->condition_id,
         ]);
 
-        Clients::where('id', '=', $client_id)->update([
-            'lastinvoice' => $invoice_raw_number + 1, // Erhöhe den Wert um 1
+        // Aktualisiere die lastinvoice Nummer in den Client-Einstellungen
+        $clientSettings->update([
+            'lastinvoice' => $invoice_raw_number + 1,
         ]);
-
 
         return redirect()->route('invoice.edit', ['invoice' => $invoice->id]);
     }
@@ -170,11 +203,34 @@ class InvoiceController extends Controller
             //dd($invoiceid);
             $client_id = Auth::user()->client_id;
 
-            $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator', 'invoice_number_format', 'tax_id')->first();
+        // Hole die aktuelle aktive Client-Version (berücksichtige parent_client_id)
+        $client = Clients::active()
+            ->where(function($query) use ($client_id) {
+                $query->where('id', $client_id)
+                      ->orWhere('parent_client_id', $client_id);
+            })
+            ->select('id', 'tax_id')
+            ->first();
+        
+        // Fallback: Falls keine aktive Version gefunden wird, suche den ursprünglichen Client
+        if (!$client) {
+            $client = Clients::where('id', '=', $client_id)->select('id', 'tax_id')->first();
+        }
 
-            $invoice_raw_number = $client->lastinvoice ?? 0; // Fallback: 0
+        if (!$client) {
+            abort(404, 'Client nicht gefunden.');
+        }
 
-            $invoicenumber = $client->generateInvoiceNumber();
+        // Hole die Einstellungen vom ursprünglichen Client (nicht von der Version)
+        $originalClientId = $client->parent_client_id ?? $client_id;
+        $clientSettings = ClientSettings::where('client_id', $originalClientId)->first();
+        
+        if (!$clientSettings) {
+            abort(404, 'Client-Einstellungen nicht gefunden.');
+        }
+
+        $invoice_raw_number = $clientSettings->lastinvoice ?? 0;
+        $invoicenumber = $clientSettings->generateInvoiceNumber();
 
 
 
@@ -191,6 +247,7 @@ class InvoiceController extends Controller
 
             $invoice = Invoices::create([
                 'customer_id' => $invoice->customer_id,
+                'client_version_id' => $client->id, // Speichere die aktuelle Client-Version
                 'date' => now(),
                 'number' => $invoicenumber,
                 'description' => $invoice->description,
@@ -211,8 +268,9 @@ class InvoiceController extends Controller
             ]);
             //dd("erstellt");
 
-            Clients::where('id', '=', $client_id)->update([
-                'lastinvoice' => $invoice_raw_number + 1, // Erhöhe den Wert um 1
+            // Aktualisiere die lastinvoice Nummer in den Client-Einstellungen
+            $clientSettings->update([
+                'lastinvoice' => $invoice_raw_number + 1,
             ]);
 
             //dd($invoice);
@@ -488,11 +546,34 @@ class InvoiceController extends Controller
 
         $client_id = Auth::user()->client_id;
 
-        $client = Clients::where('id', '=', $client_id)->select('lastinvoice', 'invoicemultiplikator', 'invoice_number_format')->first();
+        // Hole die aktuelle aktive Client-Version (berücksichtige parent_client_id)
+        $client = Clients::active()
+            ->where(function($query) use ($client_id) {
+                $query->where('id', $client_id)
+                      ->orWhere('parent_client_id', $client_id);
+            })
+            ->select('id')
+            ->first();
+        
+        // Fallback: Falls keine aktive Version gefunden wird, suche den ursprünglichen Client
+        if (!$client) {
+            $client = Clients::where('id', '=', $client_id)->select('id')->first();
+        }
 
-        $invoice_raw_number = $client->lastinvoice ?? 0; // Fallback: 0
+        if (!$client) {
+            abort(404, 'Client nicht gefunden.');
+        }
 
-        $invoicenumber = $client->generateInvoiceNumber();
+        // Hole die Einstellungen vom ursprünglichen Client (nicht von der Version)
+        $originalClientId = $client->parent_client_id ?? $client_id;
+        $clientSettings = ClientSettings::where('client_id', $originalClientId)->first();
+        
+        if (!$clientSettings) {
+            abort(404, 'Client-Einstellungen nicht gefunden.');
+        }
+
+        $invoice_raw_number = $clientSettings->lastinvoice ?? 0;
+        $invoicenumber = $clientSettings->generateInvoiceNumber();
 
         //dd($invoicemultiplikator);
         $request->validate([
@@ -515,6 +596,7 @@ class InvoiceController extends Controller
 
         $invoice = Invoices::create([
             'customer_id' => $offer->customer_id,
+            'client_version_id' => $offer->client_version_id ?? $client->id, // Verwende Client-Version vom Angebot oder aktuelle
             'date' => now(),
             'number' => $invoicenumber,
             'description' => $offer->description,
@@ -535,9 +617,9 @@ class InvoiceController extends Controller
             'updated_at' => now(),
         ]);
 
-
-        Clients::where('id', '=', $client_id)->update([
-            'lastinvoice' => $invoice_raw_number + 1, // Erhöhe den Wert um 1
+        // Aktualisiere die lastinvoice Nummer in den Client-Einstellungen
+        $clientSettings->update([
+            'lastinvoice' => $invoice_raw_number + 1,
         ]);
 
         //dd($offerPositions);

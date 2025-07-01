@@ -80,27 +80,34 @@ class PdfCreateController extends Controller
     {
         $user = Auth::user();
         $clientId = $user->client_id;
-        $client = Clients::where('id', $clientId)->firstOrFail();
 
         $objectId = $request->input('offer_id');
         $preview = $request->input('prev', 'I'); // I: Inline, D: Download, S: String
 
-        // Berechtigung prüfen
+        // Berechtigung prüfen - ERWEITERTE LOGIK für Client-Versionen
         $offer = Offers::from('offers as o')
             ->where('o.id', $objectId)
             ->join('customers as c', 'o.customer_id', '=', 'c.id')
-            ->where('c.client_id', $clientId)
+            ->leftJoin('clients as cl', 'o.client_version_id', '=', 'cl.id')
+            ->where(function($query) use ($clientId) {
+                // Berechtigung wenn:
+                // 1. Customer gehört zu diesem Client (alte Logik)
+                // 2. ODER Angebot wurde mit einer Client-Version erstellt, die zu diesem Client gehört (neue Logik)
+                $query->where('c.client_id', $clientId)
+                      ->orWhere('cl.id', $clientId)
+                      ->orWhere('cl.parent_client_id', $clientId);
+            })
             ->first();
 
         if (!$offer) {
             abort(403, 'Sie haben keine Berechtigung dieses Angebot zu sehen!');
         }
 
-        // Daten sammeln
+        // Daten sammeln (inkl. korrekte Client-Version)
         $data = $this->gatherOfferData($objectId, $clientId);
 
-        // Logo für DomPDF vorbereiten
-        $data['logoPath'] = $this->prepareLogoForDomPDF($client);
+        // Logo für DomPDF vorbereiten (Client kommt jetzt aus $data)
+        $data['logoPath'] = $this->prepareLogoForDomPDF($data['client']);
 
         // Direktes HTML generieren (konsistent mit Rechnung)
         $html = $this->generateOfferHTML($data);
@@ -127,7 +134,7 @@ class PdfCreateController extends Controller
         });
         
         // Je nach Modus ausgeben
-        $filename = 'Angebot_' . ($client->offer_prefix ?? '') . $data['offer']->number . '.pdf';
+        $filename = 'Angebot_' . ($data['client']->offer_prefix ?? '') . $data['offer']->number . '.pdf';
         $pdfOutput = $pdf->getDomPDF()->output();
         
         switch ($preview) {
@@ -152,27 +159,34 @@ class PdfCreateController extends Controller
     {
         $user = Auth::user();
         $clientId = $user->client_id;
-        $client = Clients::where('id', $clientId)->firstOrFail();
 
         $objectId = $request->input('invoice_id');
         $preview = $request->input('prev', 'I');
 
-        // Berechtigung prüfen
+        // Berechtigung prüfen - ERWEITERTE LOGIK für Client-Versionen
         $invoice = Invoices::from('invoices as i')
             ->where('i.id', $objectId)
             ->join('customers as c', 'i.customer_id', '=', 'c.id')
-            ->where('c.client_id', $clientId)
+            ->leftJoin('clients as cl', 'i.client_version_id', '=', 'cl.id')
+            ->where(function($query) use ($clientId) {
+                // Berechtigung wenn:
+                // 1. Customer gehört zu diesem Client (alte Logik)
+                // 2. ODER Rechnung wurde mit einer Client-Version erstellt, die zu diesem Client gehört (neue Logik)
+                $query->where('c.client_id', $clientId)
+                      ->orWhere('cl.id', $clientId)
+                      ->orWhere('cl.parent_client_id', $clientId);
+            })
             ->first();
 
         if (!$invoice) {
             abort(403, 'Sie sind nicht berechtigt diese Rechnung zu sehen!');
         }
 
-        // Daten sammeln
+        // Daten sammeln (inkl. korrekte Client-Version)
         $data = $this->gatherInvoiceData($objectId, $clientId);
 
-        // Logo für DomPDF vorbereiten
-        $data['logoPath'] = $this->prepareLogoForDomPDF($client);
+        // Logo für DomPDF vorbereiten (Client kommt jetzt aus $data)
+        $data['logoPath'] = $this->prepareLogoForDomPDF($data['client']);
 
         // Direktes HTML generieren (da Blade nicht funktioniert)
         $html = $this->generateInvoiceHTML($data);
@@ -199,7 +213,7 @@ class PdfCreateController extends Controller
         });
 
         // Je nach Modus ausgeben
-        $filename = 'Rechnung_' . ($client->invoice_prefix ?? '') . $data['invoice']->number . '.pdf';
+        $filename = 'Rechnung_' . ($data['client']->invoice_prefix ?? '') . $data['invoice']->number . '.pdf';
         $pdfOutput = $pdf->getDomPDF()->output();
         
         switch ($preview) {
@@ -247,7 +261,24 @@ class PdfCreateController extends Controller
             ->where('offers.id', '=', $objectId)
             ->first('customers.*');
 
-        $client = Clients::where('id', $clientId)->first();
+        // WICHTIG: Verwende die Client-Version, die im Angebot gespeichert ist
+        if ($offer->client_version_id) {
+            $client = Clients::where('id', $offer->client_version_id)->first();
+        } else {
+            // Fallback: Verwende aktuelle aktive Version (für alte Angebote ohne client_version_id)
+            $client = Clients::active()->where('id', $clientId)->first();
+        }
+
+        // Lade Client-Settings (Präfixe und andere statische Daten)
+        $parentId = $client->parent_client_id ?? $client->id;
+        $clientSettings = \App\Models\ClientSettings::where('client_id', $parentId)->first();
+        
+        // Füge Settings zu Client hinzu für einfachen Zugriff
+        if ($clientSettings) {
+            $client->offer_prefix = $clientSettings->offer_prefix;
+            $client->invoice_prefix = $clientSettings->invoice_prefix;
+            $client->max_upload_size = $clientSettings->max_upload_size;
+        }
 
         return [
             'offer' => $offer,
@@ -291,7 +322,24 @@ class PdfCreateController extends Controller
             ->where('invoices.id', '=', $objectId)
             ->first('customers.*');
 
-        $client = Clients::where('id', $clientId)->first();
+        // WICHTIG: Verwende die Client-Version, die in der Rechnung gespeichert ist
+        if ($invoice->client_version_id) {
+            $client = Clients::where('id', $invoice->client_version_id)->first();
+        } else {
+            // Fallback: Verwende aktuelle aktive Version (für alte Rechnungen ohne client_version_id)
+            $client = Clients::active()->where('id', $clientId)->first();
+        }
+
+        // Lade Client-Settings (Präfixe und andere statische Daten)
+        $parentId = $client->parent_client_id ?? $client->id;
+        $clientSettings = \App\Models\ClientSettings::where('client_id', $parentId)->first();
+        
+        // Füge Settings zu Client hinzu für einfachen Zugriff
+        if ($clientSettings) {
+            $client->offer_prefix = $clientSettings->offer_prefix;
+            $client->invoice_prefix = $clientSettings->invoice_prefix;
+            $client->max_upload_size = $clientSettings->max_upload_size;
+        }
 
         return [
             'invoice' => $invoice,

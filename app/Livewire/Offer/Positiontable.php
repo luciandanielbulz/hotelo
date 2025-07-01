@@ -69,10 +69,18 @@ class Positiontable extends Component
 
         $query = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
             ->leftJoin('offerpositions', 'offers.id', '=', 'offerpositions.offer_id')
+            ->leftJoin('clients', 'offers.client_version_id', '=', 'clients.id') // Join für Client-Version
             ->leftJoin(DB::raw('(SELECT objectnumber, MAX(sentdate) as latest_sentdate FROM outgoingemails GROUP BY objectnumber) as latest_emails'), 'latest_emails.objectnumber', '=', 'offers.number')
-            ->where('customers.client_id', $clientId)
+            ->where(function($query) use ($clientId) {
+                // Zeige Angebote an, wenn:
+                // 1. Der Customer zu diesem Client gehört (alte Logik)
+                // 2. ODER das Angebot mit einer Client-Version erstellt wurde, die zu diesem Client gehört (neue Logik)
+                $query->where('customers.client_id', $clientId)
+                      ->orWhere('clients.id', $clientId)
+                      ->orWhere('clients.parent_client_id', $clientId);
+            })
             ->where('offers.archived', false)
-            ->orderBy('offers.number', 'desc')
+            ->orderBy('offers.id', 'desc')
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
                     $query->where('customers.customername', 'like', "%$search%")

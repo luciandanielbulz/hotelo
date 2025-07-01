@@ -73,8 +73,12 @@ class InvoiceUploadController extends Controller
     {
         $user = Auth::user();
         $clientId = $user->client_id;
-        $client = Clients::select('clients.max_upload_size')->where('id', $clientId)->first();
-        $max_upload_size = $client->max_upload_size;
+        
+        // Hole aktiven Client und seine Settings
+        $client = Clients::active()->where('id', $clientId)->first();
+        $parentId = $client->parent_client_id ?? $client->id;
+        $clientSettings = \App\Models\ClientSettings::where('client_id', $parentId)->first();
+        $max_upload_size = $clientSettings ? $clientSettings->max_upload_size : 2048;
         //dd($max_upload_size);
         try {
             // Validierung der eingehenden Daten

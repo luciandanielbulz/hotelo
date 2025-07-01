@@ -11,6 +11,7 @@ class Invoices extends Model
     use HasFactory;
     protected $fillable = [
         'customer_id',
+        'client_version_id',
         'number',
         'tax_id',
         'condition_id',
@@ -24,4 +25,12 @@ class Invoices extends Model
 {
     return $this->hasMany(Invoicepositions::class, 'invoice_id');
 }
+
+    /**
+     * Beziehung zur Client-Version
+     */
+    public function clientVersion()
+    {
+        return $this->belongsTo(Clients::class, 'client_version_id');
+    }
 }

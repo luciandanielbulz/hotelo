@@ -163,59 +163,6 @@
                 </div>
             </div>
 
-            <!-- Nummerierung -->
-            <div class="border-t border-gray-200 pt-6">
-                <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Nummerierung</h3>
-                
-                <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                    <div class="sm:col-span-3">
-                        <x-input name="lastoffer" type="number" placeholder="Letzte Angebotsnummer" label="Letzte Angebotsnummer" value="{{ old('lastoffer', $clients->lastoffer) }}" />
-                    </div>
-
-                    <div class="sm:col-span-3">
-                        <x-input name="offermultiplikator" type="number" placeholder="Angebot Multiplikator" label="Angebot Multiplikator" value="{{ old('offermultiplikator', $clients->offermultiplikator) }}" />
-                    </div>
-
-                    <div class="sm:col-span-3">
-                        <x-input name="lastinvoice" type="number" placeholder="Letzte Rechnungsnummer" label="Letzte Rechnungsnummer" value="{{ old('lastinvoice', $clients->lastinvoice) }}" />
-                    </div>
-
-                    <div class="sm:col-span-3">
-                        <x-input name="invoicemultiplikator" type="number" placeholder="Rechnung Multiplikator" label="Rechnung Multiplikator" value="{{ old('invoicemultiplikator', $clients->invoicemultiplikator) }}" />
-                    </div>
-
-                    <div class="sm:col-span-3">
-                        <x-input name="max_upload_size" type="number" placeholder="Maximale Upload-Größe (MB)" label="Maximale Upload-Größe (MB)" value="{{ old('max_upload_size', $clients->max_upload_size) }}" />
-                    </div>
-
-                    <div class="sm:col-span-6">
-                        <label for="invoice_number_format" class="block text-sm/6 font-medium text-gray-900 mb-1">Rechnungsnummer-Format</label>
-                        <select name="invoice_number_format" id="invoice_number_format" class="mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 @error('invoice_number_format') border-red-500 outline-red-500 @enderror">
-                            <option value="YYYY*1000+N" {{ old('invoice_number_format', $clients->invoice_number_format) == 'YYYY*1000+N' ? 'selected' : '' }}>Jahr*1000+Nummer (z.B. 2025001)</option>
-                            <option value="YYYYNN" {{ old('invoice_number_format', $clients->invoice_number_format) == 'YYYYNN' ? 'selected' : '' }}>Jahr + Nummer (z.B. 20250001)</option>
-                            <option value="YY*1000+N" {{ old('invoice_number_format', $clients->invoice_number_format) == 'YY*1000+N' ? 'selected' : '' }}>Jahr(2-stellig)*1000+Nummer (z.B. 25001)</option>
-                            <option value="YYYY_MM+N" {{ old('invoice_number_format', $clients->invoice_number_format) == 'YYYY_MM+N' ? 'selected' : '' }}>Jahr_Monat+Nummer (z.B. 2025_01001)</option>
-                            <option value="N" {{ old('invoice_number_format', $clients->invoice_number_format) == 'N' ? 'selected' : '' }}>Nur fortlaufende Nummer (z.B. 1, 2, 3...)</option>
-                            <option value="custom" {{ old('invoice_number_format', $clients->invoice_number_format) == 'custom' ? 'selected' : '' }}>Benutzerdefiniert</option>
-                        </select>
-                        @error('invoice_number_format')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                        <p class="mt-1 text-sm text-gray-600">Wählen Sie das Format für die automatische Rechnungsnummerierung.</p>
-                    </div>
-
-                    <div class="sm:col-span-3">
-                        <x-input name="invoice_prefix" type="text" placeholder="R-" label="Rechnungs-Präfix" value="{{ old('invoice_prefix', $clients->invoice_prefix) }}" />
-                        <p class="mt-1 text-sm text-gray-600">Präfix für Rechnungsnummern (z.B. "R-", "RECH-")</p>
-                    </div>
-
-                    <div class="sm:col-span-3">
-                        <x-input name="offer_prefix" type="text" placeholder="A-" label="Angebots-Präfix" value="{{ old('offer_prefix', $clients->offer_prefix) }}" />
-                        <p class="mt-1 text-sm text-gray-600">Präfix für Angebotsnummern (z.B. "A-", "ANG-")</p>
-                    </div>
-                </div>
-            </div>
-
             <!-- Farbe -->
             <div class="border-t border-gray-200 pt-6">
                 <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Farbe</h3>
@@ -236,6 +183,8 @@
             </div>
         </form>
     </div>
+
+
 
     <!-- Einbindung von Summernote -->
     @push('styles')

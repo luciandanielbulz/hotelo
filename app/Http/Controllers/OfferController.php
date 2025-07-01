@@ -7,6 +7,7 @@ use App\Models\Offers;
 use App\Models\Customer;
 use App\Models\Condition;
 use App\Models\Clients;
+use App\Models\ClientSettings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB; // Importiere DB, falls du es benötigs
 use Illuminate\Support\Facades\Log;
@@ -35,9 +36,17 @@ class OfferController extends Controller
         //dd($search);
         // Suche oder alle Kunden abfragen
         $offers = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
-            ->where('customers.client_id', $clientId) // auth()->user()->client_id
+            ->leftJoin('clients', 'offers.client_version_id', '=', 'clients.id') // Join für Client-Version
+            ->where(function($query) use ($clientId) {
+                // Zeige Angebote an, wenn:
+                // 1. Der Customer zu diesem Client gehört (alte Logik)
+                // 2. ODER das Angebot mit einer Client-Version erstellt wurde, die zu diesem Client gehört (neue Logik)
+                $query->where('customers.client_id', $clientId)
+                      ->orWhere('clients.id', $clientId)
+                      ->orWhere('clients.parent_client_id', $clientId);
+            })
             ->where('offers.archived', '=', true)
-            ->orderBy('number', 'desc')
+            ->orderBy('offers.id', 'desc')
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
                     $query->where('customers.customername', 'like', "%{$search}%")
@@ -65,33 +74,52 @@ class OfferController extends Controller
 
         $customer = Customer::where('id','=',$customer_id)->first();
 
-        $client = Clients::where('id', '=', $client_id)->select('lastoffer', 'offermultiplikator', 'invoice_number_format', 'tax_id')->first();
+        // Hole die aktuelle aktive Client-Version (berücksichtige parent_client_id)
+        $client = Clients::active()
+            ->where(function($query) use ($client_id) {
+                $query->where('id', $client_id)
+                      ->orWhere('parent_client_id', $client_id);
+            })
+            ->select('id', 'tax_id')
+            ->first();
+        
+        // Fallback: Falls keine aktive Version gefunden wird, suche den ursprünglichen Client
+        if (!$client) {
+            $client = Clients::where('id', '=', $client_id)->select('id', 'tax_id')->first();
+        }
 
-        $offer_raw_number = $client->lastoffer ?? 0; // Fallback: 0
+        if (!$client) {
+            abort(404, 'Client nicht gefunden.');
+        }
 
-        $offernumber = $client->generateOfferNumber();
+        // Hole die Einstellungen vom ursprünglichen Client (nicht von der Version)
+        $originalClientId = $client->parent_client_id ?? $client_id;
+        $clientSettings = ClientSettings::where('client_id', $originalClientId)->first();
+        
+        if (!$clientSettings) {
+            abort(404, 'Client-Einstellungen nicht gefunden.');
+        }
 
-
+        $offer_raw_number = $clientSettings->lastoffer ?? 0;
+        $offernumber = $clientSettings->generateOfferNumber();
 
         // Erstelle das Angebot mit der berechneten Nummer
         $offer = Offers::create([
             'customer_id' => $customer_id,
+            'client_version_id' => $client->id, // Speichere die aktuelle Client-Version
             'number' => $offernumber, // Verwende die berechnete Angebotsnummer
             'description' => 'test',
             'tax_id' => $client->tax_id ?? 1, // Verwende Client-Steuersatz oder Fallback
             'condition_id' => $customer->condition_id,
         ]);
 
-        // Aktualisiere die `lastoffer`-Spalte für den Client
-        Clients::where('id', '=', $client_id)->update([
-            'lastoffer' => $offer_raw_number + 1, // Erhöhe den Wert um 1
+        // Aktualisiere die `lastoffer`-Spalte in den Client-Einstellungen
+        $clientSettings->update([
+            'lastoffer' => $offer_raw_number + 1,
         ]);
 
         // Weiterleitung zur Angebotsdetailseite
         return redirect()->route('offer.edit', ['offer' => $offer->id]);
-
-
-
     }
 
     /**

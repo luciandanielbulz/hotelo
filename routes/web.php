@@ -15,6 +15,7 @@ use App\Http\Controllers\SalesController;
 use App\Http\Controllers\PdfCreateController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ClientsController;
+use App\Http\Controllers\ClientSettingsController;
 use App\Http\Controllers\LogoController;
 use App\Http\Controllers\OutgoingEmailController;
 use Illuminate\Support\Facades\Route;
@@ -179,6 +180,19 @@ Route::post('/send-offer/email', [PdfCreateController::class, 'sendOfferByEmail'
         ->middleware('permission:edit_my_client_settings');
     Route::put('/my-client-settings', [ClientsController::class, 'updateMyClientSettings'])->name('clients.update-my-settings')
         ->middleware('permission:edit_my_client_settings');
+
+    /*Statische Client-Einstellungen (Nummerierung, Präfixe, etc.)*/
+    Route::get('/client-settings', [ClientSettingsController::class, 'edit'])->name('client-settings.edit')
+        ->middleware('permission:edit_client_settings');
+    Route::put('/client-settings', [ClientSettingsController::class, 'update'])->name('client-settings.update')
+        ->middleware('permission:edit_client_settings');
+    Route::get('/client-settings/preview', [ClientSettingsController::class, 'previewNumbers'])->name('client-settings.preview');
+    
+    /*Admin: Alle Client-Einstellungen verwalten*/
+    Route::get('/admin/client-settings', [ClientSettingsController::class, 'index'])->name('client-settings.index')
+        ->middleware('permission:manage_all_clients');
+    Route::get('/admin/client-settings/{id}', [ClientSettingsController::class, 'show'])->name('client-settings.show')
+        ->middleware('permission:manage_all_clients');
 
     /*
     |--------------------------------------------------------------------------

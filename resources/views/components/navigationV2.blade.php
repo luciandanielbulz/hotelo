@@ -103,14 +103,16 @@
                         </x-nav-link>
                     @endif
 
+
+
                     <!-- Rollenverwaltung mit Untermenü -->
-                    @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('edit_my_client_settings'))
+                    @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('manage_users') || auth()->user()->hasPermission('view_conditions') || auth()->user()->hasPermission('edit_my_client_settings'))
                         <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
-                            <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*', 'permissions.*', 'clients.*', 'users.*','logos.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
+                            <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*', 'permissions.*', 'clients.index', 'clients.edit', 'clients.show', 'clients.my-settings', 'clients.versions', 'users.*','logos.*', 'condition.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
                                 <span>{{ __('App-Einstellungen') }}</span>
                             </a>
                             <!-- Dropdown-Inhalt -->
-                            <div x-show="open" @click.away="open = false" class="absolute z-50 mt-5 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                            <div x-show="open" @click.away="open = false" class="absolute z-50 mt-5 w-72 right-0 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                                 <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
                                     @if(auth()->user()->hasPermission('manage_roles'))
                                         <x-dropdown-link :href="route('roles.index')">
@@ -137,10 +139,57 @@
                                             {{ __('Benutzer') }}
                                         </x-dropdown-link>
                                     @endif
+
+                                    <!-- Client-Einstellungen Sektion -->
                                     @if(auth()->user()->hasPermission('edit_my_client_settings'))
+                                        <div class="border-t border-gray-200 my-1"></div>
+                                        <div class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                            {{ __('Client-Einstellungen') }}
+                                        </div>
+
                                         <x-dropdown-link :href="route('clients.my-settings')" :active="request()->routeIs('clients.my-settings')">
-                                            {{ __('Firmen-Einstellungen') }}
+                                            <div class="flex items-center">
+                                                <svg class="w-4 h-4 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                                </svg>
+                                                <div>
+                                                    <div class="font-medium">{{ __('Firmendaten') }}</div>
+                                                    <div class="text-xs text-gray-500">Versionierte Einstellungen</div>
+                                                </div>
+                                            </div>
                                         </x-dropdown-link>
+
+                                        @php
+                                            $client = App\Models\Clients::active()->where('id', auth()->user()->client_id)->first();
+                                        @endphp
+                                        @if($client)
+                                            <x-dropdown-link :href="route('clients.versions', $client->id)" :active="request()->routeIs('clients.versions')">
+                                                <div class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-3 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                    </svg>
+                                                    <div>
+                                                        <div class="font-medium">{{ __('Versionshistorie') }}</div>
+                                                        <div class="text-xs text-gray-500">Alle Client-Versionen</div>
+                                                    </div>
+                                                </div>
+                                            </x-dropdown-link>
+                                        @endif
+
+                                        <!-- Statische Einstellungen -->
+                                        @if(auth()->user()->hasPermission('edit_client_settings'))
+                                            <x-dropdown-link :href="route('client-settings.edit')" :active="request()->routeIs('client-settings.*')">
+                                                <div class="flex items-center">
+                                                    <svg class="w-4 h-4 mr-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                                    </svg>
+                                                    <div>
+                                                        <div class="font-medium">{{ __('Einstellungen') }}</div>
+                                                        <div class="text-xs text-gray-500">Statische Einstellungen</div>
+                                                    </div>
+                                                </div>
+                                            </x-dropdown-link>
+                                        @endif
                                     @endif
 
                                     <!-- Weitere Untermenüpunkte -->
@@ -237,8 +286,10 @@
                 </x-responsive-nav-link>
             @endif
 
+
+
             <!-- Rollenverwaltung mit Untermenü in mobiler Ansicht -->
-            @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('edit_my_client_settings'))
+            @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('manage_users') || auth()->user()->hasPermission('view_conditions') || auth()->user()->hasPermission('edit_my_client_settings'))
                 <div x-data="{ openSubmenu: false }" class="space-y-1">
                     <x-responsive-nav-link href="#" @click.prevent="openSubmenu = !openSubmenu" class="flex items-center">
                         <span>{{ __('App-Einstellungen') }}</span>
@@ -262,11 +313,48 @@
                                 {{ __('Klienten') }}
                             </x-responsive-nav-link>
                         @endif
+
+                        <!-- Client-Einstellungen in mobiler Ansicht -->
                         @if(auth()->user()->hasPermission('edit_my_client_settings'))
-                            <x-responsive-nav-link :href="route('clients.my-settings')">
-                                {{ __('Firmen-Einstellungen') }}
+                            <div class="border-t border-gray-300 mx-4 my-2"></div>
+                            <div class="px-4 py-2 text-xs font-semibold text-gray-500">Client-Einstellungen</div>
+
+                            <x-responsive-nav-link :href="route('clients.my-settings')" :active="request()->routeIs('clients.my-settings')">
+                                <div class="flex items-center">
+                                    <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                    </svg>
+                                    {{ __('Firmendaten') }}
+                                </div>
                             </x-responsive-nav-link>
+
+                            @php
+                                $client = App\Models\Clients::active()->where('id', auth()->user()->client_id)->first();
+                            @endphp
+                            @if($client)
+                                <x-responsive-nav-link :href="route('clients.versions', $client->id)" :active="request()->routeIs('clients.versions')">
+                                    <div class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        {{ __('Versionshistorie') }}
+                                    </div>
+                                </x-responsive-nav-link>
+                            @endif
+
+                            <!-- Statische Einstellungen in mobiler Ansicht -->
+                            @if(auth()->user()->hasPermission('edit_client_settings'))
+                                <x-responsive-nav-link :href="route('client-settings.edit')" :active="request()->routeIs('client-settings.*')">
+                                    <div class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                        </svg>
+                                        {{ __('Einstellungen') }}
+                                    </div>
+                                </x-responsive-nav-link>
+                            @endif
                         @endif
+
                         <!-- Weitere Untermenüpunkte -->
                     </div>
                 </div>
