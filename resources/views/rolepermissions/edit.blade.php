@@ -5,7 +5,7 @@
     <div class="container">
 
         <div class="row">
-            <form action="{{ route('rolepermissions.update', $role->id) }}" method="POST">
+            <form action="{{ route('rolepermissions.update-role', $role->id) }}" method="POST">
                 @csrf
                 @foreach ($raw_permissions as $raw_permission)
                     <div class="row pb-2">

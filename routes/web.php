@@ -91,7 +91,7 @@ Route::middleware(['auth','verified'])->group(function(){
 
     Route::post('/offer/updatedescription', [OfferController::class, 'updatedescription'])->name('offer.updatedescription');
     Route::post('/offer/updatecomment', [OfferController::class, 'updatecomment'])->name('offer.updatecomment');
-    Route::get('/offer/create/{id}',[OfferController::class, 'create'])->name('offer.create');
+    Route::get('/offer/create/{id}',[OfferController::class, 'create'])->name('offer.create-with-customer');
     Route::get('/offer/index_archivated',[OfferController::class, 'index_archivated'])->name('offer.index_archivated');
     //Route::get('/livewire/offer/positiontable',[App\Livewire\Offer\Positiontable::class, 'render'])->name('livewire.offer.index');
 
@@ -117,7 +117,7 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::post('/invoice/updatedescription', [InvoiceController::class, 'updatedescription'])->name('invoice.updatedescription');
     Route::post('/invoice/updatecomment', [InvoiceController::class, 'updatecomment'])->name('invoice.updatecomment');
     Route::post('/invoice/updatedeposit', [InvoiceController::class, 'updatedeposit'])->name('invoice.updatedeposit');
-    Route::get('/invoice/create/{id}',[InvoiceController::class, 'create'])->name('invoice.create');
+    Route::get('/invoice/create/{id}',[InvoiceController::class, 'create'])->name('invoice.create-with-customer');
     Route::get('/invoice/index_archivated',[InvoiceController::class, 'index_archivated'])->name('invoice.index_archivated');
     Route::get('/invoice/copy/{id}',[InvoiceController::class, 'copy'])->name('invoice.copy');
     Route::get('/invoice/createinvoicefromoffer',[InvoiceController::class, 'createinvoicefromoffer'])->name('invoice.createinvoicefromoffer');
@@ -165,7 +165,7 @@ Route::post('/send-offer/email', [PdfCreateController::class, 'sendOfferByEmail'
 
     /*Rechte*/
     Route::resource('rolepermissions', RolePermissionController::class);
-    Route::post('/rolepermissions/update/{role}', [RolePermissionController::class, 'update'])->name('rolepermissions.update');
+    Route::post('/rolepermissions/update/{role}', [RolePermissionController::class, 'update'])->name('rolepermissions.update-role');
 
     /*Klienten*/
     Route::resource('clients', ClientsController::class);
@@ -259,7 +259,7 @@ Route::get('/createInvoicePdf', [PdfCreateController::class,'createInvoicePdf'])
     //    ->name('invoiceupload.downloadZipForMonth');
 
     Route::get('/invoiceupload/filter-by-month/{month}', [InvoiceUploadController::class, 'filterByMonth'])
-        ->name('invoiceupload.filterByMonth');
+        ->name('invoiceupload.filter-by-month');
 });
 
 /*
