@@ -289,11 +289,24 @@ class InvoiceUploadController extends Controller
 
     public function downloadZipForMonth($month)
     {
-        $user = Auth::user();
-        $clientId = $user->client_id;
+        try {
+            $user = Auth::user();
+            $clientId = $user->client_id;
 
-        // 1) Monat parsen
-        $parsedMonth = \Carbon\Carbon::parse($month);
+        // 1) Monat parsen - mit Error-Behandlung
+        try {
+            // URL-decode falls nötig (z.B. "May%202025" -> "May 2025")
+            $decodedMonth = urldecode($month);
+            $parsedMonth = Carbon::createFromFormat('F Y', $decodedMonth);
+        } catch (\Exception $e) {
+            // Fallback: Versuche andere Formate
+            try {
+                $parsedMonth = Carbon::parse($decodedMonth);
+            } catch (\Exception $e2) {
+                return redirect()->route('invoiceupload.index')
+                    ->with('error', 'Ungültiges Datumsformat: ' . $month);
+            }
+        }
 
         // 2) Zip-Dateiname, z. B. "invoices_2025-01.zip"
         $zipFileName = 'invoices_'.$parsedMonth->format('Y-m').'.zip';
@@ -312,7 +325,13 @@ class InvoiceUploadController extends Controller
         $zip = new ZipArchive();
         $res = $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
         if ($res !== true) {
-            return back()->withErrors(['msg' => 'Fehler beim Erstellen der ZIP: ' . $res]);
+            \Log::error('ZIP Erstellung fehlgeschlagen', [
+                'error_code' => $res,
+                'zip_path' => $zipPath,
+                'user_id' => Auth::id()
+            ]);
+            return redirect()->route('invoiceupload.index')
+                ->with('error', 'ZIP-Datei konnte nicht erstellt werden. Fehlercode: ' . $res);
         }
 
         // 6) Beispieldateien hinzufügen - NUR eigene Client-Daten
@@ -343,11 +362,41 @@ class InvoiceUploadController extends Controller
                 $i++;
             }
         }
-        //dd($zip);
+        // 7) ZIP schließen mit Error-Handling
         $closeResult = $zip->close();
-        //dd($closeResult);
-        // 7) ZIP als Download zurückgeben & danach löschen
-        return response()->download($zipPath)->deleteFileAfterSend(true);
+        if (!$closeResult) {
+            \Log::error('ZIP konnte nicht geschlossen werden', [
+                'zip_path' => $zipPath,
+                'user_id' => Auth::id()
+            ]);
+            return redirect()->route('invoiceupload.index')
+                ->with('error', 'ZIP-Datei konnte nicht abgeschlossen werden.');
+        }
+
+        // 8) Prüfe ob Datei erstellt wurde
+        if (!file_exists($zipPath)) {
+            \Log::error('ZIP-Datei wurde nicht erstellt', [
+                'zip_path' => $zipPath,
+                'user_id' => Auth::id()
+            ]);
+            return redirect()->route('invoiceupload.index')
+                ->with('error', 'ZIP-Datei wurde nicht erstellt.');
+        }
+
+                 // 9) ZIP als Download zurückgeben & danach löschen
+         return response()->download($zipPath)->deleteFileAfterSend(true);
+
+        } catch (\Exception $e) {
+            // Globale Error-Behandlung
+            \Log::error('ZIP Download Fehler: ' . $e->getMessage(), [
+                'month' => $month,
+                'user_id' => Auth::id(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->route('invoiceupload.index')
+                ->with('error', 'Ein unerwarteter Fehler ist aufgetreten: ' . $e->getMessage());
+        }
     }
 
 
