@@ -20,6 +20,7 @@ class UsersController extends Controller
     {
         $users = User::join('clients','users.client_id','=','clients.id')
             ->join('roles','users.role_id','=','roles.id')
+            ->whereNull('clients.parent_client_id') // Nur ursprüngliche Clients, keine Versionen
             ->select('users.id as user_id','users.name as user_name', 'users.*','clients.*', 'roles.*', 'roles.name as role_name', 'users.email as user_email' )
             ->get();
         return view('users.index',compact('users'));
@@ -31,7 +32,7 @@ class UsersController extends Controller
     public function create()
     {
         $roles = Role::all();
-        $clients = Clients::all();
+        $clients = Clients::whereNull('parent_client_id')->get(); // Nur ursprüngliche Clients, keine Versionen
 
         //dd($clients);
 
@@ -82,7 +83,7 @@ class UsersController extends Controller
      */
     public function edit(User $user)
     {
-        $clients = Clients::all();
+        $clients = Clients::whereNull('parent_client_id')->get(); // Nur ursprüngliche Clients, keine Versionen
         $roles = Role::all();
         return view('users.edit', compact('user', 'roles', 'clients'));
     }
