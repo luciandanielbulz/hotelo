@@ -30,8 +30,8 @@
         ];
     }
     
-    // Versionshistorie (für alle mit edit_my_client_settings Berechtigung)
-    if ($user->hasPermission('edit_my_client_settings') && $client) {
+    // Versionshistorie (für alle mit view_client_versions Berechtigung)
+    if ($user->hasPermission('view_client_versions') && $client) {
         $navItems[] = [
             'route' => 'clients.versions',
             'key' => 'versions',

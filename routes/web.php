@@ -171,9 +171,12 @@ Route::post('/send-offer/email', [PdfCreateController::class, 'sendOfferByEmail'
     Route::resource('clients', ClientsController::class);
     
     /*Client Versionshistorie*/
-    Route::get('/clients/{client}/versions', [ClientsController::class, 'showVersionHistory'])->name('clients.versions');
-    Route::get('/clients/{client}/versions/{version}', [ClientsController::class, 'showVersion'])->name('clients.show-version');
-    Route::delete('/clients/{client}/versions/{version}', [ClientsController::class, 'deleteVersion'])->name('clients.delete-version');
+    Route::get('/clients/{client}/versions', [ClientsController::class, 'showVersionHistory'])->name('clients.versions')
+        ->middleware('permission:view_client_versions');
+    Route::get('/clients/{client}/versions/{version}', [ClientsController::class, 'showVersion'])->name('clients.show-version')
+        ->middleware('permission:view_client_versions');
+    Route::delete('/clients/{client}/versions/{version}', [ClientsController::class, 'deleteVersion'])->name('clients.delete-version')
+        ->middleware('permission:view_client_versions');
     
     /*Persönliche Klienten-Einstellungen*/
     Route::get('/my-client-settings', [ClientsController::class, 'myClientSettings'])->name('clients.my-settings')

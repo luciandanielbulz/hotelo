@@ -310,6 +310,16 @@ class ClientsController extends Controller
      */
     public function showVersionHistory(Clients $client)
     {
+        $user = Auth::user();
+        
+        // Sicherheitsprüfung: Benutzer kann nur Versionshistorie seines eigenen Clients sehen
+        // Es sei denn, er hat die Berechtigung manage_all_clients
+        if (!$user->hasPermission('manage_all_clients')) {
+            if ($user->client_id !== $client->id && $user->client_id !== $client->parent_client_id) {
+                abort(403, 'Sie sind nicht berechtigt, die Versionshistorie dieses Clients einzusehen.');
+            }
+        }
+        
         // Hole alle Versionen dieses Clients
         $versions = $client->allVersions()->get();
         
@@ -321,6 +331,16 @@ class ClientsController extends Controller
      */
     public function showVersion(Clients $client, $version)
     {
+        $user = Auth::user();
+        
+        // Sicherheitsprüfung: Benutzer kann nur Versionshistorie seines eigenen Clients sehen
+        // Es sei denn, er hat die Berechtigung manage_all_clients
+        if (!$user->hasPermission('manage_all_clients')) {
+            if ($user->client_id !== $client->id && $user->client_id !== $client->parent_client_id) {
+                abort(403, 'Sie sind nicht berechtigt, diese Client-Version einzusehen.');
+            }
+        }
+        
         $parentId = $client->parent_client_id ?? $client->id;
         
         $specificVersion = Clients::where(function($query) use ($parentId) {
@@ -338,6 +358,16 @@ class ClientsController extends Controller
      */
     public function deleteVersion(Clients $client, $version)
     {
+        $user = Auth::user();
+        
+        // Sicherheitsprüfung: Benutzer kann nur Versionen seines eigenen Clients löschen
+        // Es sei denn, er hat die Berechtigung manage_all_clients
+        if (!$user->hasPermission('manage_all_clients')) {
+            if ($user->client_id !== $client->id && $user->client_id !== $client->parent_client_id) {
+                abort(403, 'Sie sind nicht berechtigt, Client-Versionen zu löschen.');
+            }
+        }
+        
         $parentId = $client->parent_client_id ?? $client->id;
         
         // Finde die zu löschende Version

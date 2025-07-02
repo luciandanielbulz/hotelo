@@ -106,7 +106,7 @@
 
 
                     <!-- Rollenverwaltung mit Untermenü -->
-                    @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('manage_users') || auth()->user()->hasPermission('view_conditions') || auth()->user()->hasPermission('edit_my_client_settings'))
+                    @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('manage_users') || auth()->user()->hasPermission('view_conditions') || auth()->user()->hasPermission('edit_my_client_settings') || auth()->user()->hasPermission('view_client_versions'))
                         <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
                             <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*', 'permissions.*', 'clients.index', 'clients.edit', 'clients.show', 'clients.my-settings', 'clients.versions', 'users.*','logos.*', 'condition.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
                                 <span>{{ __('App-Einstellungen') }}</span>
@@ -162,7 +162,7 @@
                                         @php
                                             $client = App\Models\Clients::active()->where('id', auth()->user()->client_id)->first();
                                         @endphp
-                                        @if($client)
+                                        @if($client && auth()->user()->hasPermission('view_client_versions'))
                                             <x-dropdown-link :href="route('clients.versions', $client->id)" :active="request()->routeIs('clients.versions')">
                                                 <div class="flex items-center">
                                                     <svg class="w-4 h-4 mr-3 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -289,7 +289,7 @@
 
 
             <!-- Rollenverwaltung mit Untermenü in mobiler Ansicht -->
-            @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('manage_users') || auth()->user()->hasPermission('view_conditions') || auth()->user()->hasPermission('edit_my_client_settings'))
+            @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('manage_users') || auth()->user()->hasPermission('view_conditions') || auth()->user()->hasPermission('edit_my_client_settings') || auth()->user()->hasPermission('view_client_versions'))
                 <div x-data="{ openSubmenu: false }" class="space-y-1">
                     <x-responsive-nav-link href="#" @click.prevent="openSubmenu = !openSubmenu" class="flex items-center">
                         <span>{{ __('App-Einstellungen') }}</span>
@@ -331,7 +331,7 @@
                             @php
                                 $client = App\Models\Clients::active()->where('id', auth()->user()->client_id)->first();
                             @endphp
-                            @if($client)
+                            @if($client && auth()->user()->hasPermission('view_client_versions'))
                                 <x-responsive-nav-link :href="route('clients.versions', $client->id)" :active="request()->routeIs('clients.versions')">
                                     <div class="flex items-center">
                                         <svg class="w-4 h-4 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
