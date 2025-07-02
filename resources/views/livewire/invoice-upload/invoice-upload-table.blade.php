@@ -60,7 +60,9 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Lieferant</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Beschreibung</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rechnungsnummer</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Zahlungsart</th>
+                                    @if(\Schema::hasColumn('invoice_uploads', 'payment_type'))
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Zahlungsart</th>
+                                    @endif
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aktionen</th>
                                 </tr>
                             </thead>
@@ -80,13 +82,15 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-black">
                                             {{ $invoice->invoice_number ?? '-' }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-black">
-                                            <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium 
-                                                {{ $invoice->payment_type === 'elektronisch' ? 'bg-green-100 text-green-800' : 
-                                                   ($invoice->payment_type === 'Kreditkarte' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800') }}">
-                                                {{ $invoice->payment_type ?? 'elektronisch' }}
-                                            </span>
-                                        </td>
+                                        @if(\Schema::hasColumn('invoice_uploads', 'payment_type'))
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-black">
+                                                <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium 
+                                                    {{ $invoice->payment_type === 'elektronisch' ? 'bg-green-100 text-green-800' : 
+                                                       ($invoice->payment_type === 'Kreditkarte' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800') }}">
+                                                    {{ $invoice->payment_type ?? 'elektronisch' }}
+                                                </span>
+                                            </td>
+                                        @endif
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex space-x-3">
                                                 <a href="{{ route('invoiceupload.edit', $invoice->id) }}" 

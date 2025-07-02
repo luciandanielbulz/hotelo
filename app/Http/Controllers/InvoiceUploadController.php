@@ -36,71 +36,101 @@ class InvoiceUploadController extends Controller
 
     public function update(Request $request, $id)
     {
-        $user = Auth::user();
-        $clientId = $user->client_id;
+        try {
+            $user = Auth::user();
+            $clientId = $user->client_id;
 
-        // Prüfen ob Rechnung zum Client gehört
-        $invoice = InvoiceUpload::where('client_id', $clientId)
-            ->where('id', $id)
-            ->first();
+            // Prüfen ob Rechnung zum Client gehört
+            $invoice = InvoiceUpload::where('client_id', $clientId)
+                ->where('id', $id)
+                ->first();
 
-        if (!$invoice) {
-            abort(403, 'Sie haben keine Berechtigung, diese Rechnung zu bearbeiten.');
-        }
-
-        // Hole Client-Settings für Upload-Größe
-        $client = Clients::active()->where('id', $clientId)->first();
-        $parentId = $client->parent_client_id ?? $client->id;
-        $clientSettings = \App\Models\ClientSettings::where('client_id', $parentId)->first();
-        $max_upload_size = $clientSettings ? $clientSettings->max_upload_size : 2048;
-
-        // Felder validieren (inkl. optional PDF)
-        $validatedData = $request->validate([
-            'invoice_pdf'    => [
-                'nullable',
-                'file',
-                'mimes:pdf',
-                'max:10240', // max. 10 MB
-                function ($attribute, $value, $fail) use ($max_upload_size) {
-                    if ($value && $value->getSize() > $max_upload_size * 1024 * 1024) {
-                        $fail('Die PDF-Datei darf nicht größer als ' . $max_upload_size . ' MB sein.');
-                    }
-                },
-            ],
-            'invoice_date'   => 'required|date',
-            'invoice_vendor' => 'nullable|string|max:255',
-            'description'    => 'nullable|string',
-            'invoice_number' => 'nullable|string|max:255',
-            'payment_type'   => 'required|in:elektronisch,nicht elektronisch,Kreditkarte',
-        ]);
-
-        // Wenn eine neue PDF-Datei hochgeladen wurde
-        if ($request->hasFile('invoice_pdf')) {
-            // Alte Datei löschen, falls vorhanden
-            if ($invoice->filepath && Storage::exists($invoice->filepath)) {
-                Storage::delete($invoice->filepath);
+            if (!$invoice) {
+                abort(403, 'Sie haben keine Berechtigung, diese Rechnung zu bearbeiten.');
             }
 
-            // Neue Datei speichern
-            $path = $request->file('invoice_pdf')->store('invoices');
-            $invoice->filepath = $path;
-        }
+            // Hole Client-Settings für Upload-Größe
+            $client = Clients::active()->where('id', $clientId)->first();
+            $parentId = $client->parent_client_id ?? $client->id;
+            $clientSettings = \App\Models\ClientSettings::where('client_id', $parentId)->first();
+            $max_upload_size = $clientSettings ? $clientSettings->max_upload_size : 2048;
 
-        // Andere Felder aktualisieren
-        $invoice->invoice_date   = $validatedData['invoice_date'];
-        $invoice->invoice_vendor = $validatedData['invoice_vendor'] ?? null;
-        $invoice->description    = $validatedData['description'] ?? null;
-        $invoice->invoice_number = $validatedData['invoice_number'] ?? null;
-        $invoice->payment_type   = $validatedData['payment_type'];
-
-        $invoice->save();
-
-        // Weiterleitung mit Erfolgsmeldung
-        $message = $request->hasFile('invoice_pdf') 
-            ? 'Rechnungsupload und Datei erfolgreich aktualisiert!' 
-            : 'Rechnungsupload erfolgreich aktualisiert!';
+            // Prüfe ob payment_type Spalte existiert
+            $hasPaymentTypeColumn = \Schema::hasColumn('invoice_uploads', 'payment_type');
             
-        return redirect()->route('invoiceupload.index')->with('success', $message);
+            // Basis-Validierung
+            $validationRules = [
+                'invoice_pdf'    => [
+                    'nullable',
+                    'file',
+                    'mimes:pdf',
+                    'max:10240', // max. 10 MB
+                    function ($attribute, $value, $fail) use ($max_upload_size) {
+                        if ($value && $value->getSize() > $max_upload_size * 1024 * 1024) {
+                            $fail('Die PDF-Datei darf nicht größer als ' . $max_upload_size . ' MB sein.');
+                        }
+                    },
+                ],
+                'invoice_date'   => 'required|date',
+                'invoice_vendor' => 'nullable|string|max:255',
+                'description'    => 'nullable|string',
+                'invoice_number' => 'nullable|string|max:255',
+            ];
+
+            // Nur payment_type validieren wenn Spalte existiert
+            if ($hasPaymentTypeColumn) {
+                $validationRules['payment_type'] = 'required|in:elektronisch,nicht elektronisch,Kreditkarte';
+            }
+
+            $validatedData = $request->validate($validationRules);
+
+            // Wenn eine neue PDF-Datei hochgeladen wurde
+            if ($request->hasFile('invoice_pdf')) {
+                // Alte Datei löschen, falls vorhanden
+                if ($invoice->filepath && Storage::exists($invoice->filepath)) {
+                    Storage::delete($invoice->filepath);
+                }
+
+                // Neue Datei speichern
+                $path = $request->file('invoice_pdf')->store('invoices');
+                $invoice->filepath = $path;
+            }
+
+            // Andere Felder aktualisieren
+            $invoice->invoice_date   = $validatedData['invoice_date'];
+            $invoice->invoice_vendor = $validatedData['invoice_vendor'] ?? null;
+            $invoice->description    = $validatedData['description'] ?? null;
+            $invoice->invoice_number = $validatedData['invoice_number'] ?? null;
+            
+            // payment_type nur setzen wenn Spalte existiert
+            if ($hasPaymentTypeColumn && isset($validatedData['payment_type'])) {
+                $invoice->payment_type = $validatedData['payment_type'];
+            }
+
+            $invoice->save();
+
+            // Weiterleitung mit Erfolgsmeldung
+            $message = $request->hasFile('invoice_pdf') 
+                ? 'Rechnungsupload und Datei erfolgreich aktualisiert!' 
+                : 'Rechnungsupload erfolgreich aktualisiert!';
+                
+            return redirect()->route('invoiceupload.index')->with('success', $message);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->errors())
+                ->withInput();
+        } catch (\Exception $e) {
+            \Log::error('Invoice Update Fehler: ' . $e->getMessage(), [
+                'invoice_id' => $id,
+                'user_id' => Auth::id(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()->back()
+                ->with('error', 'Beim Aktualisieren ist ein Fehler aufgetreten: ' . $e->getMessage())
+                ->withInput();
+        }
     }
 
     /**
@@ -151,8 +181,11 @@ class InvoiceUploadController extends Controller
         $max_upload_size = $clientSettings ? $clientSettings->max_upload_size : 2048;
         //dd($max_upload_size);
         try {
-            // Validierung der eingehenden Daten
-            $request->validate([
+            // Prüfe ob payment_type Spalte existiert
+            $hasPaymentTypeColumn = \Schema::hasColumn('invoice_uploads', 'payment_type');
+            
+            // Basis-Validierung
+            $validationRules = [
                 'invoice_pdf'    => [
                     'required',
                     'file',
@@ -168,23 +201,35 @@ class InvoiceUploadController extends Controller
                 'invoice_vendor' => 'required|string',
                 'description'    => 'nullable|string',
                 'invoice_number' => 'nullable|string',
-                'payment_type'   => 'required|in:elektronisch,nicht elektronisch,Kreditkarte',
-            ]);
+            ];
+
+            // Nur payment_type validieren wenn Spalte existiert
+            if ($hasPaymentTypeColumn) {
+                $validationRules['payment_type'] = 'required|in:elektronisch,nicht elektronisch,Kreditkarte';
+            }
+
+            $request->validate($validationRules);
 
             // Datei speichern
             $path = $request->file('invoice_pdf')->store('invoices');
 
-            //dd($clientId);
-            // Daten in der Datenbank speichern
-            InvoiceUpload::create([
+            // Basis-Daten für Datenbank
+            $invoiceData = [
                 'filepath'       => $path,
                 'invoice_date'   => $request->input('invoice_date'),
                 'description'    => $request->input('description'),
                 'invoice_number' => $request->input('invoice_number'),
                 'invoice_vendor' => $request->input('invoice_vendor'),
-                'payment_type'   => $request->input('payment_type'),
                 'client_id'      => $clientId,
-            ]);
+            ];
+
+            // payment_type nur hinzufügen wenn Spalte existiert
+            if ($hasPaymentTypeColumn) {
+                $invoiceData['payment_type'] = $request->input('payment_type', 'elektronisch');
+            }
+
+            // Daten in der Datenbank speichern
+            InvoiceUpload::create($invoiceData);
 
             return redirect()->route('invoiceupload.index')
                              ->with('success', 'Rechnung erfolgreich hochgeladen!');

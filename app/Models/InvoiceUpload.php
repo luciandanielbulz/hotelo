@@ -19,4 +19,21 @@ class InvoiceUpload extends Model
     ];
 
     protected $dates = ['invoice_date'];
+
+    /**
+     * Accessor für payment_type mit Fallback
+     */
+    public function getPaymentTypeAttribute($value)
+    {
+        // Falls Spalte nicht existiert oder Wert null ist, gebe Standard zurück
+        return $value ?? 'elektronisch';
+    }
+
+    /**
+     * Prüfe ob payment_type Spalte existiert
+     */
+    public static function hasPaymentTypeColumn()
+    {
+        return \Schema::hasColumn('invoice_uploads', 'payment_type');
+    }
 }

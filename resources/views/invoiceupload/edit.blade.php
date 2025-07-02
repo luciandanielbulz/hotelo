@@ -81,16 +81,18 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 pt-4">
-                        <div class="sm:col-span-2">
-                            <label for="payment_type" class="block text-sm font-medium text-gray-700">Zahlungsart</label>
-                            <select name="payment_type" id="payment_type" class="mt-1 p-2 block w-full border border-gray-300 rounded-md">
-                                <option value="elektronisch" {{ old('payment_type', $invoice->payment_type ?? 'elektronisch') == 'elektronisch' ? 'selected' : '' }}>elektronisch</option>
-                                <option value="nicht elektronisch" {{ old('payment_type', $invoice->payment_type ?? 'elektronisch') == 'nicht elektronisch' ? 'selected' : '' }}>nicht elektronisch</option>
-                                <option value="Kreditkarte" {{ old('payment_type', $invoice->payment_type ?? 'elektronisch') == 'Kreditkarte' ? 'selected' : '' }}>Kreditkarte</option>
-                            </select>
+                    @if(\Schema::hasColumn('invoice_uploads', 'payment_type'))
+                        <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 pt-4">
+                            <div class="sm:col-span-2">
+                                <label for="payment_type" class="block text-sm font-medium text-gray-700">Zahlungsart</label>
+                                <select name="payment_type" id="payment_type" class="mt-1 p-2 block w-full border border-gray-300 rounded-md">
+                                    <option value="elektronisch" {{ old('payment_type', $invoice->payment_type ?? 'elektronisch') == 'elektronisch' ? 'selected' : '' }}>elektronisch</option>
+                                    <option value="nicht elektronisch" {{ old('payment_type', $invoice->payment_type ?? 'elektronisch') == 'nicht elektronisch' ? 'selected' : '' }}>nicht elektronisch</option>
+                                    <option value="Kreditkarte" {{ old('payment_type', $invoice->payment_type ?? 'elektronisch') == 'Kreditkarte' ? 'selected' : '' }}>Kreditkarte</option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
+                    @endif
 
 
                     <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-7 pt-8">
