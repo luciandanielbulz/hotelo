@@ -34,13 +34,14 @@ class PermissionsSeeder extends Seeder
             'view_messages' => "Postausgang für gesendete Mails sehen",
             'reset_user_password' => 'Benutzerpasswort zurücksetzen',
             'view_conditions' => 'Konditionen bearbeiten',
-            'edit_my_client_settings' => 'Eigene Firmen-Einstellungen bearbeiten'
+            'edit_my_client_settings' => 'Eigene Firmen-Einstellungen bearbeiten',
+            'view_client_versions' => 'Kann Versionshistorie von Client-Daten einsehen'
         ];
 
         foreach ($permissions as $name => $description) {
-            Permission::firstOrCreate(
+            Permission::updateOrCreate(
                 ['name' => $name], // Einzigartige Spalte
-                ['description' => $description] // Standardwert bei Erstellung
+                ['description' => $description] // Werte zum Aktualisieren/Erstellen
             );
         }
     }
