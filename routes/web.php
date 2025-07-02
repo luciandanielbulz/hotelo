@@ -18,6 +18,7 @@ use App\Http\Controllers\ClientsController;
 use App\Http\Controllers\ClientSettingsController;
 use App\Http\Controllers\LogoController;
 use App\Http\Controllers\OutgoingEmailController;
+use App\Http\Controllers\MaintenanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BankDataController;
 use Illuminate\Support\Facades\File;
