@@ -49,8 +49,31 @@ class InvoiceUploadController extends Controller
                 abort(403, 'Sie haben keine Berechtigung, diese Rechnung zu bearbeiten.');
             }
 
-            // Hole Client-Settings für Upload-Größe
+            // Hole Client-Settings für Upload-Größe - prüfe erst aktive, dann alle
             $client = Clients::active()->where('id', $clientId)->first();
+            
+            // Falls kein aktiver Client gefunden, versuche aktuellste Version zu finden
+            if (!$client) {
+                $client = Clients::where('id', $clientId)
+                    ->orWhere('parent_client_id', $clientId)
+                    ->where('is_active', true)
+                    ->orderBy('version', 'desc')
+                    ->first();
+            }
+            
+            // Sicherheitscheck: Client muss existieren
+            if (!$client) {
+                \Log::error('Client nicht gefunden bei InvoiceUpload Update', [
+                    'user_id' => Auth::id(),
+                    'client_id' => $clientId,
+                    'invoice_id' => $id,
+                    'all_clients' => Clients::where('id', $clientId)->orWhere('parent_client_id', $clientId)->get(['id', 'is_active', 'version'])->toArray()
+                ]);
+                return redirect()->back()
+                    ->with('error', 'Client nicht gefunden oder deaktiviert (ID: ' . $clientId . '). Bitte wenden Sie sich an den Administrator.')
+                    ->withInput();
+            }
+            
             $parentId = $client->parent_client_id ?? $client->id;
             $clientSettings = \App\Models\ClientSettings::where('client_id', $parentId)->first();
             $max_upload_size = $clientSettings ? $clientSettings->max_upload_size : 2048;
@@ -174,8 +197,30 @@ class InvoiceUploadController extends Controller
         $user = Auth::user();
         $clientId = $user->client_id;
         
-        // Hole aktiven Client und seine Settings
+        // Hole aktiven Client und seine Settings - prüfe erst aktive, dann alle
         $client = Clients::active()->where('id', $clientId)->first();
+        
+        // Falls kein aktiver Client gefunden, versuche aktuellste Version zu finden
+        if (!$client) {
+            $client = Clients::where('id', $clientId)
+                ->orWhere('parent_client_id', $clientId)
+                ->where('is_active', true)
+                ->orderBy('version', 'desc')
+                ->first();
+        }
+        
+        // Sicherheitscheck: Client muss existieren
+        if (!$client) {
+            \Log::error('Client nicht gefunden bei InvoiceUpload Store', [
+                'user_id' => Auth::id(),
+                'client_id' => $clientId,
+                'all_clients' => Clients::where('id', $clientId)->orWhere('parent_client_id', $clientId)->get(['id', 'is_active', 'version'])->toArray()
+            ]);
+            return redirect()->back()
+                ->with('error', 'Client nicht gefunden oder deaktiviert (ID: ' . $clientId . '). Bitte wenden Sie sich an den Administrator.')
+                ->withInput();
+        }
+        
         $parentId = $client->parent_client_id ?? $client->id;
         $clientSettings = \App\Models\ClientSettings::where('client_id', $parentId)->first();
         $max_upload_size = $clientSettings ? $clientSettings->max_upload_size : 2048;
