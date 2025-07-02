@@ -189,6 +189,7 @@
                             <option value="YYYYNN" {{ old('invoice_number_format') == 'YYYYNN' ? 'selected' : '' }}>Jahr + Nummer (z.B. 20250001)</option>
                             <option value="YY*1000+N" {{ old('invoice_number_format') == 'YY*1000+N' ? 'selected' : '' }}>Jahr(2-stellig)*1000+Nummer (z.B. 25001)</option>
                             <option value="YYYY_MM+N" {{ old('invoice_number_format') == 'YYYY_MM+N' ? 'selected' : '' }}>Jahr_Monat+Nummer (z.B. 2025_01001)</option>
+                            <option value="YYYY*10000+N+1000" {{ old('invoice_number_format') == 'YYYY*10000+N+1000' ? 'selected' : '' }}>Jahr*10000+(Nummer+1000) - Rechnungen (z.B. 20251001)</option>
                             <option value="N" {{ old('invoice_number_format') == 'N' ? 'selected' : '' }}>Nur fortlaufende Nummer (z.B. 1, 2, 3...)</option>
                             <option value="custom" {{ old('invoice_number_format') == 'custom' ? 'selected' : '' }}>Benutzerdefiniert</option>
                         </select>

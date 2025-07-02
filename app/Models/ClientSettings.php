@@ -77,6 +77,10 @@ class ClientSettings extends Model
                 return ($yearShort * 1000) + $number;
             case 'YYYY_MM+N':
                 return $year . '_' . $month . str_pad($number, 3, '0', STR_PAD_LEFT);
+            case 'YYYY*10000+N+1000':
+                return ($year * 10000) + ($number + 1000);
+            case 'YYYY*10000+N+6000':
+                return ($year * 10000) + ($number + 6000);
             case 'N':
                 return $number;
             default:

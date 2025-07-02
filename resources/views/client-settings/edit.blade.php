@@ -67,6 +67,7 @@
                                     <option value="YYYYNN" {{ old('invoice_number_format', $clientSettings->invoice_number_format) == 'YYYYNN' ? 'selected' : '' }}>Jahr + Nummer (z.B. 20250001)</option>
                                     <option value="YY*1000+N" {{ old('invoice_number_format', $clientSettings->invoice_number_format) == 'YY*1000+N' ? 'selected' : '' }}>Jahr(2-stellig)*1000+Nummer (z.B. 25001)</option>
                                     <option value="YYYY_MM+N" {{ old('invoice_number_format', $clientSettings->invoice_number_format) == 'YYYY_MM+N' ? 'selected' : '' }}>Jahr_Monat+Nummer (z.B. 2025_01001)</option>
+                                    <option value="YYYY*10000+N+1000" {{ old('invoice_number_format', $clientSettings->invoice_number_format) == 'YYYY*10000+N+1000' ? 'selected' : '' }}>Jahr*10000+(Nummer+1000) - Rechnungen (z.B. 20251001)</option>
                                     <option value="N" {{ old('invoice_number_format', $clientSettings->invoice_number_format) == 'N' ? 'selected' : '' }}>Nur fortlaufende Nummer (z.B. 1, 2, 3...)</option>
                                 </select>
                                 @error('invoice_number_format')
@@ -76,8 +77,20 @@
                             </div>
 
                             <div>
-                                <x-input name="offer_number_format" type="text" placeholder="Wie Rechnungsformat" label="Angebots-Nummer-Format (Optional)" value="{{ old('offer_number_format', $clientSettings->offer_number_format) }}" />
-                                <p class="mt-1 text-sm text-gray-600">Leer = Verwendet Rechnungsformat</p>
+                                <label for="offer_number_format" class="block text-sm font-medium text-gray-700 mb-1">Angebotsnummer-Format</label>
+                                <select name="offer_number_format" id="offer_number_format" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('offer_number_format') border-red-500 @enderror">
+                                    <option value="" {{ old('offer_number_format', $clientSettings->offer_number_format) == '' ? 'selected' : '' }}>Wie Rechnungsformat</option>
+                                    <option value="YYYY*1000+N" {{ old('offer_number_format', $clientSettings->offer_number_format) == 'YYYY*1000+N' ? 'selected' : '' }}>Jahr*1000+Nummer (z.B. 2025001)</option>
+                                    <option value="YYYYNN" {{ old('offer_number_format', $clientSettings->offer_number_format) == 'YYYYNN' ? 'selected' : '' }}>Jahr + Nummer (z.B. 20250001)</option>
+                                    <option value="YY*1000+N" {{ old('offer_number_format', $clientSettings->offer_number_format) == 'YY*1000+N' ? 'selected' : '' }}>Jahr(2-stellig)*1000+Nummer (z.B. 25001)</option>
+                                    <option value="YYYY_MM+N" {{ old('offer_number_format', $clientSettings->offer_number_format) == 'YYYY_MM+N' ? 'selected' : '' }}>Jahr_Monat+Nummer (z.B. 2025_01001)</option>
+                                    <option value="YYYY*10000+N+6000" {{ old('offer_number_format', $clientSettings->offer_number_format) == 'YYYY*10000+N+6000' ? 'selected' : '' }}>Jahr*10000+(Nummer+6000) - Angebote (z.B. 20256001)</option>
+                                    <option value="N" {{ old('offer_number_format', $clientSettings->offer_number_format) == 'N' ? 'selected' : '' }}>Nur fortlaufende Nummer (z.B. 1, 2, 3...)</option>
+                                </select>
+                                @error('offer_number_format')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                                <p class="mt-1 text-sm text-gray-600">Format für automatische Angebotsnummerierung</p>
                             </div>
                         </div>
                     </div>
