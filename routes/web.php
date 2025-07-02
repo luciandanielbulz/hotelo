@@ -260,6 +260,7 @@ Route::get('/createInvoicePdf', [PdfCreateController::class,'createInvoicePdf'])
     Route::get ('/invoiceupload/index', [InvoiceUploadController::class, 'index'])->name('invoiceupload.index');
     Route::get ('/invoiceupload/{id}/edit', [InvoiceUploadController::class, 'edit'])->name('invoiceupload.edit');
     Route::put ('/invoiceupload/{id}', [InvoiceUploadController::class, 'update'])->name('invoiceupload.update');
+    Route::delete('/invoiceupload/{id}', [InvoiceUploadController::class, 'destroy'])->name('invoiceupload.destroy');
     Route::get ('/invoiceupload/{id}/show_invoice', [InvoiceUploadController::class, 'show_invoice'])->name('invoiceupload.show_invoice');
     Route::get('/invoiceupload/{id}', [InvoiceUploadController::class, 'show'])->name('invoiceupload.show');
     Route::get('/invoiceuploads/filter/{month}', [InvoiceUploadController::class, 'filterByMonth'])->name('invoiceupload.filterByMonth');

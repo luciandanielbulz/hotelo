@@ -101,6 +101,41 @@ class InvoiceUploadController extends Controller
         return redirect()->route('invoiceupload.index')->with('success', $message);
     }
 
+    /**
+     * Löscht eine Invoice Upload
+     */
+    public function destroy($id)
+    {
+        $user = Auth::user();
+        $clientId = $user->client_id;
+
+        // Prüfen ob Rechnung zum Client gehört
+        $invoice = InvoiceUpload::where('client_id', $clientId)
+            ->where('id', $id)
+            ->first();
+
+        if (!$invoice) {
+            abort(403, 'Sie haben keine Berechtigung, diese Rechnung zu löschen.');
+        }
+
+        try {
+            // Physische Datei löschen, falls vorhanden
+            if ($invoice->filepath && Storage::exists($invoice->filepath)) {
+                Storage::delete($invoice->filepath);
+            }
+
+            // Datensatz aus der Datenbank löschen
+            $invoice->delete();
+
+            return redirect()->route('invoiceupload.index')
+                ->with('success', 'Rechnung erfolgreich gelöscht!');
+                
+        } catch (\Exception $e) {
+            return redirect()->route('invoiceupload.index')
+                ->with('error', 'Fehler beim Löschen der Rechnung: ' . $e->getMessage());
+        }
+    }
+
     // Verarbeitet den Upload
     public function store(Request $request)
     {
@@ -166,27 +201,7 @@ class InvoiceUploadController extends Controller
         $user = Auth::user();
         $clientId = $user->client_id;
 
-        // Suchparameter aus dem Request
-        $search = $request->input('search');
-
-        // Grundabfrage
-        $query = InvoiceUpload::where('client_id', $clientId)
-                              ->orderBy('invoice_date', 'desc');
-
-        // Falls ein Suchtext vorhanden ist, erweitern wir die Abfrage
-        // Beispiel: Suche in 'invoice_number' und 'description'
-        if (!empty($search)) {
-            $query->where(function($q) use ($search) {
-                $q->where('invoice_number', 'LIKE', "%{$search}%")
-                  ->orWhere('description', 'LIKE', "%{$search}%")
-                  ->orWhere('invoice_vendor', 'LIKE', "%{$search}%");
-            });
-        }
-
-        // Paginierte Ergebnisse laden
-        $invoiceuploads = $query->paginate(10);
-
-        // Distinkte Monate holen (Year/Month) für zusätzliche Filter (z. B. Dropdown)
+        // Distinkte Monate holen (Year/Month) für ZIP-Download
         $months = InvoiceUpload::selectRaw('YEAR(invoice_date) as year, MONTH(invoice_date) as month')
             ->where('client_id', $clientId)       // wichtig, damit nur eigene Invoices berücksichtigt werden
             ->distinct()
@@ -196,8 +211,8 @@ class InvoiceUploadController extends Controller
                 return Carbon::create($invoice->year, $invoice->month, 1)->format('F Y');
             });
 
-        // Ausgabe an View
-        return view('invoiceupload.index', compact('invoiceuploads', 'months'));
+        // Ausgabe an View (Livewire-Komponente macht jetzt die Tabelle)
+        return view('invoiceupload.index', compact('months'));
     }
 
     public function show($id){
