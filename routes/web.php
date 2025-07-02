@@ -197,6 +197,14 @@ Route::post('/send-offer/email', [PdfCreateController::class, 'sendOfferByEmail'
     Route::get('/admin/client-settings/{id}', [ClientSettingsController::class, 'show'])->name('client-settings.show')
         ->middleware('permission:manage_all_clients');
 
+    /*Wartungsmodus-Verwaltung*/
+    Route::get('/maintenance', [MaintenanceController::class, 'index'])->name('maintenance.index')
+        ->middleware('permission:manage_maintenance');
+    Route::post('/maintenance/enable', [MaintenanceController::class, 'enable'])->name('maintenance.enable')
+        ->middleware('permission:manage_maintenance');
+    Route::delete('/maintenance/disable', [MaintenanceController::class, 'disable'])->name('maintenance.disable')
+        ->middleware('permission:manage_maintenance');
+
     /*
     |--------------------------------------------------------------------------
     | DOKUMENTEN-MANAGEMENT

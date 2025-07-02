@@ -106,7 +106,7 @@
 
 
                     <!-- Rollenverwaltung mit Untermenü -->
-                    @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('manage_users') || auth()->user()->hasPermission('view_conditions') || auth()->user()->hasPermission('edit_my_client_settings') || auth()->user()->hasPermission('view_client_versions'))
+                    @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('manage_users') || auth()->user()->hasPermission('view_conditions') || auth()->user()->hasPermission('edit_my_client_settings') || auth()->user()->hasPermission('view_client_versions') || auth()->user()->hasPermission('manage_maintenance'))
                         <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
                             <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*', 'permissions.*', 'clients.index', 'clients.edit', 'clients.show', 'clients.my-settings', 'clients.versions', 'users.*','logos.*', 'condition.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
                                 <span>{{ __('App-Einstellungen') }}</span>
@@ -190,6 +190,25 @@
                                                 </div>
                                             </x-dropdown-link>
                                         @endif
+                                    @endif
+
+                                    <!-- Wartungsmodus -->
+                                    @if(auth()->user()->hasPermission('manage_maintenance'))
+                                        <div class="border-t border-gray-300 mx-4 my-2"></div>
+                                        <div class="px-4 py-2 text-xs font-semibold text-gray-500">System</div>
+                                        
+                                        <x-dropdown-link :href="route('maintenance.index')" :active="request()->routeIs('maintenance.*')">
+                                            <div class="flex items-center">
+                                                <svg class="w-4 h-4 mr-3 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                </svg>
+                                                <div>
+                                                    <div class="font-medium">{{ __('Wartungsmodus') }}</div>
+                                                    <div class="text-xs text-gray-500">App-Wartung verwalten</div>
+                                                </div>
+                                            </div>
+                                        </x-dropdown-link>
                                     @endif
 
                                     <!-- Weitere Untermenüpunkte -->
@@ -289,7 +308,7 @@
 
 
             <!-- Rollenverwaltung mit Untermenü in mobiler Ansicht -->
-            @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('manage_users') || auth()->user()->hasPermission('view_conditions') || auth()->user()->hasPermission('edit_my_client_settings') || auth()->user()->hasPermission('view_client_versions'))
+            @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('manage_users') || auth()->user()->hasPermission('view_conditions') || auth()->user()->hasPermission('edit_my_client_settings') || auth()->user()->hasPermission('view_client_versions') || auth()->user()->hasPermission('manage_maintenance'))
                 <div x-data="{ openSubmenu: false }" class="space-y-1">
                     <x-responsive-nav-link href="#" @click.prevent="openSubmenu = !openSubmenu" class="flex items-center">
                         <span>{{ __('App-Einstellungen') }}</span>
@@ -353,6 +372,22 @@
                                     </div>
                                 </x-responsive-nav-link>
                             @endif
+                        @endif
+
+                        <!-- Wartungsmodus in mobiler Ansicht -->
+                        @if(auth()->user()->hasPermission('manage_maintenance'))
+                            <div class="border-t border-gray-300 mx-4 my-2"></div>
+                            <div class="px-4 py-2 text-xs font-semibold text-gray-500">System</div>
+                            
+                            <x-responsive-nav-link :href="route('maintenance.index')" :active="request()->routeIs('maintenance.*')">
+                                <div class="flex items-center">
+                                    <svg class="w-4 h-4 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    {{ __('Wartungsmodus') }}
+                                </div>
+                            </x-responsive-nav-link>
                         @endif
 
                         <!-- Weitere Untermenüpunkte -->

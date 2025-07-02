@@ -35,7 +35,8 @@ class PermissionsSeeder extends Seeder
             'reset_user_password' => 'Benutzerpasswort zurücksetzen',
             'view_conditions' => 'Konditionen bearbeiten',
             'edit_my_client_settings' => 'Eigene Firmen-Einstellungen bearbeiten',
-            'view_client_versions' => 'Kann Versionshistorie von Client-Daten einsehen'
+            'view_client_versions' => 'Kann Versionshistorie von Client-Daten einsehen',
+            'manage_maintenance' => 'Wartungsmodus verwalten'
         ];
 
         foreach ($permissions as $name => $description) {
