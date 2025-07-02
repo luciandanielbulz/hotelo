@@ -48,15 +48,44 @@ class InvoiceUploadController extends Controller
             abort(403, 'Sie haben keine Berechtigung, diese Rechnung zu bearbeiten.');
         }
 
-        // Beispiel: Felder validieren
+        // Hole Client-Settings für Upload-Größe
+        $client = Clients::active()->where('id', $clientId)->first();
+        $parentId = $client->parent_client_id ?? $client->id;
+        $clientSettings = \App\Models\ClientSettings::where('client_id', $parentId)->first();
+        $max_upload_size = $clientSettings ? $clientSettings->max_upload_size : 2048;
+
+        // Felder validieren (inkl. optional PDF)
         $validatedData = $request->validate([
+            'invoice_pdf'    => [
+                'nullable',
+                'file',
+                'mimes:pdf',
+                'max:10240', // max. 10 MB
+                function ($attribute, $value, $fail) use ($max_upload_size) {
+                    if ($value && $value->getSize() > $max_upload_size * 1024 * 1024) {
+                        $fail('Die PDF-Datei darf nicht größer als ' . $max_upload_size . ' MB sein.');
+                    }
+                },
+            ],
             'invoice_date'   => 'required|date',
             'invoice_vendor' => 'nullable|string|max:255',
             'description'    => 'nullable|string',
             'invoice_number' => 'nullable|string|max:255',
         ]);
 
-        // Felder aktualisieren
+        // Wenn eine neue PDF-Datei hochgeladen wurde
+        if ($request->hasFile('invoice_pdf')) {
+            // Alte Datei löschen, falls vorhanden
+            if ($invoice->filepath && Storage::exists($invoice->filepath)) {
+                Storage::delete($invoice->filepath);
+            }
+
+            // Neue Datei speichern
+            $path = $request->file('invoice_pdf')->store('invoices');
+            $invoice->filepath = $path;
+        }
+
+        // Andere Felder aktualisieren
         $invoice->invoice_date   = $validatedData['invoice_date'];
         $invoice->invoice_vendor = $validatedData['invoice_vendor'] ?? null;
         $invoice->description    = $validatedData['description'] ?? null;
@@ -65,7 +94,11 @@ class InvoiceUploadController extends Controller
         $invoice->save();
 
         // Weiterleitung mit Erfolgsmeldung
-        return redirect()->route('invoiceupload.index')->with('success', 'Rechnungsupload erfolgreich aktualisiert!');
+        $message = $request->hasFile('invoice_pdf') 
+            ? 'Rechnungsupload und Datei erfolgreich aktualisiert!' 
+            : 'Rechnungsupload erfolgreich aktualisiert!';
+            
+        return redirect()->route('invoiceupload.index')->with('success', $message);
     }
 
     // Verarbeitet den Upload

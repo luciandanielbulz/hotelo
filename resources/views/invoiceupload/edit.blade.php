@@ -7,7 +7,7 @@
             </div>
 
             <!-- Formular -->
-            <form method="POST" action="{{ route('invoiceupload.update', $invoice->id) }}" class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-3">
+            <form method="POST" action="{{ route('invoiceupload.update', $invoice->id) }}" enctype="multipart/form-data" class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-3">
                 @csrf
                 @method('PUT')
 
@@ -22,6 +22,15 @@
                 @endif
 
                 <div class="px-4 py-6 sm:p-6">
+                    <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 pb-8">
+                        <div class="sm:col-span-full">
+                            <label for="invoice_pdf" class="block text-sm font-medium text-gray-700 sm:col-span-2">PDF-Datei</label>
+                            <div class="mt-1">
+                                <input type="file" name="invoice_pdf" id="invoice_pdf" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                            </div>
+                        </div>
+                    </div>
+
                 <!-- Rechnungsdatum -->
                     <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                         <div class="sm:col-span-2">
