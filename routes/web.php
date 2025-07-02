@@ -266,7 +266,13 @@ Route::get('/createInvoicePdf', [PdfCreateController::class,'createInvoicePdf'])
     Route::get('/invoiceuploads/filter/{month}', [InvoiceUploadController::class, 'filterByMonth'])->name('invoiceupload.filterByMonth');
 
     Route::get('/invoiceuploads/download-zip/{month}', [InvoiceUploadController::class, 'downloadZipForMonth'])
-        ->name('invoiceupload.downloadZipForMonth');
+        ->name('invoiceupload.downloadZipForMonth')
+        ->middleware('auth');
+    
+    // Debug-Route zum Testen
+    Route::get('/invoiceuploads/debug-zip/{month}', [InvoiceUploadController::class, 'debugZipRoute'])
+        ->name('invoiceupload.debugZipRoute')
+        ->middleware('auth');
 
     //Route::get('/invoiceuploads/download-zip/{month}', [InvoiceUploadController::class, 'testCreateZip'])
     //    ->name('invoiceupload.downloadZipForMonth');

@@ -14,6 +14,7 @@ class InvoiceUpload extends Model
         'description',
         'invoice_number',
         'invoice_vendor',
+        'payment_type',
         'client_id',
     ];
 

@@ -71,6 +71,7 @@ class InvoiceUploadController extends Controller
             'invoice_vendor' => 'nullable|string|max:255',
             'description'    => 'nullable|string',
             'invoice_number' => 'nullable|string|max:255',
+            'payment_type'   => 'required|in:elektronisch,nicht elektronisch,Kreditkarte',
         ]);
 
         // Wenn eine neue PDF-Datei hochgeladen wurde
@@ -90,6 +91,7 @@ class InvoiceUploadController extends Controller
         $invoice->invoice_vendor = $validatedData['invoice_vendor'] ?? null;
         $invoice->description    = $validatedData['description'] ?? null;
         $invoice->invoice_number = $validatedData['invoice_number'] ?? null;
+        $invoice->payment_type   = $validatedData['payment_type'];
 
         $invoice->save();
 
@@ -166,6 +168,7 @@ class InvoiceUploadController extends Controller
                 'invoice_vendor' => 'required|string',
                 'description'    => 'nullable|string',
                 'invoice_number' => 'nullable|string',
+                'payment_type'   => 'required|in:elektronisch,nicht elektronisch,Kreditkarte',
             ]);
 
             // Datei speichern
@@ -179,6 +182,7 @@ class InvoiceUploadController extends Controller
                 'description'    => $request->input('description'),
                 'invoice_number' => $request->input('invoice_number'),
                 'invoice_vendor' => $request->input('invoice_vendor'),
+                'payment_type'   => $request->input('payment_type'),
                 'client_id'      => $clientId,
             ]);
 
@@ -443,5 +447,22 @@ class InvoiceUploadController extends Controller
         ]);
     }
 
+    public function debugZipRoute($month)
+    {
+        $user = Auth::user();
+        
+        if (!$user) {
+            return response()->json(['error' => 'Nicht eingeloggt', 'month' => $month]);
+        }
+        
+        return response()->json([
+            'success' => true,
+            'user_id' => $user->id,
+            'client_id' => $user->client_id,
+            'month' => $month,
+            'decoded_month' => urldecode($month),
+            'route_working' => true
+        ]);
+    }
 
 }

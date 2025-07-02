@@ -79,6 +79,18 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 pt-4">
+                            <div class="sm:col-span-2">
+                                <label for="payment_type" class="block text-sm font-medium text-gray-900">Zahlungsart</label>
+                                <div class="mt-2">
+                                    <select name="payment_type" id="payment_type" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                                        <option value="elektronisch" selected>elektronisch</option>
+                                        <option value="nicht elektronisch">nicht elektronisch</option>
+                                        <option value="Kreditkarte">Kreditkarte</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-7 pt-8">
                             <div class="sm:col-span-full">
                                 <label for="description" class="block text-sm font-medium text-gray-700">Beschreibung</label>
