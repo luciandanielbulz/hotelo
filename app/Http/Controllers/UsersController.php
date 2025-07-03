@@ -22,6 +22,7 @@ class UsersController extends Controller
             ->join('roles','users.role_id','=','roles.id')
             ->whereNull('clients.parent_client_id') // Nur ursprüngliche Clients, keine Versionen
             ->select('users.id as user_id','users.name as user_name', 'users.*','clients.*', 'roles.*', 'roles.name as role_name', 'users.email as user_email' )
+            ->orderBy('users.id', 'asc')
             ->get();
         return view('users.index',compact('users'));
     }
