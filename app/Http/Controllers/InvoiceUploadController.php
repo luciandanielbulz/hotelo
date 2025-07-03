@@ -15,7 +15,16 @@ class InvoiceUploadController extends Controller
     // Zeigt das Upload-Formular an
     public function create()
     {
-        return view('invoiceupload.create');
+        $user = Auth::user();
+        $clientId = $user->client_id;
+        
+        // Lade verfügbare Währungen für diesen Client
+        $currencies = \App\Models\Currency::where('client_id', $clientId)
+            ->orderBy('is_default', 'desc')
+            ->orderBy('code')
+            ->get();
+            
+        return view('invoiceupload.create', compact('currencies'));
     }
 
     public function edit($id)
@@ -28,10 +37,13 @@ class InvoiceUploadController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        // Hier kannst du ggf. weitere Daten laden,
-        // etwa Dropdown-Werte oder ähnliches.
+        // Lade verfügbare Währungen für diesen Client
+        $currencies = \App\Models\Currency::where('client_id', $clientId)
+            ->orderBy('is_default', 'desc')
+            ->orderBy('code')
+            ->get();
 
-        return view('invoiceupload.edit', compact('invoice'));
+        return view('invoiceupload.edit', compact('invoice', 'currencies'));
     }
 
     public function update(Request $request, $id)
@@ -98,6 +110,11 @@ class InvoiceUploadController extends Controller
                 'invoice_vendor' => 'nullable|string|max:255',
                 'description'    => 'nullable|string',
                 'invoice_number' => 'nullable|string|max:255',
+                'type'           => 'required|in:income,expense',
+                'tax_type'       => 'required|in:gross,net',
+                'amount'         => 'nullable|numeric|min:0',
+                'currency_id'    => 'nullable|exists:currencies,id',
+                'tax_rate'       => 'nullable|numeric|min:0|max:100',
             ];
 
             // Nur payment_type validieren wenn Spalte existiert
@@ -124,10 +141,24 @@ class InvoiceUploadController extends Controller
             $invoice->invoice_vendor = $validatedData['invoice_vendor'] ?? null;
             $invoice->description    = $validatedData['description'] ?? null;
             $invoice->invoice_number = $validatedData['invoice_number'] ?? null;
+            $invoice->type           = $validatedData['type'];
+            $invoice->tax_type       = $validatedData['tax_type'];
+            $invoice->amount         = $validatedData['amount'] ?? null;
+            $invoice->currency_id    = $validatedData['currency_id'] ?? null;
+            $invoice->tax_rate       = $validatedData['tax_rate'] ?? null;
             
             // payment_type nur setzen wenn Spalte existiert
             if ($hasPaymentTypeColumn && isset($validatedData['payment_type'])) {
                 $invoice->payment_type = $validatedData['payment_type'];
+            }
+
+            // Berechne Netto- und Steuerbeträge wenn Betrag vorhanden
+            if ($request->filled('amount') && $request->filled('tax_rate')) {
+                $invoice->calculateAmounts(
+                    $validatedData['amount'],
+                    $validatedData['tax_rate'],
+                    $validatedData['tax_type'] === 'gross'
+                );
             }
 
             $invoice->save();
@@ -246,6 +277,11 @@ class InvoiceUploadController extends Controller
                 'invoice_vendor' => 'required|string',
                 'description'    => 'nullable|string',
                 'invoice_number' => 'nullable|string',
+                'type'           => 'required|in:income,expense',
+                'tax_type'       => 'required|in:gross,net',
+                'amount'         => 'nullable|numeric|min:0',
+                'currency_id'    => 'nullable|exists:currencies,id',
+                'tax_rate'       => 'nullable|numeric|min:0|max:100',
             ];
 
             // Nur payment_type validieren wenn Spalte existiert
@@ -265,6 +301,11 @@ class InvoiceUploadController extends Controller
                 'description'    => $request->input('description'),
                 'invoice_number' => $request->input('invoice_number'),
                 'invoice_vendor' => $request->input('invoice_vendor'),
+                'type'           => $request->input('type', 'expense'),
+                'tax_type'       => $request->input('tax_type', 'gross'),
+                'amount'         => $request->input('amount'),
+                'currency_id'    => $request->input('currency_id'),
+                'tax_rate'       => $request->input('tax_rate', 19), // Standard-MwSt. Deutschland
                 'client_id'      => $clientId,
             ];
 
@@ -273,8 +314,20 @@ class InvoiceUploadController extends Controller
                 $invoiceData['payment_type'] = $request->input('payment_type', 'elektronisch');
             }
 
+            // Erstelle InvoiceUpload-Objekt und berechne Beträge
+            $invoice = new InvoiceUpload($invoiceData);
+            
+            // Berechne Netto- und Steuerbeträge wenn Betrag vorhanden
+            if ($request->filled('amount') && $request->filled('tax_rate')) {
+                $invoice->calculateAmounts(
+                    $request->input('amount'),
+                    $request->input('tax_rate'),
+                    $request->input('tax_type') === 'gross'
+                );
+            }
+
             // Daten in der Datenbank speichern
-            InvoiceUpload::create($invoiceData);
+            $invoice->save();
 
             return redirect()->route('invoiceupload.index')
                              ->with('success', 'Rechnung erfolgreich hochgeladen!');

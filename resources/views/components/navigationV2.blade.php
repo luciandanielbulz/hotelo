@@ -106,9 +106,9 @@
 
 
                     <!-- Rollenverwaltung mit Untermenü -->
-                    @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('manage_users') || auth()->user()->hasPermission('view_conditions') || auth()->user()->hasPermission('edit_my_client_settings') || auth()->user()->hasPermission('view_client_versions') || auth()->user()->hasPermission('manage_maintenance'))
+                    @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('manage_users') || auth()->user()->hasPermission('view_conditions') || auth()->user()->hasPermission('edit_my_client_settings') || auth()->user()->hasPermission('view_client_versions') || auth()->user()->hasPermission('manage_maintenance') || auth()->user()->hasPermission('manage_currencies'))
                         <div x-data="{ open: false }" class="relative sm:-my-px sm:flex">
-                            <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*', 'permissions.*', 'clients.index', 'clients.edit', 'clients.show', 'clients.my-settings', 'clients.versions', 'users.*','logos.*', 'condition.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
+                            <a href="#" @click.prevent="open = !open" class="inline-flex items-center px-1 pt-1 border-b-2 {{ request()->routeIs('roles.*', 'permissions.*', 'clients.index', 'clients.edit', 'clients.show', 'clients.my-settings', 'clients.versions', 'users.*','logos.*', 'condition.*', 'currencies.*') ? 'border-indigo-400 text-white' : 'border-transparent text-white hover:text-gray-200 hover:border-gray-300' }} text-sm font-medium leading-5 focus:outline-none transition duration-150 ease-in-out">
                                 <span>{{ __('App-Einstellungen') }}</span>
                             </a>
                             <!-- Dropdown-Inhalt -->
@@ -132,6 +132,11 @@
                                     @if(auth()->user()->hasPermission('view_conditions'))
                                         <x-dropdown-link :href="route('condition.index')" :active="request()->routeIs('condition.index')">
                                             {{ __('Konditionen') }}
+                                        </x-dropdown-link>
+                                    @endif
+                                    @if(auth()->user()->hasPermission('manage_currencies'))
+                                        <x-dropdown-link :href="route('currencies.index')" :active="request()->routeIs('currencies.*')">
+                                            {{ __('Währungen') }}
                                         </x-dropdown-link>
                                     @endif
                                     @if(auth()->user()->hasPermission('manage_users'))
@@ -308,7 +313,7 @@
 
 
             <!-- Rollenverwaltung mit Untermenü in mobiler Ansicht -->
-            @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('manage_users') || auth()->user()->hasPermission('view_conditions') || auth()->user()->hasPermission('edit_my_client_settings') || auth()->user()->hasPermission('view_client_versions') || auth()->user()->hasPermission('manage_maintenance'))
+            @if(auth()->user()->hasPermission('manage_roles') || auth()->user()->hasPermission('manage_permissions') || auth()->user()->hasPermission('view_clients') || auth()->user()->hasPermission('manage_users') || auth()->user()->hasPermission('view_conditions') || auth()->user()->hasPermission('edit_my_client_settings') || auth()->user()->hasPermission('view_client_versions') || auth()->user()->hasPermission('manage_maintenance') || auth()->user()->hasPermission('manage_currencies'))
                 <div x-data="{ openSubmenu: false }" class="space-y-1">
                     <x-responsive-nav-link href="#" @click.prevent="openSubmenu = !openSubmenu" class="flex items-center">
                         <span>{{ __('App-Einstellungen') }}</span>
@@ -330,6 +335,11 @@
                         @if(auth()->user()->hasPermission('view_clients'))
                             <x-responsive-nav-link :href="route('clients.index')">
                                 {{ __('Klienten') }}
+                            </x-responsive-nav-link>
+                        @endif
+                        @if(auth()->user()->hasPermission('manage_currencies'))
+                            <x-responsive-nav-link :href="route('currencies.index')">
+                                {{ __('Währungen') }}
                             </x-responsive-nav-link>
                         @endif
 

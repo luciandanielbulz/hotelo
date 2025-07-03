@@ -24,6 +24,7 @@ use App\Http\Controllers\BankDataController;
 use Illuminate\Support\Facades\File;
 use Illuminate\Http\Response;
 use App\Http\Controllers\InvoiceUploadController;
+use App\Http\Controllers\CurrencyController;
 
 
 
@@ -197,6 +198,16 @@ Route::post('/send-offer/email', [PdfCreateController::class, 'sendOfferByEmail'
         ->middleware('permission:manage_all_clients');
     Route::get('/admin/client-settings/{id}', [ClientSettingsController::class, 'show'])->name('client-settings.show')
         ->middleware('permission:manage_all_clients');
+
+    /*
+    |--------------------------------------------------------------------------
+    | WÄHRUNGSVERWALTUNG  
+    |--------------------------------------------------------------------------
+    | - CRUD-Operationen für Währungen
+    | - Client-spezifische Währungen
+    | - Standard-Währung setzen
+    */
+    Route::resource('currencies', CurrencyController::class)->middleware('permission:manage_currencies');
 
     /*Wartungsmodus-Verwaltung*/
     Route::get('/maintenance', [MaintenanceController::class, 'index'])->name('maintenance.index')
