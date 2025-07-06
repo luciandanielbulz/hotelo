@@ -38,16 +38,24 @@
           <p class="mt-2 text-sm text-gray-700">Eine Übersicht aller bisher hochgeladenen Rechnungen.</p>
         </div>
         <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-          <!-- Button zum Öffnen des Modals liegt jetzt im Alpine-Scope -->
-          <button
-            @click="open = true"
-            class="inline-block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-indigo-600">
-            ZIP Download
-          </button>
+          <div class="flex space-x-3">
+            <!-- Button zum Öffnen des Modals liegt jetzt im Alpine-Scope -->
+            <button
+              @click="open = true"
+              class="inline-block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline-indigo-600">
+              ZIP Download
+            </button>
+            <a href="{{ route('invoiceupload.upload.create') }}" 
+               class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
+                + Neu
+            </a>
+          </div>
         </div>
       </div>
 
       <!-- Livewire-Tabelle -->
-      <livewire:invoice-upload.invoice-upload-table />
+      <div class="mt-8">
+        <livewire:invoice-upload.invoice-upload-table />
+      </div>
     </div>
   </x-layout>

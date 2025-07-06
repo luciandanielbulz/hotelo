@@ -1,16 +1,15 @@
 <x-layout>
-    <div class="min-h-screen bg-gray-50 py-8">
-        <div class="max-w-4xl mx-auto">
-            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <!-- Header -->
-                <div class="bg-blue-600 px-6 py-4">
-                    <h2 class="text-xl font-semibold text-white">Rechnung bearbeiten</h2>
-                    <p class="text-blue-100 text-sm mt-1">Bearbeiten Sie die Details der Rechnung (ID: {{ $invoice->id }})</p>
-                </div>
+    <div class="grid grid-cols-1 gap-x-8 border-b border-gray-900/10 pb-12 md:grid-cols-7 sm:grid-cols-1">
+        <div class="py-2 px-4 sm:px-0">
+            <h2 class="text-xl font-semibold text-black">Rechnung bearbeiten</h2>
+            <p class="text-sm mt-1">Bearbeiten Sie die Details der Rechnung (ID: {{ $invoice->id }})</p>
+        </div>
 
+        <div class="sm:col-span-1 md:col-span-5">
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
                 <form method="POST" action="{{ route('invoiceupload.update', $invoice->id) }}" enctype="multipart/form-data" class="p-6">
-                @csrf
-                @method('PUT')
+                    @csrf
+                    @method('PUT')
 
                     @if ($errors->any())
                         <div class="mb-6 rounded-md bg-red-50 p-4 border border-red-200">
@@ -77,6 +76,19 @@
                                           placeholder="Beschreibung des Belegs"
                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('description', $invoice->description) }}</textarea>
                             </div>
+
+                            @if(\Schema::hasColumn('invoice_uploads', 'payment_type'))
+                            <!-- Zahlungsart -->
+                            <div>
+                                <label for="payment_type" class="block text-sm font-bold text-gray-700 mb-2">Zahlungsart</label>
+                                <select name="payment_type" id="payment_type" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="elektronisch" {{ old('payment_type', $invoice->payment_type ?? 'elektronisch') == 'elektronisch' ? 'selected' : '' }}>elektronisch</option>
+                                    <option value="nicht elektronisch" {{ old('payment_type', $invoice->payment_type ?? 'elektronisch') == 'nicht elektronisch' ? 'selected' : '' }}>nicht elektronisch</option>
+                                    <option value="Kreditkarte" {{ old('payment_type', $invoice->payment_type ?? 'elektronisch') == 'Kreditkarte' ? 'selected' : '' }}>Kreditkarte</option>
+                                </select>
+                            </div>
+                            @endif
                         </div>
 
                         <!-- Rechte Spalte -->
@@ -120,19 +132,6 @@
                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-l-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                                 <p class="mt-1 text-xs text-gray-500">{{ $invoice->filepath ? 'Neue Datei wählen, um die aktuelle zu ersetzen (optional)' : 'PDF-Datei auswählen' }}</p>
                             </div>
-
-                            @if(\Schema::hasColumn('invoice_uploads', 'payment_type'))
-                            <!-- Zahlungsart -->
-                            <div>
-                                <label for="payment_type" class="block text-sm font-bold text-gray-700 mb-2">Zahlungsart</label>
-                                <select name="payment_type" id="payment_type" 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    <option value="elektronisch" {{ old('payment_type', $invoice->payment_type ?? 'elektronisch') == 'elektronisch' ? 'selected' : '' }}>elektronisch</option>
-                                    <option value="nicht elektronisch" {{ old('payment_type', $invoice->payment_type ?? 'elektronisch') == 'nicht elektronisch' ? 'selected' : '' }}>nicht elektronisch</option>
-                                    <option value="Kreditkarte" {{ old('payment_type', $invoice->payment_type ?? 'elektronisch') == 'Kreditkarte' ? 'selected' : '' }}>Kreditkarte</option>
-                                </select>
-                            </div>
-                            @endif
                         </div>
                     </div>
 
@@ -182,7 +181,7 @@
                             <div>
                                 <label for="tax_rate" class="block text-sm font-bold text-gray-700 mb-2">Umsatzsteuer in % *</label>
                                 <div class="flex">
-                                    <input type="number" name="tax_rate" id="tax_rate" value="{{ old('tax_rate', $invoice->tax_rate ?? 19) }}" step="0.01" min="0" max="100"
+                                    <input type="number" name="tax_rate" id="tax_rate" value="{{ old('tax_rate', $invoice->tax_rate ?? 20) }}" step="0.01" min="0" max="100"
                                            class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                            onchange="calculateAmounts()">
                                     <span class="inline-flex items-center px-3 py-2 border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm rounded-r-md">%</span>
@@ -229,7 +228,9 @@
                             Rechnung aktualisieren
                         </button>
                     </div>
-            </form>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script>
