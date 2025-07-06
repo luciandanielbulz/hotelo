@@ -31,17 +31,26 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request);
         $validatedData = $request->validate([
-
-            'name' => ['string', 'max:50'],
+            'name' => ['required', 'string', 'max:50'],
             'description' => ['nullable', 'string', 'max:200'],
+            'permissions' => ['array'],
+            'permissions.*' => ['integer', 'exists:permissions,id'],
         ]);
 
-        Role::create($validatedData);
+        // Rolle erstellen
+        $role = Role::create([
+            'name' => $validatedData['name'],
+            'description' => $validatedData['description'],
+        ]);
+
+        // Berechtigungen zuweisen
+        if (!empty($validatedData['permissions'])) {
+            $role->permissions()->attach($validatedData['permissions']);
+        }
 
         // Erfolgsnachricht und Weiterleitung
-        return redirect()->route('roles.index')->with('message', 'Daten erfolgreich gespeichert!');
+        return redirect()->route('roles.index')->with('message', 'Rolle erfolgreich erstellt!');
     }
 
     /**
@@ -58,7 +67,6 @@ class RoleController extends Controller
     public function edit($role_id)
     {
         $role = Role::find($role_id);
-        //dd($role);
 
         return view('roles.edit', compact('role'));
     }
@@ -68,26 +76,30 @@ class RoleController extends Controller
      */
     public function update(Request $request, Role $role)
     {
-
         try {
-            // Hier wird die Validierung durchgeführt
+            // Validierung
             $validatedData = $request->validate([
-                'name' => ['string', 'max:200'],
-                'description' => ['string', 'max:200']
+                'name' => ['required', 'string', 'max:200'],
+                'description' => ['nullable', 'string', 'max:200'],
+                'permissions' => ['array'],
+                'permissions.*' => ['integer', 'exists:permissions,id'],
             ]);
 
-            // Wenn die Validierung erfolgreich ist, fahre hier fort
-            // Speichere die Daten oder führe deine gewünschte Aktion aus
-
         } catch (\Illuminate\Validation\ValidationException $e) {
-            // Hier kannst du Fehler behandeln, wenn die Validierung fehlschlägt
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
-        //dd($validatedData);
 
-        $role->update($validatedData);
+        // Rolle aktualisieren
+        $role->update([
+            'name' => $validatedData['name'],
+            'description' => $validatedData['description'],
+        ]);
 
-        return to_route('roles.index')->with('message', 'Rolle wurde geändert');
+        // Berechtigungen synchronisieren
+        $permissions = $validatedData['permissions'] ?? [];
+        $role->permissions()->sync($permissions);
+
+        return redirect()->route('roles.index')->with('message', 'Rolle wurde erfolgreich aktualisiert');
     }
 
     /**
