@@ -6,7 +6,7 @@
             <p class="mt-2 text-sm text-gray-700">Eine Liste aller Kunden in Ihrem Konto, inklusive Name, Adresse, E-Mail und mehr.</p>
         </div>
     </div>
-    <div class="sm:flex sm:items-center">
+    <div class="sm:flex sm:items-center mt-8">
         <div class="sm:flex-auto">
             <form id="searchForm" class="form-inline flex w-1/3" method="GET" action="{{ route('customer.index') }}">
 
