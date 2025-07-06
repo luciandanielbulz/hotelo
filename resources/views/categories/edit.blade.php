@@ -1,0 +1,220 @@
+<x-layout>
+    <div class="grid grid-cols-1 gap-x-8 border-b border-gray-900/10 pb-12 md:grid-cols-7 sm:grid-cols-1">
+        <div class="py-2 px-4 sm:px-0">
+            <h2 class="text-xl font-semibold text-black">Kategorie bearbeiten</h2>
+            <p class="text-sm mt-1">Bearbeiten Sie die Kategorie "{{ $category->name }}" für Ihre Rechnungen und Ausgaben.</p>
+        </div>
+
+        <div class="sm:col-span-1 md:col-span-5">
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+                <form method="POST" action="{{ route('categories.update', $category) }}" class="p-6">
+                    @csrf
+                    @method('PUT')
+
+                    @if(session('success'))
+                        <div class="mb-6 rounded-md bg-green-50 p-4 border border-green-200">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-green-800">{{ session('success') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    @if($errors->any())
+                        <div class="mb-6 rounded-md bg-red-50 p-4 border border-red-200">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <div class="text-sm text-red-700">
+                                        <ul class="list-disc space-y-1 pl-5">
+                                            @foreach($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                    
+                    <!-- Hauptformular in zwei Spalten -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Linke Spalte -->
+                        <div class="space-y-6">
+                            <!-- Kategorie Name -->
+                            <div>
+                                <label for="name" class="block text-sm font-bold text-blue-700 mb-2">Kategorie Name *</label>
+                                <input type="text" 
+                                       name="name" 
+                                       id="name"
+                                       value="{{ old('name', $category->name) }}"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       placeholder="z.B. Büromaterial"
+                                       required>
+                                @error('name')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Beschreibung -->
+                            <div>
+                                <label for="description" class="block text-sm font-bold text-blue-700 mb-2">Beschreibung</label>
+                                <textarea name="description" 
+                                          id="description"
+                                          rows="4"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                          placeholder="Optionale Beschreibung für diese Kategorie...">{{ old('description', $category->description) }}</textarea>
+                                @error('description')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Rechte Spalte -->
+                        <div class="space-y-6">
+                            <!-- Farbe -->
+                            <div>
+                                <label for="color" class="block text-sm font-bold text-blue-700 mb-2">Farbe</label>
+                                <div class="flex items-center space-x-3">
+                                    <input type="color" 
+                                           name="color" 
+                                           id="color"
+                                           value="{{ old('color', $category->color) }}"
+                                           class="w-16 h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                                    <div class="flex-1">
+                                        <input type="text" 
+                                               id="color_preview" 
+                                               value="{{ old('color', $category->color) }}"
+                                               readonly
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-700 text-sm">
+                                    </div>
+                                </div>
+                                @error('color')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Status -->
+                            <div>
+                                <label for="is_active" class="block text-sm font-bold text-blue-700 mb-2">Status</label>
+                                <select name="is_active" 
+                                        id="is_active"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="1" {{ old('is_active', $category->is_active) == '1' ? 'selected' : '' }}>Aktiv</option>
+                                    <option value="0" {{ old('is_active', $category->is_active) == '0' ? 'selected' : '' }}>Inaktiv</option>
+                                </select>
+                                @error('is_active')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Vorschau -->
+                            <div>
+                                <label class="block text-sm font-bold text-blue-700 mb-2">Vorschau</label>
+                                <div class="p-4 bg-gray-50 rounded-md border border-gray-200">
+                                    <div class="flex items-center space-x-3">
+                                        <div id="color_dot" class="w-4 h-4 rounded-full border border-gray-300" style="background-color: {{ old('color', $category->color) }}"></div>
+                                        <span id="name_preview" class="text-sm font-medium text-gray-900">{{ old('name', $category->name) }}</span>
+                                        <span id="status_preview" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $category->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                            {{ $category->is_active ? 'Aktiv' : 'Inaktiv' }}
+                                        </span>
+                                    </div>
+                                    <p id="description_preview" class="mt-2 text-sm text-gray-600">{{ old('description', $category->description) ?: 'Beschreibung der Kategorie...' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Verwendung anzeigen -->
+                    @if($category->invoiceUploads->count() > 0)
+                        <div class="mt-6 p-4 bg-blue-50 rounded-md border border-blue-200">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-blue-800">Verwendung</h3>
+                                    <p class="text-sm text-blue-700">
+                                        Diese Kategorie wird aktuell von {{ $category->invoiceUploads->count() }} Rechnung(en) verwendet.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
+                        <a href="{{ route('categories.index') }}"
+                           class="px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                            Abbrechen
+                        </a>
+                        <button type="submit"
+                                class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Änderungen speichern
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const colorInput = document.getElementById('color');
+            const colorPreview = document.getElementById('color_preview');
+            const colorDot = document.getElementById('color_dot');
+            const nameInput = document.getElementById('name');
+            const namePreview = document.getElementById('name_preview');
+            const descriptionInput = document.getElementById('description');
+            const descriptionPreview = document.getElementById('description_preview');
+            const statusSelect = document.getElementById('is_active');
+            const statusPreview = document.getElementById('status_preview');
+
+            // Update color preview
+            colorInput.addEventListener('input', function() {
+                const color = this.value;
+                colorPreview.value = color;
+                colorDot.style.backgroundColor = color;
+            });
+
+            // Update name preview
+            nameInput.addEventListener('input', function() {
+                const name = this.value || 'Kategoriename';
+                namePreview.textContent = name;
+            });
+
+            // Update description preview
+            descriptionInput.addEventListener('input', function() {
+                const description = this.value || 'Beschreibung der Kategorie...';
+                descriptionPreview.textContent = description;
+            });
+
+            // Update status preview
+            statusSelect.addEventListener('change', function() {
+                const isActive = this.value === '1';
+                statusPreview.textContent = isActive ? 'Aktiv' : 'Inaktiv';
+                statusPreview.className = isActive 
+                    ? 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800'
+                    : 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800';
+            });
+        });
+    </script>
+</x-layout> 

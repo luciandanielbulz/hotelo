@@ -77,6 +77,28 @@
                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('description', $invoice->description) }}</textarea>
                             </div>
 
+                            <!-- Kategorie -->
+                            <div>
+                                <label for="category_id" class="block text-sm font-bold text-gray-700 mb-2">Kategorie</label>
+                                <select name="category_id" id="category_id" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="">Kategorie wählen (optional)</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" 
+                                                {{ old('category_id', $invoice->category_id) == $category->id ? 'selected' : '' }}
+                                                style="color: {{ $category->color }};">
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @if($invoice->category)
+                                    <div class="mt-2 flex items-center text-sm text-gray-600">
+                                        <div class="w-3 h-3 rounded-full mr-2" style="background-color: {{ $invoice->category->color }}"></div>
+                                        <span>Aktuelle Kategorie: {{ $invoice->category->name }}</span>
+                                    </div>
+                                @endif
+                            </div>
+
                             @if(\Schema::hasColumn('invoice_uploads', 'payment_type'))
                             <!-- Zahlungsart -->
                             <div>

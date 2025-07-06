@@ -23,8 +23,14 @@ class InvoiceUploadController extends Controller
             ->orderBy('is_default', 'desc')
             ->orderBy('code')
             ->get();
+
+        // Lade verfügbare Kategorien für diesen Client
+        $categories = \App\Models\Category::where('client_id', $clientId)
+            ->active()
+            ->orderBy('name')
+            ->get();
             
-        return view('invoiceupload.create', compact('currencies'));
+        return view('invoiceupload.create', compact('currencies', 'categories'));
     }
 
     public function edit($id)
@@ -34,6 +40,7 @@ class InvoiceUploadController extends Controller
 
         // Prüfen ob Rechnung zum Client gehört
         $invoice = InvoiceUpload::where('client_id', $clientId)
+            ->with('category')
             ->where('id', $id)
             ->firstOrFail();
 
@@ -43,7 +50,13 @@ class InvoiceUploadController extends Controller
             ->orderBy('code')
             ->get();
 
-        return view('invoiceupload.edit', compact('invoice', 'currencies'));
+        // Lade verfügbare Kategorien für diesen Client
+        $categories = \App\Models\Category::where('client_id', $clientId)
+            ->active()
+            ->orderBy('name')
+            ->get();
+
+        return view('invoiceupload.edit', compact('invoice', 'currencies', 'categories'));
     }
 
     public function update(Request $request, $id)
@@ -115,6 +128,7 @@ class InvoiceUploadController extends Controller
                 'amount'         => 'nullable|numeric|min:0',
                 'currency_id'    => 'nullable|exists:currencies,id',
                 'tax_rate'       => 'nullable|numeric|min:0|max:100',
+                'category_id'    => 'nullable|exists:categories,id',
             ];
 
             // Nur payment_type validieren wenn Spalte existiert
@@ -146,6 +160,7 @@ class InvoiceUploadController extends Controller
             $invoice->amount         = $validatedData['amount'] ?? null;
             $invoice->currency_id    = $validatedData['currency_id'] ?? null;
             $invoice->tax_rate       = $validatedData['tax_rate'] ?? null;
+            $invoice->category_id    = $validatedData['category_id'] ?? null;
             
             // payment_type nur setzen wenn Spalte existiert
             if ($hasPaymentTypeColumn && isset($validatedData['payment_type'])) {
@@ -282,6 +297,7 @@ class InvoiceUploadController extends Controller
                 'amount'         => 'nullable|numeric|min:0',
                 'currency_id'    => 'nullable|exists:currencies,id',
                 'tax_rate'       => 'nullable|numeric|min:0|max:100',
+                'category_id'    => 'nullable|exists:categories,id',
             ];
 
             // Nur payment_type validieren wenn Spalte existiert
@@ -306,6 +322,7 @@ class InvoiceUploadController extends Controller
                 'amount'         => $request->input('amount'),
                 'currency_id'    => $request->input('currency_id'),
                 'tax_rate'       => $request->input('tax_rate', 19), // Standard-MwSt. Deutschland
+                'category_id'    => $request->input('category_id'),
                 'client_id'      => $clientId,
             ];
 

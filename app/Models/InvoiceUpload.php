@@ -23,6 +23,7 @@ class InvoiceUpload extends Model
         'tax_amount',
         'tax_rate',
         'client_id',
+        'category_id',
     ];
 
     protected $dates = ['invoice_date'];
@@ -40,6 +41,14 @@ class InvoiceUpload extends Model
     public function currency()
     {
         return $this->belongsTo(Currency::class);
+    }
+
+    /**
+     * Beziehung zur Kategorie
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 
     /**

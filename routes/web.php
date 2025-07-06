@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Http\Response;
 use App\Http\Controllers\InvoiceUploadController;
 use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\CategoryController;
 
 
 
@@ -208,6 +209,16 @@ Route::post('/send-offer/email', [PdfCreateController::class, 'sendOfferByEmail'
     | - Standard-Währung setzen
     */
     Route::resource('currencies', CurrencyController::class)->middleware('permission:manage_currencies');
+
+    /*
+    |--------------------------------------------------------------------------
+    | KATEGORIEN-VERWALTUNG
+    |--------------------------------------------------------------------------
+    | - CRUD-Operationen für Kategorien
+    | - Client-spezifische Kategorien
+    | - Für Rechnungsupload-Organisation
+    */
+    Route::resource('categories', CategoryController::class)->middleware('permission:manage_categories');
 
     /*Wartungsmodus-Verwaltung*/
     Route::get('/maintenance', [MaintenanceController::class, 'index'])->name('maintenance.index')
