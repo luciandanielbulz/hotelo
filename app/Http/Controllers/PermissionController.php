@@ -33,15 +33,14 @@ class PermissionController extends Controller
         //dd($request);
 
         $validatedData = $request->validate([
-
-            'name' => ['string', 'max:50'],
+            'name' => ['required', 'string', 'max:50'],
             'description' => ['nullable', 'string', 'max:200'],
         ]);
 
         Permission::create($validatedData);
 
         // Erfolgsnachricht und Weiterleitung
-        return redirect()->route('permissions.index')->with('message', 'Recht erfolgreich gespeichert!');
+        return redirect()->route('permissions.index')->with('message', 'Berechtigung erfolgreich gespeichert!');
     }
 
     /**
@@ -78,8 +77,8 @@ class PermissionController extends Controller
         try {
             // Hier wird die Validierung durchgeführt
             $validatedData = $request->validate([
-                'name' => ['string', 'max:200'],
-                'description' => ['string', 'max:200']
+                'name' => ['required', 'string', 'max:200'],
+                'description' => ['nullable', 'string', 'max:200']
             ]);
 
             // Wenn die Validierung erfolgreich ist, fahre hier fort
@@ -93,14 +92,34 @@ class PermissionController extends Controller
 
         $permission->update($validatedData);
 
-        return to_route('permissions.index')->with('message', 'Recht wurde geändert');
+        return redirect()->route('permissions.index')->with('message', 'Berechtigung wurde erfolgreich aktualisiert');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Permission $permissions)
+    public function destroy(Permission $permission)
     {
-        //
+        try {
+            // Prüfe ob die Berechtigung in Verwendung ist
+            $rolesUsingPermission = $permission->roles()->get();
+            
+            if ($rolesUsingPermission->count() > 0) {
+                $roleNames = $rolesUsingPermission->pluck('name')->toArray();
+                $roleNamesString = implode(', ', $roleNames);
+                
+                return redirect()->route('permissions.index')
+                    ->with('error', 'Diese Berechtigung kann nicht gelöscht werden, da sie noch von folgenden Rollen verwendet wird: ' . $roleNamesString);
+            }
+
+            $permission->delete();
+
+            return redirect()->route('permissions.index')
+                ->with('message', 'Berechtigung wurde erfolgreich gelöscht.');
+
+        } catch (\Exception $e) {
+            return redirect()->route('permissions.index')
+                ->with('error', 'Fehler beim Löschen der Berechtigung: ' . $e->getMessage());
+        }
     }
 }
