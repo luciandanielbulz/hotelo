@@ -59,13 +59,12 @@ class Positiontable extends Component
      *
      * @return \Illuminate\View\View
      */
-    public function render(Request $request)
+    public function render()
     {
-        //dd($request);
         $user = Auth::user();
         $clientId = $user->client_id;
 
-        $search = $request->input('search');
+        $search = $this->search;
 
         $query = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
             ->leftJoin('offerpositions', 'offers.id', '=', 'offerpositions.offer_id')
