@@ -22,7 +22,8 @@ class PermissionController extends Controller
      */
     public function create()
     {
-        return view('permissions.create');
+        $categories = Permission::getCategories();
+        return view('permissions.create', compact('categories'));
     }
 
     /**
@@ -35,6 +36,7 @@ class PermissionController extends Controller
         $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:50'],
             'description' => ['nullable', 'string', 'max:200'],
+            'category' => ['nullable', 'string', 'max:100'],
         ]);
 
         Permission::create($validatedData);
@@ -63,9 +65,10 @@ class PermissionController extends Controller
             ->first();
 
         $raw_permissions = Permission::all();
+        $categories = Permission::getCategories();
 
         //dd($permissions);
-        return view('permissions.edit', compact('permissions'));
+        return view('permissions.edit', compact('permissions', 'categories'));
     }
 
     /**
@@ -78,7 +81,8 @@ class PermissionController extends Controller
             // Hier wird die Validierung durchgeführt
             $validatedData = $request->validate([
                 'name' => ['required', 'string', 'max:200'],
-                'description' => ['nullable', 'string', 'max:200']
+                'description' => ['nullable', 'string', 'max:200'],
+                'category' => ['nullable', 'string', 'max:100'],
             ]);
 
             // Wenn die Validierung erfolgreich ist, fahre hier fort
