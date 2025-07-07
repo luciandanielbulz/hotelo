@@ -12,6 +12,7 @@ class PermissionSelector extends Component
     public $selectedPermissions = [];
     public $search = '';
     public $showOnlySelected = false;
+    public $expandedCategories = [];
 
     protected $listeners = ['refreshPermissions' => '$refresh'];
 
@@ -25,11 +26,33 @@ class PermissionSelector extends Component
                 $this->selectedPermissions = $role->permissions()->pluck('permissions.id')->toArray();
             }
         }
+
+        // Standardmäßig alle Kategorien aufklappen
+        $this->expandedCategories = Permission::getCategories()->toArray();
     }
 
     public function updatedSearch()
     {
         // Reaktiv beim Suchen
+    }
+
+    public function toggleCategory($category)
+    {
+        if (in_array($category, $this->expandedCategories)) {
+            $this->expandedCategories = array_diff($this->expandedCategories, [$category]);
+        } else {
+            $this->expandedCategories[] = $category;
+        }
+    }
+
+    public function expandAllCategories()
+    {
+        $this->expandedCategories = Permission::getCategories()->toArray();
+    }
+
+    public function collapseAllCategories()
+    {
+        $this->expandedCategories = [];
     }
 
     public function togglePermission($permissionId)
@@ -64,6 +87,24 @@ class PermissionSelector extends Component
         $this->selectedPermissions = [];
     }
 
+    public function selectAllInCategory($category)
+    {
+        $permissions = Permission::where('category', $category)->get();
+        foreach ($permissions as $permission) {
+            if (!in_array($permission->id, $this->selectedPermissions)) {
+                $this->selectedPermissions[] = $permission->id;
+            }
+        }
+    }
+
+    public function deselectAllInCategory($category)
+    {
+        $permissions = Permission::where('category', $category)->get();
+        foreach ($permissions as $permission) {
+            $this->selectedPermissions = array_diff($this->selectedPermissions, [$permission->id]);
+        }
+    }
+
     private function getFilteredPermissions()
     {
         $query = Permission::query();
@@ -71,7 +112,8 @@ class PermissionSelector extends Component
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('name', 'like', '%' . $this->search . '%')
-                  ->orWhere('description', 'like', '%' . $this->search . '%');
+                  ->orWhere('description', 'like', '%' . $this->search . '%')
+                  ->orWhere('category', 'like', '%' . $this->search . '%');
             });
         }
 
@@ -79,17 +121,23 @@ class PermissionSelector extends Component
             $query->whereIn('id', $this->selectedPermissions);
         }
 
-        return $query->orderBy('description')->orderBy('name')->get();
+        return $query->orderBy('category')->orderBy('description')->orderBy('name')->get();
+    }
+
+    private function getGroupedPermissions()
+    {
+        $permissions = $this->getFilteredPermissions();
+        return $permissions->groupBy('category');
     }
 
     public function render()
     {
-        $permissions = $this->getFilteredPermissions();
+        $groupedPermissions = $this->getGroupedPermissions();
         $selectedCount = count($this->selectedPermissions);
         $totalCount = Permission::count();
 
         return view('livewire.role.permission-selector', [
-            'permissions' => $permissions,
+            'groupedPermissions' => $groupedPermissions,
             'selectedCount' => $selectedCount,
             'totalCount' => $totalCount,
         ]);

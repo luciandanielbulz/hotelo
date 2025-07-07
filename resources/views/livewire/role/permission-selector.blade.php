@@ -24,7 +24,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                     </div>
-                    <input wire:model.live="search" type="text" placeholder="Berechtigungen suchen..." 
+                    <input wire:model.live="search" type="text" placeholder="Berechtigungen oder Kategorien suchen..." 
                            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm bg-white text-gray-900 placeholder-gray-500 sm:text-sm">
                 </div>
             </div>
@@ -61,52 +61,96 @@
                     </button>
                 @endif
             </div>
+            
+            <div class="flex space-x-2">
+                <button wire:click="expandAllCategories" type="button" class="inline-flex items-center px-3 py-2 border border-blue-300 shadow-sm text-sm font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                    Alle erweitern
+                </button>
+                <button wire:click="collapseAllCategories" type="button" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                    </svg>
+                    Alle einklappen
+                </button>
+            </div>
         </div>
 
-        <!-- Permissions Liste -->
-        <div class="bg-white shadow overflow-hidden sm:rounded-md">
-            @if($permissions->count() > 0)
-                <ul class="divide-y divide-gray-200">
-                    @foreach($permissions as $permission)
-                        <li class="px-4 py-3 hover:bg-gray-50 transition-colors duration-150">
+        <!-- Gruppierte Permissions Liste -->
+        <div class="space-y-4">
+            @if($groupedPermissions->count() > 0)
+                @foreach($groupedPermissions as $category => $permissions)
+                    <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+                        <!-- Category Header -->
+                        <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 rounded-t-lg">
                             <div class="flex items-center justify-between">
-                                <div class="flex items-center min-w-0 flex-1 cursor-pointer" wire:click="togglePermission({{ $permission->id }})">
-                                    <div class="flex-shrink-0">
-                                        <input 
-                                            type="checkbox" 
-                                            name="permissions[]" 
-                                            value="{{ $permission->id }}"
-                                            {{ in_array($permission->id, $selectedPermissions) ? 'checked' : '' }}
-                                            class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded pointer-events-none">
-                                    </div>
-                                    <div class="ml-3 min-w-0 flex-1">
-                                        @if($permission->description)
-                                            <label class="text-sm font-medium text-gray-900 cursor-pointer block">
-                                                {{ $permission->description }}
-                                            </label>
-                                            <p class="text-sm text-gray-500 truncate">{{ $permission->name }}</p>
-                                        @else
-                                            <label class="text-sm font-medium text-gray-900 cursor-pointer block">
-                                                {{ $permission->name }}
-                                            </label>
-                                        @endif
-                                    </div>
-                                </div>
+                                <button wire:click="toggleCategory('{{ $category }}')" type="button" class="flex items-center space-x-2 text-left">
+                                    <svg class="w-5 h-5 text-gray-400 transition-transform duration-200 {{ in_array($category, $expandedCategories) ? 'rotate-90' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                    <h4 class="text-md font-semibold text-gray-900">{{ $category }}</h4>
+                                    <span class="text-sm text-gray-500">({{ $permissions->count() }} Berechtigungen)</span>
+                                </button>
                                 
-                                @if(in_array($permission->id, $selectedPermissions))
-                                    <div class="flex-shrink-0">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                                            </svg>
-                                            Aktiv
-                                        </span>
-                                    </div>
-                                @endif
+                                <div class="flex space-x-2">
+                                    <button wire:click="selectAllInCategory('{{ $category }}')" type="button" class="text-xs text-indigo-600 hover:text-indigo-800">
+                                        Alle auswählen
+                                    </button>
+                                    <button wire:click="deselectAllInCategory('{{ $category }}')" type="button" class="text-xs text-red-600 hover:text-red-800">
+                                        Alle abwählen
+                                    </button>
+                                </div>
                             </div>
-                        </li>
-                    @endforeach
-                </ul>
+                        </div>
+
+                        <!-- Category Content -->
+                        @if(in_array($category, $expandedCategories))
+                            <div class="p-4">
+                                <div class="space-y-3">
+                                    @foreach($permissions as $permission)
+                                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors duration-150">
+                                            <div class="flex items-center min-w-0 flex-1 cursor-pointer" wire:click="togglePermission({{ $permission->id }})">
+                                                <div class="flex-shrink-0">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        name="permissions[]" 
+                                                        value="{{ $permission->id }}"
+                                                        {{ in_array($permission->id, $selectedPermissions) ? 'checked' : '' }}
+                                                        class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded pointer-events-none">
+                                                </div>
+                                                <div class="ml-3 min-w-0 flex-1">
+                                                    @if($permission->description)
+                                                        <label class="text-sm font-medium text-gray-900 cursor-pointer block">
+                                                            {{ $permission->description }}
+                                                        </label>
+                                                        <p class="text-xs text-gray-500">{{ $permission->name }}</p>
+                                                    @else
+                                                        <label class="text-sm font-medium text-gray-900 cursor-pointer block">
+                                                            {{ $permission->name }}
+                                                        </label>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            
+                                            @if(in_array($permission->id, $selectedPermissions))
+                                                <div class="flex-shrink-0">
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                                        </svg>
+                                                        Aktiv
+                                                    </span>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
             @else
                 <div class="text-center py-8">
                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
