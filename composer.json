@@ -2,9 +2,12 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "require": {
         "php": "^8.1",
         "barryvdh/laravel-dompdf": "^3.0",
@@ -35,7 +38,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-        "app/Helpers/TemplateHelper.php"
+            "app/Helpers/TemplateHelper.php"
         ]
     },
     "autoload-dev": {
