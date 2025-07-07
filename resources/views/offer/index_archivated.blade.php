@@ -59,16 +59,18 @@
                                             <!-- PDF Button -->
                                             <a href="{{ route('createoffer.pdf', ['offer_id' => $offer->offer_id, 'objecttype' => 'invoice', 'prev' => 'D']) }}" class="text-indigo-600 hover:text-indigo-900 ml-4">PDF</a>
 
-                                            <!-- Senden Form -->
-                                            <form action="" method="POST" class="inline">
-                                                @csrf
-                                                <input type="hidden" name="objectid" value="{{ $offer->offer_id }}">
-                                                <input type="hidden" name="objecttype" value="offer">
-                                                <button type="submit"
-                                                class="text-indigo-600 hover:text-orange-900 ml-4">
-                                                    Senden
-                                                </button>
-                                            </form>
+                                            @if(auth()->user()->hasPermission('send_emails'))
+                                                <!-- Senden Form -->
+                                                <form action="{{ route('offer.sendmail') }}" method="POST" class="inline">
+                                                    @csrf
+                                                    <input type="hidden" name="objectid" value="{{ $offer->offer_id }}">
+                                                    <input type="hidden" name="objecttype" value="offer">
+                                                    <button type="submit"
+                                                    class="text-indigo-600 hover:text-orange-900 ml-4">
+                                                        Senden
+                                                    </button>
+                                                </form>
+                                            @endif
 
                                         </div>
                                     </td>

@@ -77,16 +77,18 @@
                                                 PDF
                                             </button>
 
-                                            <!-- Senden Form -->
-                                            <form action="{{ route('invoice.sendmail') }}" method="POST" class="inline">
-                                                @csrf
-                                                <input type="hidden" name="objectid" value="{{ $invoice->invoice_id }}">
-                                                <input type="hidden" name="objecttype" value="invoice">
-                                                <button type="submit"
-                                                class="text-indigo-600 hover:text-indigo-900 ml-4">
-                                                    Senden
-                                                </button>
-                                            </form>
+                                            @if(auth()->user()->hasPermission('send_emails'))
+                                                <!-- Senden Form -->
+                                                <form action="{{ route('invoice.sendmail') }}" method="POST" class="inline">
+                                                    @csrf
+                                                    <input type="hidden" name="objectid" value="{{ $invoice->invoice_id }}">
+                                                    <input type="hidden" name="objecttype" value="invoice">
+                                                    <button type="submit"
+                                                    class="text-indigo-600 hover:text-indigo-900 ml-4">
+                                                        Senden
+                                                    </button>
+                                                </form>
+                                            @endif
 
                                             <!-- Archiv Form -->
                                             <form action="" method="POST" class="inline">

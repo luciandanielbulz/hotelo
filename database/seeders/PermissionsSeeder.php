@@ -32,6 +32,7 @@ class PermissionsSeeder extends Seeder
             'logout'=>'Ausloggen',
             'manage_permissions'=>'Rechte bearbeiten',
             'view_messages' => "Postausgang für gesendete Mails sehen",
+            'send_emails' => 'E-Mails versenden (Angebote und Rechnungen)',
             'reset_user_password' => 'Benutzerpasswort zurücksetzen',
             'view_conditions' => 'Konditionen bearbeiten',
             'edit_my_client_settings' => 'Eigene Firmen-Einstellungen bearbeiten',

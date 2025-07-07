@@ -124,10 +124,18 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::get('/invoice/index_archivated',[InvoiceController::class, 'index_archivated'])->name('invoice.index_archivated');
     Route::get('/invoice/copy/{id}',[InvoiceController::class, 'copy'])->name('invoice.copy');
     Route::get('/invoice/createinvoicefromoffer',[InvoiceController::class, 'createinvoicefromoffer'])->name('invoice.createinvoicefromoffer');
-    Route::post('/invoice/sendmail',[InvoiceController::class, 'sendmail'])->name('invoice.sendmail');
-    Route::post('/offer/sendmail',[OfferController::class, 'sendmail'])->name('offer.sendmail');
-    Route::post('/send-invoice/email', [PdfCreateController::class, 'sendInvoiceByEmail'])->name('sendinvoice.email');
-Route::post('/send-offer/email', [PdfCreateController::class, 'sendOfferByEmail'])->name('sendoffer.email');
+    Route::post('/invoice/sendmail',[InvoiceController::class, 'sendmail'])
+        ->name('invoice.sendmail')
+        ->middleware('permission:send_emails');
+    Route::post('/offer/sendmail',[OfferController::class, 'sendmail'])
+        ->name('offer.sendmail')
+        ->middleware('permission:send_emails');
+    Route::post('/send-invoice/email', [PdfCreateController::class, 'sendInvoiceByEmail'])
+        ->name('sendinvoice.email')
+        ->middleware('permission:send_emails');
+    Route::post('/send-offer/email', [PdfCreateController::class, 'sendOfferByEmail'])
+        ->name('sendoffer.email')
+        ->middleware('permission:send_emails');
     Route::get('/emaillist', [OutgoingEmailController::class, 'index'])
         ->name('outgoingemails.index')
         ->middleware('permission:view_messages');
