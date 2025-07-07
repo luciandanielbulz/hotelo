@@ -265,7 +265,7 @@
                 
                 <!-- Version ganz rechts außen -->
                 <div class="ml-4 text-xs text-gray-400">
-                    V{{ config('app.version', '1.0.0') }}
+                    V{{ app(\App\Services\VersionService::class)->getCurrentVersion() }}
                 </div>
             </div>
 
@@ -427,7 +427,7 @@
             <!-- Version Info für Mobile -->
             <div class="px-4 mb-3">
                 <div class="text-xs text-gray-500">
-                    V{{ config('app.version', '1.0.0') }}
+                    V{{ app(\App\Services\VersionService::class)->getCurrentVersion() }}
                 </div>
             </div>
             
