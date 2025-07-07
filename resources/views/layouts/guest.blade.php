@@ -28,5 +28,10 @@
                 {{ $slot }}
             </div>
         </div>
+        
+        <!-- Version Info -->
+        <div class="mt-8 text-center">
+            <x-version-info />
+        </div>
     </body>
 </html>

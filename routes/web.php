@@ -26,6 +26,8 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\InvoiceUploadController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\VersionController;
+
 
 
 
@@ -178,6 +180,14 @@ Route::middleware(['auth','verified'])->group(function(){
 
     /*Rechte*/
     Route::resource('rolepermissions', RolePermissionController::class);
+    
+    /*
+    |--------------------------------------------------------------------------
+    | VERSIONSINFORMATIONEN
+    |--------------------------------------------------------------------------
+    */
+    Route::get('version', [VersionController::class, 'index'])->name('version.index')->middleware('permission:view_system_info');
+    Route::get('api/version', [VersionController::class, 'api'])->name('version.api');
     Route::post('/rolepermissions/update/{role}', [RolePermissionController::class, 'update'])->name('rolepermissions.update-role');
 
     /*Klienten*/

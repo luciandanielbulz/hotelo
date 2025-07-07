@@ -262,6 +262,11 @@
                         </form>
                     </x-slot>
                 </x-dropdown>
+                
+                <!-- Version ganz rechts außen -->
+                <div class="ml-4 text-xs text-gray-400">
+                    V{{ config('app.version', '1.0.0') }}
+                </div>
             </div>
 
             <!-- Hamburger Menü -->
@@ -419,6 +424,13 @@
 
         <!-- Responsive Einstellungen -->
         <div class="pt-4 pb-1 border-t border-gray-200">
+            <!-- Version Info für Mobile -->
+            <div class="px-4 mb-3">
+                <div class="text-xs text-gray-500">
+                    V{{ config('app.version', '1.0.0') }}
+                </div>
+            </div>
+            
             <div class="px-4">
                 <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
                 <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>

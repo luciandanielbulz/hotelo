@@ -74,6 +74,7 @@ class PermissionsSeeder extends Seeder
                 'manage_categories' => 'Kategorien verwalten',
                 'edit_client_settings' => 'Client-Einstellungen bearbeiten',
                 'manage_all_clients' => 'Alle Clients verwalten',
+                'view_system_info' => 'System-Informationen und Versionsdaten anzeigen',
             ],
 
             
