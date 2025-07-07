@@ -128,7 +128,9 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::post('/offer/sendmail',[OfferController::class, 'sendmail'])->name('offer.sendmail');
     Route::post('/send-invoice/email', [PdfCreateController::class, 'sendInvoiceByEmail'])->name('sendinvoice.email');
 Route::post('/send-offer/email', [PdfCreateController::class, 'sendOfferByEmail'])->name('sendoffer.email');
-    Route::get('/emaillist', [OutgoingEmailController::class, 'index'])->name('outgoingemails.index');
+    Route::get('/emaillist', [OutgoingEmailController::class, 'index'])
+        ->name('outgoingemails.index')
+        ->middleware('permission:view_messages');
 
     Route::resource('invoice',InvoiceController::class);
 
