@@ -80,11 +80,15 @@
                                             class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded pointer-events-none">
                                     </div>
                                     <div class="ml-3 min-w-0 flex-1">
-                                        <label class="text-sm font-medium text-gray-900 cursor-pointer block">
-                                            {{ $permission->name }}
-                                        </label>
                                         @if($permission->description)
-                                            <p class="text-sm text-gray-500 truncate">{{ $permission->description }}</p>
+                                            <label class="text-sm font-medium text-gray-900 cursor-pointer block">
+                                                {{ $permission->description }}
+                                            </label>
+                                            <p class="text-sm text-gray-500 truncate">{{ $permission->name }}</p>
+                                        @else
+                                            <label class="text-sm font-medium text-gray-900 cursor-pointer block">
+                                                {{ $permission->name }}
+                                            </label>
                                         @endif
                                     </div>
                                 </div>

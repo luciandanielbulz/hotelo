@@ -79,7 +79,7 @@ class PermissionSelector extends Component
             $query->whereIn('id', $this->selectedPermissions);
         }
 
-        return $query->orderBy('name')->get();
+        return $query->orderBy('description')->orderBy('name')->get();
     }
 
     public function render()
