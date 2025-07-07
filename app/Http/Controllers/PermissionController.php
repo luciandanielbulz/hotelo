@@ -12,9 +12,21 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        $permissions = Permission::all();
-        //dd($permissions);
-        return view('permissions.index', compact('permissions'));
+        $permissions = Permission::orderBy('category')->orderBy('name')->get();
+        
+        // Gruppiere Berechtigungen nach Kategorien
+        $groupedPermissions = $permissions->groupBy('category');
+        
+        // Berechtigungen ohne Kategorie in "Sonstige" gruppieren
+        if ($groupedPermissions->has('')) {
+            $groupedPermissions['Sonstige'] = $groupedPermissions->get('');
+            $groupedPermissions->forget('');
+        }
+        
+        // Sortiere die Kategorien alphabetisch
+        $groupedPermissions = $groupedPermissions->sortKeys();
+        
+        return view('permissions.index', compact('permissions', 'groupedPermissions'));
     }
 
     /**

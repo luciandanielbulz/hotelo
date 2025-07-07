@@ -78,7 +78,7 @@
 
                         <!-- Kategorie -->
                         <div class="sm:col-span-6">
-                            <label for="category" class="block text-sm font-medium text-gray-900">
+                            <label for="category_type" class="block text-sm font-medium text-gray-900">
                                 <div class="flex items-center">
                                     <svg class="w-4 h-4 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
@@ -86,21 +86,54 @@
                                     Kategorie
                                 </div>
                             </label>
-                            <div class="mt-2">
-                                <select name="category" id="category"
-                                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 @error('category') outline-red-500 @enderror">
-                                    <option value="">-- Kategorie auswählen --</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category }}" {{ old('category', $permissions->category) == $category ? 'selected' : '' }}>
-                                            {{ $category }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                            
+                            <!-- Kategorie-Auswahl -->
+                            <div class="mt-2 space-y-3">
+                                <div>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="category_type" value="existing" class="mr-2" 
+                                               {{ old('category_type', 'existing') == 'existing' ? 'checked' : '' }} 
+                                               onchange="toggleCategoryInputEdit()">
+                                        <span class="text-sm text-gray-700">Bestehende Kategorie auswählen</span>
+                                    </label>
+                                </div>
+                                
+                                <div id="existing_category_dropdown">
+                                    <select name="existing_category" id="existing_category"
+                                            class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                                        <option value="">-- Kategorie auswählen --</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category }}" {{ old('existing_category', $permissions->category) == $category ? 'selected' : '' }}>
+                                                {{ $category }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <div>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="category_type" value="new" class="mr-2" 
+                                               {{ old('category_type') == 'new' ? 'checked' : '' }} 
+                                               onchange="toggleCategoryInputEdit()">
+                                        <span class="text-sm text-gray-700">Neue Kategorie erstellen</span>
+                                    </label>
+                                </div>
+                                
+                                <div id="new_category_input" style="display: none;">
+                                    <input type="text" name="new_category" id="new_category"
+                                           class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                                           placeholder="Name der neuen Kategorie eingeben..."
+                                           value="{{ old('new_category') }}">
+                                </div>
+                                
+                                <!-- Hidden field für die finale Kategorie -->
+                                <input type="hidden" name="category" id="final_category" value="{{ old('category', $permissions->category) }}">
                             </div>
+                            
                             @error('category')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
-                            <p class="mt-2 text-sm text-gray-500">Wählen Sie eine bestehende Kategorie oder lassen Sie das Feld leer für "Sonstige"</p>
+                            <p class="mt-2 text-sm text-gray-500">Wählen Sie eine bestehende Kategorie oder erstellen Sie eine neue</p>
                         </div>
                     </div>
                 </div>
@@ -123,4 +156,51 @@
             </form>
         </div>
     </div>
+
+    <!-- JavaScript für die Kategorien-Auswahl -->
+    <script>
+        function toggleCategoryInputEdit() {
+            const categoryType = document.querySelector('input[name="category_type"]:checked').value;
+            const existingDropdown = document.getElementById('existing_category_dropdown');
+            const newInput = document.getElementById('new_category_input');
+            const finalCategory = document.getElementById('final_category');
+            
+            if (categoryType === 'existing') {
+                existingDropdown.style.display = 'block';
+                newInput.style.display = 'none';
+                // Set value from dropdown
+                const selectedCategory = document.getElementById('existing_category').value;
+                finalCategory.value = selectedCategory;
+            } else {
+                existingDropdown.style.display = 'none';
+                newInput.style.display = 'block';
+                // Clear final category
+                finalCategory.value = '';
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('existing_category').addEventListener('change', function() {
+            document.getElementById('final_category').value = this.value;
+        });
+        
+        document.getElementById('new_category').addEventListener('input', function() {
+            document.getElementById('final_category').value = this.value;
+        });
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if current category exists in dropdown
+            const currentCategory = '{{ old('category', $permissions->category) }}';
+            const existingCategories = @json($categories);
+            
+            if (currentCategory && !existingCategories.includes(currentCategory)) {
+                // Current category is not in existing categories, set to new
+                document.querySelector('input[name="category_type"][value="new"]').checked = true;
+                document.getElementById('new_category').value = currentCategory;
+            }
+            
+            toggleCategoryInputEdit();
+        });
+    </script>
 </x-layout>
