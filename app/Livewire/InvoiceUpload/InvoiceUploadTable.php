@@ -79,6 +79,7 @@ class InvoiceUploadTable extends Component
         $clientId = $user->client_id;
 
         $query = InvoiceUpload::where('client_id', $clientId)
+                              ->with('currency') // Laden der Währungsbeziehung
                               ->orderBy('invoice_date', 'desc');
 
         // Falls ein Suchtext vorhanden ist

@@ -61,6 +61,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Lieferant</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Beschreibung</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rechnungsnummer</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Preis</th>
                                     @if(\Schema::hasColumn('invoice_uploads', 'payment_type'))
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Zahlungsart</th>
                                     @endif
@@ -82,6 +83,13 @@
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-black">
                                             {{ $invoice->invoice_number ?? '-' }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-black">
+                                            @if($invoice->amount && $invoice->currency)
+                                                {{ number_format($invoice->amount, 2, ',', '.') }} {{ $invoice->currency->symbol }}
+                                            @else
+                                                -
+                                            @endif
                                         </td>
                                         @if(\Schema::hasColumn('invoice_uploads', 'payment_type'))
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-black">
