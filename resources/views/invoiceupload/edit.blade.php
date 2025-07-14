@@ -192,7 +192,7 @@
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="">Währung wählen</option>
                                     @foreach($currencies as $currency)
-                                        <option value="{{ $currency->id }}" {{ old('currency_id', $invoice->currency_id) == $currency->id ? 'selected' : '' }}>
+                                        <option value="{{ $currency->id }}" {{ old('currency_id', $invoice->currency_id) == $currency->id || (!old('currency_id') && !$invoice->currency_id && $currency->is_default) ? 'selected' : '' }}>
                                             {{ $currency->code }}
                                         </option>
                                     @endforeach
