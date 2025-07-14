@@ -30,19 +30,61 @@
         </div>
         @endif
 
-    <!-- Suchfeld -->
+    <!-- Filter- und Suchbereich -->
     <div class="mb-6">
-        <div class="w-1/4">
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                    </svg>
+        <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+            <!-- Suchfeld -->
+            <div class="lg:w-80">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <input wire:model.live="search" type="text" placeholder="Rechnungen suchen..." 
+                           class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm bg-white text-gray-900 placeholder-gray-500 sm:text-sm">
                 </div>
-                <input wire:model.live="search" type="text" placeholder="Rechnungen suchen..." 
-                       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm bg-white text-gray-900 placeholder-gray-500 sm:text-sm">
+            </div>
+            
+            <!-- Datumfilter -->
+            <div class="flex flex-wrap items-center gap-3">
+                <div class="flex items-center gap-2">
+                    <label for="dateFrom" class="text-sm font-medium text-gray-700">Von:</label>
+                    <input wire:model.live="dateFrom" type="date" id="dateFrom" 
+                           class="block px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm bg-white text-gray-900 sm:text-sm">
+                </div>
+                
+                <div class="flex items-center gap-2">
+                    <label for="dateTo" class="text-sm font-medium text-gray-700">Bis:</label>
+                    <input wire:model.live="dateTo" type="date" id="dateTo" 
+                           class="block px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm bg-white text-gray-900 sm:text-sm">
+                </div>
+                
+                @if($dateFrom || $dateTo)
+                    <button wire:click="clearDateFilter" 
+                            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Zurücksetzen
+                    </button>
+                @endif
             </div>
         </div>
+        
+        <!-- Zeitraum-Anzeige (falls Filter aktiv) -->
+        @if($dateFrom || $dateTo)
+            <div class="mt-2 text-sm text-gray-600">
+                <span class="font-medium">Aktiver Filter:</span>
+                @if($dateFrom && $dateTo)
+                    Zeitraum {{ \Carbon\Carbon::parse($dateFrom)->format('d.m.Y') }} - {{ \Carbon\Carbon::parse($dateTo)->format('d.m.Y') }}
+                @elseif($dateFrom)
+                    Ab {{ \Carbon\Carbon::parse($dateFrom)->format('d.m.Y') }}
+                @elseif($dateTo)
+                    Bis {{ \Carbon\Carbon::parse($dateTo)->format('d.m.Y') }}
+                @endif
+            </div>
+        @endif
     </div>
 
     <!-- Tabelle -->

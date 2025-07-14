@@ -13,13 +13,38 @@ class InvoiceUploadTable extends Component
     use WithPagination;
 
     public $search = '';
+    public $dateFrom = '';
+    public $dateTo = '';
     public $confirmingDeletion = false;
     public $itemToDelete = null;
+
+    public function mount()
+    {
+        $this->dateFrom = now()->startOfYear()->format('Y-m-d');
+        $this->dateTo = now()->format('Y-m-d');
+    }
 
     protected $paginationTheme = 'tailwind';
 
     public function updatingSearch()
     {
+        $this->resetPage();
+    }
+
+    public function updatingDateFrom()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingDateTo()
+    {
+        $this->resetPage();
+    }
+
+    public function clearDateFilter()
+    {
+        $this->dateFrom = '';
+        $this->dateTo = '';
         $this->resetPage();
     }
 
@@ -87,8 +112,23 @@ class InvoiceUploadTable extends Component
             $query->where(function($q) {
                 $q->where('invoice_number', 'LIKE', "%{$this->search}%")
                   ->orWhere('description', 'LIKE', "%{$this->search}%")
-                  ->orWhere('invoice_vendor', 'LIKE', "%{$this->search}%");
+                  ->orWhere('invoice_vendor', 'LIKE', "%{$this->search}%")
+                  ->orWhere('amount', 'LIKE', "%{$this->search}%");
+                
+                // Nur payment_type durchsuchen wenn Spalte existiert
+                if (\Schema::hasColumn('invoice_uploads', 'payment_type')) {
+                    $q->orWhere('payment_type', 'LIKE', "%{$this->search}%");
+                }
             });
+        }
+
+        // Datumfilter anwenden
+        if (!empty($this->dateFrom)) {
+            $query->whereDate('invoice_date', '>=', $this->dateFrom);
+        }
+
+        if (!empty($this->dateTo)) {
+            $query->whereDate('invoice_date', '<=', $this->dateTo);
         }
 
         $invoiceuploads = $query->paginate(10);
