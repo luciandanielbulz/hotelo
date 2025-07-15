@@ -39,12 +39,12 @@
                         <div class="flex items-start space-x-4">
                             <div class="bg-green-500/20 p-2 rounded-lg">
                                 <svg class="h-6 w-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="text-lg font-semibold text-white">Automatische Verarbeitung</h3>
-                                <p class="text-indigo-200">KI-gestützte Rechnungserkennung und -kategorisierung</p>
+                                <h3 class="text-lg font-semibold text-white">Integrierte Workflows</h3>
+                                <p class="text-indigo-200">Nahtlose Abläufe von Angebot bis Rechnung mit automatischer PDF-Erstellung</p>
                             </div>
                         </div>
 
