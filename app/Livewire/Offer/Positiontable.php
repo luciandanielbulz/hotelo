@@ -14,20 +14,29 @@ class Positiontable extends Component
 {
     use WithPagination;
 
-    public $perPage = 9;
+    public $perPage = 12;
     public $search = '';
-
-    // Optional: Suchparameter in der URL behalten    protected $queryString = ['search'];
+    public $viewMode = 'table'; // 'cards' oder 'table'
+    public $sortBy = 'newest'; // 'newest', 'oldest', 'number', 'customer'
 
     public function boot()
     {
-        Paginator::useTailwind(); // Oder ->useBootstrap(), je nach verwendetem CSS-Framework
+        Paginator::useTailwind();
     }
 
-    // Reset der Seite, wenn sich die Suchanfrage ändert
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    public function updatingSortBy()
+    {
+        $this->resetPage();
+    }
+
+    public function setViewMode($mode)
+    {
+        $this->viewMode = $mode;
     }
 
     /**
@@ -79,49 +88,63 @@ class Positiontable extends Component
                       ->orWhere('clients.parent_client_id', $clientId);
             })
             ->where('offers.archived', false)
-            ->orderBy('offers.id', 'desc')
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
                     $query->where('customers.customername', 'like', "%$search%")
                         ->orWhere('customers.companyname', 'like', "%$search%")
                         ->orWhere('offers.number', 'like', "%$search%");
                 });
-            })
-            ->select(
-                'offers.id as offer_id',
-                'offers.number',
-                'offers.archived',
-                'offers.created_at',
-                'offers.updated_at',
-                'offers.date',
-                DB::raw("CASE 
-                    WHEN LENGTH(offers.description) > 25 
-                    THEN CONCAT(LEFT(offers.description, 25), '...') 
-                    ELSE offers.description 
-                END as description"),
-                'customers.customername',
-                'customers.companyname',
-                DB::raw("DATE_FORMAT(latest_emails.latest_sentdate, '%Y-%m-%d %H:%i:%s') as sent_date"),
-                DB::raw('SUM(offerpositions.amount * offerpositions.price) as total_price')
-            )
-            ->groupBy(
-                'offers.id',
-                'offers.number',
-                'offers.archived',
-                'offers.created_at',
-                'offers.updated_at',
-                'offers.date',
-                'offers.description',
-                'customers.customername',
-                'customers.companyname',
-                'latest_emails.latest_sentdate'
-            );
+            });
 
+        // Sortierung anwenden
+        switch ($this->sortBy) {
+            case 'oldest':
+                $query->orderBy('offers.date', 'asc');
+                break;
+            case 'number':
+                $query->orderBy('offers.number', 'asc');
+                break;
+            case 'customer':
+                $query->orderBy('customers.customername', 'asc')
+                      ->orderBy('customers.companyname', 'asc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('offers.date', 'desc');
+                break;
+        }
+
+        $query->select(
+            'offers.id as offer_id',
+            'offers.number',
+            'offers.archived',
+            'offers.created_at',
+            'offers.updated_at',
+            'offers.date',
+            DB::raw("CASE 
+                WHEN LENGTH(offers.description) > 25 
+                THEN CONCAT(LEFT(offers.description, 25), '...') 
+                ELSE offers.description 
+            END as description"),
+            'customers.customername',
+            'customers.companyname',
+            DB::raw("DATE_FORMAT(latest_emails.latest_sentdate, '%Y-%m-%d %H:%i:%s') as sent_date"),
+            DB::raw('SUM(offerpositions.amount * offerpositions.price) as total_price')
+        )
+        ->groupBy(
+            'offers.id',
+            'offers.number',
+            'offers.archived',
+            'offers.created_at',
+            'offers.updated_at',
+            'offers.date',
+            'offers.description',
+            'customers.customername',
+            'customers.companyname',
+            'latest_emails.latest_sentdate'
+        );
 
         $offers = $query->paginate($this->perPage);
-        $offers->appends(['search' => $search]);
-
-        //dd($offers);
 
         return view('livewire.offer.positiontable', [
             'offers' => $offers,
