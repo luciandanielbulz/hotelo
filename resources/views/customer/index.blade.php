@@ -1,15 +1,23 @@
 <x-layout>
-    <div class="sm:flex sm:items-center">
-        <div class="sm:flex-auto">
-            <h1 class="text-base font-semibold text-gray-900">Kunden</h1>
-            <p class="mt-2 text-sm text-gray-700">Eine Liste aller Kunden in Ihrem Konto, inklusive Name, Adresse, E-Mail und mehr.</p>
+    <!-- Einfacher Header -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Kunden</h1>
+            <p class="text-gray-600">Verwalten Sie alle Ihre Geschäftskunden</p>
         </div>
-        <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-            <x-button route="{{ route('customer.create') }}" value="+ Neu" />
+        <div class="mt-4 md:mt-0">
+            <a href="{{ route('customer.create') }}" 
+               class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                Neuer Kunde
+            </a>
         </div>
     </div>
 
-    <div class="mt-8">
+    <!-- Livewire Kunden-Tabelle -->
+    <div>
         <livewire:customer.customer-table />
     </div>
 </x-layout>

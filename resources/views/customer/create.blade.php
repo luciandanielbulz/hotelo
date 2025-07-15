@@ -1,120 +1,182 @@
 <x-layout>
-    <div class="space-y-10 divide-y divide-gray-900/10">
-        <div class="grid grid-cols-1 gap-x-8 gap-y-8 md:grid-cols-5">
-            <div class="px-4 sm:px-0">
-                <h2 class="text-base font-semibold text-gray-900">Neuen Kunden anlegen</h2>
-                <p class="mt-1 text-sm text-gray-600">Bitte füllen Sie die folgenden Informationen aus, um einen neuen Kunden anzulegen.</p>
-            </div>
-
-            <form action="{{ route('customer.store') }}" method="POST" class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-3">
-            @csrf
-
-                <div class="px-4 py-6 sm:p-6">
-                <!-- Formular -->
-                    <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-7 pb-8">
-                        <div class="sm:col-span-2">
-                            <x-dropdown_body name="salutation_id" id="salutation_id" value="" :options="$salutations->pluck('name', 'id')" :selected="old('salutation', 1)" label="Anrede" placeholder="Bitte auswählen" class="w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm" />
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-7">
-                        <!-- Titel -->
-                        <div class="sm:col-span-1">
-                            <x-input name="title" type="text" placeholder="Titel" label="Titel" value=""/>
-                        </div>
-
-                    <!-- Kundenname -->
-                    <div class="sm:col-span-3">
-                        <x-input name="customername" type="text" placeholder="Kundenname" label="Kundenname" value="" />
-                    </div>
-                    <!-- Firmenname -->
-                    <div class="sm:col-span-3">
-                        <x-input name="companyname" type="text" placeholder="Firmenname" label="Firmenname" value="" />
-                    </div>
-
-                    <!-- Kundennummer -->
-                    <div class="sm:col-span-2">
-                        <x-input name="customer_number" type="text" placeholder="Kundennummer" label="Kundennummer" value="" />
-                    </div>
-
-                    <!-- Adresse -->
-                    <div class="sm:col-span-3">
-                        <x-input name="address" type="text" placeholder="Adresse" label="Adresse" value="" />
-                    </div>
-
-                    <!-- Postleitzahl -->
-                    <div class="sm:col-span-1">
-                        <x-input name="postalcode" type="text" placeholder="Postleitzahl" label="Postleitzahl" value="" />
-                    </div>
-
-                    <!-- Ort -->
-                    <div class="sm:col-span-3">
-                        <x-input name="location" type="text" placeholder="Ort" label="Ort" value="" />
-                    </div>
-
-                    <!-- Land -->
-                    <div class="sm:col-span-3">
-                        <x-input name="country" type="text" placeholder="Land" label="Land" value="" />
-                    </div>
-
-                    <!-- UID -->
-                    <div class="sm:col-span-2">
-                        <x-input name="vat_number" type="text" placeholder="UID" label="UID" value="" />
-                    </div>
-
-                    <!-- Umsatzsteuer -->
-
-                    
-                    <div class="sm:col-span-2">
-                        <x-dropdown_body name="tax_id" id="tax_id" value="" :options="$taxrates->pluck('taxrate', 'id')" :selected="old('taxrate', $standardtaxrate)" label="Umsatzsteuer in %" placeholder="Bitte auswählen" class="w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm" />
-                    </div>
-
-                    <!-- Telefonnummer -->
-                    <div class="sm:col-span-2">
-                        <x-input name="phone" type="text" placeholder="Telefonnummer" label="Telefonnummer" value="" />
-                    </div>
-
-                    <!-- Fax -->
-                    <div class="sm:col-span-2">
-                        <x-input name="fax" type="text" placeholder="Fax" label="Fax" value="" />
-                    </div>
-
-                    <!-- E-Mail -->
-                    <div class="sm:col-span-3">
-                        <x-input name="email" type="text" placeholder="E-Mail" label="E-Mail" value="" />
-                    </div>
-
-                    <!-- Konditionen -->
-                    <div class="sm:col-span-3">
-                        <x-dropdown_body name="condition_id" id="condition_id" value="" :options="$conditions->pluck('conditionname', 'id')" :selected="old('conditionname', 1)" label="Konditionen" placeholder="Bitte auswählen" class="w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm" />
-                    </div>
-                    <!-- Email Subject -->
-                    <div class="sm:col-span-full">
-                        <x-input name="emailsubject" type="text" placeholder="E-Mail Betreff" label="E-Mail Betreff" value="{objekt} {objektnummer}" />
-                    </div>
-
-                    <!-- Email Body. -->
-                    <div class="sm:col-span-full">
-                        <label for="emailbody" class="block text-sm/6 font-medium text-gray-900 mb-1">E-Mail Text       <br>Variablen: aktuelles_jahr (Y0), aktuelles_monat (M0), objekt (O), objekt_mit_artikel (OA), objektnummer (ON), signatur (S), aktueller_monatsname (M0N)</label>
-                        <div class="mt-1">
-                            <textarea name="emailbody" id="emailbody" rows="10" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                            Sehr geehrte Damen und Herren,<br><br>anbei {objekt_mit_artikel} {objektnummer}<br><br>{signatur}
-                            </textarea>
-
-                        </div>
-                    </div>
-
-                </div>
-                <div class="mt-6 flex items-center justify-end gap-x-6 p-6">
-                    <!-- Schaltflächen -->
-                    <a href="{{ route('customer.index') }}" class="text-sm font-semibold text-gray-900">Abbrechen</a>
-                    <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                        Speichern
-                    </button>
-
-                </div>
-            </form>
+    <!-- Moderner Header -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Neuen Kunden anlegen</h1>
+            <p class="text-gray-600">Füllen Sie die folgenden Informationen aus, um einen neuen Kunden zu erstellen</p>
+        </div>
+        <div class="mt-4 md:mt-0">
+            <a href="{{ route('customer.index') }}" 
+               class="inline-flex items-center px-4 py-2 bg-white/60 backdrop-blur-lg border border-white/20 text-gray-700 font-medium rounded-lg hover:bg-white/80 transition-all duration-300 shadow-lg">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Zurück zur Übersicht
+            </a>
         </div>
     </div>
+
+    <!-- Modernisiertes Formular -->
+    <div class="bg-white/60 backdrop-blur-lg rounded-2xl border border-white/20 shadow-xl">
+        <form action="{{ route('customer.store') }}" method="POST" class="p-8">
+            @csrf
+
+            <!-- Persönliche Informationen Sektion -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    Persönliche Informationen
+                </h3>
+                
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
+                    <div class="sm:col-span-3">
+                        <x-dropdown_body name="salutation_id" id="salutation_id" value="" :options="$salutations->pluck('name', 'id')" :selected="old('salutation', 1)" label="Anrede" placeholder="Bitte auswählen" class="w-full appearance-none rounded-lg bg-white/70 backdrop-blur-sm py-3 pl-3 pr-8 text-base text-gray-900 border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                    </div>
+                    <div class="sm:col-span-2">
+                        <x-input name="title" type="text" placeholder="Titel" label="Titel" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300"/>
+                    </div>
+                    <div class="sm:col-span-4">
+                        <x-input name="customername" type="text" placeholder="Kundenname" label="Kundenname" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                    </div>
+                    <div class="sm:col-span-3">
+                        <x-input name="customer_number" type="text" placeholder="Kundennummer" label="Kundennummer" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Firmeninformationen Sektion -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    Firmeninformationen
+                </h3>
+                
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
+                    <div class="sm:col-span-6">
+                        <x-input name="companyname" type="text" placeholder="Firmenname" label="Firmenname" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                    </div>
+                    <div class="sm:col-span-3">
+                        <x-input name="vat_number" type="text" placeholder="UID" label="UID" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                    </div>
+                    <div class="sm:col-span-3">
+                        <x-dropdown_body name="tax_id" id="tax_id" value="" :options="$taxrates->pluck('taxrate', 'id')" :selected="old('taxrate', $standardtaxrate)" label="Umsatzsteuer in %" placeholder="Bitte auswählen" class="w-full appearance-none rounded-lg bg-white/70 backdrop-blur-sm py-3 pl-3 pr-8 text-base text-gray-900 border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adressinformationen Sektion -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Adressinformationen
+                </h3>
+                
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
+                    <div class="sm:col-span-8">
+                        <x-input name="address" type="text" placeholder="Adresse" label="Adresse" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                    </div>
+                    <div class="sm:col-span-2">
+                        <x-input name="postalcode" type="text" placeholder="Postleitzahl" label="PLZ" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                    </div>
+                    <div class="sm:col-span-6">
+                        <x-input name="location" type="text" placeholder="Ort" label="Ort" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                    </div>
+                    <div class="sm:col-span-6">
+                        <x-input name="country" type="text" placeholder="Land" label="Land" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kontaktinformationen Sektion -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    Kontaktinformationen
+                </h3>
+                
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
+                    <div class="sm:col-span-6">
+                        <x-input name="email" type="email" placeholder="E-Mail" label="E-Mail" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                    </div>
+                    <div class="sm:col-span-3">
+                        <x-input name="phone" type="text" placeholder="Telefonnummer" label="Telefon" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                    </div>
+                    <div class="sm:col-span-3">
+                        <x-input name="fax" type="text" placeholder="Fax" label="Fax" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Geschäftsbedingungen Sektion -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Geschäftsbedingungen
+                </h3>
+                
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
+                    <div class="sm:col-span-12">
+                        <x-dropdown_body name="condition_id" id="condition_id" value="" :options="$conditions->pluck('conditionname', 'id')" :selected="old('conditionname', 1)" label="Konditionen" placeholder="Bitte auswählen" class="w-full appearance-none rounded-lg bg-white/70 backdrop-blur-sm py-3 pl-3 pr-8 text-base text-gray-900 border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- E-Mail Template Sektion -->
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                    </svg>
+                    E-Mail Template
+                </h3>
+                
+                <div class="grid grid-cols-1 gap-6">
+                    <div>
+                        <x-input name="emailsubject" type="text" placeholder="E-Mail Betreff" label="E-Mail Betreff" value="{objekt} {objektnummer}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                    </div>
+                    <div>
+                        <label for="emailbody" class="block text-sm font-medium text-gray-900 mb-2">
+                            E-Mail Text
+                            <span class="text-xs text-gray-500 block mt-1">
+                                Variablen: aktuelles_jahr (Y0), aktuelles_monat (M0), objekt (O), objekt_mit_artikel (OA), objektnummer (ON), signatur (S), aktueller_monatsname (M0N)
+                            </span>
+                        </label>
+                        <textarea name="emailbody" id="emailbody" rows="8" class="block w-full rounded-lg bg-white/70 backdrop-blur-sm px-4 py-3 text-base text-gray-900 border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder:text-gray-400">Sehr geehrte Damen und Herren,<br><br>anbei {objekt_mit_artikel} {objektnummer}<br><br>{signatur}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-4 pt-6 border-t border-gray-200">
+                <a href="{{ route('customer.index') }}" 
+                   class="inline-flex items-center justify-center px-6 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-white/90 transition-all duration-300 shadow-sm">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Abbrechen
+                </a>
+                <button type="submit" 
+                        class="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Kunde speichern
+                </button>
+            </div>
+        </form>
+    </div>
+
     @push('styles')
         <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
     @endpush
@@ -125,7 +187,7 @@
         <script>
             $(document).ready(function() {
                 $('#emailbody').summernote({
-                    height: 300, // Höhe des Editors
+                    height: 300,
                     toolbar: [
                         ['style', ['bold', 'italic', 'underline', 'clear']],
                         ['font', ['strikethrough', 'superscript', 'subscript']],
@@ -133,10 +195,9 @@
                         ['insert', ['link']],
                         ['view', ['fullscreen', 'codeview', 'help']]
                     ],
-                    placeholder: 'Geben Sie hier Ihre Signatur ein...',
+                    placeholder: 'Geben Sie hier Ihre E-Mail-Vorlage ein...',
                 });
             });
         </script>
     @endpush
-
 </x-layout>

@@ -12,8 +12,10 @@ class CustomerTable extends Component
 {
     use WithPagination;
 
-    public $perPage = 15;
+    public $perPage = 12;
     public $search = '';
+    public $viewMode = 'table'; // 'cards' oder 'table'
+    public $sortBy = 'newest'; // 'newest', 'oldest', 'name', 'company'
 
     public function boot()
     {
@@ -25,6 +27,16 @@ class CustomerTable extends Component
         $this->resetPage();
     }
 
+    public function updatingSortBy()
+    {
+        $this->resetPage();
+    }
+
+    public function setViewMode($mode)
+    {
+        $this->viewMode = $mode;
+    }
+
     public function render()
     {
         $user = Auth::user();
@@ -32,7 +44,7 @@ class CustomerTable extends Component
 
         $search = $this->search;
 
-        $customers = Customer::where('client_id', $clientId)
+        $query = Customer::where('client_id', $clientId)
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
                     $query->where('customername', 'like', "%$search%")
@@ -43,9 +55,26 @@ class CustomerTable extends Component
                         ->orWhere('location', 'like', "%$search%")
                         ->orWhere('customer_number', 'like', "%$search%");
                 });
-            })
-            ->orderBy('id', 'desc')
-            ->paginate($this->perPage);
+            });
+
+        // Sortierung anwenden
+        switch ($this->sortBy) {
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'name':
+                $query->orderBy('customername', 'asc');
+                break;
+            case 'company':
+                $query->orderBy('companyname', 'asc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
+        $customers = $query->paginate($this->perPage);
 
         return view('livewire.customer.customer-table', [
             'customers' => $customers,
