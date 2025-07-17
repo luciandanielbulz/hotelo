@@ -5,32 +5,52 @@ namespace App\Livewire\Customer;
 use Livewire\Component;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\Offers;
 
 class SearchList extends Component
 {
     public $searchTerm =  '';
     public $invoiceId;
+    public $offerId;
+    public $documentType = 'invoice'; // 'invoice' oder 'offer'
 
     protected $listeners = ['customerSelected' => 'handleCustomerSelected'];
 
-
+    public function mount($invoiceId = null, $offerId = null)
+    {
+        $this->invoiceId = $invoiceId;
+        $this->offerId = $offerId;
+        $this->documentType = $offerId ? 'offer' : 'invoice';
+    }
 
     public function selectCustomer($customerId)
     {
-        //dd($customerId);
-        // Aktualisiere die Rechnung mit dem neuen Kunden
-        $invoice = Invoice::find($this->invoiceId);
         $customer = Customer::find($customerId);
-
-        if ($invoice && $customer) {
-            $invoice->customer_id = $customerId;
-            $invoice->save();
-
-            // Dispatch des Ereignisses "customer-updated"
-            $this->dispatch('customer-updated', [
-                'customer' => $customer
-            ]);
+        
+        if (!$customer) {
+            return;
         }
+
+        if ($this->documentType === 'offer' && $this->offerId) {
+            // Aktualisiere das Angebot mit dem neuen Kunden
+            $offer = Offers::find($this->offerId);
+            if ($offer) {
+                $offer->customer_id = $customerId;
+                $offer->save();
+            }
+        } elseif ($this->documentType === 'invoice' && $this->invoiceId) {
+            // Aktualisiere die Rechnung mit dem neuen Kunden (bestehende Logik)
+            $invoice = Invoice::find($this->invoiceId);
+            if ($invoice) {
+                $invoice->customer_id = $customerId;
+                $invoice->save();
+            }
+        }
+
+        // Dispatch des Ereignisses "customer-updated"
+        $this->dispatch('customer-updated', [
+            'customer' => $customer
+        ]);
     }
     public function performSearch()
     {
@@ -55,7 +75,8 @@ class SearchList extends Component
                     ->orWhere('address', 'like', '%' . $this->searchTerm . '%');
                 });
             })
-            ->limit(7)
+            ->orderBy('updated_at', 'desc')
+            ->limit(5)
             ->get();
 
 

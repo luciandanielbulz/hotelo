@@ -56,21 +56,16 @@
                     
                     <!-- Angebot Header -->
                     <div class="flex items-start justify-between mb-4">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                                {{ substr($offer->number ?: 'A', 0, 1) }}
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <h3 class="font-semibold text-gray-900 truncate">
-                                    Angebot #{{ $offer->number }}
-                                </h3>
-                                <p class="text-sm text-gray-600 truncate">
-                                    {{ $offer->customername ?: $offer->companyname ?: 'Kein Kunde' }}
-                                </p>
-                                <p class="text-xs text-blue-600 font-medium">
-                                    {{ \Carbon\Carbon::parse($offer->date)->translatedFormat('d.m.Y') }}
-                                </p>
-                            </div>
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-semibold text-gray-900 truncate">
+                                Angebot #{{ $offer->number }}
+                            </h3>
+                            <p class="text-sm text-gray-600 truncate">
+                                {{ $offer->customername ?: $offer->companyname ?: 'Kein Kunde' }}
+                            </p>
+                            <p class="text-xs text-blue-600 font-medium">
+                                {{ \Carbon\Carbon::parse($offer->date)->translatedFormat('d.m.Y') }}
+                            </p>
                         </div>
                         @if($offer->sent_date)
                             <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Gesendet</span>
@@ -197,17 +192,12 @@
                         @forelse($offers as $offer)
                             <tr class="hover:bg-white/50 transition-colors duration-200">
                                 <td class="py-4 pl-6 pr-3">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center text-white font-bold">
-                                            {{ substr($offer->number ?: 'A', 0, 1) }}
-                                        </div>
-                                        <div>
-                                            <div class="font-medium text-gray-900">Angebot #{{ $offer->number }}</div>
-                                            <div class="text-sm text-gray-600">{{ \Carbon\Carbon::parse($offer->date)->translatedFormat('d.m.Y') }}</div>
-                                            @if($offer->description)
-                                                <div class="text-xs text-gray-500">{{ $offer->description }}</div>
-                                            @endif
-                                        </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900">Angebot #{{ $offer->number }}</div>
+                                        <div class="text-sm text-gray-600">{{ \Carbon\Carbon::parse($offer->date)->translatedFormat('d.m.Y') }}</div>
+                                        @if($offer->description)
+                                            <div class="text-xs text-gray-500">{{ $offer->description }}</div>
+                                        @endif
                                     </div>
                                 </td>
                                 <td class="px-3 py-4">

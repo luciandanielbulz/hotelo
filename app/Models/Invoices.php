@@ -27,6 +27,14 @@ class Invoices extends Model
 }
 
     /**
+     * Beziehung zum Kunden
+     */
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    /**
      * Beziehung zur Client-Version
      */
     public function clientVersion()

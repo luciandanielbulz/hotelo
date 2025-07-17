@@ -1,74 +1,160 @@
 <x-layout>
-    <!-- Alpine.js-Datenkontext für Button und Modal -->
-    <div x-data="{ openCustomerModal: false }">
+    <!-- Moderner Header -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Rechnung bearbeiten</h1>
+            <p class="text-gray-600">Rechnung #{{ $invoice->number }} vom {{ \Carbon\Carbon::parse($invoice->date)->translatedFormat('d.m.Y') }}</p>
+        </div>
+        <div class="mt-4 md:mt-0 flex space-x-3">
+            <a href="{{ route('invoice.index') }}" 
+               class="inline-flex items-center px-4 py-2 bg-white/70 backdrop-blur-sm text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-white/90 transition-all duration-300 shadow-sm hover:shadow-md">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m0 7h18"/>
+                </svg>
+                Zurück zur Übersicht
+            </a>
+            <button onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->id]) }}', '_blank')"
+                    class="inline-flex items-center px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+                Vorschau
+            </button>
+        </div>
+    </div>
 
-        <div class="container mx-auto px-4 py-6">
-            <div class="bg-white p-6 rounded-lg shadow-md">
-                <div class="space-y-4">
-                    <div class="border-b border-gray-900/10 pb-4">
-                        <h2 class="border-b text-base/8 font-semibold text-gray-900">Rechnung bearbeiten</h2>
-                        <div class="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                            <div class="col-span-5">
-                                <h2 class="text-base/7 font-semibold text-gray-900">Kundendaten</h2>
-                                <livewire:customer.customer-data :invoiceId="$invoice->id">
-                                <!-- Button zum Öffnen des Modals unter den Kundendaten -->
-                                <button
-                                    @click="openCustomerModal = true"
-                                    class="inline-block float-left mt-2 rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                    Kunden ändern
-                                </button>
-
-                            </div>
-                            <div class="col-span-1">
-                                <button
-                                    onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->invoice_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}', '_blank')"
-                                    class="inline-block float-right rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                    Vorschau
-                                </button>
-                            </div>
+    <div class="space-y-6">
+        <!-- Kundendaten Karte -->
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg" x-data="{ openCustomerModal: false }">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    Kundendaten
+                </h2>
+                <button @click="openCustomerModal = true"
+                        class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 shadow-md hover:shadow-lg">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                    </svg>
+                    Kunden ändern
+                </button>
+            </div>
+            <livewire:customer.customer-data :invoiceId="$invoice->id">
+            
+            <!-- Kunden-Auswahl Modal - TELEPORTIERT AN BODY -->
+            <div x-show="openCustomerModal" @customer-updated.window="openCustomerModal = false"
+                 x-init="$watch('openCustomerModal', value => {
+                     if (value) {
+                         document.body.appendChild($el);
+                         document.body.style.overflow = 'hidden';
+                     } else {
+                         document.body.style.overflow = 'auto';
+                     }
+                 })"
+                 class="fixed bg-gray-900 bg-opacity-80" 
+                 style="display: none; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999999;" x-cloak>
+                <div class="bg-white rounded-lg shadow-xl flex flex-col"
+                     style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 800px; height: 450px; max-height: 80vh; z-index: 1000000;"
+                     @click.away="openCustomerModal = false">
+                    
+                    <!-- Modal Header -->
+                    <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-xl font-semibold text-gray-900 flex items-center">
+                                <svg class="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
+                                Kunden auswählen
+                            </h2>
+                            <button @click="openCustomerModal = false" 
+                                    class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Restlicher Seiteninhalt bleibt unverändert -->
-                    <div class="border-b border-gray-900/10 pb-4">
-                        <h2 class="text-base/7 font-semibold text-gray-900">Rechnungsdetails</h2>
-                        <div>
-                            <livewire:invoice.invoicedetails :invoiceId="$invoice->id"/>
+                    <!-- Modal Content -->
+                    <div class="flex-1 p-6 overflow-hidden">
+                        <div class="h-full overflow-y-auto">
+                            <livewire:customer.search-list :invoiceId="$invoice->id" />
                         </div>
                     </div>
-                    <div class="border-b border-gray-900/10 pb-4">
-                        <h2 class="text-base/7 font-semibold text-gray-900">Zusätzliche Informationen</h2>
-                        <livewire:invoice.comment-description :invoiceId="$invoice->id" />
-                    </div>
-                    <div>
-                        <livewire:invoicepositions-table :invoiceId="$invoice->id"/>
-                    </div>
-                    <div class="mt-2 grid md:grid-cols-5 gap-x-6 gap-y-8 sm:grid-cols-1 border-b border-t border-gray-900/10 pt-2 pb-4">
-                        <livewire:invoice.depositamount :invoiceId="$invoice->id"/>
-                        <livewire:invoice.calculations :invoiceId="$invoice->id"/>
+
+                    <!-- Modal Footer -->
+                    <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+                        <div class="flex justify-end">
+                            <button @click="openCustomerModal = false" 
+                                    class="px-6 py-2 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600 transition-colors duration-200 shadow-sm hover:shadow-md">
+                                <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                Schließen
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Kunden-Auswahl Modal -->
-        <div x-show="openCustomerModal" @customer-updated.window="openCustomerModal = false"
-            class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50" style="display: none;" x-cloak>
-                <div class="bg-white rounded-lg shadow-lg  p-6 overflow-y-scroll w-5/6 md:w-4/6 lg:w-3/5"
-                    @click.away="openCustomerModal = false">
-                <h2 class="text-lg font-semibold mb-4">Kunden auswählen</h2>
+        <!-- Rechnungsdetails Karte -->
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Rechnungsdetails
+            </h2>
+            <livewire:invoice.invoicedetails :invoiceId="$invoice->id"/>
+        </div>
 
-                <!-- Inhalt des Popups -->
-                <livewire:customer.search-list :invoiceId="$invoice->id" />
+        <!-- Zusätzliche Informationen Karte -->
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Zusätzliche Informationen
+            </h2>
+            <livewire:invoice.comment-description :invoiceId="$invoice->id" />
+        </div>
 
-                <!-- Schließen-Button -->
-                <div class="mt-4 text-right">
-                    <button @click="openCustomerModal = false" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
-                        Schließen
-                    </button>
+        <!-- Positionen Karte -->
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                Positionen
+            </h2>
+            <livewire:invoicepositions-table :invoiceId="$invoice->id"/>
+        </div>
+
+        <!-- Berechnungen und Anzahlung Karte -->
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
+                </svg>
+                Zusammenfassung
+            </h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- Anzahlungsbereich (1. Drittel) -->
+                <div class="md:col-span-1">
+                    <livewire:invoice.depositamount :invoiceId="$invoice->id"/>
+                </div>
+                <!-- Summenbereich (2. und 3. Drittel) -->
+                <div class="md:col-span-2">
+                    <livewire:invoice.calculations :invoiceId="$invoice->id"/>
                 </div>
             </div>
         </div>
+
+        
 
     </div>
 

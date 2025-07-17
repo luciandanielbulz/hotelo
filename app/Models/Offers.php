@@ -32,4 +32,12 @@ class Offers extends Model
     {
         return $this->belongsTo(Clients::class, 'client_version_id');
     }
+
+    /**
+     * Beziehung zum Kunden
+     */
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
+    }
 }

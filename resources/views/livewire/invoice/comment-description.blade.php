@@ -35,24 +35,42 @@
             </div>
         @endif
     @endif
-    <div class="mt-2 grid grid-cols-1 gap-x-6 gap-y-2">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+        <!-- Beschreibung -->
         <div>
-            <label for="description" class="block text-sm/6 font-medium text-gray-900">Beschreibung - erscheint nicht in Rechnung!</label>
-            <div class="mt-1">
-                <input type="text" name="description" id="description" wire:model="description"  class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
-            </div>
+            <label for="description" class="block text-sm font-bold text-gray-800 mb-2 flex items-center">
+                <svg class="w-4 h-4 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
+                </svg>
+                Beschreibung (intern)
+            </label>
+            <input type="text" name="description" id="description" wire:model="description"  
+                   class="block w-full py-3 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium placeholder-gray-600"
+                   placeholder="Kurze Beschreibung der Rechnung"/>
+        </div>
 
-        </div>
+        <!-- Kommentar -->
         <div>
-            <label for="comment" class="block text-sm/6 font-medium text-gray-900">Kommentar</label>
-            <div class="mt-1">
-                <input type="text" name="comment" id="comment" wire:model="comment"  class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"/>
-            </div>
+            <label for="comment" class="block text-sm font-bold text-gray-800 mb-2 flex items-center">
+                <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                </svg>
+                Kommentar
+            </label>
+            <input type="text" name="comment" id="comment" wire:model="comment"  
+                   class="block w-full py-3 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium placeholder-gray-600"
+                   placeholder="Interner Kommentar"/>
         </div>
-    </div>
-    <div class="mt-4 grid grid-cols-1 gap-x-6 gap-y-2">
-        <div >
-            <button type="submit" class="inline-block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Speichern</button>
+
+        <!-- Speichern Button -->
+        <div>
+            <button type="submit" 
+                    class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl w-32">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+                Speichern
+            </button>
         </div>
     </div>
 </form>

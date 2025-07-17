@@ -8,7 +8,7 @@
 ])
 
 <div class="mt-1">
-    <label for="{{ $name }}" class="block text-sm/6 font-medium text-gray-900 mb-1">
+    <label for="{{ $name }}" class="block text-sm/6 font-bold text-gray-800 mb-2">
         {{ $label }}
     </label>
 
@@ -19,7 +19,7 @@
             @if($required)
                 required
             @endif
-            class="block w-full appearance-none rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 @error($name) border-red-500 outline-red-500 @enderror">
+            class="block w-full appearance-none rounded-md bg-white px-3 py-2.5 text-base font-medium text-gray-900 border border-gray-300 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 sm:text-sm/6 @error($name) border-red-500 ring-red-500 @enderror">
 
             @if($placeholder)
                 <option value="">{{ $placeholder }}</option>
@@ -33,7 +33,7 @@
         
         <!-- Pfeil-Icon -->
         <svg
-            class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 w-4 h-4 text-gray-500"
+            class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 w-5 h-5 text-gray-600"
             viewBox="0 0 16 16"
             fill="currentColor"
             aria-hidden="true">
@@ -42,6 +42,6 @@
     </div>
     
     @error($name)
-        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+        <p class="mt-2 text-sm font-semibold text-red-700">{{ $message }}</p>
     @enderror
 </div>

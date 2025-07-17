@@ -79,21 +79,21 @@
                             </div>
                         </div>
                         <div class="sm:col-span-2">
-                            <label for="invoice_number" class="block text-sm font-medium text-gray-700">Rechnungsnummer</label>
+                            <label for="invoice_number" class="block text-sm font-bold text-gray-800 mb-2">Rechnungsnummer</label>
                             <div class="mt-1">
                                 <input type="text" name="invoice_number" id="invoice_number"
                                        value="{{ old('invoice_number') }}"
-                                       class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600">
+                                       class="block w-full rounded-md bg-white px-3 py-2.5 text-base font-medium text-gray-900 border border-gray-300 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200">
                             </div>
                         </div>
                     </div>
-                    <div class="mt-5 flex justify-end">
+                    <div class="mt-5 flex justify-end space-x-3">
                         <a href="{{ route('invoiceupload.upload.create') }}"
-                           class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                           class="inline-flex items-center px-6 py-3 bg-white border-2 border-gray-400 rounded-lg font-semibold text-sm text-gray-800 shadow-md hover:bg-gray-100 hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 hover:shadow-lg transition-all duration-300">
                             Abbrechen
                         </a>
                         <button type="submit"
-                                class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 border border-transparent rounded-lg font-semibold text-sm text-white shadow-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 hover:shadow-xl transition-all duration-300">
                             Hochladen
                         </button>
                     </div>

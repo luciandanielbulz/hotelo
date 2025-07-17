@@ -30,62 +30,78 @@
         </div>
         @endif
 
-    <!-- Filter- und Suchbereich -->
-    <div class="mb-6">
-        <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+    <!-- Moderne Filter- und Suchbereich -->
+    <div class="mb-6 bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- Suchfeld -->
-            <div class="lg:w-80">
+            <div class="lg:col-span-2">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Belege durchsuchen</label>
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
                     </div>
-                    <input wire:model.live="search" type="text" placeholder="Rechnungen suchen..." 
-                           class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm bg-white text-gray-900 placeholder-gray-500 sm:text-sm">
+                    <input wire:model.live="search" type="text" placeholder="Lieferant, Belegnummer, Beschreibung..." 
+                           class="block w-full pl-10 pr-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md text-sm">
                 </div>
             </div>
             
-            <!-- Datumfilter -->
-            <div class="flex flex-wrap items-center gap-3">
-                <div class="flex items-center gap-2">
-                    <label for="dateFrom" class="text-sm font-medium text-gray-700">Von:</label>
-                    <input wire:model.live="dateFrom" type="date" id="dateFrom" 
-                           class="block px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm bg-white text-gray-900 sm:text-sm">
-                </div>
-                
-                <div class="flex items-center gap-2">
-                    <label for="dateTo" class="text-sm font-medium text-gray-700">Bis:</label>
-                    <input wire:model.live="dateTo" type="date" id="dateTo" 
-                           class="block px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm bg-white text-gray-900 sm:text-sm">
-                </div>
-                
-                @if($dateFrom || $dateTo)
-                    <button wire:click="clearDateFilter" 
-                            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                        Zurücksetzen
-                    </button>
-                @endif
+            <!-- Von Datum -->
+            <div>
+                <label for="dateFrom" class="block text-sm font-medium text-gray-700 mb-2">
+                    <svg class="w-4 h-4 inline mr-1 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m0 0a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V9a2 2 0 012-2m8 0V9a2 2 0 00-2-2H8a2 2 0 00-2 2v.01"/>
+                    </svg>
+                    Von Datum
+                </label>
+                <input wire:model.live="dateFrom" type="date" id="dateFrom" 
+                       class="block w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md text-sm">
+            </div>
+            
+            <!-- Bis Datum -->
+            <div>
+                <label for="dateTo" class="block text-sm font-medium text-gray-700 mb-2">
+                    <svg class="w-4 h-4 inline mr-1 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m0 0a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V9a2 2 0 012-2m8 0V9a2 2 0 00-2-2H8a2 2 0 00-2 2v.01"/>
+                    </svg>
+                    Bis Datum
+                </label>
+                <input wire:model.live="dateTo" type="date" id="dateTo" 
+                       class="block w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md text-sm">
             </div>
         </div>
         
-        <!-- Zeitraum-Anzeige (falls Filter aktiv) -->
-        @if($dateFrom || $dateTo)
-            <div class="mt-2 text-sm text-gray-600">
-                <span class="font-medium">Aktiver Filter:</span>
-                @if($dateFrom && $dateTo)
-                    Zeitraum {{ \Carbon\Carbon::parse($dateFrom)->format('d.m.Y') }} - {{ \Carbon\Carbon::parse($dateTo)->format('d.m.Y') }}
-                @elseif($dateFrom)
-                    Ab {{ \Carbon\Carbon::parse($dateFrom)->format('d.m.Y') }}
-                @elseif($dateTo)
-                    Bis {{ \Carbon\Carbon::parse($dateTo)->format('d.m.Y') }}
-                @endif
+        <!-- Filter-Aktionen -->
+        @if($dateFrom || $dateTo || $search)
+            <div class="mt-4 flex items-center justify-between bg-blue-50 rounded-lg p-3">
+                <div class="flex items-center text-sm text-blue-700">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z"/>
+                    </svg>
+                    <span class="font-medium">Aktive Filter:</span>
+                    @if($search)
+                        <span class="ml-2 bg-white/60 px-2 py-1 rounded text-xs">Suche: "{{ $search }}"</span>
+                    @endif
+                    @if($dateFrom && $dateTo)
+                        <span class="ml-2 bg-white/60 px-2 py-1 rounded text-xs">{{ \Carbon\Carbon::parse($dateFrom)->format('d.m.Y') }} - {{ \Carbon\Carbon::parse($dateTo)->format('d.m.Y') }}</span>
+                    @elseif($dateFrom)
+                        <span class="ml-2 bg-white/60 px-2 py-1 rounded text-xs">Ab {{ \Carbon\Carbon::parse($dateFrom)->format('d.m.Y') }}</span>
+                    @elseif($dateTo)
+                        <span class="ml-2 bg-white/60 px-2 py-1 rounded text-xs">Bis {{ \Carbon\Carbon::parse($dateTo)->format('d.m.Y') }}</span>
+                    @endif
+                </div>
+                <button wire:click="clearDateFilter" 
+                        class="inline-flex items-center px-3 py-1 bg-gradient-to-r from-red-500 to-pink-500 text-white font-medium rounded-lg hover:from-red-600 hover:to-pink-600 transition-all duration-200 shadow-md hover:shadow-lg text-xs">
+                    <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                    Filter zurücksetzen
+                </button>
             </div>
         @endif
     </div>
+
 
     <!-- Tabelle -->
     <div class="mt-8 flow-root w-full">
@@ -95,38 +111,38 @@
                     @if($invoiceuploads->isEmpty())
                         <p class="text-gray-600 p-4">Keine Rechnungen gefunden.</p>
                     @else
-                        <table class="min-w-full divide-y divide-gray-300">
-                            <thead class="bg-gray-50">
+                        <table class="min-w-full divide-y divide-gray-400">
+                            <thead class="bg-gray-100">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rechnungsdatum</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Lieferant</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Beschreibung</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rechnungsnummer</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Preis</th>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">ID</th>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Rechnungsdatum</th>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Lieferant</th>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Beschreibung</th>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Rechnungsnummer</th>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Preis</th>
                                     @if(\Schema::hasColumn('invoice_uploads', 'payment_type'))
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Zahlungsart</th>
+                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Zahlungsart</th>
                                     @endif
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aktionen</th>
+                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Aktionen</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody class="bg-white divide-y divide-gray-300">
                                 @foreach($invoiceuploads as $invoice)
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-black">{{ $invoice->id }}</td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-black">
+                                    <tr class="hover:bg-gray-50 border-b border-gray-200">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{{ $invoice->id }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                             {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d.m.Y') }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-black">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                             {{ $invoice->invoice_vendor ?? '-' }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-black">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                             {{ $invoice->description ?? '-' }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-black">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                             {{ $invoice->invoice_number ?? '-' }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-black">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
                                             @if($invoice->amount && $invoice->currency)
                                                 {{ number_format($invoice->amount, 2, ',', '.') }} {{ $invoice->currency->symbol }}
                                             @else
@@ -134,26 +150,36 @@
                                             @endif
                                         </td>
                                         @if(\Schema::hasColumn('invoice_uploads', 'payment_type'))
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-black">
-                                                <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium 
-                                                    {{ $invoice->payment_type === 'elektronisch' ? 'bg-green-100 text-green-800' : 
-                                                       ($invoice->payment_type === 'Kreditkarte' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800') }}">
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold border 
+                                                    {{ $invoice->payment_type === 'elektronisch' ? 'bg-green-100 text-green-800 border-green-300' : 
+                                                       ($invoice->payment_type === 'Kreditkarte' ? 'bg-blue-100 text-blue-800 border-blue-300' : 'bg-gray-100 text-gray-800 border-gray-300') }}">
                                                     {{ $invoice->payment_type ?? 'elektronisch' }}
                                                 </span>
                                             </td>
                                         @endif
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                            <div class="flex space-x-3">
+                                            <div class="flex items-center justify-end space-x-2">
                                                 <a href="{{ route('invoiceupload.edit', $invoice->id) }}" 
-                                                   class="text-indigo-600 hover:text-indigo-900">
+                                                   class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-200 shadow-md hover:shadow-lg text-xs">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                                    </svg>
                                                     Bearbeiten
                                                 </a>
                                                 <a href="{{ route('invoiceupload.show_invoice', $invoice->id) }}" 
-                                                   class="text-indigo-600 hover:text-indigo-900">
+                                                   class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-medium rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-200 shadow-md hover:shadow-lg text-xs">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                    </svg>
                                                     Anzeigen
                                                 </a>
                                                 <button wire:click="confirmDelete({{ $invoice->id }})" 
-                                                        class="text-red-600 hover:text-red-900">
+                                                        class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white font-medium rounded-lg hover:from-red-600 hover:to-pink-600 transition-all duration-200 shadow-md hover:shadow-lg text-xs">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                    </svg>
                                                     Löschen
                                                 </button>
                                             </div>

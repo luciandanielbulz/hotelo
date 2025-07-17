@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\DB;
 class Positiontable extends Component
 {
     use WithPagination;
-    public $perPage = 9;
-    public $search = '';
 
+    public $perPage = 12;
+    public $search = '';
+    public $viewMode = 'table'; // 'cards' oder 'table'
+    public $sortBy = 'newest'; // 'newest', 'oldest', 'number', 'customer'
 
     public function boot()
     {
@@ -25,6 +27,16 @@ class Positiontable extends Component
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    public function updatingSortBy()
+    {
+        $this->resetPage();
+    }
+
+    public function setViewMode($mode)
+    {
+        $this->viewMode = $mode;
     }
 
      /**
@@ -50,6 +62,7 @@ class Positiontable extends Component
             session()->flash('error', 'Rechnung nicht gefunden.');
         }
     }
+
     public function render()
     {
         $user = Auth::user();
@@ -71,15 +84,33 @@ class Positiontable extends Component
                       ->orWhere('clients.parent_client_id', $clientId);
             })
             ->where('invoices.archived', false) // Nur nicht archivierte Rechnungen anzeigen
-            ->orderBy('invoices.id', 'desc')
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
                     $query->where('customers.customername', 'like', "%$search%")
                         ->orWhere('customers.companyname', 'like', "%$search%")
                         ->orWhere('invoices.number', 'like', "%$search%");
                 });
-            })
-            ->select(
+            });
+
+        // Sortierung anwenden
+        switch ($this->sortBy) {
+            case 'oldest':
+                $query->orderBy('invoices.date', 'asc');
+                break;
+            case 'number':
+                $query->orderBy('invoices.number', 'asc');
+                break;
+            case 'customer':
+                $query->orderBy('customers.customername', 'asc')
+                      ->orderBy('customers.companyname', 'asc');
+                break;
+            case 'newest':
+            default:
+                $query->orderBy('invoices.date', 'desc');
+                break;
+        }
+
+        $query->select(
                 'invoices.id as invoice_id',
                 'invoices.number',
                 'invoices.archived',
