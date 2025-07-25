@@ -156,11 +156,19 @@ class OfferController extends Controller
         $user = Auth::user();
         $clientId = $user->client_id;
 
-        // Überprüfen, ob das Angebot zum aktuellen Client gehört
-        $offer = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
-            ->join('taxrates', 'offers.tax_id', '=', 'taxrates.id') // Join mit der taxrates Tabelle
-            ->where('customers.client_id', '=', $clientId) // Dynamischer client_id
-            ->where('offers.id', '=', $offer->id) // Angebot mit passender ID finden
+        // Überprüfen, ob das Angebot zum aktuellen Client gehört (erweiterte Logik für Client-Versionen)
+        $offerWithDetails = Offers::join('customers', 'offers.customer_id', '=', 'customers.id')
+            ->join('taxrates', 'offers.tax_id', '=', 'taxrates.id')
+            ->leftJoin('clients', 'offers.client_version_id', '=', 'clients.id')
+            ->where('offers.id', '=', $offer->id)
+            ->where(function($query) use ($clientId) {
+                // Berechtigung wenn:
+                // 1. Customer gehört zu diesem Client (alte Logik)
+                // 2. ODER Angebot wurde mit einer Client-Version erstellt, die zu diesem Client gehört (neue Logik)
+                $query->where('customers.client_id', $clientId)
+                      ->orWhere('clients.id', $clientId)
+                      ->orWhere('clients.parent_client_id', $clientId);
+            })
             ->select(
                 'offers.id as offer_id',
                 'offers.*',
@@ -176,22 +184,21 @@ class OfferController extends Controller
             ->first();
 
         // Wenn kein passendes Angebot gefunden wird, Zugriff verweigern
-        if (!$offer) {
+        if (!$offerWithDetails) {
             abort(403, 'Sie sind nicht berechtigt, dieses Angebot zu bearbeiten.');
         }
 
         // Berechnung der Gesamtsumme für das Angebot
         $total_price = Offers::join('offerpositions', 'offers.id', '=', 'offerpositions.offer_id')
             ->select(DB::raw('SUM(offerpositions.Amount * offerpositions.Price) as total_price')) // Berechnung der Gesamtsumme
-            ->where('offers.id', '=', $offer->id)
+            ->where('offers.id', '=', $offerWithDetails->offer_id)
             ->first();
 
         // Bedingungen laden (nur aktive für aktuellen Client)
-        $user = Auth::user();
         $conditions = Condition::where('client_id', $user->client_id)->get();
 
         // View zurückgeben
-        return view('offer.edit', compact('offer', 'conditions', 'total_price'));
+        return view('offer.edit', compact('offerWithDetails', 'conditions', 'total_price'));
     }
 
 

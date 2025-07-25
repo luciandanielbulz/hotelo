@@ -100,7 +100,8 @@ class Offerdetails extends Component
 
             $this->message = 'Details erfolgreich aktualisiert.';
             
-            // Event-Dispatch entfernt - Erfolgsmeldung wird jetzt nur noch in der Komponente angezeigt
+            // Event dispatchen, um die Seite zu aktualisieren (da Zusammenfassung im Blade-Template berechnet wird)
+            $this->dispatch('updateOfferSummary');
             
             $this->loadData($this->offerId);
             

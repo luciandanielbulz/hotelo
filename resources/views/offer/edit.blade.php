@@ -3,7 +3,7 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div>
             <h1 class="text-2xl font-bold text-gray-900">Angebot bearbeiten</h1>
-            <p class="text-gray-600">Angebot #{{ $offer->number }} vom {{ \Carbon\Carbon::parse($offer->date)->translatedFormat('d.m.Y') }}</p>
+            <p class="text-gray-600">Angebot #{{ $offerWithDetails->number }} vom {{ \Carbon\Carbon::parse($offerWithDetails->date)->translatedFormat('d.m.Y') }}</p>
         </div>
         <div class="mt-4 md:mt-0 flex space-x-3">
             <a href="{{ route('offer.index') }}" 
@@ -13,7 +13,7 @@
                 </svg>
                 Zurück zur Übersicht
             </a>
-            <button onclick="window.open('{{ route('createoffer.pdf', ['offer_id' => $offer->offer_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}', '_blank')"
+            <button onclick="window.open('{{ route('createoffer.pdf', ['offer_id' => $offerWithDetails->offer_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}', '_blank')"
                     class="inline-flex items-center px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -26,7 +26,7 @@
 
     <div class="space-y-6">
         <!-- Kundendaten Karte -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg" x-data="{ openCustomerModal: false }">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-lg font-semibold text-gray-900 flex items-center">
                     <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -34,9 +34,71 @@
                     </svg>
                     Kundendaten
                 </h2>
+                <button @click="openCustomerModal = true"
+                        class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 shadow-md hover:shadow-lg">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                    </svg>
+                    Kunden ändern
+                </button>
             </div>
+            <livewire:offer.customer-data :offerId="$offerWithDetails->offer_id" />
             
-            <livewire:offer.customer-data :offerId="$offer->offer_id" />
+            <!-- Kunden-Auswahl Modal - TELEPORTIERT AN BODY -->
+            <div x-show="openCustomerModal" @customer-updated.window="openCustomerModal = false"
+                 x-init="$watch('openCustomerModal', value => {
+                     if (value) {
+                         document.body.appendChild($el);
+                         document.body.style.overflow = 'hidden';
+                     } else {
+                         document.body.style.overflow = 'auto';
+                     }
+                 })"
+                 class="fixed bg-gray-900 bg-opacity-80" 
+                 style="display: none; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 999999;" x-cloak>
+                <div class="bg-white rounded-lg shadow-xl flex flex-col"
+                     style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 800px; height: 450px; max-height: 80vh; z-index: 1000000;"
+                     @click.away="openCustomerModal = false">
+                    
+                    <!-- Modal Header -->
+                    <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-xl font-semibold text-gray-900 flex items-center">
+                                <svg class="w-6 h-6 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
+                                Kunden auswählen
+                            </h2>
+                            <button @click="openCustomerModal = false" 
+                                    class="text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full p-2 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Modal Content -->
+                    <div class="flex-1 p-6 overflow-hidden">
+                        <div class="h-full overflow-y-auto">
+                            <livewire:customer.search-list :offerId="$offerWithDetails->offer_id" />
+                        </div>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+                        <div class="flex justify-end">
+                            <button @click="openCustomerModal = false" 
+                                    class="px-6 py-2 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600 transition-colors duration-200 shadow-sm hover:shadow-md">
+                                <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                Schließen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Angebotsdetails Karte -->
@@ -47,7 +109,7 @@
                 </svg>
                 Angebotsdetails
             </h2>
-            <livewire:offer.offerdetails :offerId="$offer->id" />
+            <livewire:offer.offerdetails :offerId="$offerWithDetails->id" />
         </div>
 
         <!-- Zusätzliche Informationen Karte -->
@@ -58,7 +120,7 @@
                 </svg>
                 Zusätzliche Informationen
             </h2>
-            <livewire:offer.comment-description :offerId="$offer->id" />
+            <livewire:offer.comment-description :offerId="$offerWithDetails->id" />
         </div>
 
         <!-- Positionen Karte -->
@@ -69,7 +131,7 @@
                 </svg>
                 Positionen
             </h2>
-            <livewire:offerpositions-table :offerId="$offer->offer_id" />
+            <livewire:offerpositions-table :offerId="$offerWithDetails->offer_id" />
         </div>
 
         <!-- Gesamtsumme Karte -->
@@ -112,9 +174,9 @@
                                     <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
                                     </svg>
-                                    <span class="text-sm font-medium text-green-700">zzgl. Umsatzsteuer ({{ $offer->taxrate }} %)</span>
+                                    <span class="text-sm font-medium text-green-700">zzgl. Umsatzsteuer ({{ $offerWithDetails->taxrate }} %)</span>
                                 </div>
-                                <span class="text-base font-semibold text-green-900">{{ number_format($total_price->total_price * ($offer->taxrate / 100), 2, ',', '.') }} €</span>
+                                <span class="text-base font-semibold text-green-900">{{ number_format($total_price->total_price * ($offerWithDetails->taxrate / 100), 2, ',', '.') }} €</span>
                             </div>
                         </div>
 
@@ -127,7 +189,7 @@
                                     </svg>
                                     <span class="text-base font-bold text-purple-700">Gesamtsumme</span>
                                 </div>
-                                <span class="text-lg font-bold text-purple-900">{{ number_format($total_price->total_price * (1 + ($offer->taxrate / 100)), 2, ',', '.') }} €</span>
+                                <span class="text-lg font-bold text-purple-900">{{ number_format($total_price->total_price * (1 + ($offerWithDetails->taxrate / 100)), 2, ',', '.') }} €</span>
                             </div>
                         </div>
                     </div>
@@ -141,6 +203,15 @@
         document.addEventListener('comment-updated', (event) => {
             console.log(event.detail[0].message);
             // Alert entfernt - Erfolgsmeldung wird jetzt nur noch in der Komponente angezeigt
+        });
+
+        // Event-Listener für Angebotsdetails-Updates
+        document.addEventListener('updateOfferSummary', (event) => {
+            console.log('Angebot aktualisiert - Seite wird neu geladen für aktuelle Zusammenfassung');
+            // Kurze Verzögerung, damit die Erfolgsmeldung noch sichtbar ist
+            setTimeout(() => {
+                window.location.reload();
+            }, 1500);
         });
     </script>
 </x-layout>

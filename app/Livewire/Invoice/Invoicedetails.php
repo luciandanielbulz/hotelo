@@ -186,7 +186,8 @@ class Invoicedetails extends Component
 
             $this->message = 'Details erfolgreich aktualisiert.';
             
-            // Event-Dispatch entfernt - Erfolgsmeldung wird jetzt nur noch in der Komponente angezeigt
+            // Event dispatchen, um andere Komponenten über die Änderung zu informieren
+            $this->dispatch('updateSums');
 
             // Daten neu laden, um sicherzustellen, dass die Änderungen angezeigt werden
             $this->loadData($this->invoiceId);

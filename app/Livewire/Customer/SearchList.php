@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Offers;
+use Illuminate\Support\Facades\Auth;
 
 class SearchList extends Component
 {
@@ -25,25 +26,55 @@ class SearchList extends Component
 
     public function selectCustomer($customerId)
     {
-        $customer = Customer::find($customerId);
+        // Aktuell eingeloggter Benutzer
+        $user = Auth::user();
+        $clientId = $user->client_id;
+
+        // Kunde laden und Berechtigung prüfen
+        $customer = Customer::where('id', $customerId)
+            ->where('client_id', $clientId) // Nur Kunden des aktuellen Clients
+            ->first();
         
         if (!$customer) {
+            session()->flash('error', 'Kunde nicht gefunden oder keine Berechtigung.');
             return;
         }
 
         if ($this->documentType === 'offer' && $this->offerId) {
-            // Aktualisiere das Angebot mit dem neuen Kunden
-            $offer = Offers::find($this->offerId);
+            // Aktualisiere das Angebot mit dem neuen Kunden - mit Berechtigungsprüfung
+            $offer = Offers::join('customers as c', 'offers.customer_id', '=', 'c.id')
+                ->leftJoin('clients as cl', 'offers.client_version_id', '=', 'cl.id')
+                ->where('offers.id', $this->offerId)
+                ->where(function($query) use ($clientId) {
+                    // Berechtigung für das Angebot prüfen
+                    $query->where('c.client_id', $clientId)
+                          ->orWhere('cl.id', $clientId)
+                          ->orWhere('cl.parent_client_id', $clientId);
+                })
+                ->select('offers.*')
+                ->first();
+                
             if ($offer) {
                 $offer->customer_id = $customerId;
                 $offer->save();
+            } else {
+                session()->flash('error', 'Angebot nicht gefunden oder keine Berechtigung.');
+                return;
             }
         } elseif ($this->documentType === 'invoice' && $this->invoiceId) {
-            // Aktualisiere die Rechnung mit dem neuen Kunden (bestehende Logik)
-            $invoice = Invoice::find($this->invoiceId);
+            // Aktualisiere die Rechnung mit dem neuen Kunden - mit Berechtigungsprüfung
+            $invoice = Invoice::join('customers as c', 'invoices.customer_id', '=', 'c.id')
+                ->where('invoices.id', $this->invoiceId)
+                ->where('c.client_id', $clientId) // Nur Rechnungen des aktuellen Clients
+                ->select('invoices.*')
+                ->first();
+                
             if ($invoice) {
                 $invoice->customer_id = $customerId;
                 $invoice->save();
+            } else {
+                session()->flash('error', 'Rechnung nicht gefunden oder keine Berechtigung.');
+                return;
             }
         }
 
@@ -63,11 +94,14 @@ class SearchList extends Component
 
     public function render()
     {
-
         \Log::info('Render aufgerufen mit Suche: ' . $this->searchTerm);
 
-        //dd($this->searchTerm);
+        // Aktuell eingeloggter Benutzer
+        $user = Auth::user();
+        $clientId = $user->client_id;
+
         $customers = Customer::query()
+            ->where('client_id', $clientId) // Nur Kunden des aktuellen Clients anzeigen
             ->when($this->searchTerm, function($query) {
                 $query->where(function($q) {
                     $q->where('companyname', 'like', '%' . $this->searchTerm . '%')
@@ -79,9 +113,6 @@ class SearchList extends Component
             ->limit(5)
             ->get();
 
-
-        //dd($customers);
-
-    return view('livewire.customer.search-list', compact('customers'));
+        return view('livewire.customer.search-list', compact('customers'));
     }
 }
