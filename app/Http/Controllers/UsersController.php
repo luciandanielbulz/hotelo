@@ -9,6 +9,7 @@ use App\Models\Clients;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 
 class UsersController extends Controller
@@ -120,33 +121,72 @@ class UsersController extends Controller
     }
 
     public function resetUserPassword(Request $request, $userId)
-{
+    {
+        try {
+            // Prüfe, ob der aktuelle Benutzer die Berechtigung hat
+            if (!Auth::user()->hasPermission('reset_user_password')) {
+                \Log::warning('Unauthorized password reset attempt', [
+                    'user_id' => Auth::id(),
+                    'target_user_id' => $userId
+                ]);
+                abort(403, 'Zugriff verweigert. Sie haben keine Berechtigung, Passwörter zurückzusetzen.');
+            }
 
-    // Prüfe, ob der aktuelle Benutzer die Berechtigung hat
-    if (!Auth::user()->hasPermission('reset_user_password')) {
-        abort(403, 'Zugriff verweigert. Sie haben keine Berechtigung, Passwörter zurückzusetzen.');
+            // Validiere das neue Passwort
+            $validated = $request->validate([
+                'password' => 'required|min:8|confirmed',
+            ]);
+
+            // Finde den Benutzer und setze das neue Passwort
+            $user = User::findOrFail($userId);
+
+            // Verschlüssele das Passwort
+            $hashedPassword = Hash::make($validated['password']);
+            
+            // Aktualisiere das Passwort
+            $user->password = $hashedPassword;
+            $user->remember_token = \Str::random(60); // Reset remember token für Sicherheit
+            
+            $success = $user->save();
+
+            if ($success) {
+                \Log::info('Password reset successful', [
+                    'admin_user_id' => Auth::id(),
+                    'target_user_id' => $userId,
+                    'target_user_email' => $user->email
+                ]);
+
+                return redirect()->route('users.index')
+                    ->with('success', 'Das Passwort wurde erfolgreich zurückgesetzt.');
+            } else {
+                \Log::error('Password reset failed to save', [
+                    'admin_user_id' => Auth::id(),
+                    'target_user_id' => $userId
+                ]);
+                
+                return redirect()->back()
+                    ->with('error', 'Fehler beim Speichern des neuen Passworts.');
+            }
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::warning('Password reset validation failed', [
+                'errors' => $e->errors(),
+                'user_id' => $userId
+            ]);
+            
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput();
+                
+        } catch (\Exception $e) {
+            \Log::error('Password reset exception', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'user_id' => $userId
+            ]);
+            
+            return redirect()->back()
+                ->with('error', 'Ein unerwarteter Fehler ist aufgetreten: ' . $e->getMessage());
+        }
     }
-
-
-
-    // Validiere das neue Passwort
-    $validated = $request->validate([
-        'password' => 'required|min:8|confirmed',
-    ]);
-
-
-    // Finde den Benutzer und setze das neue Passwort
-    $user = User::findOrFail($userId);
-
-
-    $user->password = bcrypt($validated['password']);
-
-    $user->save();
-
-    //dd($userId);
-
-    return redirect()->route('users.index')
-    ->with('success', 'Das Passwort wurde erfolgreich zurückgesetzt.');
-
-}
 }
