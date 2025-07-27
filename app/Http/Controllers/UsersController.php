@@ -145,7 +145,7 @@ class UsersController extends Controller
             
             // Aktualisiere das Passwort
             $user->password = $hashedPassword;
-            $user->remember_token = \Str::random(60); // Reset remember token für Sicherheit
+            $user->remember_token = Str::random(60); // Reset remember token für Sicherheit
             
             $success = $user->save();
 
@@ -188,5 +188,82 @@ class UsersController extends Controller
             return redirect()->back()
                 ->with('error', 'Ein unerwarteter Fehler ist aufgetreten: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * Diagnose Login-Probleme für einen Benutzer
+     */
+    public function diagnoseLoginIssues($userId)
+    {
+        if (!Auth::user()->hasPermission('reset_user_password')) {
+            abort(403, 'Zugriff verweigert.');
+        }
+
+        $user = User::with(['role', 'client'])->findOrFail($userId);
+        
+        $diagnosis = [
+            'user_exists' => true,
+            'is_active' => (bool) $user->isactive,
+            'has_password' => !empty($user->password),
+            'email_verified' => !is_null($user->email_verified_at),
+            'role_exists' => !is_null($user->role),
+            'client_exists' => !is_null($user->client),
+            'client_active' => $user->client ? $user->client->is_active : false,
+        ];
+
+        // Letzte Login-Versuche aus Logs
+        $logPath = storage_path('logs/laravel.log');
+        $recentLogs = [];
+        
+        if (file_exists($logPath)) {
+            $logs = file_get_contents($logPath);
+            $pattern = '/.*Login.*' . preg_quote($user->email, '/') . '.*/';
+            preg_match_all($pattern, $logs, $matches);
+            $recentLogs = array_slice(array_reverse($matches[0]), 0, 10);
+        }
+
+        return response()->json([
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name . ' ' . $user->lastname,
+                'email' => $user->email,
+                'role' => $user->role->name ?? 'Keine Rolle',
+                'client' => $user->client->clientname ?? 'Kein Client',
+            ],
+            'diagnosis' => $diagnosis,
+            'recent_logs' => $recentLogs,
+            'recommendations' => $this->getLoginRecommendations($diagnosis)
+        ]);
+    }
+
+    private function getLoginRecommendations($diagnosis)
+    {
+        $recommendations = [];
+
+        if (!$diagnosis['is_active']) {
+            $recommendations[] = 'Benutzer ist deaktiviert - aktivieren Sie den Benutzer in der Benutzerverwaltung';
+        }
+
+        if (!$diagnosis['has_password']) {
+            $recommendations[] = 'Kein Passwort gesetzt - setzen Sie ein neues Passwort';
+        }
+
+        if (!$diagnosis['role_exists']) {
+            $recommendations[] = 'Keine Rolle zugewiesen - weisen Sie dem Benutzer eine Rolle zu';
+        }
+
+        if (!$diagnosis['client_exists']) {
+            $recommendations[] = 'Kein Client zugewiesen - weisen Sie dem Benutzer einen Client zu';
+        }
+
+        if (!$diagnosis['client_active']) {
+            $recommendations[] = 'Client ist deaktiviert - aktivieren Sie den Client des Benutzers';
+        }
+
+        if (empty($recommendations)) {
+            $recommendations[] = 'Alle Grundeinstellungen sind korrekt. Prüfen Sie die Logs oder lassen Sie den Benutzer das Passwort zurücksetzen.';
+        }
+
+        return $recommendations;
     }
 }

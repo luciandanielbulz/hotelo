@@ -40,11 +40,10 @@
                                     </td>
                                     <td class="text-right whitespace-nowrap px-2 py-2 text-m">
                                         @if (Auth::user()->hasPermission('reset_user_password'))
-                                            <form action="{{ route('users.reset-password', $user->id) }}" method="POST">
-                                                @csrf
-                                                @method('GET')
-                                                <button type="submit" class="rounded-md bg-red-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-red-200">Passwort zurücksetzen</button>
-                                            </form>
+                                            <div class="flex space-x-2">
+                                                <a href="{{ route('users.show-reset-password', $user->user_id) }}" class="rounded-md bg-red-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-red-200">Passwort zurücksetzen</a>
+                                                <button onclick="diagnoseUser({{ $user->user_id }})" class="rounded-md bg-blue-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-blue-200">Diagnose</button>
+                                            </div>
                                         @endif
                                     </td>
                                 </tr>
@@ -55,5 +54,96 @@
             </div>
         </div>
     </div>
+
+    <!-- Diagnose Modal -->
+    <div id="diagnoseModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden z-50">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Login-Diagnose</h3>
+                    <div id="diagnoseContent">
+                        <div class="text-center">
+                            <div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status">
+                                <span class="sr-only">Laden...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" onclick="closeModal()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-600 text-base font-medium text-white hover:bg-gray-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                        Schließen
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function diagnoseUser(userId) {
+            document.getElementById('diagnoseModal').classList.remove('hidden');
+            document.getElementById('diagnoseContent').innerHTML = '<div class="text-center"><div class="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full" role="status"><span class="sr-only">Laden...</span></div></div>';
+            
+            fetch(`/users/${userId}/diagnose-login`)
+                .then(response => response.json())
+                .then(data => {
+                    let html = `
+                        <div class="space-y-4">
+                            <div>
+                                <h4 class="font-semibold">Benutzer: ${data.user.name}</h4>
+                                <p class="text-sm text-gray-600">E-Mail: ${data.user.email}</p>
+                                <p class="text-sm text-gray-600">Rolle: ${data.user.role}</p>
+                                <p class="text-sm text-gray-600">Client: ${data.user.client}</p>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-semibold">Status:</h4>
+                                <ul class="text-sm space-y-1">
+                                    <li class="${data.diagnosis.is_active ? 'text-green-600' : 'text-red-600'}">
+                                        ✓ Aktiv: ${data.diagnosis.is_active ? 'Ja' : 'Nein'}
+                                    </li>
+                                    <li class="${data.diagnosis.has_password ? 'text-green-600' : 'text-red-600'}">
+                                        ✓ Passwort gesetzt: ${data.diagnosis.has_password ? 'Ja' : 'Nein'}
+                                    </li>
+                                    <li class="${data.diagnosis.role_exists ? 'text-green-600' : 'text-red-600'}">
+                                        ✓ Rolle zugewiesen: ${data.diagnosis.role_exists ? 'Ja' : 'Nein'}
+                                    </li>
+                                    <li class="${data.diagnosis.client_exists ? 'text-green-600' : 'text-red-600'}">
+                                        ✓ Client zugewiesen: ${data.diagnosis.client_exists ? 'Ja' : 'Nein'}
+                                    </li>
+                                    <li class="${data.diagnosis.client_active ? 'text-green-600' : 'text-red-600'}">
+                                        ✓ Client aktiv: ${data.diagnosis.client_active ? 'Ja' : 'Nein'}
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h4 class="font-semibold">Empfehlungen:</h4>
+                                <ul class="text-sm space-y-1">
+                                    ${data.recommendations.map(rec => `<li class="text-gray-700">• ${rec}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                    document.getElementById('diagnoseContent').innerHTML = html;
+                })
+                .catch(error => {
+                    document.getElementById('diagnoseContent').innerHTML = '<div class="text-red-600">Fehler beim Laden der Diagnose-Daten.</div>';
+                });
+        }
+
+        function closeModal() {
+            document.getElementById('diagnoseModal').classList.add('hidden');
+        }
+
+        // Modal schließen wenn außerhalb geklickt wird
+        document.getElementById('diagnoseModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
 
 </x-layout>

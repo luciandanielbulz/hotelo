@@ -269,6 +269,10 @@ Route::get('/createInvoicePdf', [PdfCreateController::class,'createInvoicePdf'])
         ->middleware('permission:reset_user_password')
         ->name('users.reset-password');
 
+    Route::get('/users/{id}/diagnose-login', [UsersController::class, 'diagnoseLoginIssues'])
+        ->middleware('permission:reset_user_password')
+        ->name('users.diagnose-login');
+
     Route::get('/users/{id}/reset-password', function ($id) {
         // Finde den Benutzer
         $user = App\Models\User::findOrFail($id);

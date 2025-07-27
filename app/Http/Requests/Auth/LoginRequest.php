@@ -41,13 +41,55 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        // Logging für Debug-Zwecke
+        $email = $this->input('email');
+        \Log::info('Login attempt', ['email' => $email, 'ip' => $this->ip()]);
+
+        // Prüfe, ob Benutzer existiert
+        $user = \App\Models\User::where('email', $email)->first();
+        if (!$user) {
+            \Log::warning('Login failed: User not found', ['email' => $email]);
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
         }
+
+        // Prüfe, ob Benutzer aktiv ist (vor Passwort-Prüfung)
+        if (!$user->isactive) {
+            \Log::warning('Login failed: User inactive', [
+                'email' => $email,
+                'user_id' => $user->id,
+                'isactive' => $user->isactive
+            ]);
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => 'Ihr Konto ist deaktiviert. Bitte wenden Sie sich an den Administrator.',
+            ]);
+        }
+
+        // Erst normale Authentifizierung mit E-Mail und Passwort
+        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+            \Log::warning('Login failed: Invalid credentials', [
+                'email' => $email,
+                'user_id' => $user->id,
+                'password_provided' => !empty($this->input('password'))
+            ]);
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
+        }
+
+        // Erfolgreiches Login
+        \Log::info('Login successful', [
+            'email' => $email,
+            'user_id' => Auth::id(),
+            'role' => Auth::user()->role->name ?? 'Unknown'
+        ]);
 
         RateLimiter::clear($this->throttleKey());
     }
