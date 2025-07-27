@@ -12,17 +12,17 @@
                     </div>
                     <input wire:model.live="search" 
                            type="text" 
-                           placeholder="Angebote, Kunden oder Nummer suchen..." 
-                           class="block w-full pl-10 pr-3 py-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-gray-900 placeholder-gray-500">
+                           placeholder="Archivierte Angebote, Kunden oder Nummer suchen..." 
+                           class="block w-full pl-10 pr-3 py-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-orange-500 shadow-sm text-gray-900 placeholder-gray-500">
                 </div>
             </div>
             
             <!-- Sortierung -->
             <div>
                 <select wire:model.live="sortBy" 
-                        class="block w-full py-3 px-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-gray-900">
-                    <option value="newest">Neueste zuerst</option>
-                    <option value="oldest">Älteste zuerst</option>
+                        class="block w-full py-3 px-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-orange-500 shadow-sm text-gray-900">
+                    <option value="newest">Zuletzt archiviert</option>
+                    <option value="oldest">Zuerst archiviert</option>
                     <option value="number">Nach Nummer</option>
                     <option value="customer">Nach Kunde</option>
                 </select>
@@ -31,14 +31,14 @@
             <!-- View Toggle -->
             <div class="flex space-x-2">
                 <button wire:click="setViewMode('cards')" 
-                        class="flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-300 {{ $viewMode === 'cards' ? 'bg-blue-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
+                        class="flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-300 {{ $viewMode === 'cards' ? 'bg-orange-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
                     <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                     </svg>
                     Karten
                 </button>
                 <button wire:click="setViewMode('table')" 
-                        class="flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-300 {{ $viewMode === 'table' ? 'bg-blue-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
+                        class="flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-300 {{ $viewMode === 'table' ? 'bg-orange-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
                     <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0V4a1 1 0 011-1h12a1 1 0 011 1v16"/>
                     </svg>
@@ -52,7 +52,7 @@
         <!-- Karten-Layout -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($offers as $offer)
-                <div class="bg-white/60 backdrop-blur-lg rounded-xl p-4 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group">
+                <div class="bg-white/60 backdrop-blur-lg rounded-xl p-4 border border-orange-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group">
                     
                     <!-- Angebot Header -->
                     <div class="flex items-start justify-between mb-3">
@@ -64,11 +64,7 @@
                                 {{ $offer->customername ?: $offer->companyname ?: 'Kein Kunde' }}
                             </p>
                         </div>
-                        @if($offer->sent_date)
-                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Gesendet</span>
-                        @else
-                            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium">Entwurf</span>
-                        @endif
+                        <span class="bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full font-medium">Archiviert</span>
                     </div>
                     
                     <!-- Kompakte Details -->
@@ -95,6 +91,15 @@
                                 Kein Betrag
                             </div>
                         @endif
+
+                        @if($offer->archiveddate)
+                            <div class="col-span-2 flex items-center text-orange-600">
+                                <svg class="w-3 h-3 mr-1 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6m0 0l6-6m-6 6V3"/>
+                                </svg>
+                                Archiviert: {{ \Carbon\Carbon::parse($offer->archiveddate)->translatedFormat('d.m H:i') }}
+                            </div>
+                        @endif
                         
                         @if($offer->sent_date)
                             <div class="col-span-2 flex items-center text-gray-600">
@@ -107,7 +112,7 @@
                         
                         @if($offer->description)
                             <div class="col-span-2 flex items-start text-gray-600">
-                                <svg class="w-3 h-3 mr-1 mt-0.5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-3 h-3 mr-1 mt-0.5 text-orange-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                 </svg>
                                 <span class="truncate">{{ $offer->description }}</span>
@@ -122,6 +127,14 @@
                            title="Bearbeiten">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                        </a>
+                        <a href="{{ route('createoffer.pdf', ['offer_id' => $offer->offer_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}" 
+                           class="bg-gray-500 hover:bg-gray-600 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
+                           title="Vorschau">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                             </svg>
                         </a>
                         <a href="{{ route('createoffer.pdf', ['offer_id' => $offer->offer_id, 'objecttype' => 'invoice', 'prev' => 'D']) }}" 
@@ -139,26 +152,11 @@
                             </svg>
                         </a>
                         
-                        @if(auth()->user()->hasPermission('send_emails'))
-                            <form action="{{ route('offer.sendmail') }}" method="POST" class="inline">
-                                @csrf
-                                <input type="hidden" name="objectid" value="{{ $offer->offer_id }}">
-                                <input type="hidden" name="objecttype" value="offer">
-                                <button type="submit"
-                                        class="bg-purple-500 hover:bg-purple-600 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
-                                        title="E-Mail senden">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                                    </svg>
-                                </button>
-                            </form>
-                        @endif
-                        
-                        <button wire:click="archiveOffer({{ $offer->offer_id }})"
+                        <button wire:click="unarchiveOffer({{ $offer->offer_id }})"
                                 class="bg-orange-500 hover:bg-orange-600 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
-                                title="Archivieren">
+                                title="Wiederherstellen">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6m0 0l6-6m-6 6V3"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
                             </svg>
                         </button>
                     </div>
@@ -166,19 +164,10 @@
             @empty
                 <div class="col-span-full bg-white/60 backdrop-blur-lg rounded-xl p-12 border border-white/20 shadow-lg text-center">
                     <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6m0 0l6-6m-6 6V3"/>
                     </svg>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">Keine Angebote gefunden</h3>
-                    <p class="text-gray-600 mb-4">{{ $search ? 'Keine Angebote entsprechen Ihrer Suche.' : 'Sie haben noch keine Angebote erstellt.' }}</p>
-                    @if(!$search)
-                        <a href="{{ route('customer.index') }}" 
-                           class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                            </svg>
-                            Erstes Angebot erstellen
-                        </a>
-                    @endif
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Keine archivierten Angebote gefunden</h3>
+                    <p class="text-gray-600 mb-4">{{ $search ? 'Keine archivierten Angebote entsprechen Ihrer Suche.' : 'Sie haben noch keine Angebote archiviert.' }}</p>
                 </div>
             @endforelse
         </div>
@@ -192,7 +181,7 @@
                             <th scope="col" class="py-4 pl-6 pr-3 text-left text-sm font-semibold text-gray-900">Angebot</th>
                             <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Kunde</th>
                             <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Betrag</th>
-                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Archiviert</th>
                             <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Aktionen</th>
                         </tr>
                     </thead>
@@ -219,33 +208,25 @@
                                     @endif
                                 </td>
                                 <td class="px-3 py-4">
-                                    @if($offer->sent_date)
-                                        <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                                            Gesendet {{ \Carbon\Carbon::parse($offer->sent_date)->translatedFormat('d.m.Y') }}
+                                    @if($offer->archiveddate)
+                                        <span class="inline-block bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded-full">
+                                            {{ \Carbon\Carbon::parse($offer->archiveddate)->translatedFormat('d.m.Y') }}
                                         </span>
                                     @else
-                                        <span class="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Entwurf</span>
+                                        <span class="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">Unbekannt</span>
                                     @endif
                                 </td>
                                 <td class="px-3 py-4">
                                     <div class="flex space-x-2">
-                                        <a href="{{ route('offer.edit', $offer->offer_id) }}" 
-                                           class="text-blue-600 hover:text-blue-900 font-medium">Bearbeiten</a>
+                                        <a href="{{ route('createoffer.pdf', ['offer_id' => $offer->offer_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}" 
+                                           class="text-blue-600 hover:text-blue-900 font-medium">Vorschau</a>
                                         <a href="{{ route('invoice.createinvoicefromoffer', ['offerid' => $offer->offer_id]) }}" 
                                            class="text-green-600 hover:text-green-900 font-medium">+Rechnung</a>
                                         <a href="{{ route('createoffer.pdf', ['offer_id' => $offer->offer_id, 'objecttype' => 'invoice', 'prev' => 'D']) }}" 
                                            class="text-red-600 hover:text-red-900 font-medium">PDF</a>
-                                        @if(auth()->user()->hasPermission('send_emails'))
-                                            <form action="{{ route('offer.sendmail') }}" method="POST" class="inline">
-                                                @csrf
-                                                <input type="hidden" name="objectid" value="{{ $offer->offer_id }}">
-                                                <input type="hidden" name="objecttype" value="offer">
-                                                <button type="submit" class="text-purple-600 hover:text-purple-900 font-medium">Senden</button>
-                                            </form>
-                                        @endif
-                                        <button wire:click="archiveOffer({{ $offer->offer_id }})"
+                                        <button wire:click="unarchiveOffer({{ $offer->offer_id }})"
                                                 class="text-orange-600 hover:text-orange-900 font-medium">
-                                            Archivieren
+                                            Wiederherstellen
                                         </button>
                                     </div>
                                 </td>
@@ -254,10 +235,10 @@
                             <tr>
                                 <td colspan="5" class="px-6 py-12 text-center">
                                     <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6m0 0l6-6m-6 6V3"/>
                                     </svg>
-                                    <h3 class="text-lg font-medium text-gray-900 mb-2">Keine Angebote gefunden</h3>
-                                    <p class="text-gray-600">{{ $search ? 'Keine Angebote entsprechen Ihrer Suche.' : 'Sie haben noch keine Angebote erstellt.' }}</p>
+                                    <h3 class="text-lg font-medium text-gray-900 mb-2">Keine archivierten Angebote gefunden</h3>
+                                    <p class="text-gray-600">{{ $search ? 'Keine archivierten Angebote entsprechen Ihrer Suche.' : 'Sie haben noch keine Angebote archiviert.' }}</p>
                                 </td>
                             </tr>
                         @endforelse
@@ -273,4 +254,4 @@
             {{ $offers->links() }}
         </div>
     @endif
-</div>
+</div> 

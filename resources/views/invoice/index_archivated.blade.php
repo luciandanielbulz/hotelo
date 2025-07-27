@@ -1,121 +1,30 @@
 <x-layout>
-
-    <div class="sm:flex sm:items-center">
-        <div class="sm:flex-auto">
-            <h1 class="text-base font-semibold text-gray-900">Archivierte Rechnungen</h1>
-            <p class="mt-2 text-sm text-gray-700">Eine Liste aller archivierten Rechnungen in Ihrem Konto, inklusive Nummer, Datum, Kunde und Beschreibung.</p>
+    <!-- Moderner Header wie bei den normalen Rechnungen -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Archivierte Rechnungen</h1>
+            <p class="text-gray-600">Verwalten Sie alle Ihre archivierten Geschäftsrechnungen</p>
+        </div>
+        <div class="mt-4 md:mt-0 flex space-x-3">
+            <a href="{{ route('invoice.index') }}" 
+               class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Aktive Rechnungen
+            </a>
+            <a href="{{ route('customer.index') }}" 
+               class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white font-semibold rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                Neue Rechnung
+            </a>
         </div>
     </div>
-    <div class="sm:flex sm:items-center">
-        <div class="sm:flex-auto">
-            <form id="searchForm" class="form-inline flex w-1/3" method="GET" action="{{ route('invoice.index_archivated') }}">
-                <div class="sm:col-span-3">
-                    <x-input name="search" type="text" placeholder="Suchen" label="" value="{{ request('search') }}" />
-                </div>
-                <div class="sm:col-span-2 mt-1">
-                    <x-button_submit value="Suchen" />
-                </div>
-            </form>
-        </div>
-        <div class="sm:ml-16 sm:mt-0 sm:flex-none">
-            <a href="{{ route('customer.index') }}" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">+ Neu</a>
-        </div>
+
+    <!-- Livewire Archivierte Rechnungs-Tabelle -->
+    <div>
+        <livewire:invoice.archived-positiontable />
     </div>
-
-    <div class="mt-8 flow-root">
-        <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
-                    <table class="min-w-full divide-y divide-gray-300">
-                        <thead class="bg-gray-50">
-                            <tr>
-                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-6">Id</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Nummer</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Datum</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Kunde</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Beschreibung</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Betrag</th>
-                                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                                    <span class="sr-only">Actions</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 bg-white">
-                            @forelse($invoices as $invoice)
-                                <tr data-id="{{ $invoice->id }}" class="hover:bg-indigo-100 cursor-pointer">
-                                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm  text-black sm:pl-6">{{ $invoice->invoice_id }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $invoice->number }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ \Carbon\Carbon::parse($invoice->date)->translatedFormat('d.m.Y') }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $invoice->customername ?? $invoice->companyname ?? 'Kein Kunde' }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ $invoice->description ?? 'Kein Kommentar' }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">{{ number_format($invoice->total_price, 2, ',', '.') }} €</td>
-                                    <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                        <div class="flex flex-wrap gap-2 justify-end items-center">
-                                            <!-- Vorschau Button -->
-                                            <button
-                                                onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->invoice_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}', '_blank')"
-                                                class="text-indigo-600 hover:text-indigo-900 ml-4">
-                                                Vorschau
-                                            </button>
-
-                                            <!-- Bearbeiten Link -->
-                                            <a href="{{ route('invoice.edit', $invoice->invoice_id) }}"
-                                                class="text-indigo-600 hover:text-indigo-900 ml-4">
-                                                Bearbeiten
-                                            </a>
-
-                                            <!-- Kopieren Link -->
-                                            <a href="{{ route('invoice.copy', $invoice->invoice_id) }}"
-                                                class="text-indigo-600 hover:text-indigo-900 ml-4">
-                                                Kopieren
-                                            </a>
-
-                                            <!-- PDF Button -->
-                                            <button
-                                                onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->invoice_id, 'objecttype' => 'invoice', 'prev' => 'D']) }}', '_blank')"
-                                                class="text-indigo-600 hover:text-indigo-900 ml-4">
-                                                PDF
-                                            </button>
-
-                                            @if(auth()->user()->hasPermission('send_emails'))
-                                                <!-- Senden Form -->
-                                                <form action="{{ route('invoice.sendmail') }}" method="POST" class="inline">
-                                                    @csrf
-                                                    <input type="hidden" name="objectid" value="{{ $invoice->invoice_id }}">
-                                                    <input type="hidden" name="objecttype" value="invoice">
-                                                    <button type="submit"
-                                                    class="text-indigo-600 hover:text-indigo-900 ml-4">
-                                                        Senden
-                                                    </button>
-                                                </form>
-                                            @endif
-
-                                            <!-- Archiv Form -->
-                                            <form action="" method="POST" class="inline">
-                                                @csrf
-                                                <input type="hidden" name="invoiceid" value="{{ $invoice->id }}">
-                                                <button type="submit"
-                                                    class="text-indigo-600 hover:text-indigo-900 ml-4">
-                                                    Archiv
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="7" class="px-3 py-4 text-sm text-gray-500 text-center">Keine Datensätze gefunden</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="mt-4">
-        {{ $invoices->links() }}
-    </div>
-
 </x-layout>
