@@ -55,13 +55,13 @@
                 <div class="bg-white/60 backdrop-blur-lg rounded-xl p-4 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group">
                     
                     <!-- Kunde Header -->
-                    <div class="flex items-start justify-between mb-3">
-                        <div class="flex items-center space-x-2">
-                            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-lg">
+                    <div class="flex items-start justify-between mb-3 gap-2">
+                        <div class="flex items-center space-x-2 min-w-0 flex-1">
+                            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-lg flex-shrink-0">
                                 {{ substr($customer->customername ?: $customer->companyname ?: 'K', 0, 1) }}
                             </div>
-                            <div class="flex-1 min-w-0">
-                                <h3 class="font-bold text-gray-900 truncate text-lg">
+                            <div class="min-w-0 flex-1">
+                                <h3 class="font-bold text-gray-900 truncate text-base">
                                     {{ $customer->customername ?: $customer->companyname }}
                                 </h3>
                                 @if($customer->customername && $customer->companyname)
@@ -69,11 +69,13 @@
                                 @endif
                             </div>
                         </div>
-                        @if($customer->email)
-                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Mit E-Mail</span>
-                        @else
-                            <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full font-medium">Ohne E-Mail</span>
-                        @endif
+                        <div class="flex-shrink-0">
+                            @if($customer->email)
+                                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Mit E-Mail</span>
+                            @else
+                                <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full font-medium">Ohne E-Mail</span>
+                            @endif
+                        </div>
                     </div>
                     
                     <!-- Kompakte Details -->
