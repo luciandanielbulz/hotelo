@@ -52,38 +52,42 @@
         <!-- Karten-Layout -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($customers as $customer)
-                <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group">
+                <div class="bg-white/60 backdrop-blur-lg rounded-xl p-4 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group">
                     
                     <!-- Kunde Header -->
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-lg">
                                 {{ substr($customer->customername ?: $customer->companyname ?: 'K', 0, 1) }}
                             </div>
                             <div class="flex-1 min-w-0">
-                                <h3 class="font-semibold text-gray-900 truncate">
+                                <h3 class="font-bold text-gray-900 truncate text-lg">
                                     {{ $customer->customername ?: $customer->companyname }}
                                 </h3>
                                 @if($customer->customername && $customer->companyname)
-                                    <p class="text-sm text-gray-600 truncate">{{ $customer->companyname }}</p>
+                                    <p class="text-sm font-medium text-gray-700 truncate">{{ $customer->companyname }}</p>
                                 @endif
-                                <p class="text-xs text-blue-600 font-medium">
-                                    #{{ $customer->customer_number ?: $customer->id }}
-                                </p>
                             </div>
                         </div>
                         @if($customer->email)
-                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Mit E-Mail</span>
+                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Mit E-Mail</span>
                         @else
-                            <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">Ohne E-Mail</span>
+                            <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full font-medium">Ohne E-Mail</span>
                         @endif
                     </div>
                     
-                    <!-- Kunde Details -->
-                    <div class="space-y-3 mb-6">
+                    <!-- Kompakte Details -->
+                    <div class="grid grid-cols-1 gap-1 mb-3 text-xs">
+                        <div class="flex items-center text-gray-600">
+                            <svg class="w-3 h-3 mr-1 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+                            </svg>
+                            #{{ $customer->customer_number ?: $customer->id }}
+                        </div>
+                        
                         @if($customer->email)
-                            <div class="flex items-center text-sm text-gray-600">
-                                <svg class="w-4 h-4 mr-3 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="flex items-center text-gray-600">
+                                <svg class="w-3 h-3 mr-1 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                 </svg>
                                 <span class="truncate">{{ $customer->email }}</span>
@@ -91,17 +95,17 @@
                         @endif
                         
                         @if($customer->address || $customer->postalcode || $customer->location)
-                            <div class="flex items-start text-sm text-gray-600">
-                                <svg class="w-4 h-4 mr-3 mt-0.5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="flex items-start text-gray-600">
+                                <svg class="w-3 h-3 mr-1 mt-0.5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 </svg>
-                                <div class="flex-1">
+                                <div class="flex-1 truncate">
                                     @if($customer->address)
-                                        <div>{{ $customer->address }}</div>
+                                        <div class="truncate">{{ $customer->address }}</div>
                                     @endif
                                     @if($customer->postalcode || $customer->location)
-                                        <div>{{ $customer->postalcode }} {{ $customer->location }}</div>
+                                        <div class="truncate">{{ $customer->postalcode }} {{ $customer->location }}</div>
                                     @endif
                                 </div>
                             </div>
@@ -109,25 +113,25 @@
                     </div>
                     
                     <!-- Action Buttons -->
-                    <div class="flex space-x-2">
+                    <div class="flex space-x-1 flex-wrap">
                         <a href="{{ url('/customer/' . $customer->id . '/edit') }}" 
-                           class="flex-1 bg-blue-500 hover:bg-blue-600 text-white text-sm py-2 px-3 rounded-lg transition-all duration-300 text-center font-medium shadow-md hover:shadow-lg">
-                            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                           class="bg-blue-500 hover:bg-blue-600 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
+                           title="Bearbeiten">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                             </svg>
-                            Bearbeiten
                         </a>
                         <a href="{{ url('/offer/create/' . $customer->id) }}" 
-                           class="bg-green-500 hover:bg-green-600 text-white text-sm py-2 px-3 rounded-lg transition-all duration-300 font-medium shadow-md hover:shadow-lg"
+                           class="bg-green-500 hover:bg-green-600 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
                            title="Angebot erstellen">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                         </a>
                         <a href="{{ url('/invoice/create/' . $customer->id) }}" 
-                           class="bg-purple-500 hover:bg-purple-600 text-white text-sm py-2 px-3 rounded-lg transition-all duration-300 font-medium shadow-md hover:shadow-lg"
+                           class="bg-purple-500 hover:bg-purple-600 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
                            title="Rechnung erstellen">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                         </a>
@@ -136,9 +140,9 @@
                             @method('DELETE')
                             <button type="submit"
                                     onclick="return confirm('Sind Sie sicher, dass Sie diesen Kunden löschen möchten?')"
-                                    class="bg-red-500 hover:bg-red-600 text-white text-sm py-2 px-3 rounded-lg transition-all duration-300 font-medium shadow-md hover:shadow-lg"
+                                    class="bg-red-500 hover:bg-red-600 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
                                     title="Kunde löschen">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                 </svg>
                             </button>
