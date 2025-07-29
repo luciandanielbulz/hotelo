@@ -88,16 +88,20 @@
                 </h3>
                 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
-                    <div class="sm:col-span-8">
+                    <div class="sm:col-span-6">
                         <x-input name="address" type="text" placeholder="Adresse" label="Adresse" value="{{ $customer->address }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
+                </div>
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
                     <div class="sm:col-span-2">
                         <x-input name="postalcode" type="text" placeholder="Postleitzahl" label="PLZ" value="{{ $customer->postalcode }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
-                    <div class="sm:col-span-6">
+                    <div class="sm:col-span-4">
                         <x-input name="location" type="text" placeholder="Ort" label="Ort" value="{{ $customer->location }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
-                    <div class="sm:col-span-6">
+                </div>
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
+                    <div class="sm:col-span-4">
                         <x-input name="country" type="text" placeholder="Land" label="Land" value="{{ $customer->country }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                 </div>
@@ -135,7 +139,7 @@
                 </h3>
                 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
-                    <div class="sm:col-span-12">
+                    <div class="sm:col-span-6">
                         <x-dropdown_body name="condition_id" id="condition_id" value="" :options="$conditions->pluck('conditionname', 'id')" :selected="old('conditionname', $customer->condition_id)" label="Konditionen" placeholder="Bitte auswählen" class="w-full appearance-none rounded-lg bg-white/70 backdrop-blur-sm py-3 pl-3 pr-8 text-base text-gray-900 border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                 </div>

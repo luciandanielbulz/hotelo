@@ -99,7 +99,8 @@ class ArchivedPositiontable extends Component
         // Sortierung anwenden
         switch ($this->sortBy) {
             case 'oldest':
-                $query->orderBy('invoices.archiveddate', 'asc');
+                $query->orderBy('invoices.archiveddate', 'asc')
+                      ->orderBy('invoices.number', 'asc');
                 break;
             case 'number':
                 $query->orderBy('invoices.number', 'asc');
@@ -110,7 +111,8 @@ class ArchivedPositiontable extends Component
                 break;
             case 'newest':
             default:
-                $query->orderBy('invoices.archiveddate', 'desc');
+                $query->orderBy('invoices.archiveddate', 'desc')
+                      ->orderBy('invoices.number', 'desc');
                 break;
         }
 

@@ -95,7 +95,8 @@ class Positiontable extends Component
         // Sortierung anwenden
         switch ($this->sortBy) {
             case 'oldest':
-                $query->orderBy('invoices.date', 'asc');
+                $query->orderBy('invoices.date', 'asc')
+                      ->orderBy('invoices.number', 'asc');
                 break;
             case 'number':
                 $query->orderBy('invoices.number', 'asc');
@@ -106,7 +107,8 @@ class Positiontable extends Component
                 break;
             case 'newest':
             default:
-                $query->orderBy('invoices.date', 'desc');
+                $query->orderBy('invoices.date', 'desc')
+                      ->orderBy('invoices.number', 'desc');
                 break;
         }
 

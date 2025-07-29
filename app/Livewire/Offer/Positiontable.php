@@ -99,7 +99,8 @@ class Positiontable extends Component
         // Sortierung anwenden
         switch ($this->sortBy) {
             case 'oldest':
-                $query->orderBy('offers.date', 'asc');
+                $query->orderBy('offers.date', 'asc')
+                      ->orderBy('offers.number', 'asc');
                 break;
             case 'number':
                 $query->orderBy('offers.number', 'asc');
@@ -110,7 +111,8 @@ class Positiontable extends Component
                 break;
             case 'newest':
             default:
-                $query->orderBy('offers.date', 'desc');
+                $query->orderBy('offers.date', 'desc')
+                      ->orderBy('offers.number', 'desc');
                 break;
         }
 
