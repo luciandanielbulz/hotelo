@@ -11,10 +11,17 @@ class AutoCategorizationService
     /**
      * Automatically categorize a single transaction
      */
-    public function categorizeTransaction(BankData $transaction)
+    public function categorizeTransaction(BankData $transaction, $respectType = true)
     {
         $clientId = $transaction->client_id;
-        $categories = Category::active()->forClient($clientId)->get();
+        $categories = Category::active()->forClient($clientId);
+        
+        // Optional: Nur Kategorien mit dem gleichen Typ berücksichtigen
+        if ($respectType) {
+            $categories = $categories->where('type', $transaction->type);
+        }
+        
+        $categories = $categories->get();
         
         $bestMatch = null;
         $bestScore = 0;
@@ -29,8 +36,8 @@ class AutoCategorizationService
         }
 
         if ($bestMatch && $bestScore > 0) {
+            // Nur die Kategorie zuweisen, den Typ nicht verändern
             $transaction->category_id = $bestMatch->id;
-            $transaction->type = $bestMatch->type;
             $transaction->save();
 
             Log::info('Transaction auto-categorized', [
@@ -39,7 +46,9 @@ class AutoCategorizationService
                 'category_name' => $bestMatch->name,
                 'score' => $bestScore,
                 'partnername' => $transaction->partnername,
-                'reference' => $transaction->reference
+                'reference' => $transaction->reference,
+                'original_type' => $transaction->type,
+                'category_type' => $bestMatch->type
             ]);
 
             return $bestMatch;
@@ -139,10 +148,17 @@ class AutoCategorizationService
     /**
      * Test categorization for a specific transaction
      */
-    public function testCategorization(BankData $transaction)
+    public function testCategorization(BankData $transaction, $respectType = true)
     {
         $clientId = $transaction->client_id;
-        $categories = Category::active()->forClient($clientId)->get();
+        $categories = Category::active()->forClient($clientId);
+        
+        // Optional: Nur Kategorien mit dem gleichen Typ berücksichtigen
+        if ($respectType) {
+            $categories = $categories->where('type', $transaction->type);
+        }
+        
+        $categories = $categories->get();
         
         $matches = [];
 
