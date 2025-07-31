@@ -1,5 +1,5 @@
 <!-- resources/views/components/sidebar.blade.php -->
-<div x-data="{ openSubmenu: false }" class="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6">
+<div x-data="{ openSubmenu: false, salesSubmenu: false }" class="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6">
     <!-- Logo -->
     <div class="flex h-16 shrink-0 items-center">
         <a href="{{ route('dashboard') }}">
@@ -82,25 +82,25 @@
                     @if($user && $user->hasPermission('view_sales_analysis'))
                         <!-- Umsatzauswertung Dropdown -->
                         <li>
-                            <button @click="openSubmenu = !openSubmenu" class="group flex w-full items-center gap-x-3 rounded-md p-2 text-sm font-semibold text-indigo-200 hover:bg-indigo-700 hover:text-white focus:outline-none">
+                            <button @click="salesSubmenu = !salesSubmenu" class="group flex w-full items-center gap-x-3 rounded-md p-2 text-sm font-semibold text-indigo-200 hover:bg-indigo-700 hover:text-white focus:outline-none">
                                 <!-- SVG Icon -->
                                 <svg class="h-6 w-6 shrink-0 text-indigo-200 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7 7" />
                                 </svg>
                                 Umsatzauswertung
                                 <!-- Dropdown Indicator -->
-                                <svg :class="{ 'transform rotate-90': openSubmenu }" class="ml-auto h-5 w-5 transform transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg :class="{ 'transform rotate-90': salesSubmenu }" class="ml-auto h-5 w-5 transform transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                                 </svg>
                             </button>
                             <!-- Dropdown Menü -->
-                            <div x-show="openSubmenu" @click.away="openSubmenu = false" class="mt-2 space-y-1 pl-5">
-                                @if($user->hasPermission('manage_roles'))
+                            <div x-show="salesSubmenu" @click.away="salesSubmenu = false" class="mt-2 space-y-1 pl-5">
+                                @if($user->hasPermission('view_sales_analysis'))
                                     <a href="{{ route('sales.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium text-indigo-200 hover:bg-indigo-700 hover:text-white">
                                         Umsatz
                                     </a>
                                 @endif
-                                @if($user->hasPermission('manage_roles'))
+                                @if($user->hasPermission('view_sales_analysis'))
                                     <a href="{{ route('bankdata.upload.form') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium text-indigo-200 hover:bg-indigo-700 hover:text-white">
                                         Bankdatenupload
                                     </a>

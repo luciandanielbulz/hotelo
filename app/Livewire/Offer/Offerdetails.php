@@ -24,7 +24,7 @@ class Offerdetails extends Component
     public function testFunction()
     {
         $this->message = 'TEST: Button funktioniert! Livewire ist aktiv.';
-        \Log::info('=== TEST FUNKTION AUFGERUFEN ===');
+        \Log::info('=== TEST FUNKTION AUFGERUFEN ===', []);
     }
 
 
@@ -79,7 +79,7 @@ class Offerdetails extends Component
                 'offerNumber' => 'required|numeric',
             ]);
             
-            \Log::info('=== ANGEBOT Validierung erfolgreich ===');
+            \Log::info('=== ANGEBOT Validierung erfolgreich ===', []);
 
             $offer = Offers::findOrFail($this->offerId);
             

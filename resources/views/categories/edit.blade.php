@@ -78,6 +78,26 @@
                                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
+
+                            <!-- Keywords für automatische Kategorisierung -->
+                            <div>
+                                <label for="keywords" class="block text-sm font-bold text-blue-700 mb-2">
+                                    Keywords für Auto-Kategorisierung
+                                    <span class="text-xs text-gray-500 font-normal">(kommagetrennt)</span>
+                                </label>
+                                <textarea name="keywords" 
+                                          id="keywords"
+                                          rows="3"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                          placeholder="z.B. büro, computer, laptop, monitor">{{ old('keywords', $category->keywords) }}</textarea>
+                                <p class="mt-1 text-xs text-gray-600">
+                                    Diese Keywords werden für die automatische Kategorisierung von Bankdaten verwendet. 
+                                    Mehrere Keywords mit Komma trennen.
+                                </p>
+                                @error('keywords')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
 
                         <!-- Rechte Spalte -->
@@ -104,6 +124,53 @@
                                 @enderror
                             </div>
 
+                            <!-- Typ (Einnahmen/Ausgaben) -->
+                            <div>
+                                <label for="type" class="block text-sm font-bold text-blue-700 mb-2">Typ</label>
+                                <select name="type" 
+                                        id="type"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <option value="expense" {{ old('type', $category->type) == 'expense' ? 'selected' : '' }}>Ausgaben</option>
+                                    <option value="income" {{ old('type', $category->type) == 'income' ? 'selected' : '' }}>Einnahmen</option>
+                                </select>
+                                @error('type')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Verrechnungsdauer -->
+                            <div>
+                                <label for="billing_duration_years" class="block text-sm font-bold text-blue-700 mb-2">Verrechnungsdauer (Jahre)</label>
+                                <input type="number" 
+                                       name="billing_duration_years" 
+                                       id="billing_duration_years"
+                                       value="{{ old('billing_duration_years', $category->billing_duration_years) }}"
+                                       min="1"
+                                       max="50"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       placeholder="1">
+                                @error('billing_duration_years')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <!-- Prozentsatz -->
+                            <div>
+                                <label for="percentage" class="block text-sm font-bold text-blue-700 mb-2">Prozentsatz (%)</label>
+                                <input type="number" 
+                                       name="percentage" 
+                                       id="percentage"
+                                       value="{{ old('percentage', $category->percentage) }}"
+                                       min="0"
+                                       max="1000"
+                                       step="0.01"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       placeholder="100.00">
+                                @error('percentage')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <!-- Status -->
                             <div>
                                 <label for="is_active" class="block text-sm font-bold text-blue-700 mb-2">Status</label>
@@ -125,11 +192,19 @@
                                     <div class="flex items-center space-x-3">
                                         <div id="color_dot" class="w-4 h-4 rounded-full border border-gray-300" style="background-color: {{ old('color', $category->color) }}"></div>
                                         <span id="name_preview" class="text-sm font-medium text-gray-900">{{ old('name', $category->name) }}</span>
+                                        <span id="type_preview" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ old('type', $category->type) == 'income' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                            {{ old('type', $category->type) == 'income' ? 'Einnahmen' : 'Ausgaben' }}
+                                        </span>
                                         <span id="status_preview" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $category->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                                             {{ $category->is_active ? 'Aktiv' : 'Inaktiv' }}
                                         </span>
                                     </div>
                                     <p id="description_preview" class="mt-2 text-sm text-gray-600">{{ old('description', $category->description) ?: 'Beschreibung der Kategorie...' }}</p>
+                                    <div class="mt-2 text-xs text-gray-500">
+                                        <span id="billing_preview">Verrechnungsdauer: {{ old('billing_duration_years', $category->billing_duration_years) }} Jahr(e)</span>
+                                        <span class="mx-2">•</span>
+                                        <span id="percentage_preview">Prozentsatz: {{ old('percentage', $category->percentage) }}%</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -187,6 +262,12 @@
             const descriptionPreview = document.getElementById('description_preview');
             const statusSelect = document.getElementById('is_active');
             const statusPreview = document.getElementById('status_preview');
+            const typeSelect = document.getElementById('type');
+            const typePreview = document.getElementById('type_preview');
+            const billingInput = document.getElementById('billing_duration_years');
+            const billingPreview = document.getElementById('billing_preview');
+            const percentageInput = document.getElementById('percentage');
+            const percentagePreview = document.getElementById('percentage_preview');
 
             // Update color preview
             colorInput.addEventListener('input', function() {
@@ -205,6 +286,28 @@
             descriptionInput.addEventListener('input', function() {
                 const description = this.value || 'Beschreibung der Kategorie...';
                 descriptionPreview.textContent = description;
+            });
+
+            // Update type preview
+            typeSelect.addEventListener('change', function() {
+                const type = this.value;
+                const isIncome = type === 'income';
+                typePreview.textContent = isIncome ? 'Einnahmen' : 'Ausgaben';
+                typePreview.className = isIncome 
+                    ? 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800'
+                    : 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800';
+            });
+
+            // Update billing duration preview
+            billingInput.addEventListener('input', function() {
+                const years = this.value || '1';
+                billingPreview.textContent = `Verrechnungsdauer: ${years} Jahr(e)`;
+            });
+
+            // Update percentage preview
+            percentageInput.addEventListener('input', function() {
+                const percentage = this.value || '100.00';
+                percentagePreview.textContent = `Prozentsatz: ${percentage}%`;
             });
 
             // Update status preview

@@ -64,9 +64,52 @@ Route::middleware(['auth','verified'])->group(function(){
     | BANKDATEN-MANAGEMENT
     |--------------------------------------------------------------------------
     */
-    Route::get('/bankdata/upload', [BankDataController::class, 'showUploadForm'])->name('bankdata.upload.form');
+    Route::get('/bankdata', [BankDataController::class, 'index'])
+        ->name('bankdata.index')
+        ->middleware('permission:view_sales_analysis');
 
-    Route::post('/bankdata/upload', [BankDataController::class, 'uploadJSON'])->name('bankdata.upload');
+    Route::get('/bankdata/upload', [BankDataController::class, 'showUploadForm'])
+        ->name('bankdata.upload.form')
+        ->middleware('permission:view_sales_analysis');
+
+    Route::post('/bankdata/upload', [BankDataController::class, 'uploadJSON'])
+        ->name('bankdata.upload')
+        ->middleware('permission:view_sales_analysis');
+
+    Route::patch('/bankdata/{bankData}/category', [BankDataController::class, 'updateCategory'])
+        ->name('bankdata.update-category')
+        ->middleware('permission:view_sales_analysis');
+
+    Route::get('/bankdata/{bankData}/edit', [BankDataController::class, 'edit'])
+        ->name('bankdata.edit')
+        ->middleware('permission:view_sales_analysis');
+
+    Route::put('/bankdata/{bankData}', [BankDataController::class, 'update'])
+        ->name('bankdata.update')
+        ->middleware('permission:view_sales_analysis');
+
+    // Auto-Kategorisierung Routes
+    Route::post('/bankdata/auto-categorize', [BankDataController::class, 'autoCategorize'])
+        ->name('bankdata.auto-categorize')
+        ->middleware('permission:view_sales_analysis');
+
+    Route::get('/bankdata/keyword-suggestions', [BankDataController::class, 'getKeywordSuggestions'])
+        ->name('bankdata.keyword-suggestions')
+        ->middleware('permission:view_sales_analysis');
+
+    Route::get('/bankdata/{bankData}/test-categorization', [BankDataController::class, 'testCategorization'])
+        ->name('bankdata.test-categorization')
+        ->middleware('permission:view_sales_analysis');
+
+    Route::get('/bankdata/auto-categorization-stats', [BankDataController::class, 'autoCategorizationStats'])
+        ->name('bankdata.auto-categorization-stats')
+        ->middleware('permission:view_sales_analysis');
+
+    Route::post('/bankdata/add-expense', [BankDataController::class, 'addExpense'])
+        ->name('bankdata.add-expense')
+        ->middleware('permission:view_sales_analysis');
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -152,7 +195,7 @@ Route::middleware(['auth','verified'])->group(function(){
     | VERKAUFSANALYSE
     |--------------------------------------------------------------------------
     */
-    Route::resource('sales',SalesController::class);
+    Route::resource('sales',SalesController::class)->middleware('permission:view_sales_analysis');
 
     Route::resource('condition',ConditionController::class);
     Route::get('condition-trashed', [ConditionController::class, 'trashed'])->name('condition.trashed');
@@ -325,6 +368,8 @@ Route::get('/createInvoicePdf', [PdfCreateController::class,'createInvoicePdf'])
 
     Route::get('/invoiceupload/filter-by-month/{month}', [InvoiceUploadController::class, 'filterByMonth'])
         ->name('invoiceupload.filter-by-month');
+
+
 });
 
 /*

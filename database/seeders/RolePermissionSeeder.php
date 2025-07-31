@@ -45,7 +45,7 @@ class RolePermissionSeeder extends Seeder
             $adminRole->permissions()->syncWithoutDetaching($permission->id);
 
             // Verknüpfung mit Editor-Rolle (nur bestimmte Berechtigungen)
-            if (in_array($permissionName, ['edit_posts', 'view_dashboard', 'view_customers', 'view_offers', 'view_invoices', 'view_invoice_uploads', 'edit_my_client_settings'])) {
+            if (in_array($permissionName, ['edit_posts', 'view_dashboard', 'view_customers', 'view_offers', 'view_invoices', 'view_invoice_uploads', 'view_sales_analysis', 'edit_my_client_settings'])) {
                 $editorRole->permissions()->syncWithoutDetaching($permission->id);
             }
         }

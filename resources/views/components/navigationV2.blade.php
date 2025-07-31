@@ -5,6 +5,7 @@
     invoicesOpen: false, 
     adminOpen: false,
     profileOpen: false,
+    salesOpen: false,
     scrolled: false 
 }" 
 @scroll.window="scrolled = window.pageYOffset > 20"
@@ -175,21 +176,63 @@ class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
                         </div>
                     @endif
 
-                    <!-- Umsatz -->
+
+
+                    <!-- Umsatzauswertung Dropdown -->
                     @if(auth()->user()->hasPermission('view_sales_analysis'))
-                        <a href="{{ route('sales.index') }}" 
-                           class="group relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-white/30 hover:backdrop-blur-sm {{ request()->routeIs('sales.*') ? 'bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 shadow-sm border border-white/40' : 'text-gray-700 hover:text-gray-900' }}">
-                            <div class="flex items-center space-x-2">
+                        <div class="relative" x-data="{ open: false }">
+                            <button @click="open = !open" 
+                                    class="group relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-white/30 hover:backdrop-blur-sm {{ request()->routeIs('sales.*') || request()->routeIs('bankdata.*') ? 'bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 shadow-sm border border-white/40' : 'text-gray-700 hover:text-gray-900' }} flex items-center space-x-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2zm0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                                 </svg>
-                                <span>Umsatz</span>
+                                <span>Umsatzauswertung</span>
+                                <svg class="w-4 h-4 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <div x-show="open" @click.away="open = false" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 translate-y-1"
+                                 x-transition:enter-end="opacity-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 translate-y-0"
+                                 x-transition:leave-end="opacity-0 translate-y-1"
+                                 class="absolute top-full left-0 mt-2 w-56 bg-white/95 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 py-2"
+                                 style="display: none;">
+                                <div class="py-2">
+                                    <a href="{{ route('sales.index') }}" 
+                                       class="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50/50 hover:text-blue-700 transition-all duration-200 flex items-center space-x-3 mx-2 rounded-xl">
+                                        <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium">Umsatz</div>
+                                            <div class="text-xs text-gray-500">Umsatzauswertung</div>
+                                        </div>
+                                    </a>
+                                    <a href="{{ route('bankdata.index') }}" 
+                                       class="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50/50 hover:text-blue-700 transition-all duration-200 flex items-center space-x-3 mx-2 rounded-xl">
+                                        <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-lg flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium">Ausgabenliste</div>
+                                            <div class="text-xs text-gray-500">Alle Ausgaben anzeigen</div>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
-                        </a>
+                        </div>
                     @endif
 
                     <!-- Postausgang -->
-                    @if(auth()->user()->hasPermission('view_messages'))
+
+            @if(auth()->user()->hasPermission('view_messages'))
                         <a href="{{ route('outgoingemails.index') }}" 
                            class="group relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-white/30 hover:backdrop-blur-sm {{ request()->routeIs('outgoingemails.*') ? 'bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 shadow-sm border border-white/40' : 'text-gray-700 hover:text-gray-900' }}">
                             <div class="flex items-center space-x-2">
@@ -569,17 +612,26 @@ class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
                 </div>
             @endif
 
-            <!-- Mobile weitere Menüpunkte -->
+            <!-- Mobile Umsatzauswertung -->
             @if(auth()->user()->hasPermission('view_sales_analysis'))
-                <a href="{{ route('sales.index') }}" 
-                   class="block px-4 py-3 rounded-xl text-gray-700 hover:bg-blue-50/50 hover:text-blue-700 transition-all duration-200 {{ request()->routeIs('sales.*') ? 'bg-blue-50/50 text-blue-700' : '' }}">
-                    <div class="flex items-center space-x-3">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                <div x-data="{ salesExpanded: false }" class="space-y-1">
+                    <button @click="salesExpanded = !salesExpanded" 
+                            class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-gray-700 hover:bg-blue-50/50 hover:text-blue-700 transition-all duration-200">
+                        <div class="flex items-center space-x-3">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                            <span class="font-medium">Umsatzauswertung</span>
+                        </div>
+                        <svg class="w-4 h-4 transition-transform duration-200" :class="{ 'rotate-180': salesExpanded }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7" />
                         </svg>
-                        <span class="font-medium">Umsatz</span>
+                    </button>
+                    <div x-show="salesExpanded" x-transition class="pl-4 space-y-2" style="display: none;">
+                        <a href="{{ route('sales.index') }}" class="block px-4 py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200">Umsatz</a>
+                        <a href="{{ route('bankdata.index') }}" class="block px-4 py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200">Ausgabenliste</a>
                     </div>
-                </a>
+                </div>
             @endif
 
             @if(auth()->user()->hasPermission('view_messages'))

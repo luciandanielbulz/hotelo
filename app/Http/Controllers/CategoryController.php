@@ -54,8 +54,12 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:100',
             'description' => 'nullable|string|max:1000',
+            'keywords' => 'nullable|string|max:1000',
             'color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
             'is_active' => 'boolean',
+            'type' => 'required|in:income,expense',
+            'billing_duration_years' => 'required|integer|min:1|max:50',
+            'percentage' => 'required|numeric|min:0|max:1000',
         ]);
 
         $user = Auth::user();
@@ -129,8 +133,12 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:100',
             'description' => 'nullable|string|max:1000',
+            'keywords' => 'nullable|string|max:1000',
             'color' => 'required|string|regex:/^#[0-9A-Fa-f]{6}$/',
             'is_active' => 'boolean',
+            'type' => 'required|in:income,expense',
+            'billing_duration_years' => 'required|integer|min:1|max:50',
+            'percentage' => 'required|numeric|min:0|max:1000',
         ]);
 
         // Prüfe ob Kategorie-Name bereits für diesen Client existiert (außer für diese Kategorie)

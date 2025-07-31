@@ -360,7 +360,7 @@ class InvoiceController extends Controller
 
     public function updatetaxrate(Request $request)
     {
-        Log::info('function bestätigt');
+        Log::info('function bestätigt', []);
         //dd($request);
         try {
             Log::info('Request data: ', $request->all()); // Beispiel-Logging
@@ -478,7 +478,7 @@ class InvoiceController extends Controller
                 $invoice->number = $validated['number'];
                 $invoice->save();
 
-                Log::info('Nummer erfolgreich aktualisiert: ');
+                Log::info('Nummer erfolgreich aktualisiert: ', []);
                 return response()->json(['message' => 'Nummer erfolgreich aktualisiert.'], 200);
             } catch (\Exception $e) {
                 Log::error('Fehler beim Aktualisieren der Nummer: ' . $e->getMessage(), [
@@ -505,7 +505,7 @@ class InvoiceController extends Controller
             $invoice->condition_id = $validated['condition_id'];
             $invoice->save();
 
-            Log::info('Condition erfolgreich aktualisiert: ');
+            Log::info('Condition erfolgreich aktualisiert: ', []);
             return response()->json(['message' => 'Zahlungsziel erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
             Log::error('Fehler beim Aktualisieren der Konditionen: ' . $e->getMessage(), [
@@ -531,7 +531,7 @@ class InvoiceController extends Controller
             $invoice->depositamount = $validated['depositamount'];
             $invoice->save();
 
-            Log::info('Anzahlung erfolgreich aktualisiert: ');
+            Log::info('Anzahlung erfolgreich aktualisiert: ', []);
             return response()->json(['message' => 'Anzahlung erfolgreich aktualisiert.'], 200);
         } catch (\Exception $e) {
             Log::error('Fehler beim Aktualisieren der Anzahlung: ' . $e->getMessage(), [

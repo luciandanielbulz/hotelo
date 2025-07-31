@@ -6,6 +6,7 @@ use App\Models\Sales;
 use Illuminate\Http\Request;
 use App\Models\Invoice;
 use App\Models\BankData;
+use App\Models\Category;
 
 use Illuminate\Support\Facades\DB;
 
@@ -14,52 +15,175 @@ class SalesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $currentClientId = auth()->user()->client_id;
+        $selectedYear = $request->get('year', null);
 
         // Umsätze
         $salespositions = Invoice::join('invoicepositions', 'invoices.Id', '=', 'invoicepositions.invoice_id')
             ->join('customers', 'invoices.customer_id', '=', 'customers.id')
             ->where('customers.client_id', '=', $currentClientId)
-            ->where('invoicepositions.issoftdeleted', '=', 0)
-            ->selectRaw('YEAR(invoices.date) AS Jahr') //MONTH(invoices.date) AS Monat
+            ->where('invoicepositions.issoftdeleted', '=', 0);
+        
+        if ($selectedYear) {
+            $salespositions = $salespositions->whereRaw('YEAR(invoices.date) = ?', [$selectedYear]);
+        }
+        
+        $salespositions = $salespositions->selectRaw('YEAR(invoices.date) AS Jahr')
             ->addSelect(DB::raw('SUM(invoicepositions.price * invoicepositions.amount) AS Umsatz'))
-            ->groupByRaw('YEAR(invoices.date)') //, MONTH(invoices.date)
-            ->orderByRaw('YEAR(invoices.date)') //, MONTH(invoices.date)
+            ->groupByRaw('YEAR(invoices.date)')
+            ->orderByRaw('YEAR(invoices.date)')
             ->get();
 
-        // Ausgaben in eine Collection laden
-        $expenses = collect(DB::table('bankdata')
-            ->selectRaw('YEAR(date) AS Jahr, ABS(SUM(amount)) AS Ausgaben')
-            ->where('client_id', '=', $currentClientId)
-            ->where('amount', '<', 0)
-            ->groupByRaw('YEAR(date)')
-            ->orderByRaw('YEAR(date)') //, MONTH(date)
+        // Kategorisierte Einnahmen
+        $categorizedIncomeQuery = DB::table('bankdata')
+            ->join('categories', 'bankdata.category_id', '=', 'categories.id')
+            ->selectRaw('
+                YEAR(bankdata.date) AS Jahr,
+                SUM(
+                    CASE 
+                        WHEN categories.billing_duration_years > 0 THEN 
+                            ABS(bankdata.amount) * (categories.percentage / 100) / categories.billing_duration_years
+                        ELSE 
+                            ABS(bankdata.amount) * (categories.percentage / 100)
+                    END
+                ) AS Einnahmen
+            ')
+            ->where('bankdata.client_id', '=', $currentClientId)
+            ->where('bankdata.amount', '>', 0)
+            ->where('categories.is_active', '=', 1);
+        
+        if ($selectedYear) {
+            $categorizedIncomeQuery = $categorizedIncomeQuery->whereRaw('YEAR(bankdata.date) = ?', [$selectedYear]);
+        }
+        
+        $categorizedIncome = collect($categorizedIncomeQuery->groupByRaw('YEAR(bankdata.date)')
+            ->orderByRaw('YEAR(bankdata.date)')
             ->get());
 
-        //dd($salespositions);
+        // Ausgaben mit Kategorie-Berücksichtigung und Verrechnungsdauer
+        $expensesQuery = DB::table('bankdata')
+            ->join('categories', 'bankdata.category_id', '=', 'categories.id')
+            ->selectRaw('
+                YEAR(bankdata.date) AS Jahr,
+                SUM(
+                    CASE 
+                        WHEN categories.billing_duration_years > 0 THEN 
+                            ABS(bankdata.amount) * (categories.percentage / 100) / categories.billing_duration_years
+                        ELSE 
+                            ABS(bankdata.amount) * (categories.percentage / 100)
+                    END
+                ) AS Ausgaben
+            ')
+            ->where('bankdata.client_id', '=', $currentClientId)
+            ->where('bankdata.amount', '<', 0)
+            ->where('categories.is_active', '=', 1);
+        
+        if ($selectedYear) {
+            $expensesQuery = $expensesQuery->whereRaw('YEAR(bankdata.date) = ?', [$selectedYear]);
+        }
+        
+        $expenses = collect($expensesQuery->groupByRaw('YEAR(bankdata.date)')
+            ->orderByRaw('YEAR(bankdata.date)')
+            ->get());
+
+        // Ausgaben ohne Kategorie (Fallback für nicht kategorisierte Ausgaben)
+        $uncategorizedExpensesQuery = DB::table('bankdata')
+            ->leftJoin('categories', 'bankdata.category_id', '=', 'categories.id')
+            ->selectRaw('YEAR(bankdata.date) AS Jahr, ABS(SUM(bankdata.amount)) AS Ausgaben')
+            ->where('bankdata.client_id', '=', $currentClientId)
+            ->where('bankdata.amount', '<', 0)
+            ->whereNull('categories.id');
+        
+        if ($selectedYear) {
+            $uncategorizedExpensesQuery = $uncategorizedExpensesQuery->whereRaw('YEAR(bankdata.date) = ?', [$selectedYear]);
+        }
+        
+        $uncategorizedExpenses = collect($uncategorizedExpensesQuery->groupByRaw('YEAR(bankdata.date)')
+            ->orderByRaw('YEAR(bankdata.date)')
+            ->get());
+
+        // Einnahmen ohne Kategorie (Fallback für nicht kategorisierte Einnahmen)
+        $uncategorizedIncomeQuery = DB::table('bankdata')
+            ->leftJoin('categories', 'bankdata.category_id', '=', 'categories.id')
+            ->selectRaw('YEAR(bankdata.date) AS Jahr, ABS(SUM(bankdata.amount)) AS Einnahmen')
+            ->where('bankdata.client_id', '=', $currentClientId)
+            ->where('bankdata.amount', '>', 0)
+            ->whereNull('categories.id');
+        
+        if ($selectedYear) {
+            $uncategorizedIncomeQuery = $uncategorizedIncomeQuery->whereRaw('YEAR(bankdata.date) = ?', [$selectedYear]);
+        }
+        
+        $uncategorizedIncome = collect($uncategorizedIncomeQuery->groupByRaw('YEAR(bankdata.date)')
+            ->orderByRaw('YEAR(bankdata.date)')
+            ->get());
+
+        // Detaillierte Aufschlüsselung nach Kategorien
+        $categoryBreakdownQuery = DB::table('bankdata')
+            ->join('categories', 'bankdata.category_id', '=', 'categories.id')
+            ->selectRaw('
+                YEAR(bankdata.date) AS Jahr,
+                categories.name AS Kategorie,
+                categories.percentage AS Prozentsatz,
+                categories.billing_duration_years AS Verrechnungsdauer,
+                categories.type AS Typ,
+                SUM(
+                    CASE 
+                        WHEN categories.billing_duration_years > 0 THEN 
+                            ABS(bankdata.amount) * (categories.percentage / 100) / categories.billing_duration_years
+                        ELSE 
+                            ABS(bankdata.amount) * (categories.percentage / 100)
+                    END
+                ) AS Betrag
+            ')
+            ->where('bankdata.client_id', '=', $currentClientId)
+            ->where('categories.is_active', '=', 1);
+        
+        if ($selectedYear) {
+            $categoryBreakdownQuery = $categoryBreakdownQuery->whereRaw('YEAR(bankdata.date) = ?', [$selectedYear]);
+        }
+        
+        $categoryBreakdown = collect($categoryBreakdownQuery->groupByRaw('YEAR(bankdata.date), categories.name, categories.percentage, categories.billing_duration_years, categories.type')
+            ->orderByRaw('YEAR(bankdata.date) DESC, Betrag DESC')
+            ->get());
+
+        // Verfügbare Jahre für den Filter
+        $availableYears = collect(DB::table('bankdata')
+            ->where('client_id', '=', $currentClientId)
+            ->selectRaw('DISTINCT YEAR(date) as year')
+            ->orderBy('year', 'desc')
+            ->pluck('year'));
+
         // Umsätze und Ausgaben zusammenführen
-        $salespositions = $salespositions->map(function ($salesposition) use ($expenses) {
-            $expense = $expenses->firstWhere('Jahr', $salesposition->Jahr);
-                                //->firstWhere('Monat', $salesposition->Monat);
-            $salesposition->Ausgaben = $expense->Ausgaben ?? 0; // Füge die Ausgaben hinzu
+        $salespositions = $salespositions->map(function ($salesposition) use ($expenses, $uncategorizedExpenses, $categorizedIncome, $uncategorizedIncome) {
+            $categorizedExpense = $expenses->firstWhere('Jahr', $salesposition->Jahr);
+            $uncategorizedExpense = $uncategorizedExpenses->firstWhere('Jahr', $salesposition->Jahr);
+            $categorizedIncomeItem = $categorizedIncome->firstWhere('Jahr', $salesposition->Jahr);
+            $uncategorizedIncomeItem = $uncategorizedIncome->firstWhere('Jahr', $salesposition->Jahr);
+            
+            $totalExpenses = ($categorizedExpense->Ausgaben ?? 0) + ($uncategorizedExpense->Ausgaben ?? 0);
+            $totalIncome = ($categorizedIncomeItem->Einnahmen ?? 0) + ($uncategorizedIncomeItem->Einnahmen ?? 0);
+            
+            $salesposition->Ausgaben = $totalExpenses;
+            $salesposition->Einnahmen_Kategorisiert = $categorizedIncomeItem->Einnahmen ?? 0;
+            $salesposition->Ausgaben_Kategorisiert = $categorizedExpense->Ausgaben ?? 0;
+            $salesposition->Gewinn_Kategorisiert = ($categorizedIncomeItem->Einnahmen ?? 0) - ($categorizedExpense->Ausgaben ?? 0);
+            
             return $salesposition;
         });
 
         // Chart-Daten vorbereiten
         $chartData = [
-            'labels' => $salespositions->map(fn($pos) => $pos->Jahr . '-' . str_pad($pos->Monat, 2, '0', STR_PAD_LEFT)),
+            'labels' => $salespositions->map(fn($pos) => $pos->Jahr . '-' . str_pad($pos->Monat ?? 1, 2, '0', STR_PAD_LEFT)),
             'revenue' => $salespositions->map(fn($pos) => $pos->Umsatz),
-            'expenses' => $salespositions->map(function ($pos) use ($expenses) {
-                $expense = $expenses->firstWhere('Jahr', $pos->Jahr);
-                                    //->firstWhere('Monat', $pos->Monat);
-                return $expense->Ausgaben ?? 0;
-            }),
+            'income_categorized' => $salespositions->map(fn($pos) => $pos->Einnahmen_Kategorisiert),
+            'expenses_categorized' => $salespositions->map(fn($pos) => $pos->Ausgaben_Kategorisiert),
+            'profit_categorized' => $salespositions->map(fn($pos) => $pos->Gewinn_Kategorisiert),
         ];
 
-
-        return view('sales.index', compact('salespositions', 'expenses', 'chartData'));
+        return view('sales.index', compact('salespositions', 'expenses', 'uncategorizedExpenses', 'categorizedIncome', 'uncategorizedIncome', 'categoryBreakdown', 'chartData', 'availableYears', 'selectedYear'));
     }
 
 
