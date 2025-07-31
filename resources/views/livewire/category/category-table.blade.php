@@ -50,9 +50,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Prozentsatz
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Keywords
-                        </th>
+
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                             Status
                         </th>
@@ -94,17 +92,7 @@
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                 {{ number_format($category->percentage, 2) }}%
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                @if($category->keywords)
-                                    <div class="max-w-xs">
-                                        <div class="text-xs text-gray-600">
-                                            {{ Str::limit($category->keywords, 50) }}
-                                        </div>
-                                    </div>
-                                @else
-                                    <span class="text-gray-400 text-xs">Keine Keywords</span>
-                                @endif
-                            </td>
+
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @if($category->is_active)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">

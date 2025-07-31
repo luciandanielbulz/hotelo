@@ -706,7 +706,7 @@ class BankDataController extends Controller
     }
 
     // Zeigt das Bearbeitungsformular
-    public function edit(BankData $bankData)
+    public function edit(BankData $bankData, Request $request)
     {
         $user = Auth::user();
         
@@ -721,7 +721,10 @@ class BankDataController extends Controller
             ->orderBy('name')
             ->get();
 
-        return view('bankdata.edit', compact('bankData', 'categories'));
+        // Hole die Rückkehr-URL aus der Anfrage
+        $returnUrl = $request->input('return_url');
+
+        return view('bankdata.edit', compact('bankData', 'categories', 'returnUrl'));
     }
 
     // Aktualisiert einen Bankdatensatz
@@ -748,6 +751,14 @@ class BankDataController extends Controller
 
         $bankData->update($validated);
 
+        // Prüfe, ob eine Rückkehr-URL angegeben wurde
+        $returnUrl = $request->input('return_url');
+        if ($returnUrl) {
+            return redirect($returnUrl)
+                ->with('success', 'Bankdatensatz erfolgreich aktualisiert.');
+        }
+
+        // Fallback: Zurück zur Index-Seite
         return redirect()->route('bankdata.index')
             ->with('success', 'Bankdatensatz erfolgreich aktualisiert.');
     }

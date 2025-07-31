@@ -256,7 +256,7 @@
                                                                  </svg>
                                                              </button>
                                                          @endif
-                                                         <a href="{{ route('bankdata.edit', $transaction) }}" 
+                                                         <a href="{{ route('bankdata.edit', $transaction) }}?return_url={{ urlencode(request()->fullUrl()) }}" 
                                                             class="text-green-600 hover:text-green-900 text-xs">
                                                              Bearbeiten
                                                          </a>

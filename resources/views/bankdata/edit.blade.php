@@ -6,7 +6,7 @@
                 <p class="mt-2 text-sm text-gray-700">Bearbeiten Sie die Details dieser Transaktion.</p>
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                <a href="{{ route('bankdata.index') }}" class="block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">
+                <a href="{{ isset($returnUrl) ? $returnUrl : route('bankdata.index') }}" class="block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">
                     Zurück zur Liste
                 </a>
             </div>
@@ -32,6 +32,11 @@
             <form action="{{ route('bankdata.update', $bankData) }}" method="POST" class="space-y-6">
                 @csrf
                 @method('PUT')
+                
+                <!-- Verstecktes Feld für Rückkehr-URL -->
+                @if(isset($returnUrl))
+                    <input type="hidden" name="return_url" value="{{ $returnUrl }}">
+                @endif
                 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <!-- Datum -->
