@@ -91,7 +91,7 @@
                 <!-- Typ-Filter -->
                 <div class="flex items-center space-x-2">
                     <label for="type_filter" class="text-sm font-medium text-gray-700">Typ:</label>
-                    <select id="type_filter" name="type_filter" class="rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <select id="type_filter" name="type" class="rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <option value="all" {{ request('type') == 'all' ? 'selected' : '' }}>Alle</option>
                         <option value="income" {{ request('type') == 'income' ? 'selected' : '' }}>Einnahmen</option>
                         <option value="expense" {{ request('type') == 'expense' ? 'selected' : '' }}>Ausgaben</option>

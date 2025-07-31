@@ -72,6 +72,13 @@ class BankDataController extends Controller
             Log::info('Applied date filter', ['date' => $date]);
         }
 
+        // Typ-Filter anwenden
+        if ($request->filled('type') && $request->get('type') !== 'all') {
+            $type = $request->get('type');
+            $query->where('type', $type);
+            Log::info('Applied type filter', ['type' => $type]);
+        }
+
         // Kategorien für Filter laden
         $categories = Category::active()->forClient($clientId)->get();
         $filteredCategories = $categories;
@@ -80,7 +87,7 @@ class BankDataController extends Controller
 
         // Bankdaten mit Pagination laden
         // Wenn Suchparameter vorhanden sind, zur ersten Seite zurückkehren
-        if ($request->filled('partner') || $request->filled('amount') || $request->filled('date')) {
+        if ($request->filled('partner') || $request->filled('amount') || $request->filled('date') || ($request->filled('type') && $request->get('type') !== 'all')) {
             // Zur ersten Seite zurückkehren bei Suche
             $bankData = $query->paginate(15, ['*'], 'page', 1)->appends($request->all());
             Log::info('Search performed, reset to page 1');
@@ -121,7 +128,8 @@ class BankDataController extends Controller
         $searchValues = [
             'partner' => $request->get('partner', ''),
             'amount' => $request->get('amount', ''),
-            'date' => $request->get('date', '')
+            'date' => $request->get('date', ''),
+            'type' => $request->get('type', 'all')
         ];
 
         return view('bankdata.index', compact('bankData', 'categories', 'filteredCategories', 'incomeCategories', 'expenseCategories', 'searchValues'));
