@@ -753,6 +753,9 @@ class BankDataController extends Controller
         
         // Prüfe ob der Bankdatensatz zum aktuellen Client gehört
         if ($bankData->client_id !== $user->client_id) {
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Zugriff verweigert.'], 403);
+            }
             abort(403, 'Zugriff verweigert.');
         }
 
@@ -762,13 +765,27 @@ class BankDataController extends Controller
             'partneriban' => 'nullable|string|max:255',
             'partnerbic' => 'nullable|string|max:255',
             'amount' => 'required|numeric',
-            'currency' => 'required|string|max:3',
+            'currency' => 'nullable|string|max:3',
             'reference' => 'nullable|string|max:255',
             'category_id' => 'nullable|exists:categories,id',
             'type' => 'required|in:income,expense'
         ]);
 
+        // Setze Standard-Währung falls nicht vorhanden
+        if (!isset($validated['currency'])) {
+            $validated['currency'] = 'EUR';
+        }
+
         $bankData->update($validated);
+
+        // JSON Response für Modal
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Bankdatensatz erfolgreich aktualisiert.',
+                'data' => $bankData->fresh()
+            ]);
+        }
 
         // Prüfe, ob eine Rückkehr-URL angegeben wurde
         $returnUrl = $request->input('return_url');

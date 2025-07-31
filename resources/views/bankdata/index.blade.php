@@ -256,10 +256,11 @@
                                                                  </svg>
                                                              </button>
                                                          @endif
-                                                         <a href="{{ route('bankdata.edit', $transaction) }}?return_url={{ urlencode(request()->fullUrl()) }}" 
-                                                            class="text-green-600 hover:text-green-900 text-xs">
+                                                         <button type="button" 
+                                                             onclick="openEditModal({{ $transaction->id }}, '{{ $transaction->partnername }}', '{{ $transaction->amount }}', '{{ $transaction->date }}', '{{ $transaction->reference }}', '{{ $transaction->type }}', {{ $transaction->category_id ?? 'null' }})"
+                                                             class="text-green-600 hover:text-green-900 text-xs">
                                                              Bearbeiten
-                                                         </a>
+                                                         </button>
                                                      </div>
                                                  </td>
                                     </tr>
@@ -407,6 +408,105 @@
                              <button type="submit" 
                                      class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
                                  Ausgabe hinzufügen
+                             </button>
+                         </div>
+                     </form>
+                 </div>
+             </div>
+         </div>
+
+         <!-- Bearbeiten Modal -->
+         <div id="editModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+             <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                 <div class="mt-3">
+                     <h3 class="text-lg font-medium text-gray-900 mb-4">Bankdaten bearbeiten</h3>
+                     <form id="editForm">
+                         @csrf
+                         @method('PUT')
+                         <input type="hidden" id="editBankDataId" name="bankDataId">
+                         <div class="space-y-4">
+                             <!-- Partner Name -->
+                             <div>
+                                 <label for="edit_partnername" class="block text-sm font-medium text-gray-700 mb-1">Partner/Unternehmen *</label>
+                                 <input type="text" 
+                                        id="edit_partnername" 
+                                        name="partnername" 
+                                        required
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="z.B. Büroausstattung GmbH">
+                             </div>
+
+                             <!-- Betrag -->
+                             <div>
+                                 <label for="edit_amount" class="block text-sm font-medium text-gray-700 mb-1">Betrag (€) *</label>
+                                 <input type="number" 
+                                        id="edit_amount" 
+                                        name="amount" 
+                                        step="0.01" 
+                                        required
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        placeholder="0.00">
+                                 <p class="text-xs text-gray-500 mt-1">Negative Werte für Ausgaben, positive für Einnahmen</p>
+                             </div>
+
+                             <!-- Datum -->
+                             <div>
+                                 <label for="edit_date" class="block text-sm font-medium text-gray-700 mb-1">Datum *</label>
+                                 <input type="date" 
+                                        id="edit_date" 
+                                        name="date" 
+                                        required
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                             </div>
+
+                             <!-- Referenz -->
+                             <div>
+                                 <label for="edit_reference" class="block text-sm font-medium text-gray-700 mb-1">Referenz/Beschreibung</label>
+                                 <textarea id="edit_reference" 
+                                           name="reference" 
+                                           rows="3"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                           placeholder="z.B. Büromaterial, Miete, etc."></textarea>
+                             </div>
+
+                             <!-- Typ -->
+                             <div>
+                                 <label for="edit_type" class="block text-sm font-medium text-gray-700 mb-1">Typ</label>
+                                 <select id="edit_type" 
+                                         name="type"
+                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                     <option value="expense">Ausgabe</option>
+                                     <option value="income">Einnahme</option>
+                                 </select>
+                             </div>
+
+                             <!-- Kategorie -->
+                             <div>
+                                 <label for="edit_category" class="block text-sm font-medium text-gray-700 mb-1">Kategorie</label>
+                                 <select id="edit_category" 
+                                         name="category_id"
+                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                     <option value="">Keine Kategorie</option>
+                                     @foreach($categories as $category)
+                                         <option value="{{ $category->id }}" 
+                                                 data-type="{{ $category->type }}"
+                                                 style="color: {{ $category->color }}">
+                                             {{ $category->name }} ({{ $category->type === 'income' ? 'Einnahmen' : 'Ausgaben' }})
+                                         </option>
+                                     @endforeach
+                                 </select>
+                             </div>
+                         </div>
+
+                         <div class="flex justify-end space-x-3 mt-6">
+                             <button type="button" 
+                                     onclick="closeEditModal()" 
+                                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                                 Abbrechen
+                             </button>
+                             <button type="submit" 
+                                     class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                                 Speichern
                              </button>
                          </div>
                      </form>
@@ -912,6 +1012,118 @@
              if (e.key === 'Enter') {
                  performSearch();
              }
+         });
+
+         // Edit Modal Funktionen
+         function openEditModal(id, partnername, amount, date, reference, type, categoryId) {
+             document.getElementById('editBankDataId').value = id;
+             document.getElementById('edit_partnername').value = partnername;
+             document.getElementById('edit_amount').value = amount;
+             document.getElementById('edit_date').value = date;
+             document.getElementById('edit_reference').value = reference;
+             document.getElementById('edit_type').value = type;
+             
+             // Kategorien basierend auf Typ laden
+             loadEditCategoriesForType(type);
+             
+             // Kategorie setzen
+             const categorySelect = document.getElementById('edit_category');
+             if (categoryId && categoryId !== 'null') {
+                 categorySelect.value = categoryId;
+             } else {
+                 categorySelect.value = '';
+             }
+             
+             document.getElementById('editModal').classList.remove('hidden');
+         }
+
+         // Kategorien für Edit-Modal basierend auf Typ laden
+         function loadEditCategoriesForType(transactionType) {
+             const categorySelect = document.getElementById('edit_category');
+             
+             // Lösche bestehende Optionen außer der ersten
+             categorySelect.innerHTML = '<option value="">Keine Kategorie</option>';
+             
+             // Alle verfügbaren Kategorien
+             const allCategories = @json($categories);
+             
+             // Filtere Kategorien basierend auf Typ
+             const filteredCategories = allCategories.filter(category => {
+                 if (transactionType === 'income') {
+                     return category.type === 'income';
+                 } else if (transactionType === 'expense') {
+                     return category.type === 'expense';
+                 }
+                 return true; // Fallback: Zeige alle Kategorien
+             });
+             
+             // Füge gefilterte Kategorien hinzu
+             filteredCategories.forEach(category => {
+                 const option = document.createElement('option');
+                 option.value = category.id;
+                 option.textContent = category.name + ' (' + (category.type === 'income' ? 'Einnahmen' : 'Ausgaben') + ')';
+                 option.style.color = category.color;
+                 categorySelect.appendChild(option);
+             });
+         }
+
+         function closeEditModal() {
+             document.getElementById('editModal').classList.add('hidden');
+         }
+
+         // Edit Modal schließen wenn außerhalb geklickt wird
+         document.getElementById('editModal').addEventListener('click', function(e) {
+             if (e.target === this) {
+                 closeEditModal();
+             }
+         });
+
+         // Edit Type Change Event
+         document.getElementById('edit_type').addEventListener('change', function() {
+             const selectedType = this.value;
+             loadEditCategoriesForType(selectedType);
+             
+             // Kategorie zurücksetzen wenn Typ geändert wird
+             document.getElementById('edit_category').value = '';
+         });
+
+         // Edit Form Submit
+         document.getElementById('editForm').addEventListener('submit', function(e) {
+             e.preventDefault();
+             
+             const formData = new FormData(this);
+             const bankDataId = document.getElementById('editBankDataId').value;
+             
+             fetch(`/bankdata/${bankDataId}`, {
+                 method: 'PUT',
+                 headers: {
+                     'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                     'Content-Type': 'application/json',
+                     'Accept': 'application/json'
+                 },
+                 body: JSON.stringify({
+                     partnername: formData.get('partnername'),
+                     amount: formData.get('amount'),
+                     date: formData.get('date'),
+                     reference: formData.get('reference'),
+                     type: formData.get('type'),
+                     category_id: formData.get('category_id')
+                 })
+             })
+             .then(response => response.json())
+             .then(data => {
+                 if (data.success) {
+                     closeEditModal();
+                     // Seite neu laden um Änderungen zu zeigen
+                     window.location.reload();
+                 } else {
+                     alert('Fehler beim Speichern: ' + data.message);
+                 }
+             })
+             .catch(error => {
+                 console.error('Error:', error);
+                 alert('Fehler beim Speichern der Änderungen');
+             });
          });
 
          document.getElementById('searchDate').addEventListener('keypress', function(e) {
