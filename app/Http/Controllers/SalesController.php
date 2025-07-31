@@ -146,7 +146,7 @@ class SalesController extends Controller
             $categoryBreakdownQuery = $categoryBreakdownQuery->whereRaw('YEAR(bankdata.date) = ?', [$selectedYear]);
         }
         
-        $categoryBreakdown = collect($categoryBreakdownQuery->groupByRaw('YEAR(bankdata.date), categories.name, categories.percentage, categories.billing_duration_years, categories.type')
+        $categoryBreakdown = collect($categoryBreakdownQuery->groupByRaw('YEAR(bankdata.date), categories.name, categories.percentage, categories.billing_duration_years, categories.type, bankdata.type')
             ->orderByRaw('YEAR(bankdata.date) DESC, Betrag DESC')
             ->get());
 
