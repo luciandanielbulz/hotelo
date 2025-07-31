@@ -51,7 +51,7 @@ class SalesController extends Controller
                 ) AS Einnahmen
             ')
             ->where('bankdata.client_id', '=', $currentClientId)
-            ->where('bankdata.amount', '>', 0)
+            ->where('bankdata.type', '=', 'income')
             ->where('categories.is_active', '=', 1);
         
         if ($selectedYear) {
@@ -77,7 +77,7 @@ class SalesController extends Controller
                 ) AS Ausgaben
             ')
             ->where('bankdata.client_id', '=', $currentClientId)
-            ->where('bankdata.amount', '<', 0)
+            ->where('bankdata.type', '=', 'expense')
             ->where('categories.is_active', '=', 1);
         
         if ($selectedYear) {
@@ -93,7 +93,7 @@ class SalesController extends Controller
             ->leftJoin('categories', 'bankdata.category_id', '=', 'categories.id')
             ->selectRaw('YEAR(bankdata.date) AS Jahr, ABS(SUM(bankdata.amount)) AS Ausgaben')
             ->where('bankdata.client_id', '=', $currentClientId)
-            ->where('bankdata.amount', '<', 0)
+            ->where('bankdata.type', '=', 'expense')
             ->whereNull('categories.id');
         
         if ($selectedYear) {
@@ -109,7 +109,7 @@ class SalesController extends Controller
             ->leftJoin('categories', 'bankdata.category_id', '=', 'categories.id')
             ->selectRaw('YEAR(bankdata.date) AS Jahr, ABS(SUM(bankdata.amount)) AS Einnahmen')
             ->where('bankdata.client_id', '=', $currentClientId)
-            ->where('bankdata.amount', '>', 0)
+            ->where('bankdata.type', '=', 'income')
             ->whereNull('categories.id');
         
         if ($selectedYear) {
@@ -129,6 +129,7 @@ class SalesController extends Controller
                 categories.percentage AS Prozentsatz,
                 categories.billing_duration_years AS Verrechnungsdauer,
                 categories.type AS Typ,
+                bankdata.type AS Transaktionstyp,
                 SUM(
                     CASE 
                         WHEN categories.billing_duration_years > 0 THEN 
@@ -182,6 +183,17 @@ class SalesController extends Controller
             'expenses_categorized' => $salespositions->map(fn($pos) => $pos->Ausgaben_Kategorisiert),
             'profit_categorized' => $salespositions->map(fn($pos) => $pos->Gewinn_Kategorisiert),
         ];
+
+        // Debug-Informationen
+        \Log::info('Sales Analysis Debug', [
+            'categorized_income' => $categorizedIncome->toArray(),
+            'uncategorized_income' => $uncategorizedIncome->toArray(),
+            'categorized_expenses' => $expenses->toArray(),
+            'uncategorized_expenses' => $uncategorizedExpenses->toArray(),
+            'category_breakdown' => $categoryBreakdown->take(10)->toArray(),
+            'selected_year' => $selectedYear,
+            'client_id' => $currentClientId
+        ]);
 
         return view('sales.index', compact('salespositions', 'expenses', 'uncategorizedExpenses', 'categorizedIncome', 'uncategorizedIncome', 'categoryBreakdown', 'chartData', 'availableYears', 'selectedYear'));
     }

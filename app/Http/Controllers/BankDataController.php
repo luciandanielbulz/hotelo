@@ -79,6 +79,13 @@ class BankDataController extends Controller
             Log::info('Applied type filter', ['type' => $type]);
         }
 
+        // Kategorie-Filter anwenden
+        if ($request->filled('category') && $request->get('category') !== 'all') {
+            $categoryId = $request->get('category');
+            $query->where('category_id', $categoryId);
+            Log::info('Applied category filter', ['category_id' => $categoryId]);
+        }
+
         // Kategorien für Filter laden
         $categories = Category::active()->forClient($clientId)->get();
         $filteredCategories = $categories;
@@ -132,7 +139,8 @@ class BankDataController extends Controller
             'partner' => $request->get('partner', ''),
             'amount' => $request->get('amount', ''),
             'date' => $request->get('date', ''),
-            'type' => $request->get('type', 'all')
+            'type' => $request->get('type', 'all'),
+            'category' => $request->get('category', 'all')
         ];
 
         return view('bankdata.index', compact('bankData', 'categories', 'filteredCategories', 'incomeCategories', 'expenseCategories', 'searchValues'));
