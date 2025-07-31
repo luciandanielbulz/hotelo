@@ -86,13 +86,16 @@ class BankDataController extends Controller
         $expenseCategories = $categories->where('type', 'expense')->values();
 
         // Bankdaten mit Pagination laden
-        // Wenn Suchparameter vorhanden sind, zur ersten Seite zurückkehren
-        if ($request->filled('partner') || $request->filled('amount') || $request->filled('date') || ($request->filled('type') && $request->get('type') !== 'all')) {
-            // Zur ersten Seite zurückkehren bei Suche
+        // Nur bei neuen Suchparametern zur ersten Seite zurückkehren
+        $hasNewSearchParams = $request->filled('partner') || $request->filled('amount') || $request->filled('date');
+        
+        if ($hasNewSearchParams) {
+            // Zur ersten Seite zurückkehren bei neuer Suche
             $bankData = $query->paginate(15, ['*'], 'page', 1)->appends($request->all());
-            Log::info('Search performed, reset to page 1');
+            Log::info('New search performed, reset to page 1');
         } else {
-            $bankData = $query->paginate(15);
+            // Normale Pagination mit allen Parametern
+            $bankData = $query->paginate(15)->appends($request->all());
         }
         
         // Debug: Zeige SQL-Query

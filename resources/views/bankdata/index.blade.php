@@ -280,11 +280,11 @@
             </div>
         </div>
 
-        @if($bankData->hasPages())
+                @if($bankData->hasPages())
             <div class="mt-6">
-                {{ $bankData->links() }}
+                {{ $bankData->appends(request()->query())->links() }}
             </div>
-                         @endif
+        @endif
              </div>
          </div>
 
