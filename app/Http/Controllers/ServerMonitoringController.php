@@ -50,10 +50,50 @@ class ServerMonitoringController extends Controller
             preg_match('/LoadPercentage=(\d+)/', $output, $matches);
             return isset($matches[1]) ? (int)$matches[1] : 0;
         } else {
-            // Linux-Implementierung
-            $load = sys_getloadavg();
-            $cpuCount = (int)shell_exec('nproc');
-            return $load[0] / $cpuCount * 100;
+            // Linux-Implementierung - Sicherere Version
+            try {
+                $stat1 = @file_get_contents('/proc/stat');
+                if (!$stat1) {
+                    return 0;
+                }
+                
+                preg_match('/cpu\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/', $stat1, $matches1);
+                
+                if (empty($matches1)) {
+                    return 0;
+                }
+                
+                $total1 = array_sum(array_slice($matches1, 1));
+                $idle1 = $matches1[4];
+                
+                sleep(1);
+                
+                $stat2 = @file_get_contents('/proc/stat');
+                if (!$stat2) {
+                    return 0;
+                }
+                
+                preg_match('/cpu\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/', $stat2, $matches2);
+                
+                if (empty($matches2)) {
+                    return 0;
+                }
+                
+                $total2 = array_sum(array_slice($matches2, 1));
+                $idle2 = $matches2[4];
+                
+                $totalDiff = $total2 - $total1;
+                $idleDiff = $idle2 - $idle1;
+                
+                if ($totalDiff == 0) {
+                    return 0;
+                }
+                
+                $cpuUsage = (($totalDiff - $idleDiff) / $totalDiff) * 100;
+                return round($cpuUsage, 2);
+            } catch (Exception $e) {
+                return 0;
+            }
         }
     }
 
@@ -82,10 +122,16 @@ class ServerMonitoringController extends Controller
             // Linux-Implementierung
             $memInfo = file_get_contents('/proc/meminfo');
             preg_match('/MemTotal:\s+(\d+)/', $memInfo, $totalMatches);
-            preg_match('/MemAvailable:\s+(\d+)/', $memInfo, $availableMatches);
+            preg_match('/MemFree:\s+(\d+)/', $memInfo, $freeMatches);
+            preg_match('/Buffers:\s+(\d+)/', $memInfo, $buffersMatches);
+            preg_match('/Cached:\s+(\d+)/', $memInfo, $cachedMatches);
             
             $total = isset($totalMatches[1]) ? (int)$totalMatches[1] * 1024 : 0;
-            $available = isset($availableMatches[1]) ? (int)$availableMatches[1] * 1024 : 0;
+            $free = isset($freeMatches[1]) ? (int)$freeMatches[1] * 1024 : 0;
+            $buffers = isset($buffersMatches[1]) ? (int)$buffersMatches[1] * 1024 : 0;
+            $cached = isset($cachedMatches[1]) ? (int)$cachedMatches[1] * 1024 : 0;
+            
+            $available = $free + $buffers + $cached;
             $used = $total - $available;
             
             return [
@@ -142,24 +188,33 @@ class ServerMonitoringController extends Controller
             
             return $disks;
         } else {
-            // Linux-Implementierung
-            $output = shell_exec('df -B1');
-            $lines = explode("\n", $output);
-            $disks = [];
-            
-            foreach ($lines as $line) {
-                if (preg_match('/^\/dev\/(\S+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)%\s+(.+)$/', $line, $matches)) {
-                    $disks[] = [
-                        'device' => $matches[1],
-                        'total' => (int)$matches[2],
-                        'used' => (int)$matches[3],
-                        'free' => (int)$matches[4],
-                        'percentage' => (int)$matches[5]
-                    ];
+            // Linux-Implementierung - Sicherere Version ohne sudo
+            try {
+                $output = @shell_exec('df -B1');
+                if (!$output) {
+                    // Fallback: Versuchen Sie ohne sudo
+                    $output = @shell_exec('df');
                 }
+                
+                $lines = explode("\n", $output);
+                $disks = [];
+                
+                foreach ($lines as $line) {
+                    if (preg_match('/^\/dev\/(\S+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)%\s+(.+)$/', $line, $matches)) {
+                        $disks[] = [
+                            'device' => $matches[1],
+                            'total' => (int)$matches[2],
+                            'used' => (int)$matches[3],
+                            'free' => (int)$matches[4],
+                            'percentage' => (int)$matches[5]
+                        ];
+                    }
+                }
+                
+                return $disks;
+            } catch (Exception $e) {
+                return [];
             }
-            
-            return $disks;
         }
     }
 
