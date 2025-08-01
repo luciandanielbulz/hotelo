@@ -231,8 +231,7 @@ class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
                     @endif
 
                     <!-- Postausgang -->
-
-            @if(auth()->user()->hasPermission('view_messages'))
+                    @if(auth()->user()->hasPermission('view_messages'))
                         <a href="{{ route('outgoingemails.index') }}" 
                            class="group relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-white/30 hover:backdrop-blur-sm {{ request()->routeIs('outgoingemails.*') ? 'bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 shadow-sm border border-white/40' : 'text-gray-700 hover:text-gray-900' }}">
                             <div class="flex items-center space-x-2">
@@ -409,11 +408,12 @@ class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
                                 @endif
 
                                 <!-- Wartung Sektion -->
-                                @if(auth()->user()->hasPermission('manage_maintenance'))
+                                @if(auth()->user()->hasPermission('manage_maintenance') || auth()->user()->hasPermission('view_server_monitoring'))
                                     <div class="px-4 py-2 mt-4 border-t border-gray-100">
                                         <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">System</h3>
                                     </div>
 
+                                    @if(auth()->user()->hasPermission('manage_maintenance'))
                                     <a href="{{ route('maintenance.index') }}" 
                                        class="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50/50 hover:text-blue-700 transition-all duration-200 flex items-center space-x-3 mx-2 rounded-xl">
                                         <div class="w-8 h-8 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg flex items-center justify-center">
@@ -428,9 +428,25 @@ class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
                                         </div>
                                     </a>
                                 @endif
+
+                                @if(auth()->user()->hasPermission('view_server_monitoring'))
+                                    <a href="{{ route('server-monitoring.index') }}" 
+                                       class="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50/50 hover:text-blue-700 transition-all duration-200 flex items-center space-x-3 mx-2 rounded-xl">
+                                        <div class="w-8 h-8 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-lg flex items-center justify-center">
+                                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium">Server-Monitoring</div>
+                                            <div class="text-xs text-gray-500">System-Überwachung</div>
+                                        </div>
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     @endif
+                @endif
                 </div>
             </div>
 

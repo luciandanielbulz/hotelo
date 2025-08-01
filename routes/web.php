@@ -27,6 +27,7 @@ use App\Http\Controllers\InvoiceUploadController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\VersionController;
+use App\Http\Controllers\ServerMonitoringController;
 
 
 
@@ -117,8 +118,7 @@ Route::middleware(['auth','verified'])->group(function(){
     |--------------------------------------------------------------------------
     */
     Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->name('dashboard') 
-    ->middleware('permission:view_dashboard');
+    ->name('dashboard');
 
     /*
     |--------------------------------------------------------------------------
@@ -368,6 +368,20 @@ Route::get('/createInvoicePdf', [PdfCreateController::class,'createInvoicePdf'])
 
     Route::get('/invoiceupload/filter-by-month/{month}', [InvoiceUploadController::class, 'filterByMonth'])
         ->name('invoiceupload.filter-by-month');
+
+    /*
+    |--------------------------------------------------------------------------
+    | SERVER-MONITORING
+    |--------------------------------------------------------------------------
+    | - Server-Überwachung mit Berechtigung
+    */
+    Route::get('/server-monitoring', [ServerMonitoringController::class, 'index'])
+        ->name('server-monitoring.index')
+        ->middleware('permission:view_server_monitoring');
+
+    Route::get('/server-monitoring/data', [ServerMonitoringController::class, 'getServerData'])
+        ->name('server-monitoring.data')
+        ->middleware('permission:view_server_monitoring');
 
 
 });

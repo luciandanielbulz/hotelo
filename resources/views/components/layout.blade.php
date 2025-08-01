@@ -44,21 +44,21 @@
 
     <main>
         <div class="container mx-auto sm:px-6 lg:px-8">
-        <!-- Linke Spalte: Überschrift -->
+            <!-- Linke Spalte: Überschrift -->
 
             @include('components.navigationV2')
 
             <div class="py-4">
-            {{ $slot }}
+                {{ $slot }}
 
 
-            <br>
-            <br>
-            <br>
-            <br>
-            <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+            </div>
         </div>
-    </div>
     </main>
     
     @livewireScripts
