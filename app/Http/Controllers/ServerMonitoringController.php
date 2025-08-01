@@ -50,47 +50,19 @@ class ServerMonitoringController extends Controller
             preg_match('/LoadPercentage=(\d+)/', $output, $matches);
             return isset($matches[1]) ? (int)$matches[1] : 0;
         } else {
-            // Linux-Implementierung - Sicherere Version
+            // Linux-Implementierung - Schnellere Version
             try {
-                $stat1 = @file_get_contents('/proc/stat');
-                if (!$stat1) {
-                    return 0;
+                // Verwende Load Average als Näherung für CPU-Auslastung
+                $load = sys_getloadavg();
+                $cpuCount = (int)shell_exec('nproc');
+                
+                if ($cpuCount > 0) {
+                    // Load Average pro CPU-Kern
+                    $cpuUsage = ($load[0] / $cpuCount) * 100;
+                    return min(round($cpuUsage, 2), 100); // Maximal 100%
                 }
                 
-                preg_match('/cpu\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/', $stat1, $matches1);
-                
-                if (empty($matches1)) {
-                    return 0;
-                }
-                
-                $total1 = array_sum(array_slice($matches1, 1));
-                $idle1 = $matches1[4];
-                
-                sleep(1);
-                
-                $stat2 = @file_get_contents('/proc/stat');
-                if (!$stat2) {
-                    return 0;
-                }
-                
-                preg_match('/cpu\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/', $stat2, $matches2);
-                
-                if (empty($matches2)) {
-                    return 0;
-                }
-                
-                $total2 = array_sum(array_slice($matches2, 1));
-                $idle2 = $matches2[4];
-                
-                $totalDiff = $total2 - $total1;
-                $idleDiff = $idle2 - $idle1;
-                
-                if ($totalDiff == 0) {
-                    return 0;
-                }
-                
-                $cpuUsage = (($totalDiff - $idleDiff) / $totalDiff) * 100;
-                return round($cpuUsage, 2);
+                return 0;
             } catch (Exception $e) {
                 return 0;
             }
@@ -119,27 +91,54 @@ class ServerMonitoringController extends Controller
                 'percentage' => $total > 0 ? round(($used / $total) * 100, 2) : 0
             ];
         } else {
-            // Linux-Implementierung
-            $memInfo = file_get_contents('/proc/meminfo');
-            preg_match('/MemTotal:\s+(\d+)/', $memInfo, $totalMatches);
-            preg_match('/MemFree:\s+(\d+)/', $memInfo, $freeMatches);
-            preg_match('/Buffers:\s+(\d+)/', $memInfo, $buffersMatches);
-            preg_match('/Cached:\s+(\d+)/', $memInfo, $cachedMatches);
-            
-            $total = isset($totalMatches[1]) ? (int)$totalMatches[1] * 1024 : 0;
-            $free = isset($freeMatches[1]) ? (int)$freeMatches[1] * 1024 : 0;
-            $buffers = isset($buffersMatches[1]) ? (int)$buffersMatches[1] * 1024 : 0;
-            $cached = isset($cachedMatches[1]) ? (int)$cachedMatches[1] * 1024 : 0;
-            
-            $available = $free + $buffers + $cached;
-            $used = $total - $available;
-            
-            return [
-                'total' => $total,
-                'used' => $used,
-                'free' => $available,
-                'percentage' => $total > 0 ? round(($used / $total) * 100, 2) : 0
-            ];
+            // Linux-Implementierung - Verbesserte Version
+            try {
+                $memInfo = @file_get_contents('/proc/meminfo');
+                if (!$memInfo) {
+                    return [
+                        'total' => 0,
+                        'used' => 0,
+                        'free' => 0,
+                        'percentage' => 0
+                    ];
+                }
+                
+                preg_match('/MemTotal:\s+(\d+)/', $memInfo, $totalMatches);
+                preg_match('/MemAvailable:\s+(\d+)/', $memInfo, $availableMatches);
+                
+                // Fallback für ältere Kernel
+                if (empty($availableMatches)) {
+                    preg_match('/MemFree:\s+(\d+)/', $memInfo, $freeMatches);
+                    preg_match('/Buffers:\s+(\d+)/', $memInfo, $buffersMatches);
+                    preg_match('/Cached:\s+(\d+)/', $memInfo, $cachedMatches);
+                    
+                    $total = isset($totalMatches[1]) ? (int)$totalMatches[1] * 1024 : 0;
+                    $free = isset($freeMatches[1]) ? (int)$freeMatches[1] * 1024 : 0;
+                    $buffers = isset($buffersMatches[1]) ? (int)$buffersMatches[1] * 1024 : 0;
+                    $cached = isset($cachedMatches[1]) ? (int)$cachedMatches[1] * 1024 : 0;
+                    
+                    $available = $free + $buffers + $cached;
+                } else {
+                    $total = isset($totalMatches[1]) ? (int)$totalMatches[1] * 1024 : 0;
+                    $available = isset($availableMatches[1]) ? (int)$availableMatches[1] * 1024 : 0;
+                }
+                
+                $used = $total - $available;
+                
+                return [
+                    'total' => $total,
+                    'used' => $used,
+                    'free' => $available,
+                    'percentage' => $total > 0 ? round(($used / $total) * 100, 2) : 0
+                ];
+            } catch (Exception $e) {
+                return [
+                    'total' => 0,
+                    'used' => 0,
+                    'free' => 0,
+                    'percentage' => 0
+                ];
+            }
         }
     }
 

@@ -25,16 +25,13 @@ class ServerMonitoringDashboard extends Component
             $this->isLoading = true;
             $this->error = null;
 
-            $response = Http::get(route('server-monitoring.data'));
+            // Direkte Datenabfrage vom Controller
+            $controller = new \App\Http\Controllers\ServerMonitoringController();
+            $this->serverData = $controller->getServerData()->getData(true);
+            $this->lastUpdate = now()->format('H:i:s');
             
-            if ($response->successful()) {
-                $this->serverData = $response->json();
-                $this->lastUpdate = now()->format('H:i:s');
-            } else {
-                $this->error = 'Fehler beim Laden der Server-Daten';
-            }
         } catch (\Exception $e) {
-            $this->error = 'Verbindungsfehler: ' . $e->getMessage();
+            $this->error = 'Fehler beim Laden der Server-Daten: ' . $e->getMessage();
         } finally {
             $this->isLoading = false;
         }
