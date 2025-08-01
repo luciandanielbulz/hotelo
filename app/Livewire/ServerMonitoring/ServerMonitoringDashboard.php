@@ -11,8 +11,17 @@ class ServerMonitoringDashboard extends Component
     public $isLoading = true;
     public $lastUpdate = null;
     public $error = null;
+    public $autoRefresh = true;
 
     protected $listeners = ['refreshData'];
+    
+    // Livewire Polling - Aktualisiert alle 5 Sekunden
+    public function getPollingListeners()
+    {
+        return [
+            'echo-private:server-monitoring,ServerDataUpdated' => 'loadServerData',
+        ];
+    }
 
     public function mount()
     {
@@ -40,6 +49,11 @@ class ServerMonitoringDashboard extends Component
     public function refreshData()
     {
         $this->loadServerData();
+    }
+
+    public function toggleAutoRefresh()
+    {
+        $this->autoRefresh = !$this->autoRefresh;
     }
 
     public function formatBytes($bytes, $precision = 2)

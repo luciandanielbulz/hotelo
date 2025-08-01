@@ -1,4 +1,35 @@
-<div class="space-y-6">
+<div class="space-y-6" @if($autoRefresh) wire:poll.5s="loadServerData" @endif>
+    <!-- Auto-Refresh Status -->
+    <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-2">
+            @if($autoRefresh)
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span class="text-sm text-gray-600">Live-Updates aktiv</span>
+            @else
+                <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                <span class="text-sm text-gray-600">Live-Updates inaktiv</span>
+            @endif
+        </div>
+        <div class="flex items-center space-x-4">
+            <button wire:click="toggleAutoRefresh" 
+                    class="text-sm text-blue-600 hover:text-blue-800 transition-colors">
+                {{ $autoRefresh ? 'Auto-Refresh aus' : 'Auto-Refresh an' }}
+            </button>
+            <button wire:click="loadServerData" 
+                    class="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition-colors">
+                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Aktualisieren
+            </button>
+            @if($lastUpdate)
+                <span class="text-xs text-gray-500">
+                    Letzte Aktualisierung: {{ $lastUpdate }}
+                </span>
+            @endif
+        </div>
+    </div>
+
     <!-- System-Übersicht -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- CPU-Auslastung -->
@@ -15,7 +46,7 @@
                     <div class="ml-4 flex-1">
                         <h3 class="text-sm font-medium text-gray-500">CPU-Auslastung</h3>
                         <div class="flex items-baseline">
-                            <p class="text-2xl font-semibold {{ $this->getCpuColor($serverData['cpu'] ?? 0) }}">
+                            <p class="text-2xl font-semibold {{ $this->getCpuColor($serverData['cpu'] ?? 0) }} transition-all duration-300">
                                 {{ number_format($serverData['cpu'] ?? 0, 1) }}%
                             </p>
                         </div>
@@ -44,7 +75,7 @@
                     <div class="ml-4 flex-1">
                         <h3 class="text-sm font-medium text-gray-500">Speicherauslastung</h3>
                         <div class="flex items-baseline">
-                            <p class="text-2xl font-semibold {{ $this->getMemoryColor($serverData['memory']['percentage'] ?? 0) }}">
+                            <p class="text-2xl font-semibold {{ $this->getMemoryColor($serverData['memory']['percentage'] ?? 0) }} transition-all duration-300">
                                 {{ number_format($serverData['memory']['percentage'] ?? 0, 1) }}%
                             </p>
                         </div>
