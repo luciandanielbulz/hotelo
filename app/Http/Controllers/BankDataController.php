@@ -72,6 +72,13 @@ class BankDataController extends Controller
             Log::info('Applied date filter', ['date' => $date]);
         }
 
+        // Jahresfilter anwenden
+        if ($request->filled('year') && $request->get('year') !== 'all') {
+            $year = $request->get('year');
+            $query->whereYear('date', $year);
+            Log::info('Applied year filter', ['year' => $year]);
+        }
+
         // Typ-Filter anwenden
         if ($request->filled('type') && $request->get('type') !== 'all') {
             $type = $request->get('type');
@@ -92,17 +99,45 @@ class BankDataController extends Controller
         $incomeCategories = $categories->where('type', 'income')->values();
         $expenseCategories = $categories->where('type', 'expense')->values();
 
-        // Bankdaten mit Pagination laden
-        // Nur bei neuen Suchparametern zur ersten Seite zurückkehren
-        $hasNewSearchParams = $request->filled('partner') || $request->filled('amount') || $request->filled('date');
+        // Anzahl der Elemente pro Seite (Standard: 15, Max: 100, oder "alle")
+        $perPage = $request->get('per_page', 15);
         
-        if ($hasNewSearchParams) {
-            // Zur ersten Seite zurückkehren bei neuer Suche
-            $bankData = $query->paginate(15, ['*'], 'page', 1)->appends($request->all());
-            Log::info('New search performed, reset to page 1');
+        // Sicherheitsmaßnahme: Stelle sicher, dass perPage gültig ist
+        if ($perPage !== 'all' && (!is_numeric($perPage) || $perPage <= 0)) {
+            $perPage = 15; // Fallback auf Standardwert
+        }
+        
+        if ($perPage === 'all') {
+            // Alle Elemente anzeigen (keine Pagination)
+            $bankData = $query->get();
+            $totalCount = $bankData->count();
+            
+            // Verhindere Division durch Null - verwende mindestens 1 Element pro Seite
+            $perPageForPaginator = max($totalCount, 1);
+            
+            $bankData = new \Illuminate\Pagination\LengthAwarePaginator(
+                $bankData,
+                $totalCount,
+                $perPageForPaginator,
+                1,
+                ['path' => request()->url(), 'pageName' => 'page']
+            );
+            $bankData->appends($request->all());
         } else {
-            // Normale Pagination mit allen Parametern
-            $bankData = $query->paginate(15)->appends($request->all());
+            // Normale Pagination
+            $perPage = min(max($perPage, 5), 100); // Zwischen 5 und 100 Elementen
+            
+            // Nur bei neuen Suchparametern zur ersten Seite zurückkehren
+            $hasNewSearchParams = $request->filled('partner') || $request->filled('amount') || $request->filled('date');
+            
+            if ($hasNewSearchParams) {
+                // Zur ersten Seite zurückkehren bei neuer Suche
+                $bankData = $query->paginate($perPage, ['*'], 'page', 1)->appends($request->all());
+                Log::info('New search performed, reset to page 1');
+            } else {
+                // Normale Pagination mit allen Parametern
+                $bankData = $query->paginate($perPage)->appends($request->all());
+            }
         }
         
         // Debug: Zeige SQL-Query
@@ -134,16 +169,74 @@ class BankDataController extends Controller
             ]);
         }
 
+        // Jahresbasierte Summen berechnen (mit Filtern)
+        $yearlyStatsQuery = BankData::where('client_id', $clientId);
+        
+        // Filter auf die Summen anwenden
+        if ($request->filled('partner')) {
+            $partner = $request->get('partner');
+            $yearlyStatsQuery->whereRaw('LOWER(partnername) LIKE ?', ['%' . strtolower($partner) . '%']);
+        }
+        
+        if ($request->filled('amount')) {
+            $amount = $request->get('amount');
+            $yearlyStatsQuery->where(function($q) use ($amount) {
+                $q->where('amount', $amount)
+                  ->orWhere('amount', -$amount);
+            });
+        }
+        
+        if ($request->filled('date')) {
+            $date = $request->get('date');
+            $yearlyStatsQuery->whereDate('date', $date);
+        }
+        
+        if ($request->filled('year') && $request->get('year') !== 'all') {
+            $year = $request->get('year');
+            $yearlyStatsQuery->whereYear('date', $year);
+        }
+        
+        if ($request->filled('type') && $request->get('type') !== 'all') {
+            $type = $request->get('type');
+            $yearlyStatsQuery->where('type', $type);
+        }
+        
+        if ($request->filled('category') && $request->get('category') !== 'all') {
+            $categoryId = $request->get('category');
+            $yearlyStatsQuery->where('category_id', $categoryId);
+        }
+        
+        $yearlyStats = $yearlyStatsQuery
+            ->selectRaw('YEAR(date) as year, type, SUM(amount) as total_amount, COUNT(*) as count')
+            ->groupBy('year', 'type')
+            ->orderBy('year', 'desc')
+            ->orderBy('type')
+            ->get()
+            ->groupBy('year');
+
+        // Verfügbare Jahre für Filter ermitteln
+        $availableYears = BankData::where('client_id', $clientId)
+            ->selectRaw('DISTINCT YEAR(date) as year')
+            ->orderBy('year', 'desc')
+            ->pluck('year')
+            ->toArray();
+
+        // Aktuelles Jahr als Standard, falls kein Jahr ausgewählt ist
+        $currentYear = date('Y');
+        $selectedYear = $request->get('year', $currentYear);
+        
         // Suchwerte für die View vorbereiten
         $searchValues = [
             'partner' => $request->get('partner', ''),
             'amount' => $request->get('amount', ''),
             'date' => $request->get('date', ''),
             'type' => $request->get('type', 'all'),
-            'category' => $request->get('category', 'all')
+            'category' => $request->get('category', 'all'),
+            'per_page' => $request->get('per_page', 15),
+            'year' => $selectedYear
         ];
 
-        return view('bankdata.index', compact('bankData', 'categories', 'filteredCategories', 'incomeCategories', 'expenseCategories', 'searchValues'));
+        return view('bankdata.index', compact('bankData', 'categories', 'filteredCategories', 'incomeCategories', 'expenseCategories', 'searchValues', 'yearlyStats', 'availableYears'));
     }
 
     /**

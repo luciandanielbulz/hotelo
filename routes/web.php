@@ -50,6 +50,9 @@ use App\Http\Controllers\ServerMonitoringController;
 |==========================================================================
 */
 Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard');
+    }
     return view('auth.login');
 });
 
@@ -196,6 +199,15 @@ Route::middleware(['auth','verified'])->group(function(){
     |--------------------------------------------------------------------------
     */
     Route::resource('sales',SalesController::class)->middleware('permission:view_sales_analysis');
+    
+    // PDF Export Route
+    Route::get('/sales-report', [SalesController::class, 'exportPDF'])
+        ->name('sales.report')
+        ->middleware('permission:view_sales_analysis');
+    
+    // Test Route ohne Auth
+    Route::get('/sales/test-no-auth', [SalesController::class, 'testNoAuth'])
+        ->name('sales.test-no-auth');
 
     Route::resource('condition',ConditionController::class);
     Route::get('condition-trashed', [ConditionController::class, 'trashed'])->name('condition.trashed');
@@ -382,6 +394,49 @@ Route::get('/createInvoicePdf', [PdfCreateController::class,'createInvoicePdf'])
     Route::get('/server-monitoring/data', [ServerMonitoringController::class, 'getServerData'])
         ->name('server-monitoring.data')
         ->middleware('permission:view_server_monitoring');
+
+    // Test-Route für PDF Export
+    Route::get('/test-simple', function() {
+        return response('<!DOCTYPE html><html><head><title>Test</title></head><body><h1>Test erfolgreich!</h1></body></html>')
+            ->header('Content-Type', 'text/html; charset=utf-8');
+    });
+
+
+
+    // Alternative Test-Route mit anonymem Controller
+    Route::get('/test-pdf-simple', function() {
+        $html = '<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <title>Test PDF Export</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>Test PDF Export</h1>
+    <p>Zeit: ' . date('d.m.Y H:i:s') . '</p>
+    <table>
+        <tr>
+            <th>Kategorie</th>
+            <th>Betrag</th>
+        </tr>
+        <tr>
+            <td>Test Umsatz</td>
+            <td>10.000,00 €</td>
+        </tr>
+    </table>
+</body>
+</html>';
+        
+        return response($html)
+            ->header('Content-Type', 'text/html; charset=utf-8');
+    });
 
 
 });

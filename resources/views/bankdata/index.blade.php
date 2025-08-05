@@ -63,28 +63,6 @@
             </div>
         @endif
 
-        <!-- Zusammenfassung -->
-        <div class="mt-6 bg-white shadow rounded-lg p-4">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-gray-900">{{ $bankData->total() }}</div>
-                    <div class="text-sm text-gray-500">Gesamt</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-green-600">{{ $bankData->where('type', 'income')->count() }}</div>
-                    <div class="text-sm text-gray-500">Einnahmen</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-red-600">{{ $bankData->where('type', 'expense')->count() }}</div>
-                    <div class="text-sm text-gray-500">Ausgaben</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-2xl font-bold text-blue-600">{{ $bankData->where('category_id', '!=', null)->count() }}</div>
-                    <div class="text-sm text-gray-500">Kategorisiert</div>
-                </div>
-            </div>
-        </div>
-
         <!-- Filter-Optionen -->
         <div class="mt-6 flex items-center justify-between">
             <div class="flex items-center space-x-4">
@@ -108,6 +86,30 @@
                                 {{ $category->name }} ({{ $category->type === 'income' ? 'Einnahmen' : 'Ausgaben' }})
                             </option>
                         @endforeach
+                    </select>
+                </div>
+
+                <!-- Jahresfilter -->
+                <div class="flex items-center space-x-2">
+                    <label for="year_filter" class="text-sm font-medium text-gray-700">Jahr:</label>
+                    <select id="year_filter" name="year" class="rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="all">Alle Jahre</option>
+                        @foreach($availableYears as $year)
+                            <option value="{{ $year }}" {{ $searchValues['year'] == $year ? 'selected' : '' }}>{{ $year }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Elemente pro Seite -->
+                <div class="flex items-center space-x-2">
+                    <label for="per_page_filter" class="text-sm font-medium text-gray-700">Anzeigen:</label>
+                    <select id="per_page_filter" name="per_page" class="rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <option value="10" {{ $searchValues['per_page'] == 10 ? 'selected' : '' }}>10</option>
+                        <option value="15" {{ $searchValues['per_page'] == 15 ? 'selected' : '' }}>15</option>
+                        <option value="25" {{ $searchValues['per_page'] == 25 ? 'selected' : '' }}>25</option>
+                        <option value="50" {{ $searchValues['per_page'] == 50 ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ $searchValues['per_page'] == 100 ? 'selected' : '' }}>100</option>
+                        <option value="all" {{ $searchValues['per_page'] == 'all' ? 'selected' : '' }}>Alle anzeigen</option>
                     </select>
                 </div>
             </div>
@@ -208,7 +210,7 @@
                                             {{ \Carbon\Carbon::parse($transaction->date)->format('d.m.Y') }}
                                         </td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                            {{ $transaction->partnername ?? 'N/A' }}
+                                            {{ strlen($transaction->partnername ?? '') > 30 ? substr($transaction->partnername, 0, 27) . '...' : ($transaction->partnername ?? 'N/A') }}
                                         </td>
                                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                             {{ $transaction->partneriban ?? 'N/A' }}
@@ -877,8 +879,12 @@
              const partner = document.getElementById('searchPartner').value.trim();
              const amount = document.getElementById('searchAmount').value.trim();
              const date = document.getElementById('searchDate').value;
+             const perPage = document.getElementById('per_page_filter').value;
+             const type = document.getElementById('type_filter').value;
+             const category = document.getElementById('category_filter').value;
+             const year = document.getElementById('year_filter').value;
              
-             console.log('Search parameters:', { partner, amount, date });
+             console.log('Search parameters:', { partner, amount, date, perPage, type, category, year });
              
              // Einfache URL-Konstruktion
              const baseUrl = window.location.origin + window.location.pathname;
@@ -899,6 +905,26 @@
                  console.log('Added date parameter:', date);
              }
              
+             // Filter-Parameter hinzufügen
+             if (type && type !== 'all') {
+                 params.append('type', type);
+                 console.log('Added type parameter:', type);
+             }
+             
+             if (category && category !== 'all') {
+                 params.append('category', category);
+                 console.log('Added category parameter:', category);
+             }
+             
+             if (year && year !== 'all') {
+                 params.append('year', year);
+                 console.log('Added year parameter:', year);
+             }
+             
+             // Per Page Parameter hinzufügen (auch für "alle")
+             params.append('per_page', perPage);
+             console.log('Added per_page parameter:', perPage);
+             
              const finalUrl = baseUrl + (params.toString() ? '?' + params.toString() : '');
              console.log('Final URL:', finalUrl);
              
@@ -916,11 +942,32 @@
              document.getElementById('searchAmount').value = '';
              document.getElementById('searchDate').value = '';
              
-             // Zur Seite ohne Parameter navigieren
+             // Zur Seite ohne Suchparameter navigieren, aber Filter-Einstellungen beibehalten
              const currentUrl = new URL(window.location);
              currentUrl.searchParams.delete('partner');
              currentUrl.searchParams.delete('amount');
              currentUrl.searchParams.delete('date');
+             
+             // Filter-Einstellungen beibehalten
+             const perPage = document.getElementById('per_page_filter').value;
+             const type = document.getElementById('type_filter').value;
+             const category = document.getElementById('category_filter').value;
+             const year = document.getElementById('year_filter').value;
+             
+             // Per Page Parameter beibehalten (auch für "alle")
+             currentUrl.searchParams.set('per_page', perPage);
+             
+             if (type && type !== 'all') {
+                 currentUrl.searchParams.set('type', type);
+             }
+             
+             if (category && category !== 'all') {
+                 currentUrl.searchParams.set('category', category);
+             }
+             
+             if (year && year !== 'all') {
+                 currentUrl.searchParams.set('year', year);
+             }
              
              window.location.href = currentUrl.toString();
          }
@@ -1132,6 +1179,23 @@
              }
          });
 
+         // Event-Listener für Filter-Änderungen
+         document.getElementById('type_filter').addEventListener('change', function() {
+             performSearch();
+         });
+         
+         document.getElementById('category_filter').addEventListener('change', function() {
+             performSearch();
+         });
+         
+         document.getElementById('year_filter').addEventListener('change', function() {
+             performSearch();
+         });
+         
+         document.getElementById('per_page_filter').addEventListener('change', function() {
+             performSearch();
+         });
+         
          // Aktive Filter beim Laden anzeigen
          document.addEventListener('DOMContentLoaded', function() {
              console.log('DOM loaded, updating active filters');
@@ -1148,7 +1212,9 @@
              console.log('URL parameters:', {
                  partner: urlParams.get('partner'),
                  amount: urlParams.get('amount'),
-                 date: urlParams.get('date')
+                 date: urlParams.get('date'),
+                 year: urlParams.get('year'),
+                 per_page: urlParams.get('per_page')
              });
          });
          </script>
