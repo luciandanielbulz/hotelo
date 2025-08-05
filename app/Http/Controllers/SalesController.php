@@ -120,7 +120,7 @@ class SalesController extends Controller
             ->orderByRaw('YEAR(bankdata.date)')
             ->get());
 
-        // Detaillierte Aufschlüsselung nach Kategorien (vereinfacht)
+        // Detaillierte Aufschlüsselung nach Kategorien mit berechneten Beträgen
         $categoryBreakdownQuery = DB::table('bankdata')
             ->join('categories', 'bankdata.category_id', '=', 'categories.id')
             ->selectRaw('
@@ -130,7 +130,14 @@ class SalesController extends Controller
                 categories.billing_duration_years AS Verrechnungsdauer,
                 categories.type AS Typ,
                 bankdata.type AS Transaktionstyp,
-                SUM(ABS(bankdata.amount)) AS Betrag
+                SUM(
+                    CASE 
+                        WHEN categories.billing_duration_years > 0 THEN 
+                            ABS(bankdata.amount) * (categories.percentage / 100) / categories.billing_duration_years
+                        ELSE 
+                            ABS(bankdata.amount) * (categories.percentage / 100)
+                    END
+                ) AS Betrag
             ')
             ->where('bankdata.client_id', '=', $currentClientId)
             ->where('categories.is_active', '=', 1);
