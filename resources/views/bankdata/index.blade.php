@@ -519,11 +519,10 @@
          <script>
                            function openCategoryModal(bankDataId, currentCategoryId, transactionType) {
                   document.getElementById('bankDataId').value = bankDataId;
-                  document.getElementById('categorySelect').value = currentCategoryId || '';
                   document.getElementById('categoryModal').classList.remove('hidden');
                   
                   // Lade nur passende Kategorien für den Typ der Transaktion
-                  loadCategoriesForType(transactionType);
+                  loadCategoriesForType(transactionType, currentCategoryId);
               }
 
              function closeCategoryModal() {
@@ -611,7 +610,7 @@
               
 
                                                                // Lade Kategorien basierend auf dem Transaktionstyp
-                function loadCategoriesForType(transactionType) {
+                function loadCategoriesForType(transactionType, currentCategoryId) {
                     const categorySelect = document.getElementById('categorySelect');
                     
                     // Lösche bestehende Optionen
@@ -619,6 +618,7 @@
                     
                     // Debug: Zeige alle verfügbaren Kategorien
                     console.log('Transaction Type:', transactionType);
+                    console.log('Current Category ID:', currentCategoryId);
                     console.log('Alle Kategorien:', @json($categories));
                     console.log('Einnahmen-Kategorien (PHP):', @json($incomeCategories));
                     console.log('Ausgaben-Kategorien (PHP):', @json($expenseCategories));
@@ -654,13 +654,19 @@
                         console.log('Keine Kategorien für Typ', transactionType, 'gefunden');
                     }
                     
-                    // Setze die aktuelle Kategorie wieder, falls sie zum Typ passt
-                    const currentCategoryId = document.getElementById('categorySelect').value;
-                    if (currentCategoryId && currentCategoryId !== '') {
-                        const currentCategory = categories.find(cat => cat.id == currentCategoryId);
+                    // Setze die aktuelle Kategorie nach dem Laden der Optionen
+                    if (currentCategoryId && currentCategoryId !== 'null' && currentCategoryId !== '') {
+                        // Konvertiere currentCategoryId zu einer Zahl für den Vergleich
+                        const categoryIdNum = parseInt(currentCategoryId);
+                        const currentCategory = categories.find(cat => cat.id === categoryIdNum);
                         if (currentCategory) {
                             categorySelect.value = currentCategoryId;
+                            console.log('Set current category to:', currentCategoryId, 'found category:', currentCategory.name);
+                        } else {
+                            console.log('Current category not found in filtered categories:', currentCategoryId, 'available categories:', categories.map(c => c.id));
                         }
+                    } else {
+                        console.log('No current category to set');
                     }
                 }
 
