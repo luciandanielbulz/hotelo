@@ -304,6 +304,37 @@ class BankDataController extends Controller
     }
 
     /**
+     * Add keyword to category
+     */
+    public function addKeywordToCategory(Request $request)
+    {
+        $user = Auth::user();
+        $clientId = $user->client_id;
+
+        $request->validate([
+            'category_id' => 'required|integer',
+            'keyword' => 'required|string|max:255'
+        ]);
+
+        try {
+            $result = $this->autoCategorizationService->addKeywordToCategory(
+                $request->category_id,
+                $request->keyword,
+                $clientId
+            );
+
+            return response()->json($result);
+        } catch (\Exception $e) {
+            Log::error('Add keyword to category failed', ['error' => $e->getMessage()]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Fehler beim Hinzufügen des Keywords: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Test categorization for a specific transaction
      */
     public function testCategorization(Request $request, BankData $bankData)

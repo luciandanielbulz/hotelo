@@ -114,29 +114,28 @@ class AutoCategorizationService
             $partnername = trim($transaction->partnername);
             $reference = trim($transaction->reference);
             
+            // Ganze Phrasen aus Partnername extrahieren
             if (!empty($partnername)) {
-                $words = preg_split('/\s+/', $partnername);
-                foreach ($words as $word) {
-                    $word = trim(strtolower($word));
-                    if (strlen($word) > 2 && !in_array($word, ['gmbh', 'ag', 'kg', 'ohg', 'e.v.', 'e.v', 'co', 'ltd', 'inc'])) {
-                        if (!isset($suggestions[$word])) {
-                            $suggestions[$word] = 0;
-                        }
-                        $suggestions[$word]++;
+                // Entferne häufige Firmenendungen und bereinige
+                $cleanPartnername = preg_replace('/\b(gmbh|ag|kg|ohg|e\.v\.|e\.v|co|ltd|inc)\b/i', '', $partnername);
+                $cleanPartnername = trim($cleanPartnername);
+                
+                if (strlen($cleanPartnername) > 3) {
+                    if (!isset($suggestions[$cleanPartnername])) {
+                        $suggestions[$cleanPartnername] = 0;
                     }
+                    $suggestions[$cleanPartnername]++;
                 }
             }
 
+            // Ganze Phrasen aus Referenz extrahieren
             if (!empty($reference)) {
-                $words = preg_split('/\s+/', $reference);
-                foreach ($words as $word) {
-                    $word = trim(strtolower($word));
-                    if (strlen($word) > 2 && !in_array($word, ['gmbh', 'ag', 'kg', 'ohg', 'e.v.', 'e.v', 'co', 'ltd', 'inc'])) {
-                        if (!isset($suggestions[$word])) {
-                            $suggestions[$word] = 0;
-                        }
-                        $suggestions[$word]++;
+                $cleanReference = trim($reference);
+                if (strlen($cleanReference) > 3) {
+                    if (!isset($suggestions[$cleanReference])) {
+                        $suggestions[$cleanReference] = 0;
                     }
+                    $suggestions[$cleanReference]++;
                 }
             }
         }
@@ -179,5 +178,37 @@ class AutoCategorizationService
         });
 
         return $matches;
+    }
+
+    /**
+     * Add keyword to category
+     */
+    public function addKeywordToCategory($categoryId, $keyword, $clientId = null)
+    {
+        $category = Category::find($categoryId);
+        
+        if (!$category) {
+            return ['success' => false, 'message' => 'Kategorie nicht gefunden'];
+        }
+
+        // Prüfe ob die Kategorie zum richtigen Client gehört
+        if ($clientId && $category->client_id != $clientId) {
+            return ['success' => false, 'message' => 'Keine Berechtigung für diese Kategorie'];
+        }
+
+        // Hole aktuelle Keywords
+        $currentKeywords = $category->keywords ?: '';
+        $keywordsArray = array_filter(array_map('trim', explode(',', $currentKeywords)));
+        
+        // Füge neues Keyword hinzu, falls es noch nicht existiert
+        if (!in_array($keyword, $keywordsArray)) {
+            $keywordsArray[] = $keyword;
+            $category->keywords = implode(', ', $keywordsArray);
+            $category->save();
+
+            return ['success' => true, 'message' => "Keyword '$keyword' wurde zur Kategorie '$category->name' hinzugefügt"];
+        } else {
+            return ['success' => false, 'message' => "Keyword '$keyword' existiert bereits in der Kategorie '$category->name'"];
+        }
     }
 } 

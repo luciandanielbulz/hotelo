@@ -719,13 +719,28 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    let suggestionsHtml = '<div class="p-4"><h3 class="text-lg font-medium mb-4">Keyword-Vorschläge für Kategorien</h3><div class="grid grid-cols-2 gap-4">';
+                    let suggestionsHtml = '<div class="p-4"><h3 class="text-lg font-medium mb-4">Keyword-Vorschläge für Kategorien</h3>';
+                    suggestionsHtml += '<p class="text-sm text-gray-600 mb-4">Klicken Sie auf ein Keyword, um es einer Kategorie hinzuzufügen:</p>';
+                    suggestionsHtml += '<div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-96 overflow-y-auto">';
                     
                     Object.entries(data.suggestions).forEach(([keyword, count]) => {
-                        suggestionsHtml += `<div class="bg-gray-50 p-3 rounded"><strong>${keyword}</strong> (${count}x)</div>`;
+                        suggestionsHtml += `
+                            <div class="bg-gray-50 p-3 rounded border hover:bg-gray-100 cursor-pointer" 
+                                 onclick="addKeywordToCategory('${keyword.replace(/'/g, "\\'")}')">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <strong class="text-blue-600">${keyword}</strong>
+                                        <span class="text-gray-500 text-sm">(${count}x)</span>
+                                    </div>
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        `;
                     });
                     
-                    suggestionsHtml += '</div><p class="mt-4 text-sm text-gray-600">Diese Keywords können in den Kategorie-Einstellungen verwendet werden.</p></div>';
+                    suggestionsHtml += '</div><p class="mt-4 text-sm text-gray-600">Klicken Sie auf ein Keyword, um es einer Kategorie hinzuzufügen.</p></div>';
                     
                     // Erstelle ein Modal für die Vorschläge
                     const modal = document.createElement('div');
@@ -754,6 +769,139 @@
                 console.error('Error:', error);
                 alert('Fehler beim Abrufen der Keyword-Vorschläge');
             });
+        }
+
+        function addKeywordToCategory(keyword) {
+            // Hole alle verfügbaren Kategorien
+            const categories = @json($categories);
+            
+            console.log('Available categories:', categories);
+            
+            if (!categories || categories.length === 0) {
+                alert('Keine Kategorien verfügbar');
+                return;
+            }
+
+            // Erstelle ein Modal für die Kategorieauswahl
+            let categoryOptions = '<option value="">Kategorie auswählen...</option>';
+            categories.forEach(category => {
+                categoryOptions += `<option value="${category.id}">${category.name} (${category.type === 'income' ? 'Einnahmen' : 'Ausgaben'})</option>`;
+            });
+
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50';
+            modal.innerHTML = `
+                <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                    <div class="mt-3">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Keyword zu Kategorie hinzufügen</h3>
+                        <p class="text-sm text-gray-600 mb-4">Keyword: <strong>${keyword}</strong></p>
+                        
+                        <div class="mb-4">
+                            <label for="categorySelect" class="block text-sm font-medium text-gray-700 mb-2">Kategorie auswählen:</label>
+                            <select id="categorySelect" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                ${categoryOptions}
+                            </select>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3">
+                            <button onclick="this.closest('.fixed').remove()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                                Abbrechen
+                            </button>
+                            <button onclick="confirmAddKeyword('${keyword.replace(/'/g, "\\'")}')" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                                Hinzufügen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            // Debug: Prüfe ob das Select-Element existiert
+            setTimeout(() => {
+                const selectElement = document.getElementById('categorySelect');
+                console.log('Select element found:', selectElement);
+                if (selectElement) {
+                    console.log('Select options:', selectElement.options.length);
+                    console.log('Current value:', selectElement.value);
+                    
+                    // Event-Listener für Änderungen hinzufügen
+                    selectElement.addEventListener('change', function() {
+                        console.log('Category selection changed to:', this.value);
+                    });
+                }
+            }, 100);
+        }
+
+        function confirmAddKeyword(keyword) {
+            // Warte kurz, um sicherzustellen, dass das Modal vollständig geladen ist
+            setTimeout(() => {
+                // Suche nach dem Select-Element im aktuellen Modal
+                const modals = document.querySelectorAll('.fixed');
+                let categorySelect = null;
+                
+                // Durchsuche alle Modals von hinten nach vorne (das neueste zuerst)
+                for (let i = modals.length - 1; i >= 0; i--) {
+                    const select = modals[i].querySelector('#categorySelect');
+                    if (select) {
+                        categorySelect = select;
+                        break;
+                    }
+                }
+                
+                console.log('Found modals:', modals.length);
+                console.log('Category select element:', categorySelect);
+                
+                if (!categorySelect) {
+                    // Fallback: Suche global nach dem Element
+                    categorySelect = document.getElementById('categorySelect');
+                    console.log('Fallback search result:', categorySelect);
+                }
+                
+                if (!categorySelect) {
+                    alert('Fehler: Kategorieauswahl nicht gefunden');
+                    return;
+                }
+                
+                const categoryId = categorySelect.value;
+                console.log('Selected category ID:', categoryId);
+                
+                if (!categoryId || categoryId === '') {
+                    alert('Bitte wählen Sie eine Kategorie aus');
+                    return;
+                }
+
+                console.log('Sending request with:', { category_id: categoryId, keyword: keyword });
+
+                fetch('/bankdata/add-keyword-to-category', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        category_id: parseInt(categoryId),
+                        keyword: keyword
+                    })
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response data:', data);
+                    if (data.success) {
+                        alert(data.message);
+                        // Schließe alle Modals
+                        document.querySelectorAll('.fixed').forEach(modal => modal.remove());
+                    } else {
+                        alert('Fehler: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Fehler beim Hinzufügen des Keywords');
+                });
+            }, 200); // Warte 200ms
         }
 
         function testCategorization(bankDataId) {
