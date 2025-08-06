@@ -303,6 +303,8 @@ class BankDataController extends Controller
         }
     }
 
+
+
     /**
      * Add keyword to category
      */
@@ -851,14 +853,138 @@ class BankDataController extends Controller
         // Lade die aktualisierte Kategorie
         $bankData->refresh();
 
-        return response()->json([
+        // Prüfe ob neue Keywords zur Kategorie hinzugefügt werden sollen
+        $suggestedKeywords = [];
+        
+        if ($bankData->category) {
+            $rawKeywords = $bankData->category->keywords;
+            $trimmedKeywords = trim($rawKeywords ?? '');
+            $existingKeywords = !empty($trimmedKeywords) ? array_map('trim', explode(',', $trimmedKeywords)) : [];
+            
+            // Intelligente Keywords-Generierung aus der aktuellen Transaktion
+            $transactionKeywords = [];
+            $partnername = trim($bankData->partnername);
+            $reference = trim($bankData->reference);
+            
+            // Filter für irrelevante Wörter
+            $irrelevantWords = [
+                'gmbh', 'ag', 'kg', 'ohg', 'e.v.', 'e.v', 'co', 'ltd', 'inc',
+                'sepa', 'lastschrift', 'überweisung', 'transfer', 'payment',
+                'konto', 'account', 'bank', 'iban', 'bic', 'swift',
+                'datum', 'date', 'betrag', 'amount', 'währung', 'currency',
+                'referenz', 'reference', 'buchungstext', 'description',
+                'von', 'from', 'an', 'to', 'für', 'for', 'mit', 'with',
+                'und', 'and', 'oder', 'or', 'der', 'die', 'das', 'the',
+                'eine', 'ein', 'a', 'an', 'ist', 'is', 'sind', 'are',
+                'wurde', 'was', 'wird', 'will', 'hat', 'has', 'haben', 'have'
+            ];
+            
+            // Funktion zum Extrahieren von Keywords
+            function extractKeywords($text, $irrelevantWords) {
+                $keywords = [];
+                
+                // Bereinige Text
+                $cleanText = preg_replace('/\b(' . implode('|', $irrelevantWords) . ')\b/i', '', $text);
+                $cleanText = preg_replace('/[^\w\s]/', ' ', $cleanText);
+                $cleanText = preg_replace('/\s+/', ' ', $cleanText);
+                $cleanText = trim($cleanText);
+                
+                if (empty($cleanText)) return $keywords;
+                
+                // Extrahiere einzelne Wörter
+                $words = explode(' ', $cleanText);
+                foreach ($words as $word) {
+                    $word = trim($word);
+                    if (strlen($word) > 2 && !in_array(strtolower($word), $irrelevantWords)) {
+                        // Filtere Zahlen und Wörter mit Zahlen heraus
+                        if (preg_match('/^[a-zA-ZäöüßÄÖÜ]+$/', $word) && strlen($word) >= 3 && !preg_match('/\d/', $word)) {
+                            $keywords[] = ucfirst(strtolower($word));
+                        }
+                    }
+                }
+                
+                // Extrahiere zusammengesetzte Begriffe (2-3 Wörter)
+                $wordCount = count($words);
+                for ($i = 0; $i < $wordCount - 1; $i++) {
+                    // 2-Wort-Kombinationen
+                    if ($i < $wordCount - 1) {
+                        $twoWords = trim($words[$i] . ' ' . $words[$i + 1]);
+                        if (strlen($twoWords) > 5 && !in_array(strtolower($twoWords), $irrelevantWords) && !preg_match('/\d/', $twoWords)) {
+                            $keywords[] = ucfirst(strtolower($twoWords));
+                        }
+                    }
+                    
+                    // 3-Wort-Kombinationen
+                    if ($i < $wordCount - 2) {
+                        $threeWords = trim($words[$i] . ' ' . $words[$i + 1] . ' ' . $words[$i + 2]);
+                        if (strlen($threeWords) > 8 && !in_array(strtolower($threeWords), $irrelevantWords) && !preg_match('/\d/', $threeWords)) {
+                            $keywords[] = ucfirst(strtolower($threeWords));
+                        }
+                    }
+                }
+                
+                return $keywords;
+            }
+            
+            // Extrahiere Keywords aus Partnername
+            if (!empty($partnername)) {
+                $partnernameKeywords = extractKeywords($partnername, $irrelevantWords);
+                $transactionKeywords = array_merge($transactionKeywords, $partnernameKeywords);
+            }
+            
+            // Extrahiere Keywords aus Referenz
+            if (!empty($reference)) {
+                $referenceKeywords = extractKeywords($reference, $irrelevantWords);
+                $transactionKeywords = array_merge($transactionKeywords, $referenceKeywords);
+            }
+            
+            // Entferne Duplikate und sortiere
+            $transactionKeywords = array_unique($transactionKeywords);
+            sort($transactionKeywords);
+            
+            // Prüfe welche Keywords noch nicht in der Kategorie vorhanden sind
+            $newKeywords = array_diff($transactionKeywords, $existingKeywords);
+            $suggestedKeywords = array_values($newKeywords); // Konvertiere zu indiziertem Array
+            
+            // Kategorisiere Keywords nach Typ
+            $singleWords = [];
+            $compoundPhrases = [];
+            
+            foreach ($transactionKeywords as $keyword) {
+                if (strpos($keyword, ' ') !== false) {
+                    $compoundPhrases[] = $keyword;
+                } else {
+                    $singleWords[] = $keyword;
+                }
+            }
+            
+            \Log::info('Advanced keywords analysis', [
+                'category_id' => $bankData->category->id,
+                'category_name' => $bankData->category->name,
+                'original_partnername' => $partnername,
+                'original_reference' => $reference,
+                'existing_keywords' => $existingKeywords,
+                'all_extracted_keywords' => $transactionKeywords,
+                'single_words' => $singleWords,
+                'compound_phrases' => $compoundPhrases,
+                'new_keywords' => $suggestedKeywords,
+                'irrelevant_words_filtered' => count($irrelevantWords)
+            ]);
+        }
+
+        $responseData = [
             'success' => true,
             'message' => 'Kategorie erfolgreich aktualisiert.',
             'category' => $bankData->category ? [
                 'name' => $bankData->category->name,
-                'color' => $bankData->category->color
+                'color' => $bankData->category->color,
+                'suggested_keywords' => $suggestedKeywords
             ] : null
-        ]);
+        ];
+        
+        \Log::info('Category update response', $responseData);
+        
+        return response()->json($responseData);
     }
 
     // Zeigt das Bearbeitungsformular

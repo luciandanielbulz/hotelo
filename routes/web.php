@@ -105,6 +105,8 @@ Route::middleware(['auth','verified'])->group(function(){
         ->name('bankdata.add-keyword-to-category')
         ->middleware('permission:view_sales_analysis');
 
+
+
     Route::get('/bankdata/{bankData}/test-categorization', [BankDataController::class, 'testCategorization'])
         ->name('bankdata.test-categorization')
         ->middleware('permission:view_sales_analysis');

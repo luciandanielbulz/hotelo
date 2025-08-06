@@ -24,6 +24,7 @@
                     </svg>
                     Keyword-Vorschläge
                 </button>
+
                 <a href="{{ route('bankdata.upload.form') }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
@@ -557,9 +558,19 @@
                  })
                  .then(data => {
                      console.log('Response data:', data);
+                     
                      if (data.success) {
-                         // Seite neu laden um die Änderungen anzuzeigen
-                         window.location.reload();
+                         // Prüfe ob neue Keywords vorgeschlagen werden
+                         if (data.category && data.category.suggested_keywords && data.category.suggested_keywords.length > 0) {
+                             console.log('Suggested keywords found:', data.category.suggested_keywords);
+                             
+                             // Erweitertes Modal für Keywords-Verwaltung
+                             showAdvancedKeywordModal(data.category.name, data.category.suggested_keywords, categoryId);
+                         } else {
+                             console.log('No new keywords suggested, reloading page');
+                             // Seite neu laden um die Änderungen anzuzeigen
+                             window.location.reload();
+                         }
                      } else {
                          alert('Fehler beim Aktualisieren der Kategorie: ' + (data.error || 'Unbekannter Fehler'));
                      }
@@ -569,6 +580,8 @@
                      alert('Fehler beim Aktualisieren der Kategorie: ' + error.message);
                  });
              });
+
+
 
              // Modal schließen wenn außerhalb geklickt wird
              document.getElementById('categoryModal').addEventListener('click', function(e) {
@@ -834,6 +847,164 @@
                     });
                 }
             }, 100);
+        }
+
+
+
+                     function showAdvancedKeywordModal(categoryName, suggestedKeywords, categoryId) {
+                 // Erstelle erweitertes Modal mit Checkboxen für jedes Keyword
+                 let keywordCheckboxes = '';
+                 suggestedKeywords.forEach((keyword, index) => {
+                     keywordCheckboxes += `
+                         <div class="flex items-center space-x-3 p-2 border rounded hover:bg-gray-50">
+                             <input type="checkbox" 
+                                    id="keyword_${index}" 
+                                    value="${keyword}" 
+                                    class="keyword-checkbox h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                             <label for="keyword_${index}" class="text-sm font-medium text-gray-700">
+                                 ${keyword}
+                             </label>
+                         </div>
+                     `;
+                 });
+
+                 const modal = document.createElement('div');
+                 modal.className = 'fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50';
+                 modal.innerHTML = `
+                     <div class="relative top-10 mx-auto p-6 border w-96 shadow-lg rounded-md bg-white">
+                         <div class="mt-3">
+                             <div class="flex justify-between items-center mb-4">
+                                 <h3 class="text-lg font-medium text-gray-900">Keywords verwalten</h3>
+                                 <button onclick="this.closest('.fixed').remove()" class="text-gray-400 hover:text-gray-600">
+                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                     </svg>
+                                 </button>
+                             </div>
+                             
+                             <p class="text-sm text-gray-600 mb-4">
+                                 Kategorie: <strong>${categoryName}</strong>
+                             </p>
+                             
+                             <div class="mb-4">
+                                 <label class="block text-sm font-medium text-gray-700 mb-2">
+                                     Vorgeschlagene Keywords (auswählen):
+                                 </label>
+                                 <div class="max-h-48 overflow-y-auto border rounded p-2">
+                                     ${keywordCheckboxes}
+                                 </div>
+                             </div>
+                             
+                             <div class="mb-4">
+                                 <label class="block text-sm font-medium text-gray-700 mb-2">
+                                     Zusätzliche Keywords:
+                                 </label>
+                                 <textarea id="additionalKeywords" 
+                                           rows="3" 
+                                           class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                           placeholder="Weitere Keywords eingeben (kommagetrennt)"></textarea>
+                             </div>
+                             
+                             <div class="flex justify-between items-center">
+                                 <div class="flex space-x-2">
+                                     <button onclick="selectAllKeywords()" class="text-sm text-blue-600 hover:text-blue-800">
+                                         Alle auswählen
+                                     </button>
+                                     <button onclick="deselectAllKeywords()" class="text-sm text-blue-600 hover:text-blue-800">
+                                         Alle abwählen
+                                     </button>
+                                 </div>
+                                 <div class="flex space-x-3">
+                                     <button onclick="this.closest('.fixed').remove(); window.location.reload();" 
+                                             class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                                         Abbrechen
+                                     </button>
+                                     <button onclick="confirmAdvancedKeywords('${categoryName}', ${categoryId})" 
+                                             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                                         Hinzufügen
+                                     </button>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                 `;
+                 document.body.appendChild(modal);
+             }
+
+             function selectAllKeywords() {
+                 document.querySelectorAll('.keyword-checkbox').forEach(checkbox => {
+                     checkbox.checked = true;
+                 });
+             }
+
+             function deselectAllKeywords() {
+                 document.querySelectorAll('.keyword-checkbox').forEach(checkbox => {
+                     checkbox.checked = false;
+                 });
+             }
+
+             function confirmAdvancedKeywords(categoryName, categoryId) {
+                 // Sammle ausgewählte Keywords
+                 const selectedKeywords = [];
+                 document.querySelectorAll('.keyword-checkbox:checked').forEach(checkbox => {
+                     selectedKeywords.push(checkbox.value);
+                 });
+                 
+                 // Sammle zusätzliche Keywords
+                 const additionalKeywordsText = document.getElementById('additionalKeywords').value.trim();
+                 if (additionalKeywordsText) {
+                     const additionalKeywords = additionalKeywordsText.split(',').map(k => k.trim()).filter(k => k.length > 0);
+                     selectedKeywords.push(...additionalKeywords);
+                 }
+                 
+                 if (selectedKeywords.length === 0) {
+                     alert('Bitte wählen Sie mindestens ein Keyword aus oder geben Sie zusätzliche Keywords ein.');
+                     return;
+                 }
+                 
+                 // Entferne Duplikate
+                 const uniqueKeywords = [...new Set(selectedKeywords)];
+                 
+                 // Füge Keywords hinzu
+                 addKeywordsToCategory(categoryName, uniqueKeywords, categoryId);
+                 
+                 // Schließe Modal
+                 document.querySelectorAll('.fixed').forEach(modal => modal.remove());
+             }
+
+             function addKeywordsToCategory(categoryName, keywords, categoryId) {
+            // Füge alle Keywords zur Kategorie hinzu
+            Promise.all(keywords.map(keyword => 
+                fetch('/bankdata/add-keyword-to-category', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        category_id: parseInt(categoryId),
+                        keyword: keyword
+                    })
+                }).then(response => response.json())
+            ))
+            .then(results => {
+                const successCount = results.filter(result => result.success).length;
+                const totalCount = keywords.length;
+                
+                if (successCount === totalCount) {
+                    alert(`Alle ${totalCount} Keywords wurden erfolgreich zur Kategorie "${categoryName}" hinzugefügt.`);
+                } else {
+                    alert(`${successCount} von ${totalCount} Keywords wurden hinzugefügt.`);
+                }
+                
+                // Seite neu laden
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error adding keywords:', error);
+                alert('Fehler beim Hinzufügen der Keywords. Die Seite wird neu geladen.');
+                window.location.reload();
+            });
         }
 
         function confirmAddKeyword(keyword) {
