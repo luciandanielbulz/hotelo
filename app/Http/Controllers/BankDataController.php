@@ -100,8 +100,8 @@ class BankDataController extends Controller
             }
         }
 
-        // Kategorien für Filter laden
-        $categories = Category::active()->forClient($clientId)->get();
+        // Kategorien für Filter laden (alphabetisch sortiert)
+        $categories = Category::active()->forClient($clientId)->orderBy('name', 'asc')->get();
         $filteredCategories = $categories;
         $incomeCategories = $categories->where('type', 'income')->values();
         $expenseCategories = $categories->where('type', 'expense')->values();

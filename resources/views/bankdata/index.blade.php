@@ -784,7 +784,11 @@
 
             // Erstelle ein Modal für die Kategorieauswahl
             let categoryOptions = '<option value="">Kategorie auswählen...</option>';
-            categories.forEach(category => {
+            
+            // Sortiere Kategorien alphabetisch nach Namen
+            const sortedCategories = [...categories].sort((a, b) => a.name.localeCompare(b.name, 'de'));
+            
+            sortedCategories.forEach(category => {
                 categoryOptions += `<option value="${category.id}">${category.name} (${category.type === 'income' ? 'Einnahmen' : 'Ausgaben'})</option>`;
             });
 
