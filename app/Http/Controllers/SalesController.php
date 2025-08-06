@@ -43,13 +43,13 @@ class SalesController extends Controller
                 ->selectRaw('categories.name AS Kategorie')
                 ->addSelect(DB::raw('SUM(invoicepositions.price * invoicepositions.amount) AS Umsatz'))
                 ->groupByRaw('categories.name')
-                ->orderByRaw('categories.name');
+                ->orderByRaw('categories.name DESC');
         } else {
             // Standard: Nach Jahr gruppieren
             $salespositions = $salespositions->selectRaw('YEAR(invoices.date) AS Jahr')
                 ->addSelect(DB::raw('SUM(invoicepositions.price * invoicepositions.amount) AS Umsatz'))
                 ->groupByRaw('YEAR(invoices.date)')
-                ->orderByRaw('YEAR(invoices.date)');
+                ->orderByRaw('YEAR(invoices.date) DESC');
         }
         
         $salespositions = $salespositions->get();
@@ -92,7 +92,7 @@ class SalesController extends Controller
                     END
                 ) AS Einnahmen
             ')->groupByRaw('categories.name')
-              ->orderByRaw('categories.name');
+              ->orderByRaw('categories.name DESC');
         } else {
             $categorizedIncomeQuery = $categorizedIncomeQuery->selectRaw('
                 YEAR(bankdata.date) AS Jahr,
@@ -105,7 +105,7 @@ class SalesController extends Controller
                     END
                 ) AS Einnahmen
             ')->groupByRaw('YEAR(bankdata.date)')
-              ->orderByRaw('YEAR(bankdata.date)');
+              ->orderByRaw('YEAR(bankdata.date) DESC');
         }
         
         $categorizedIncome = collect($categorizedIncomeQuery->get());
@@ -161,7 +161,7 @@ class SalesController extends Controller
                     END
                 ) AS Ausgaben
             ')->groupByRaw('YEAR(bankdata.date)')
-              ->orderByRaw('YEAR(bankdata.date)');
+              ->orderByRaw('YEAR(bankdata.date) DESC');
         }
         
         $expenses = collect($expensesQuery->get());
@@ -179,7 +179,7 @@ class SalesController extends Controller
         }
         
         $uncategorizedExpenses = collect($uncategorizedExpensesQuery->groupByRaw('YEAR(bankdata.date)')
-            ->orderByRaw('YEAR(bankdata.date)')
+            ->orderByRaw('YEAR(bankdata.date) DESC')
             ->get());
 
         // Einnahmen ohne Kategorie (Fallback für nicht kategorisierte Einnahmen)
@@ -195,7 +195,7 @@ class SalesController extends Controller
         }
         
         $uncategorizedIncome = collect($uncategorizedIncomeQuery->groupByRaw('YEAR(bankdata.date)')
-            ->orderByRaw('YEAR(bankdata.date)')
+            ->orderByRaw('YEAR(bankdata.date) DESC')
             ->get());
 
         // Detaillierte Aufschlüsselung nach Kategorien mit berechneten Beträgen
@@ -225,7 +225,7 @@ class SalesController extends Controller
         }
         
         $categoryBreakdown = collect($categoryBreakdownQuery->groupByRaw('YEAR(bankdata.date), categories.name, categories.percentage, categories.billing_duration_years, categories.type, bankdata.type')
-            ->orderByRaw('YEAR(bankdata.date) DESC, Betrag DESC')
+            ->orderByRaw('YEAR(bankdata.date) DESC, categories.name DESC, Betrag DESC')
             ->get());
 
         // Debug: Prüfe ob Daten vorhanden sind
