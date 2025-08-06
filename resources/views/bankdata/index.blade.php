@@ -285,7 +285,7 @@
 
                 @if($bankData->hasPages())
             <div class="mt-6">
-                {{ $bankData->appends(request()->query())->links() }}
+                <x-pagination :paginator="$bankData->appends(request()->query())" />
             </div>
         @endif
              </div>

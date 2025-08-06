@@ -258,7 +258,7 @@
     <!-- Pagination -->
     @if($customers->hasPages())
         <div class="mt-6">
-            {{ $customers->links() }}
+            <x-pagination :paginator="$customers" />
         </div>
     @endif
 </div> 

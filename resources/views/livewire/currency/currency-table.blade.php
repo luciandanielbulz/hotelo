@@ -107,7 +107,7 @@
         
         <!-- Paginierungslinks -->
         <div class="mt-4">
-            {{ $currencies->links() }}
+            <x-pagination :paginator="$currencies" />
         </div>
     @else
         <div class="text-center py-12">

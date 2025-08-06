@@ -776,7 +776,7 @@ class BankDataController extends Controller
     ]);
 
 
-    return redirect()->back()->with('success', 'JSON-Datei erfolgreich hochgeladen und importiert!');
+    return redirect()->route('bankdata.index')->with('success', 'JSON-Datei erfolgreich hochgeladen und importiert!');
 }
 
     // Kategorie für einen Bankdatensatz aktualisieren

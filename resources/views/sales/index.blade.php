@@ -50,9 +50,9 @@
                 <div>
                     <label for="grouping" class="block text-sm font-medium text-gray-700 mb-1">Gruppierung</label>
                     <select id="grouping" name="grouping" class="w-full rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <option value="year">Nach Jahr</option>
-                        <option value="month">Nach Monat</option>
-                        <option value="category">Nach Kategorie</option>
+                        <option value="year" {{ request('grouping', 'year') == 'year' ? 'selected' : '' }}>Nach Jahr</option>
+                        <option value="month" {{ request('grouping') == 'month' ? 'selected' : '' }}>Nach Monat</option>
+                        <option value="category" {{ request('grouping') == 'category' ? 'selected' : '' }}>Nach Kategorie</option>
                     </select>
                 </div>
 
@@ -68,217 +68,132 @@
             </form>
         </div>
 
-        @if($selectedYear)
-            <div class="mt-4 bg-blue-50 border border-blue-200 rounded-md p-4">
-                <div class="flex">
-                    <div class="flex-shrink-0">
-                        <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
-                    <div class="ml-3">
-                        <p class="text-sm font-medium text-blue-800">
-                            Bericht für das Jahr {{ $selectedYear }} wird angezeigt
-                        </p>
-                    </div>
-                </div>
-            </div>
-        @endif
-
-        <!-- Hauptübersicht - Wie die Summen zusammenkommen -->
-        <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
-            @php
-                $displayYear = $selectedYear ?: ($salespositions->first()->Jahr ?? 'N/A');
-                $categorizedIncomeItem = $categorizedIncome ? $categorizedIncome->firstWhere('Jahr', $displayYear) : null;
-                $categorizedExpense = $expenses->firstWhere('Jahr', $displayYear);
-                $categorizedProfit = ($categorizedIncomeItem->Einnahmen ?? 0) - ($categorizedExpense->Ausgaben ?? 0);
-                $totalRevenue = $salespositions->sum('Umsatz');
-            @endphp
-            
-            <div class="bg-white overflow-hidden shadow rounded-lg">
-                <div class="p-5">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
-                            </svg>
-                        </div>
-                        <div class="ml-5 w-0 flex-1">
-                            <dl>
-                                <dt class="text-sm font-medium text-gray-500 truncate">
-                                    @if($selectedYear)
-                                        Umsatz ({{ $selectedYear }})
-                                    @else
-                                        Gesamtumsatz
-                                    @endif
-                                </dt>
-                                <dd class="text-lg font-medium text-gray-900">{{ number_format($totalRevenue, 2, ',', '.') }} €</dd>
-                                <dd class="text-xs text-gray-500 mt-1">Aus Rechnungen berechnet</dd>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white overflow-hidden shadow rounded-lg">
-                <div class="p-5">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <svg class="h-6 w-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
-                            </svg>
-                        </div>
-                        <div class="ml-5 w-0 flex-1">
-                            <dl>
-                                <dt class="text-sm font-medium text-gray-500 truncate">
-                                    @if($selectedYear)
-                                        Einnahmen ({{ $selectedYear }})
-                                    @else
-                                        Einnahmen (Gesamt)
-                                    @endif
-                                </dt>
-                                <dd class="text-lg font-medium text-green-600">{{ number_format($categorizedIncomeItem->Einnahmen ?? 0, 2, ',', '.') }} €</dd>
-                                <dd class="text-xs text-gray-500 mt-1">Mit Kategorie-Prozentsätzen</dd>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white overflow-hidden shadow rounded-lg">
-                <div class="p-5">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <svg class="h-6 w-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
-                            </svg>
-                        </div>
-                        <div class="ml-5 w-0 flex-1">
-                            <dl>
-                                <dt class="text-sm font-medium text-gray-500 truncate">
-                                    @if($selectedYear)
-                                        Ausgaben ({{ $selectedYear }})
-                                    @else
-                                        Ausgaben (Gesamt)
-                                    @endif
-                                </dt>
-                                <dd class="text-lg font-medium text-red-600">{{ number_format($categorizedExpense->Ausgaben ?? 0, 2, ',', '.') }} €</dd>
-                                <dd class="text-xs text-gray-500 mt-1">Mit Kategorie-Prozentsätzen</dd>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white overflow-hidden shadow rounded-lg">
-                <div class="p-5">
-                    <div class="flex items-center">
-                        <div class="flex-shrink-0">
-                            <svg class="h-6 w-6 {{ $categorizedProfit >= 0 ? 'text-green-400' : 'text-red-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                            </svg>
-                        </div>
-                        <div class="ml-5 w-0 flex-1">
-                            <dl>
-                                <dt class="text-sm font-medium text-gray-500 truncate">
-                                    @if($selectedYear)
-                                        Gewinn ({{ $selectedYear }})
-                                    @else
-                                        Gewinn (Gesamt)
-                                    @endif
-                                </dt>
-                                <dd class="text-lg font-medium {{ $categorizedProfit >= 0 ? 'text-green-600' : 'text-red-600' }}">{{ number_format($categorizedProfit, 2, ',', '.') }} €</dd>
-                                <dd class="text-xs text-gray-500 mt-1">Einnahmen - Ausgaben</dd>
-                            </dl>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Detaillierte Aufschlüsselung - Wie die Summen berechnet werden -->
-        <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Einnahmen-Aufschlüsselung -->
-            <div class="bg-white shadow rounded-lg">
-                <div class="px-4 py-5 sm:p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Einnahmen-Aufschlüsselung</h3>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-                            <span class="text-sm font-medium text-gray-700">Kategorisierte Einnahmen:</span>
-                            <span class="text-sm font-semibold text-green-600">{{ number_format($categorizedIncomeItem->Einnahmen ?? 0, 2, ',', '.') }} €</span>
-                        </div>
-                        <div class="text-xs text-gray-500">
-                            <p><strong>Berechnung:</strong> Summe aller Einnahmen × (Kategorie-Prozentsatz / 100) ÷ Verrechnungsdauer</p>
-                            <p class="mt-1"><strong>Hinweis:</strong> Nur kategorisierte Einnahmen werden berücksichtigt</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Ausgaben-Aufschlüsselung -->
-            <div class="bg-white shadow rounded-lg">
-                <div class="px-4 py-5 sm:p-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-4">Ausgaben-Aufschlüsselung</h3>
-                    <div class="space-y-4">
-                        <div class="flex justify-between items-center p-3 bg-red-50 rounded-lg">
-                            <span class="text-sm font-medium text-gray-700">Kategorisierte Ausgaben:</span>
-                            <span class="text-sm font-semibold text-red-600">{{ number_format($categorizedExpense->Ausgaben ?? 0, 2, ',', '.') }} €</span>
-                        </div>
-                        <div class="text-xs text-gray-500">
-                            <p><strong>Berechnung:</strong> Summe aller Ausgaben × (Kategorie-Prozentsatz / 100) ÷ Verrechnungsdauer</p>
-                            <p class="mt-1"><strong>Hinweis:</strong> Nur kategorisierte Ausgaben werden berücksichtigt</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <!-- Jahresübersicht Tabelle -->
         <div class="mt-8 overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-300">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Jahr</th>
-                            <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Umsatz (Rechnungen)</th>
-                            <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Einnahmen (kategorisiert)</th>
-                            <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Ausgaben (kategorisiert)</th>
-                            <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Gewinn</th>
-                            <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900">Details</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200 bg-white">
-                        @foreach($salespositions as $salesposition)
-                            @php
-                                $categorizedExpense = $expenses->firstWhere('Jahr', $salesposition->Jahr);
-                                $categorizedIncomeItem = $categorizedIncome ? $categorizedIncome->firstWhere('Jahr', $salesposition->Jahr) : null;
-                                $categorizedProfit = ($categorizedIncomeItem->Einnahmen ?? 0) - ($categorizedExpense->Ausgaben ?? 0);
-                            @endphp
-                            <tr class="hover:bg-gray-50">
-                                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">{{ $salesposition->Jahr }}</td>
-                                <td class="whitespace-nowrap px-3 py-4 text-right text-sm text-gray-900">{{ number_format($salesposition->Umsatz, 2, ',', '.') }} €</td>
-                                <td class="whitespace-nowrap px-3 py-4 text-right text-sm text-green-600">{{ number_format($categorizedIncomeItem->Einnahmen ?? 0, 2, ',', '.') }} €</td>
-                                <td class="whitespace-nowrap px-3 py-4 text-right text-sm text-red-600">{{ number_format($categorizedExpense->Ausgaben ?? 0, 2, ',', '.') }} €</td>
-                                <td class="whitespace-nowrap px-3 py-4 text-right text-sm font-medium {{ $categorizedProfit >= 0 ? 'text-green-600' : 'text-red-600' }}">
-                                    {{ number_format($categorizedProfit, 2, ',', '.') }} €
-                                </td>
-                                <td class="whitespace-nowrap px-3 py-4 text-center text-sm">
-                                    <button onclick="showYearDetails({{ $salesposition->Jahr }})" class="text-indigo-600 hover:text-indigo-900 text-xs">
-                                        <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                                        </svg>
-                                        Details
-                                    </button>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <div class="px-4 py-5 sm:p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-medium text-gray-900">
+                        @if(request('grouping', 'year') == 'month')
+                            Monatsübersicht Tabelle
+                        @elseif(request('grouping') == 'category')
+                            Kategorieübersicht Tabelle
+                        @else
+                            Jahresübersicht Tabelle
+                        @endif
+                    </h3>
+                    <button onclick="toggleYearTable()" class="text-sm text-blue-600 hover:text-blue-800">
+                        <span id="yearTableToggleText">Tabelle ausblenden</span>
+                        <svg id="yearTableToggleIcon" class="inline ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform: rotate(180deg);">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div id="yearTableDetails">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-300">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    @if(request('grouping', 'year') == 'month')
+                                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Jahr</th>
+                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Monat</th>
+                                    @elseif(request('grouping') == 'category')
+                                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Kategorie</th>
+                                    @else
+                                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900">Jahr</th>
+                                    @endif
+                                    <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Umsatz (Rechnungen)</th>
+                                    <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Einnahmen (kategorisiert)</th>
+                                    <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Ausgaben (kategorisiert)</th>
+                                    <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Gewinn</th>
+                                    <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white">
+                                @foreach($salespositions as $salesposition)
+                                    @php
+                                        $grouping = request('grouping', 'year');
+                                        if ($grouping == 'month') {
+                                            $categorizedExpense = $expenses->firstWhere(function($item) use ($salesposition) {
+                                                return $item->Jahr == $salesposition->Jahr && $item->Monat == $salesposition->Monat;
+                                            });
+                                            $categorizedIncomeItem = $categorizedIncome ? $categorizedIncome->firstWhere(function($item) use ($salesposition) {
+                                                return $item->Jahr == $salesposition->Jahr && $item->Monat == $salesposition->Monat;
+                                            }) : null;
+                                        } elseif ($grouping == 'category') {
+                                            $categorizedExpense = $expenses->firstWhere('Kategorie', $salesposition->Kategorie);
+                                            $categorizedIncomeItem = $categorizedIncome ? $categorizedIncome->firstWhere('Kategorie', $salesposition->Kategorie) : null;
+                                        } else {
+                                            $categorizedExpense = $expenses->firstWhere('Jahr', $salesposition->Jahr);
+                                            $categorizedIncomeItem = $categorizedIncome ? $categorizedIncome->firstWhere('Jahr', $salesposition->Jahr) : null;
+                                        }
+                                        $categorizedProfit = ($categorizedIncomeItem->Einnahmen ?? 0) - ($categorizedExpense->Ausgaben ?? 0);
+                                    @endphp
+                                    <tr class="hover:bg-gray-50">
+                                        @if($grouping == 'month')
+                                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">{{ $salesposition->Jahr }}</td>
+                                            <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-900">{{ $salesposition->Monat }}</td>
+                                        @elseif($grouping == 'category')
+                                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">{{ $salesposition->Kategorie }}</td>
+                                        @else
+                                            <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900">{{ $salesposition->Jahr }}</td>
+                                        @endif
+                                        <td class="whitespace-nowrap px-3 py-4 text-right text-sm text-gray-900">{{ number_format($salesposition->Umsatz, 2, ',', '.') }} €</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-right text-sm text-green-600">{{ number_format($categorizedIncomeItem->Einnahmen ?? 0, 2, ',', '.') }} €</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-right text-sm text-red-600">{{ number_format($categorizedExpense->Ausgaben ?? 0, 2, ',', '.') }} €</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-right text-sm font-medium {{ $categorizedProfit >= 0 ? 'text-green-600' : 'text-red-600' }}">
+                                            {{ number_format($categorizedProfit, 2, ',', '.') }} €
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-center text-sm">
+                                            <button onclick="showYearDetails('{{ $grouping == 'month' ? $salesposition->Jahr . '-' . $salesposition->Monat : ($grouping == 'category' ? $salesposition->Kategorie : $salesposition->Jahr) }}')" class="text-indigo-600 hover:text-indigo-900 text-xs">
+                                                <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                </svg>
+                                                Details
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                
+                                <!-- Summenzeile -->
+                                @php
+                                    $totalRevenue = $salespositions->sum('Umsatz');
+                                    $totalIncome = $categorizedIncome ? $categorizedIncome->sum('Einnahmen') : 0;
+                                    $totalExpenses = $expenses->sum('Ausgaben');
+                                    $totalProfit = $totalIncome - $totalExpenses;
+                                @endphp
+                                <tr class="bg-gray-50 border-t-2 border-gray-300">
+                                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-bold text-gray-900">
+                                        @if($grouping == 'month')
+                                            Gesamt
+                                        @elseif($grouping == 'category')
+                                            Gesamt
+                                        @else
+                                            Gesamt
+                                        @endif
+                                    </td>
+                                    @if($grouping == 'month')
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm font-bold text-gray-900">-</td>
+                                    @elseif($grouping == 'category')
+                                        <!-- Keine zusätzliche Spalte für Kategorie -->
+                                    @endif
+                                    <td class="whitespace-nowrap px-3 py-4 text-right text-sm font-bold text-gray-900">{{ number_format($totalRevenue, 2, ',', '.') }} €</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-right text-sm font-bold text-green-600">{{ number_format($totalIncome, 2, ',', '.') }} €</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-right text-sm font-bold text-red-600">{{ number_format($totalExpenses, 2, ',', '.') }} €</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-right text-sm font-bold {{ $totalProfit >= 0 ? 'text-green-600' : 'text-red-600' }}">
+                                        {{ number_format($totalProfit, 2, ',', '.') }} €
+                                    </td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-center text-sm">
+                                        <!-- Leer für Summenzeile -->
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-
-
 
         <!-- Detaillierte Kategorie-Aufschlüsselung -->
         <div class="mt-8 overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
@@ -286,14 +201,14 @@
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-medium text-gray-900">Detaillierte Kategorie-Aufschlüsselung</h3>
                     <button onclick="toggleCategoryDetails()" class="text-sm text-blue-600 hover:text-blue-800">
-                        <span id="toggleText">Details anzeigen</span>
-                        <svg id="toggleIcon" class="inline ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <span id="toggleText">Details ausblenden</span>
+                        <svg id="toggleIcon" class="inline ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="transform: rotate(180deg);">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
                 </div>
                 
-                <div id="categoryDetails" class="hidden">
+                <div id="categoryDetails">
                     @if($categoryBreakdown && $categoryBreakdown->count() > 0)
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-300">
@@ -330,6 +245,23 @@
                                             </td>
                                         </tr>
                                     @endforeach
+                                    
+                                    <!-- Summenzeile für Kategorie-Aufschlüsselung -->
+                                    @php
+                                        $totalIncomeAmount = $categoryBreakdown ? $categoryBreakdown->where('Typ', 'income')->sum('Betrag') : 0;
+                                        $totalExpenseAmount = $categoryBreakdown ? $categoryBreakdown->where('Typ', 'expense')->sum('Betrag') : 0;
+                                        $totalNetAmount = $totalIncomeAmount - $totalExpenseAmount;
+                                    @endphp
+                                    <tr class="bg-gray-50 border-t-2 border-gray-300">
+                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-bold text-gray-900">Gesamt</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm font-bold text-gray-900">-</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-center text-sm font-bold text-gray-900">-</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-right text-sm font-bold text-gray-900">-</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-right text-sm font-bold text-gray-900">-</td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-right text-sm font-bold {{ $totalNetAmount >= 0 ? 'text-green-600' : 'text-red-600' }}">
+                                            {{ number_format($totalNetAmount, 2, ',', '.') }} €
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -408,6 +340,26 @@
                 }
             } else {
                 console.error('categoryDetails Element nicht gefunden');
+            }
+        }
+
+        function toggleYearTable() {
+            const yearTableDetails = document.getElementById('yearTableDetails');
+            const yearTableToggleText = document.getElementById('yearTableToggleText');
+            const yearTableToggleIcon = document.getElementById('yearTableToggleIcon');
+
+            if (yearTableDetails) {
+                if (yearTableDetails.classList.contains('hidden')) {
+                    yearTableDetails.classList.remove('hidden');
+                    yearTableToggleText.textContent = 'Tabelle ausblenden';
+                    yearTableToggleIcon.style.transform = 'rotate(180deg)';
+                } else {
+                    yearTableDetails.classList.add('hidden');
+                    yearTableToggleText.textContent = 'Tabelle anzeigen';
+                    yearTableToggleIcon.style.transform = 'rotate(0deg)';
+                }
+            } else {
+                console.error('yearTableDetails Element nicht gefunden');
             }
         }
 
@@ -499,6 +451,26 @@
                 details.classList.add('hidden');
                 toggleText.textContent = 'Details anzeigen';
                 toggleIcon.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        function toggleYearTable() {
+            const yearTableDetails = document.getElementById('yearTableDetails');
+            const yearTableToggleText = document.getElementById('yearTableToggleText');
+            const yearTableToggleIcon = document.getElementById('yearTableToggleIcon');
+            
+            if (yearTableDetails) {
+                if (yearTableDetails.classList.contains('hidden')) {
+                    yearTableDetails.classList.remove('hidden');
+                    yearTableToggleText.textContent = 'Tabelle ausblenden';
+                    yearTableToggleIcon.style.transform = 'rotate(180deg)';
+                } else {
+                    yearTableDetails.classList.add('hidden');
+                    yearTableToggleText.textContent = 'Tabelle anzeigen';
+                    yearTableToggleIcon.style.transform = 'rotate(0deg)';
+                }
+            } else {
+                console.error('yearTableDetails Element nicht gefunden');
             }
         }
     </script>

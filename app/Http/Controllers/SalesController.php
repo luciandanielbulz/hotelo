@@ -19,6 +19,7 @@ class SalesController extends Controller
     {
         $currentClientId = auth()->user()->client_id;
         $selectedYear = $request->get('year', null);
+        $grouping = $request->get('grouping', 'year'); // Gruppierung-Parameter hinzufügen
 
         // Umsätze
         $salespositions = Invoice::join('invoicepositions', 'invoices.Id', '=', 'invoicepositions.invoice_id')
@@ -30,16 +31,70 @@ class SalesController extends Controller
             $salespositions = $salespositions->whereRaw('YEAR(invoices.date) = ?', [$selectedYear]);
         }
         
-        $salespositions = $salespositions->selectRaw('YEAR(invoices.date) AS Jahr')
-            ->addSelect(DB::raw('SUM(invoicepositions.price * invoicepositions.amount) AS Umsatz'))
-            ->groupByRaw('YEAR(invoices.date)')
-            ->orderByRaw('YEAR(invoices.date)')
-            ->get();
+        // Gruppierung für Umsätze anpassen
+        if ($grouping === 'month') {
+            $salespositions = $salespositions->selectRaw('YEAR(invoices.date) AS Jahr, MONTH(invoices.date) AS Monat')
+                ->addSelect(DB::raw('SUM(invoicepositions.price * invoicepositions.amount) AS Umsatz'))
+                ->groupByRaw('YEAR(invoices.date), MONTH(invoices.date)')
+                ->orderByRaw('YEAR(invoices.date), MONTH(invoices.date)');
+        } elseif ($grouping === 'category') {
+            // Für Kategorie-Gruppierung brauchen wir eine andere Abfrage
+            $salespositions = $salespositions->join('categories', 'invoicepositions.category_id', '=', 'categories.id')
+                ->selectRaw('categories.name AS Kategorie')
+                ->addSelect(DB::raw('SUM(invoicepositions.price * invoicepositions.amount) AS Umsatz'))
+                ->groupByRaw('categories.name')
+                ->orderByRaw('categories.name');
+        } else {
+            // Standard: Nach Jahr gruppieren
+            $salespositions = $salespositions->selectRaw('YEAR(invoices.date) AS Jahr')
+                ->addSelect(DB::raw('SUM(invoicepositions.price * invoicepositions.amount) AS Umsatz'))
+                ->groupByRaw('YEAR(invoices.date)')
+                ->orderByRaw('YEAR(invoices.date)');
+        }
+        
+        $salespositions = $salespositions->get();
 
         // Kategorisierte Einnahmen
         $categorizedIncomeQuery = DB::table('bankdata')
             ->join('categories', 'bankdata.category_id', '=', 'categories.id')
-            ->selectRaw('
+            ->where('bankdata.client_id', '=', $currentClientId)
+            ->where('bankdata.type', '=', 'income')
+            ->where('categories.is_active', '=', 1);
+        
+        if ($selectedYear) {
+            $categorizedIncomeQuery = $categorizedIncomeQuery->whereRaw('YEAR(bankdata.date) = ?', [$selectedYear]);
+        }
+        
+        // Gruppierung für Einnahmen anpassen
+        if ($grouping === 'month') {
+            $categorizedIncomeQuery = $categorizedIncomeQuery->selectRaw('
+                YEAR(bankdata.date) AS Jahr,
+                MONTH(bankdata.date) AS Monat,
+                SUM(
+                    CASE 
+                        WHEN categories.billing_duration_years > 0 THEN 
+                            ABS(bankdata.amount) * (categories.percentage / 100) / categories.billing_duration_years
+                        ELSE 
+                            ABS(bankdata.amount) * (categories.percentage / 100)
+                    END
+                ) AS Einnahmen
+            ')->groupByRaw('YEAR(bankdata.date), MONTH(bankdata.date)')
+              ->orderByRaw('YEAR(bankdata.date), MONTH(bankdata.date)');
+        } elseif ($grouping === 'category') {
+            $categorizedIncomeQuery = $categorizedIncomeQuery->selectRaw('
+                categories.name AS Kategorie,
+                SUM(
+                    CASE 
+                        WHEN categories.billing_duration_years > 0 THEN 
+                            ABS(bankdata.amount) * (categories.percentage / 100) / categories.billing_duration_years
+                        ELSE 
+                            ABS(bankdata.amount) * (categories.percentage / 100)
+                    END
+                ) AS Einnahmen
+            ')->groupByRaw('categories.name')
+              ->orderByRaw('categories.name');
+        } else {
+            $categorizedIncomeQuery = $categorizedIncomeQuery->selectRaw('
                 YEAR(bankdata.date) AS Jahr,
                 SUM(
                     CASE 
@@ -49,23 +104,53 @@ class SalesController extends Controller
                             ABS(bankdata.amount) * (categories.percentage / 100)
                     END
                 ) AS Einnahmen
-            ')
-            ->where('bankdata.client_id', '=', $currentClientId)
-            ->where('bankdata.type', '=', 'income')
-            ->where('categories.is_active', '=', 1);
-        
-        if ($selectedYear) {
-            $categorizedIncomeQuery = $categorizedIncomeQuery->whereRaw('YEAR(bankdata.date) = ?', [$selectedYear]);
+            ')->groupByRaw('YEAR(bankdata.date)')
+              ->orderByRaw('YEAR(bankdata.date)');
         }
         
-        $categorizedIncome = collect($categorizedIncomeQuery->groupByRaw('YEAR(bankdata.date)')
-            ->orderByRaw('YEAR(bankdata.date)')
-            ->get());
+        $categorizedIncome = collect($categorizedIncomeQuery->get());
 
         // Ausgaben mit Kategorie-Berücksichtigung und Verrechnungsdauer
         $expensesQuery = DB::table('bankdata')
             ->join('categories', 'bankdata.category_id', '=', 'categories.id')
-            ->selectRaw('
+            ->where('bankdata.client_id', '=', $currentClientId)
+            ->where('bankdata.type', '=', 'expense')
+            ->where('categories.is_active', '=', 1);
+        
+        if ($selectedYear) {
+            $expensesQuery = $expensesQuery->whereRaw('YEAR(bankdata.date) = ?', [$selectedYear]);
+        }
+        
+        // Gruppierung für Ausgaben anpassen
+        if ($grouping === 'month') {
+            $expensesQuery = $expensesQuery->selectRaw('
+                YEAR(bankdata.date) AS Jahr,
+                MONTH(bankdata.date) AS Monat,
+                SUM(
+                    CASE 
+                        WHEN categories.billing_duration_years > 0 THEN 
+                            ABS(bankdata.amount) * (categories.percentage / 100) / categories.billing_duration_years
+                        ELSE 
+                            ABS(bankdata.amount) * (categories.percentage / 100)
+                    END
+                ) AS Ausgaben
+            ')->groupByRaw('YEAR(bankdata.date), MONTH(bankdata.date)')
+              ->orderByRaw('YEAR(bankdata.date), MONTH(bankdata.date)');
+        } elseif ($grouping === 'category') {
+            $expensesQuery = $expensesQuery->selectRaw('
+                categories.name AS Kategorie,
+                SUM(
+                    CASE 
+                        WHEN categories.billing_duration_years > 0 THEN 
+                            ABS(bankdata.amount) * (categories.percentage / 100) / categories.billing_duration_years
+                        ELSE 
+                            ABS(bankdata.amount) * (categories.percentage / 100)
+                    END
+                ) AS Ausgaben
+            ')->groupByRaw('categories.name')
+              ->orderByRaw('categories.name');
+        } else {
+            $expensesQuery = $expensesQuery->selectRaw('
                 YEAR(bankdata.date) AS Jahr,
                 SUM(
                     CASE 
@@ -75,18 +160,11 @@ class SalesController extends Controller
                             ABS(bankdata.amount) * (categories.percentage / 100)
                     END
                 ) AS Ausgaben
-            ')
-            ->where('bankdata.client_id', '=', $currentClientId)
-            ->where('bankdata.type', '=', 'expense')
-            ->where('categories.is_active', '=', 1);
-        
-        if ($selectedYear) {
-            $expensesQuery = $expensesQuery->whereRaw('YEAR(bankdata.date) = ?', [$selectedYear]);
+            ')->groupByRaw('YEAR(bankdata.date)')
+              ->orderByRaw('YEAR(bankdata.date)');
         }
         
-        $expenses = collect($expensesQuery->groupByRaw('YEAR(bankdata.date)')
-            ->orderByRaw('YEAR(bankdata.date)')
-            ->get());
+        $expenses = collect($expensesQuery->get());
 
         // Ausgaben ohne Kategorie (Fallback für nicht kategorisierte Ausgaben)
         $uncategorizedExpensesQuery = DB::table('bankdata')

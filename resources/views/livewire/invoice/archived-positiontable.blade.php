@@ -251,7 +251,7 @@
     <!-- Pagination -->
     @if($invoices->hasPages())
         <div class="mt-6">
-            {{ $invoices->links() }}
+            <x-pagination :paginator="$invoices" />
         </div>
     @endif
 </div> 

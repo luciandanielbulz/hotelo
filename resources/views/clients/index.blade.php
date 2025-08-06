@@ -77,7 +77,7 @@
         </div>
     </div>
     <div class="mt-4">
-        {{ $clients->links() }}
+        <x-pagination :paginator="$clients" />
     </div>
 
 </x-layout>

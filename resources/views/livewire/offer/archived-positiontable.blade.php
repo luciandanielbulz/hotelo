@@ -251,7 +251,7 @@
     <!-- Pagination -->
     @if($offers->hasPages())
         <div class="mt-6">
-            {{ $offers->links() }}
+            <x-pagination :paginator="$offers" />
         </div>
     @endif
 </div> 

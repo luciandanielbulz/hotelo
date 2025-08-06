@@ -277,11 +277,11 @@
         </div>
     @endif
     
-    <!-- Pagination -->
+        <!-- Pagination -->
     @if($invoices->hasPages())
         <div class="mt-6">
-    {{ $invoices->links() }}
-</div>
+            <x-pagination :paginator="$invoices" />
+        </div>
     @endif
 </div>
 

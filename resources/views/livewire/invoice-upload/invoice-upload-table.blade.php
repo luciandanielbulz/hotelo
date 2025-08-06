@@ -195,7 +195,7 @@
         
         @if(!$invoiceuploads->isEmpty())
             <div class="mt-4">
-                {{ $invoiceuploads->links() }}
+                <x-pagination :paginator="$invoiceuploads" />
             </div>
         @endif
     </div>
