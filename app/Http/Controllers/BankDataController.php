@@ -89,8 +89,15 @@ class BankDataController extends Controller
         // Kategorie-Filter anwenden
         if ($request->filled('category') && $request->get('category') !== 'all') {
             $categoryId = $request->get('category');
-            $query->where('category_id', $categoryId);
-            Log::info('Applied category filter', ['category_id' => $categoryId]);
+            if ($categoryId === 'none') {
+                // Filter für Transaktionen ohne Kategorie
+                $query->whereNull('category_id');
+                Log::info('Applied category filter', ['category_id' => 'none (null)']);
+            } else {
+                // Filter für spezifische Kategorie
+                $query->where('category_id', $categoryId);
+                Log::info('Applied category filter', ['category_id' => $categoryId]);
+            }
         }
 
         // Kategorien für Filter laden
@@ -203,7 +210,13 @@ class BankDataController extends Controller
         
         if ($request->filled('category') && $request->get('category') !== 'all') {
             $categoryId = $request->get('category');
-            $yearlyStatsQuery->where('category_id', $categoryId);
+            if ($categoryId === 'none') {
+                // Filter für Transaktionen ohne Kategorie
+                $yearlyStatsQuery->whereNull('category_id');
+            } else {
+                // Filter für spezifische Kategorie
+                $yearlyStatsQuery->where('category_id', $categoryId);
+            }
         }
         
         $yearlyStats = $yearlyStatsQuery

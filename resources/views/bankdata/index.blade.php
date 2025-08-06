@@ -81,6 +81,7 @@
                     <label for="category_filter" class="text-sm font-medium text-gray-700">Kategorie:</label>
                     <select id="category_filter" name="category" class="rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <option value="all" {{ request('category') == 'all' ? 'selected' : '' }}>Alle Kategorien</option>
+                        <option value="none" {{ request('category') == 'none' ? 'selected' : '' }}>Ohne Kategorie</option>
                         @foreach($filteredCategories as $category)
                             <option value="{{ $category->id }}" {{ request('category') == $category->id ? 'selected' : '' }}>
                                 {{ $category->name }} ({{ $category->type === 'income' ? 'Einnahmen' : 'Ausgaben' }})
