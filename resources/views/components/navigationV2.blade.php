@@ -13,7 +13,7 @@
 class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
     
     <!-- Hauptnavigationsmenü -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 2xl:max-w-screen-2xl">
         <div class="flex justify-between h-16">
             <div class="flex items-center">
                 <!-- Logo mit modernem Effekt -->
@@ -33,17 +33,7 @@ class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
 
                 <!-- Desktop Navigationslinks -->
                 <div class="hidden lg:ml-10 lg:flex lg:space-x-2">
-                    <!-- Dashboard -->
-                    <a href="{{ route('dashboard') }}" 
-                       class="group relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:bg-white/30 hover:backdrop-blur-sm {{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-blue-50 to-purple-50 text-blue-700 shadow-sm border border-white/40' : 'text-gray-700 hover:text-gray-900' }}">
-                        <div class="flex items-center space-x-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z" />
-                            </svg>
-                            <span>Dashboard</span>
-                        </div>
-                    </a>
+
 
                     <!-- Kunden -->
                     @if(auth()->user()->hasPermission('view_customers'))
@@ -451,8 +441,8 @@ class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
             </div>
 
             <div class="flex items-center space-x-4">
-                <!-- Version Badge -->
-                <div class="hidden lg:flex items-center px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full border border-white/30">
+                <!-- Version Badge - ausgeblendet bei kleineren Bildschirmen -->
+                <div class="hidden xl:flex items-center px-3 py-1 bg-white/20 backdrop-blur-sm rounded-full border border-white/30">
                     <span class="text-xs font-medium text-gray-600">V{{ app(\App\Services\VersionService::class)->getCurrentVersion() }}</span>
                 </div>
 
@@ -463,11 +453,11 @@ class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
                         <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
                             <span class="text-white text-sm font-medium">{{ substr(auth()->user()->name, 0, 1) }}</span>
                         </div>
-                        <div class="hidden lg:flex flex-col items-start">
+                        <div class="hidden xl:flex flex-col items-start">
                             <span class="text-sm font-medium text-gray-700">{{ auth()->user()->name }}</span>
                             <span class="text-xs text-gray-500">{{ auth()->user()->email }}</span>
                         </div>
-                        <svg class="w-4 h-4 text-gray-500 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4 text-gray-500 transition-transform duration-200 hidden xl:block" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
@@ -559,16 +549,7 @@ class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
          class="lg:hidden bg-white/95 backdrop-blur-lg border-t border-white/20"
          style="display: none;">
         <div class="px-4 py-6 space-y-3">
-            <!-- Mobile Dashboard -->
-            <a href="{{ route('dashboard') }}" 
-               class="block px-4 py-3 rounded-xl text-gray-700 hover:bg-blue-50/50 hover:text-blue-700 transition-all duration-200 {{ request()->routeIs('dashboard') ? 'bg-blue-50/50 text-blue-700' : '' }}">
-                <div class="flex items-center space-x-3">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
-                    </svg>
-                    <span class="font-medium">Dashboard</span>
-                </div>
-            </a>
+
 
             <!-- Mobile Kunden -->
             @if(auth()->user()->hasPermission('view_customers'))

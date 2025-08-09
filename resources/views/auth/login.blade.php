@@ -81,8 +81,8 @@
                                 <div class="text-indigo-200 text-sm">Zeitersparnis</div>
                             </div>
                             <div>
-                                <div class="text-2xl font-bold text-white">10k+</div>
-                                <div class="text-indigo-200 text-sm">Zufriedene Kunden</div>
+                                <div class="text-2xl font-bold text-white">100%</div>
+                                <div class="text-indigo-200 text-sm">Kleinunternehmer-fokussiert</div>
                             </div>
                             <div>
                                 <div class="text-2xl font-bold text-white">24/7</div>

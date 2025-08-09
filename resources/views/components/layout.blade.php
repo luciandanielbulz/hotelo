@@ -43,12 +43,12 @@
 <body>
 
     <main>
-        <div class="container mx-auto sm:px-6 lg:px-8">
+        <div class="w-full mx-auto sm:px-6 lg:px-8">
             <!-- Linke Spalte: Überschrift -->
 
             @include('components.navigationV2')
 
-            <div class="py-4">
+            <div class="py-4 max-w-7xl mx-auto">
                 {{ $slot }}
 
 
