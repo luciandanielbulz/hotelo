@@ -1,33 +1,62 @@
 <x-layout>
-    <!-- Moderner Header -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-        <div>
+    <!-- Optimierter Header -->
+    <div class="mb-6">
+        <!-- Mobile Header - zentriert -->
+        <div class="md:hidden text-center mb-4">
             <h1 class="text-2xl font-bold text-gray-900">Rechnung bearbeiten</h1>
-            <p class="text-gray-600">Rechnung #{{ $invoice->number }} vom {{ \Carbon\Carbon::parse($invoice->date)->translatedFormat('d.m.Y') }}</p>
+            <p class="text-gray-600 mt-1">Rechnung #{{ $invoice->number }} vom {{ \Carbon\Carbon::parse($invoice->date)->translatedFormat('d.m.Y') }}</p>
         </div>
-        <div class="mt-4 md:mt-0 flex space-x-3">
-            <a href="{{ route('invoice.index') }}" 
-               class="inline-flex items-center px-4 py-2 bg-white/70 backdrop-blur-sm text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-white/90 transition-all duration-300 shadow-sm hover:shadow-md">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m0 7h18"/>
-                </svg>
-                Zurück zur Übersicht
-            </a>
-            <button onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->id]) }}', '_blank')"
-                    class="inline-flex items-center px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                </svg>
-                Vorschau
-            </button>
+        
+        <!-- Desktop Header - mit Buttons -->
+        <div class="hidden md:flex md:items-center md:justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Rechnung bearbeiten</h1>
+                <p class="text-gray-600">Rechnung #{{ $invoice->number }} vom {{ \Carbon\Carbon::parse($invoice->date)->translatedFormat('d.m.Y') }}</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{{ route('invoice.index') }}" 
+                   class="inline-flex items-center px-4 py-2 bg-white/70 backdrop-blur-sm text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-white/90 transition-all duration-300 shadow-sm hover:shadow-md">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m0 7h18"/>
+                    </svg>
+                    Zurück zur Übersicht
+                </a>
+                <button onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->id]) }}', '_blank')"
+                        class="inline-flex items-center px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                    Vorschau
+                </button>
+            </div>
         </div>
     </div>
 
     <div class="space-y-6">
         <!-- Kundendaten Karte -->
         <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg" x-data="{ openCustomerModal: false }">
-            <div class="flex items-center justify-between mb-4">
+            <!-- Mobile Header -->
+            <div class="md:hidden mb-4">
+                <h2 class="text-lg font-semibold text-gray-900 flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                    Kundendaten
+                </h2>
+                <div class="mt-3 text-center">
+                    <button @click="openCustomerModal = true"
+                            class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium rounded-lg hover:from-indigo-600 hover:to-purple-600 transition-all duration-300 shadow-md hover:shadow-lg">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                        </svg>
+                        Kunden ändern
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Desktop Header -->
+            <div class="hidden md:flex items-center justify-between mb-4">
                 <h2 class="text-lg font-semibold text-gray-900 flex items-center">
                     <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -177,4 +206,26 @@
             // Alert entfernt - Erfolgsmeldung wird jetzt nur noch in der Komponente angezeigt
         });
     </script>
+
+    <!-- Floating Action Buttons - nur auf Smartphones -->
+    <div class="md:hidden fixed bottom-6 right-6 z-50 flex flex-col space-y-3">
+        <!-- Vorschau -->
+        <button onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->id]) }}', '_blank')"
+                class="flex items-center justify-center w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110"
+                title="Vorschau">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+            </svg>
+        </button>
+        
+        <!-- Zurück -->
+        <a href="{{ route('invoice.index') }}" 
+           class="flex items-center justify-center w-12 h-12 bg-white/70 backdrop-blur-sm text-gray-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-gray-300"
+           title="Zurück zur Übersicht">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m0 7h18"/>
+            </svg>
+        </a>
+    </div>
 </x-layout>
