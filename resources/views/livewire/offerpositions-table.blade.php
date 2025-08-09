@@ -1,6 +1,28 @@
 <div class="space-y-4">
     <!-- Header mit Action-Buttons -->
-    <div class="flex items-center justify-between">
+    <!-- Mobile Header - zentriert -->
+    <div class="md:hidden text-center">
+        <h3 class="text-base font-semibold text-gray-900 mb-3">Positionen verwalten</h3>
+        <div class="flex flex-col space-y-2">
+            <button type="button" wire:click="addPosition" 
+                    class="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
+                Position hinzufügen
+            </button>
+            <button type="button" wire:click="addTextPosition" 
+                    class="inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold rounded-lg hover:from-green-600 hover:to-teal-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                </svg>
+                Textposition hinzufügen
+            </button>
+        </div>
+    </div>
+    
+    <!-- Desktop Header -->
+    <div class="hidden md:flex items-center justify-between">
         <h3 class="text-base font-semibold text-gray-900">Positionen verwalten</h3>
         <div class="flex space-x-3">
             <button type="button" wire:click="addPosition" 
@@ -20,8 +42,115 @@
         </div>
     </div>
 
-    <!-- Moderne Tabelle -->
-    <div class="overflow-hidden">
+    <!-- Kartenansicht für Mobile -->
+    <div class="md:hidden space-y-3">
+        @php $positionNumber = 1; @endphp
+        @forelse ($positions as $position)
+            @if ($position->positiontext == false)
+                <!-- Normale Position Karte -->
+                <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-white/20 shadow-md">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+                                {{ $positionNumber }}
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900 text-sm">{{ $position->designation }}</h4>
+                                <p class="text-xs text-gray-500">Position {{ $positionNumber }}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-lg font-bold text-gray-900">{{ number_format($position->price * $position->amount, 2, ',', '.') }} €</div>
+                            <div class="text-xs text-gray-500">Gesamt</div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div>
+                            <div class="text-xs text-gray-500 mb-1">Menge</div>
+                            <div class="text-sm font-semibold text-gray-900">{{ number_format($position->amount, 2, ',', '.') }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-500 mb-1">Einheit</div>
+                            <div class="text-sm font-medium text-gray-700">{{ $position->unit_name }}</div>
+                        </div>
+                        <div>
+                            <div class="text-xs text-gray-500 mb-1">Preis/EH</div>
+                            <div class="text-sm font-semibold text-gray-900">{{ number_format($position->price, 2, ',', '.') }} €</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <a href="{{ route('offerposition.edit', $position->id) }}" 
+                           class="flex-1 inline-flex items-center justify-center px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-200 shadow-md hover:shadow-lg text-xs">
+                            <svg class="w-3 h-3 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Bearbeiten
+                        </a>
+                        <button type="button" 
+                                wire:click="deletePosition({{ $position->id }})" 
+                                class="flex-1 inline-flex items-center justify-center px-3 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white font-medium rounded-lg hover:from-red-600 hover:to-pink-600 transition-all duration-200 shadow-md hover:shadow-lg text-xs">
+                            <svg class="w-3 h-3 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            Löschen
+                        </button>
+                    </div>
+                </div>
+                @php $positionNumber++; @endphp
+            @else
+                <!-- Textposition Karte -->
+                <div class="bg-green-50/70 backdrop-blur-sm rounded-xl p-4 border border-green-200 shadow-md">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg flex items-center justify-center text-white">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-green-700 text-sm">Textposition</h4>
+                                <p class="text-xs text-green-600">Beschreibungstext</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="text-sm text-gray-900 whitespace-pre-line bg-white/70 rounded-lg p-3 border border-green-200">{{ $position->details }}</div>
+                    </div>
+                    
+                    <div class="flex space-x-2">
+                        <a href="{{ route('offerposition.edit', $position->id) }}" 
+                           class="flex-1 inline-flex items-center justify-center px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-200 shadow-md hover:shadow-lg text-xs">
+                            <svg class="w-3 h-3 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Bearbeiten
+                        </a>
+                        <button wire:click="deletePosition({{ $position->id }})" 
+                                class="flex-1 inline-flex items-center justify-center px-3 py-2 bg-gradient-to-r from-red-500 to-pink-500 text-white font-medium rounded-lg hover:from-red-600 hover:to-pink-600 transition-all duration-200 shadow-md hover:shadow-lg text-xs">
+                            <svg class="w-3 h-3 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            Löschen
+                        </button>
+                    </div>
+                </div>
+            @endif
+        @empty
+            <div class="bg-white/70 backdrop-blur-sm rounded-xl p-8 border border-white/20 shadow-md text-center">
+                <svg class="w-12 h-12 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                <h3 class="text-sm font-medium text-gray-900 mb-2">Keine Positionen vorhanden</h3>
+                <p class="text-sm text-gray-500">Fügen Sie Positionen hinzu, um das Angebot zu vervollständigen.</p>
+            </div>
+        @endforelse
+    </div>
+
+    <!-- Desktop Tabellenansicht -->
+    <div class="hidden md:block overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead>
