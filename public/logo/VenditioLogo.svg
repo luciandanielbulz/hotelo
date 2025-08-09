@@ -1,4 +1,4 @@
-<svg {{ $attributes->merge(['viewBox' => '0 0 300 280', 'fill' => 'currentColor']) }} xmlns="http://www.w3.org/2000/svg">
+<svg width="900" height="280" viewBox="0 0 900 280" xmlns="http://www.w3.org/2000/svg">
   <!-- Logo Background -->
   <defs>
     <linearGradient id="greenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -31,5 +31,8 @@
     <path d="M 125 140 L 135 150 L 155 130" stroke="white" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
   </g>
   
-
+  <!-- Venditio Text -->
+  <g transform="translate(320, 80)">
+    <text x="0" y="80" font-family="Arial, sans-serif" font-size="120" font-weight="700" fill="#2D3748">Venditio</text>
+  </g>
 </svg>

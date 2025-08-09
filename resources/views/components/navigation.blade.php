@@ -71,7 +71,7 @@
         <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
           <!-- Logo -->
           <div class="flex shrink-0 items-center">
-            <x-application-logo class="block h-9 w-auto fill-current" />
+            <x-application-icon class="block h-9 w-auto fill-current" />
           </div>
 
           <!-- Desktop-Menü

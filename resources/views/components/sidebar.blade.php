@@ -4,7 +4,7 @@
     <div class="flex h-16 shrink-0 items-center">
         <a href="{{ route('dashboard') }}">
             <!-- Ersetze das Bild-Tag durch dein eigenes Logo -->
-            <img class="h-8 w-auto" src="{{ asset('path/to/your-logo.png') }}" alt="Your Company">
+            <x-application-icon class="h-8 w-auto text-white" />
         </a>
     </div>
 

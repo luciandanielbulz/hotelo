@@ -1,0 +1,35 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="greenGradientIcon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2E7D32;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Document Container -->
+  <g transform="translate(25, 10)">
+    <!-- Main Document Rectangle with rounded corners -->
+    <rect x="0" y="0" width="120" height="160" rx="16" ry="16" fill="url(#greenGradientIcon)" stroke="none"/>
+    
+    <!-- Inner Document (white area) -->
+    <rect x="12" y="12" width="96" height="136" rx="8" ry="8" fill="white"/>
+    
+    <!-- Document Lines (text lines simulation) -->
+    <rect x="24" y="28" width="56" height="5" rx="2.5" fill="url(#greenGradientIcon)"/>
+    <rect x="24" y="40" width="72" height="5" rx="2.5" fill="url(#greenGradientIcon)"/>
+    <rect x="24" y="52" width="48" height="5" rx="2.5" fill="url(#greenGradientIcon)"/>
+    
+    <!-- Document Corner Fold -->
+    <path d="M 96 0 L 96 32 L 120 32 Q 120 16 104 0 Z" fill="#2E7D32"/>
+    <path d="M 96 0 L 108 12 L 96 32 Z" fill="white" opacity="0.2"/>
+    
+    <!-- Large Checkmark Circle -->
+    <circle cx="60" cy="112" r="24" fill="url(#greenGradientIcon)"/>
+    
+    <!-- Checkmark inside circle -->
+    <path d="M 48 112 L 56 120 L 72 104" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    
+    <!-- Additional decorative checkmark at bottom right -->
+    <path d="M 136 128 L 152 112 L 168 96 L 184 112 L 168 128 L 200 160" stroke="url(#greenGradientIcon)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.8"/>
+  </g>
+</svg>

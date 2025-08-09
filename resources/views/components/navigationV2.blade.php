@@ -19,20 +19,12 @@ class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
                 <!-- Logo mit modernem Effekt -->
                 <div class="flex-shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="group flex items-center space-x-3">
-                        <div class="relative">
-                            <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
-                            <div class="relative bg-white/20 backdrop-blur-sm rounded-xl p-2 border border-white/30 group-hover:border-white/50 transition-all duration-300">
-                                <x-application-logo class="h-8 w-8 text-blue-600" />
-                            </div>
-                        </div>
-                        <span class="text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-                            Venditio
-                        </span>
+                                                                                                                                                                                                           <img src="{{ asset('logo/VenditioLogo.png') }}" alt="Venditio" class="h-24 w-24" style="height: 50px; width: 120px; margin-top: 2px;" />
                     </a>
                 </div>
 
                 <!-- Desktop Navigationslinks -->
-                <div class="hidden lg:ml-10 lg:flex lg:space-x-2">
+                <div class="hidden lg:ml-4 lg:flex lg:space-x-2">
 
 
                     <!-- Kunden -->
