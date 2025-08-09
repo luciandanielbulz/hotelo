@@ -16,12 +16,23 @@ class Positiontable extends Component
 
     public $perPage = 12;
     public $search = '';
-    public $viewMode = 'table'; // 'cards' oder 'table'
+    public $viewMode = 'cards'; // 'cards' oder 'table' - Standard: cards für mobile
     public $sortBy = 'newest'; // 'newest', 'oldest', 'number', 'customer'
 
     public function boot()
     {
         Paginator::useTailwind(); // Oder ->useBootstrap(), je nach verwendetem CSS-Framework
+    }
+
+    public function mount()
+    {
+        // Auf Smartphones standardmäßig Kartenansicht verwenden
+        $userAgent = request()->userAgent();
+        $isMobile = preg_match('/(iPhone|Android|Mobile|webOS|BlackBerry|IEMobile|Opera Mini)/i', $userAgent);
+        
+        if ($isMobile) {
+            $this->viewMode = 'cards';
+        }
     }
 
     public function updatingSearch()
@@ -36,7 +47,13 @@ class Positiontable extends Component
 
     public function setViewMode($mode)
     {
-        $this->viewMode = $mode;
+        // Auf mobilen Geräten ViewMode nicht ändern - immer cards
+        $userAgent = request()->userAgent();
+        $isMobile = preg_match('/(iPhone|Android|Mobile|webOS|BlackBerry|IEMobile|Opera Mini)/i', $userAgent);
+        
+        if (!$isMobile) {
+            $this->viewMode = $mode;
+        }
     }
 
      /**

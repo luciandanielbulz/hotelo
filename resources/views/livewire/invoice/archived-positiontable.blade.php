@@ -28,8 +28,8 @@
                 </select>
             </div>
             
-            <!-- View Toggle -->
-            <div class="flex space-x-2">
+            <!-- View Toggle - nur auf Desktop-Geräten -->
+            <div class="hidden md:flex space-x-2">
                 <button wire:click="setViewMode('cards')" 
                         class="flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-300 {{ $viewMode === 'cards' ? 'bg-red-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
                     <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
