@@ -16,7 +16,7 @@ class ArchivedPositiontable extends Component
 
     public $perPage = 12;
     public $search = '';
-    public $viewMode = 'cards'; // 'cards' oder 'table' - Standard: cards für mobile
+    public $viewMode = 'table'; // 'cards' oder 'table' - Standard: table für desktop
     public $sortBy = 'newest'; // 'newest', 'oldest', 'number', 'customer'
 
     public function boot()
@@ -26,12 +26,14 @@ class ArchivedPositiontable extends Component
 
     public function mount()
     {
-        // Auf Smartphones standardmäßig Kartenansicht verwenden
+        // Auf Smartphones standardmäßig Kartenansicht, auf Desktop Tabellenansicht
         $userAgent = request()->userAgent();
         $isMobile = preg_match('/(iPhone|Android|Mobile|webOS|BlackBerry|IEMobile|Opera Mini)/i', $userAgent);
         
         if ($isMobile) {
             $this->viewMode = 'cards';
+        } else {
+            $this->viewMode = 'table';
         }
     }
 

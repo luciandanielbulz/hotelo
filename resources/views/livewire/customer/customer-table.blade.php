@@ -1,7 +1,7 @@
 <div>
     <!-- Erweiterte Such- und Filter-Sektion -->
     <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 mb-6 border border-white/20 shadow-lg">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <!-- Suchfeld -->
             <div class="md:col-span-2">
                 <div class="relative">
