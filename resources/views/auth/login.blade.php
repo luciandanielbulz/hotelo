@@ -13,8 +13,8 @@
                 <div class="max-w-xl">
                     <!-- Logo & Brand -->
                     <div class="flex items-center mb-6">
-                        <div class="bg-white/10 backdrop-blur-sm p-2 rounded-lg mr-3">
-                            <x-application-icon class="h-8 w-8 text-white" />
+                        <div class="bg-white rounded-lg p-3 mr-3 shadow-md">
+                            <img src="{{ asset('logo/Logo transparent.png') }}" alt="Venditio" style="height: 48px; width: auto; object-fit: contain;" />
                         </div>
                         <div>
                             <h1 class="text-3xl font-bold text-white">Venditio</h1>
@@ -99,8 +99,8 @@
                     <!-- Mobile Logo -->
                     <div class="lg:hidden text-center mb-6">
                         <div class="flex justify-center mb-3">
-                            <div class="bg-white/10 backdrop-blur-sm p-3 rounded-full">
-                                <x-application-icon class="h-10 w-10 text-white" />
+                            <div class="bg-white rounded-lg p-4 shadow-md">
+                                <img src="{{ asset('logo/Logo transparent.png') }}" alt="Venditio" style="height: 56px; width: auto; object-fit: contain;" />
                             </div>
                         </div>
                         <h1 class="text-2xl font-bold text-white mb-1">Venditio</h1>
