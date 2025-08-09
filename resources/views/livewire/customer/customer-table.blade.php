@@ -1,7 +1,7 @@
 <div>
     <!-- Erweiterte Such- und Filter-Sektion -->
     <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 mb-6 border border-white/20 shadow-lg">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <!-- Suchfeld -->
             <div class="md:col-span-2">
                 <div class="relative">
@@ -28,8 +28,8 @@
                 </select>
             </div>
             
-            <!-- View Toggle -->
-            <div class="flex space-x-2">
+            <!-- View Toggle - nur auf Desktop-Geräten -->
+            <div class="hidden md:flex space-x-2">
                 <button wire:click="setViewMode('cards')" 
                         class="flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-300 {{ $viewMode === 'cards' ? 'bg-blue-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
                     <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
