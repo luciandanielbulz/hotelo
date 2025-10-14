@@ -41,25 +41,23 @@
 
 
 <body>
+    <div class="min-h-screen bg-gray-50">
+        <div class="flex">
+            <!-- Sidebar -->
+            <aside class="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
+                @include('components.sidebar', ['user' => auth()->user()])
+            </aside>
 
-    <main>
-        <div class="w-full mx-auto sm:px-6 lg:px-8">
-            <!-- Linke Spalte: Überschrift -->
-
-            @include('components.navigationV2')
-
-            <div class="py-4 max-w-7xl mx-auto">
-                {{ $slot }}
-
-
-                <br>
-                <br>
-                <br>
-                <br>
-                <br>
-            </div>
+            <!-- Main content -->
+            <main class="w-full lg:pl-64">
+                <div class="mx-auto sm:px-6 lg:px-8">
+                    <div class="py-4 max-w-7xl mx-auto">
+                        {{ $slot }}
+                    </div>
+                </div>
+            </main>
         </div>
-    </main>
+    </div>
     
     @livewireScripts
     @stack('scripts')
