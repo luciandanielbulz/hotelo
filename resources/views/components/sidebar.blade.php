@@ -1,5 +1,5 @@
 <!-- resources/views/components/sidebar.blade.php -->
-<div x-data="{ offersSubmenu: {{ request()->routeIs('offer.*') ? 'true' : 'false' }}, salesSubmenu: {{ (request()->routeIs('sales.*') || request()->routeIs('bankdata.*')) ? 'true' : 'false' }}, invoicesSubmenu: {{ (request()->routeIs('invoice.*') || request()->routeIs('invoiceupload.*')) ? 'true' : 'false' }}, adminSubmenu: {{ (request()->routeIs('roles.*') || request()->routeIs('permissions.*') || request()->routeIs('clients.*') || request()->routeIs('users.*') || request()->routeIs('logos.*') || request()->routeIs('clients.my-settings')) ? 'true' : 'false' }} }" class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 border-r border-gray-200">
+<div x-data="{ offersSubmenu: {{ request()->routeIs('offer.*') ? 'true' : 'false' }}, salesSubmenu: {{ (request()->routeIs('sales.*') || request()->routeIs('bankdata.*')) ? 'true' : 'false' }}, invoicesSubmenu: {{ (request()->routeIs('invoice.*') || request()->routeIs('invoiceupload.*')) ? 'true' : 'false' }}, adminSubmenu: {{ (request()->routeIs('roles.*') || request()->routeIs('permissions.*') || request()->routeIs('clients.*') || request()->routeIs('users.*') || request()->routeIs('logos.*') || request()->routeIs('clients.my-settings')) ? 'true' : 'false' }}, profileSubmenu: {{ request()->routeIs('profile.*') ? 'true' : 'false' }} }" class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 border-r border-gray-200">
     <!-- Logo -->
     <div class="flex h-16 shrink-0 items-center">
         <a href="{{ route('dashboard') }}">
@@ -195,14 +195,38 @@
 
             <!-- Footer / Benutzerinformationen -->
             <li class="-mx-6 mt-auto border-t border-gray-200">
-                <div class="flex items-center gap-x-4 px-6 py-3">
-                    <div class="h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
-                        <span class="text-white text-sm font-medium">{{ substr(auth()->user()->name, 0, 1) }}</span>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="text-sm font-semibold text-gray-900">{{ auth()->user()->name }}</span>
-                        <span class="text-xs text-gray-500">{{ auth()->user()->email }}</span>
-                    </div>
+                <div class="flex items-center gap-x-2 px-6 py-3">
+                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-x-4 flex-1 rounded-md hover:bg-gray-100 px-2 py-2">
+                        <div class="h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                            <span class="text-white text-sm font-medium">{{ substr(auth()->user()->name, 0, 1) }}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-sm font-semibold text-gray-900">{{ auth()->user()->name }}</span>
+                            <span class="text-xs text-gray-500">{{ auth()->user()->email }}</span>
+                        </div>
+                    </a>
+                    <button @click="profileSubmenu = !profileSubmenu" class="p-2 rounded-md hover:bg-gray-100" aria-label="Profil-Menü umschalten">
+                        <svg class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                </div>
+                <div x-show="profileSubmenu" x-cloak class="px-6 pb-3 space-y-1">
+                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-x-3 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100">
+                        <svg class="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        Profil
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="w-full text-left flex items-center gap-x-3 px-3 py-2 rounded-md text-sm text-red-600 hover:bg-red-50">
+                            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Abmelden
+                        </button>
+                    </form>
                 </div>
             </li>
         </ul>
