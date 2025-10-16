@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+.\[x-cloak\] { display: none !important; }
+
 .logo {
     max-width: 150px; /* Setze die maximale Breite des Logos */
     height: auto;      /* Beibehaltung des Seitenverhältnisses */
