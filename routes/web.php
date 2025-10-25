@@ -174,8 +174,10 @@ Route::middleware(['auth','verified'])->group(function(){
     Route::post('/invoice/updatedescription', [InvoiceController::class, 'updatedescription'])->name('invoice.updatedescription');
     Route::post('/invoice/updatecomment', [InvoiceController::class, 'updatecomment'])->name('invoice.updatecomment');
     Route::post('/invoice/updatedeposit', [InvoiceController::class, 'updatedeposit'])->name('invoice.updatedeposit');
+    Route::post('/invoice/updatestatus', [InvoiceController::class, 'updateStatus'])->name('invoice.updatestatus');
     Route::get('/invoice/create/{id}',[InvoiceController::class, 'create'])->name('invoice.create-with-customer');
-    Route::get('/invoice/index_archivated',[InvoiceController::class, 'index_archivated'])->name('invoice.index_archivated');
+    // Hinweis: Archivierte Rechnungen werden nun über Status (7) im Livewire-Filter angezeigt
+    // Route::get('/invoice/index_archivated',[InvoiceController::class, 'index_archivated'])->name('invoice.index_archivated');
     Route::get('/invoice/copy/{id}',[InvoiceController::class, 'copy'])->name('invoice.copy');
     Route::get('/invoice/createinvoicefromoffer',[InvoiceController::class, 'createinvoicefromoffer'])->name('invoice.createinvoicefromoffer');
     Route::post('/invoice/sendmail',[InvoiceController::class, 'sendmail'])

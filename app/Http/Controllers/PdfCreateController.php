@@ -603,6 +603,11 @@ class PdfCreateController extends Controller
 </head>
 <body>';
 
+        // ENTWURF-Wasserzeichen: nur bei Status 0 (Entwurf)
+        if (isset($invoice->status) && (int)$invoice->status === 0) {
+            $html .= '<div style="position: fixed; top: 40%; left: 10%; transform: rotate(45deg); opacity: 0.10; color: #ff6b6b; font-size: 120px; font-weight: 900; letter-spacing: 10px; z-index: 0;">ENTWURF</div>';
+        }
+
         // Header
         $html .= '<div class="header">';
         if ($logoPath) {

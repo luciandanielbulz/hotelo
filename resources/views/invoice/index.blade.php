@@ -13,7 +13,16 @@
                 <h1 class="text-2xl font-bold text-gray-900">Rechnungen</h1>
                 <p class="text-gray-600">Verwalten Sie alle Ihre Geschäftsrechnungen</p>
             </div>
-            <div>
+            <div class="flex items-center space-x-3">
+                @if(auth()->check() && auth()->user()->hasPermission('send_emails'))
+                    <a href="{{ route('outgoingemails.index') }}"
+                       class="inline-flex items-center px-6 py-3 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 0 0 2.22 0L21 8M5 19h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2z" />
+                        </svg>
+                        Senden
+                    </a>
+                @endif
                 <a href="{{ route('customer.index') }}" 
                    class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

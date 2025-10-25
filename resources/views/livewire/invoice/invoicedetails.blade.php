@@ -41,7 +41,7 @@
             <label for="taxrateid" class="block text-sm font-bold text-gray-800 mb-1">Steuersatz</label>
             <div class="relative">
                 <select id="taxrateid" name="taxrateid" wire:model="taxrateid" 
-                        class="block w-full py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium appearance-none">
+                        class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium appearance-none">
                     @foreach ([1 => '0 %', 2 => '20 %'] as $optionValue => $optionLabel)
                         <option value="{{ $optionValue }}">{{ $optionLabel }}</option>
                     @endforeach
@@ -56,14 +56,14 @@
         <div>
             <label for="invoiceDate" class="block text-sm font-bold text-gray-800 mb-1">Rechnungsdatum</label>
             <input type="date" name="invoiceDate" id="invoiceDate" wire:model="invoiceDate" 
-                   class="block w-full py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium"/>
+                   class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium"/>
         </div>
 
         <!-- Nummer -->
         <div>
             <label for="invoiceNumber" class="block text-sm font-bold text-gray-800 mb-1">Nummer</label>
             <input type="text" name="invoiceNumber" id="invoiceNumber" wire:model="invoiceNumber"  
-                   class="block w-full py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium placeholder-gray-600"
+                   class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium placeholder-gray-600"
                    placeholder="Rechnungsnummer"/>
         </div>
     </div>
@@ -74,14 +74,14 @@
         <div>
             <label for="periodfrom" class="block text-sm font-bold text-gray-800 mb-1">Leistungszeitraum von</label>
             <input type="date" name="periodfrom" id="periodfrom" wire:model="periodfrom" 
-                   class="block w-full py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium"/>
+                   class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium"/>
         </div>
 
         <!-- Leistungszeitraum bis -->
         <div>
             <label for="periodto" class="block text-sm font-bold text-gray-800 mb-1">Leistungszeitraum bis</label>
             <input type="date" name="periodto" id="periodto" wire:model="periodto" 
-                   class="block w-full py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium"/>
+                   class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium"/>
         </div>
 
         <!-- Konditionen -->
@@ -89,7 +89,7 @@
             <label for="condition_id" class="block text-sm font-bold text-gray-800 mb-1">Konditionen</label>
             <div class="relative">
                 <select id="condition_id" name="condition_id" wire:model="condition_id" 
-                        class="block w-full py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium appearance-none">
+                        class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium appearance-none">
                     <option value="">-- Bedingung wählen --</option>
                     @foreach ($conditions as $condition)
                         <option value="{{ $condition->id }}" {{ $condition_id == $condition->id ? 'selected' : '' }}>

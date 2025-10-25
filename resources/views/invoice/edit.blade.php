@@ -21,6 +21,20 @@
                     </svg>
                     Zurück zur Übersicht
                 </a>
+                @if(auth()->user()->hasPermission('send_emails'))
+                    <form action="{{ route('invoice.sendmail') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="objectid" value="{{ $invoice->id }}">
+                        <input type="hidden" name="objecttype" value="invoice">
+                        <button type="submit"
+                                class="inline-flex items-center px-6 py-2 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            Senden
+                        </button>
+                    </form>
+                @endif
                 <button onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->id]) }}', '_blank')"
                         class="inline-flex items-center px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,6 +152,45 @@
                 </svg>
                 Rechnungsdetails
             </h2>
+            <!-- Status Dropdown (1/3 Breite in Grid) -->
+            <div class="grid md:grid-cols-3 gap-3 mb-4">
+                <div class="md:col-span-1">
+                    <label for="invoice-status" class="block text-sm font-bold text-gray-800 mb-1">Status</label>
+                    <div class="relative">
+                        <select id="invoice-status"
+                                class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium appearance-none"
+                                data-current="{{ (int)($invoice->status ?? 0) }}"
+                                onchange="updateInvoiceStatus({{ $invoice->id }}, this.value)">
+                            @php
+                                $currentStatus = (int) ($invoice->status ?? 0);
+                                $canDowngrade = auth()->user() && auth()->user()->hasPermission('unlock_invoices');
+                                $canSend = auth()->user() && auth()->user()->hasPermission('send_emails');
+                                $statusOptions = [
+                                    0 => 'Entwurf',
+                                    1 => 'Offen',
+                                    2 => 'Gesendet',
+                                    3 => 'Teilweise bezahlt',
+                                    4 => 'Bezahlt',
+                                    6 => 'Storniert',
+                                    7 => 'Archiviert',
+                                ];
+                            @endphp
+                            @foreach($statusOptions as $value => $label)
+                                @php $isSelected = (int)$invoice->status === (int)$value; @endphp
+                                @if(!$canSend && $value === 2 && !$isSelected)
+                                    @continue
+                                @endif
+                                @if($canDowngrade || $value >= $currentStatus)
+                                    <option value="{{ $value }}" {{ $isSelected ? 'selected' : '' }} {{ (!$canSend && $value === 2 && $isSelected) ? 'disabled' : '' }}>{{ $label }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                        <svg class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 w-4 h-4 text-gray-600" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
             <livewire:invoice.invoicedetails :invoiceId="$invoice->id"/>
         </div>
 
@@ -206,9 +259,71 @@
             // Alert entfernt - Erfolgsmeldung wird jetzt nur noch in der Komponente angezeigt
         });
     </script>
+    <script>
+        const CAN_DOWNGRADE = {{ auth()->user() && auth()->user()->hasPermission('unlock_invoices') ? 'true' : 'false' }};
+        function updateInvoiceStatus(invoiceId, status) {
+            const select = document.getElementById('invoice-status');
+            const newStatus = parseInt(status, 10);
+            const prevStatus = parseInt(select.getAttribute('data-current') || select.value, 10);
+
+            fetch('{{ route('invoice.updatestatus') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({ invoice_id: invoiceId, status: newStatus })
+            }).then(async r => {
+                const payload = await r.json().catch(() => ({}));
+                if (!r.ok) {
+                    // Zurücksetzen bei Fehler (z. B. 403)
+                    select.value = String(prevStatus);
+                    alert(payload.message || 'Status konnte nicht aktualisiert werden.');
+                    return;
+                }
+
+                // Erfolgreich: Dropdown-Inhalt anpassen, sodass keine niedrigeren Stati sichtbar sind (wenn kein Downgrade-Recht)
+                select.setAttribute('data-current', String(newStatus));
+                select.value = String(newStatus);
+                if (!CAN_DOWNGRADE) {
+                    Array.from(select.options).forEach(opt => {
+                        const v = parseInt(opt.value, 10);
+                        if (!isNaN(v)) {
+                            if (v < newStatus) {
+                                opt.disabled = true;
+                                opt.hidden = true;
+                            } else {
+                                opt.disabled = false;
+                                opt.hidden = false;
+                            }
+                        }
+                    });
+                }
+            }).catch(() => {
+                // Netzwerkausfall: zurücksetzen
+                select.value = String(prevStatus);
+                alert('Status konnte nicht aktualisiert werden.');
+            });
+        }
+    </script>
 
     <!-- Floating Action Buttons - nur auf Smartphones -->
     <div class="md:hidden fixed bottom-6 right-6 z-50 flex flex-col space-y-3">
+        @if(auth()->user()->hasPermission('send_emails'))
+        <!-- Senden -->
+        <form action="{{ route('invoice.sendmail') }}" method="POST">
+            @csrf
+            <input type="hidden" name="objectid" value="{{ $invoice->id }}">
+            <input type="hidden" name="objecttype" value="invoice">
+            <button type="submit"
+                    class="flex items-center justify-center w-14 h-14 bg-purple-500 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110"
+                    title="Senden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+            </button>
+        </form>
+        @endif
         <!-- Vorschau -->
         <button onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->id]) }}', '_blank')"
                 class="flex items-center justify-center w-14 h-14 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110"

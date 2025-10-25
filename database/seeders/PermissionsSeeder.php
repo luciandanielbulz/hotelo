@@ -35,7 +35,8 @@ class PermissionsSeeder extends Seeder
             // Kommunikation
             'Kommunikation' => [
                 'view_messages' => 'Postausgang für gesendete Mails sehen',
-                'view_email_list' => 'Liste der gesendeten E-Mails sehen',
+                // send_emails ersetzt view_email_list als aktives Recht zum Senden/Sehen
+                'send_emails' => 'E-Mails versenden und senden-bezogene Ansichten sehen',
             ],
 
             // Analysen & Berichte

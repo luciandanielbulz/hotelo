@@ -28,7 +28,7 @@ class RolePermissionSeeder extends Seeder
             'view_invoices',
             'view_invoice_uploads',
             'view_sales_analysis',
-            'view_email_list',
+            'send_emails',
             'manage_users',
             'manage_roles',
             'view_clients',
