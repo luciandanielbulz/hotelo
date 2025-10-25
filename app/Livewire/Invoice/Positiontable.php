@@ -18,6 +18,7 @@ class Positiontable extends Component
     public $search = '';
     public $viewMode = 'table'; // 'cards' oder 'table' - Standard: table für desktop
     public $sortBy = 'newest'; // 'newest', 'oldest', 'number', 'customer'
+    public $statusFilter = 'all'; // all, draft, open, sent, partial, paid, cancelled
 
     public function boot()
     {
@@ -47,6 +48,12 @@ class Positiontable extends Component
         $this->resetPage();
     }
 
+    public function setStatusFilter($status)
+    {
+        $this->statusFilter = $status;
+        $this->resetPage();
+    }
+
     public function setViewMode($mode)
     {
         // Auf mobilen Geräten ViewMode nicht ändern - immer cards
@@ -58,21 +65,14 @@ class Positiontable extends Component
         }
     }
 
-     /**
-     * Archiviert ein Angebot anhand der offerId.
-     *
-     * @param int $offerId
-     * @return void
-     */
     public function archiveInvoice($invoiceId)
     {
-        \Log::info("archiveOffer aufgerufen mit ID: " . $invoiceId);
+        \Log::info("archiveInvoice aufgerufen mit ID: " . $invoiceId);
 
         $invoice = Invoices::find($invoiceId);
 
         if ($invoice) {
-            $invoice->archived = true;
-            $invoice->archiveddate = now(); // Optional: Archivierungsdatum setzen
+            $invoice->status = 7; // Archiviert
             $invoice->save();
 
             session()->flash('message', 'Rechnung erfolgreich archiviert.');
@@ -102,13 +102,27 @@ class Positiontable extends Component
                       ->orWhere('clients.id', $clientId)
                       ->orWhere('clients.parent_client_id', $clientId);
             })
-            ->where('invoices.archived', false) // Nur nicht archivierte Rechnungen anzeigen
+            // Standard: Archivierte (Status 7) im Index ausblenden
+            ->where('invoices.status', '!=', 7)
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
                     $query->where('customers.customername', 'like', "%$search%")
                         ->orWhere('customers.companyname', 'like', "%$search%")
                         ->orWhere('invoices.number', 'like', "%$search%");
                 });
+            })
+            ->when($this->statusFilter !== 'all' && $this->statusFilter !== 'archived', function ($query) {
+                $map = [
+                    'draft' => 0,
+                    'open' => 1,
+                    'sent' => 2,
+                    'partial' => 3,
+                    'paid' => 4,
+                    'cancelled' => 6,
+                ];
+                if (array_key_exists($this->statusFilter, $map)) {
+                    $query->where('invoices.status', $map[$this->statusFilter]);
+                }
             });
 
         // Sortierung anwenden
@@ -134,7 +148,7 @@ class Positiontable extends Component
         $query->select(
                 'invoices.id as invoice_id',
                 'invoices.number',
-                'invoices.archived',
+                'invoices.status',
                 'invoices.created_at',
                 'invoices.updated_at',
                 'invoices.date',
@@ -147,7 +161,7 @@ class Positiontable extends Component
             ->groupBy(
                 'invoices.id',
                 'invoices.number',
-                'invoices.archived',
+                'invoices.status',
                 'invoices.created_at',
                 'invoices.updated_at',
                 'invoices.date',

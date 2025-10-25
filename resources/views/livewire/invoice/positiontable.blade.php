@@ -46,6 +46,20 @@
                 </button>
             </div>
         </div>
+        <!-- Status Filter Tabs -->
+        <div class="mt-4">
+            <div class="inline-flex items-center rounded-xl p-1 text-sm font-medium text-gray-600 bg-gray-50 overflow-x-auto">
+                <button wire:click="setStatusFilter('all')" class="px-4 py-2 rounded-lg transition {{ $statusFilter === 'all' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Alle</button>
+                <button wire:click="setStatusFilter('draft')" class="px-4 py-2 rounded-lg transition {{ $statusFilter === 'draft' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Entwurf</button>
+                <button wire:click="setStatusFilter('open')" class="px-4 py-2 rounded-lg transition {{ $statusFilter === 'open' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Offen</button>
+                @if(auth()->user()->hasPermission('view_email_list'))
+                    <button wire:click="setStatusFilter('sent')" class="px-4 py-2 rounded-lg transition {{ $statusFilter === 'sent' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Gesendet</button>
+                @endif
+                <button wire:click="setStatusFilter('partial')" class="px-4 py-2 rounded-lg transition {{ $statusFilter === 'partial' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Teilweise bezahlt</button>
+                <button wire:click="setStatusFilter('paid')" class="px-4 py-2 rounded-lg transition {{ $statusFilter === 'paid' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Bezahlt</button>
+                <button wire:click="setStatusFilter('cancelled')" class="px-4 py-2 rounded-lg transition {{ $statusFilter === 'cancelled' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Storniert</button>
+            </div>
+        </div>
     </div>
 
     @if($viewMode === 'cards')
@@ -227,13 +241,18 @@
                                     @endif
                                 </td>
                                 <td class="px-3 py-4">
-                                    @if($invoice->sent_date)
-                                        <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                                            Gesendet {{ \Carbon\Carbon::parse($invoice->sent_date)->translatedFormat('d.m.Y') }}
-                                        </span>
-                                    @else
-                                        <span class="inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">Entwurf</span>
-                                    @endif
+                                    @php
+                                        $status = (int) ($invoice->status ?? 0);
+                                        $badge = ['label' => 'Entwurf', 'bg' => 'bg-yellow-100', 'text' => 'text-yellow-800'];
+                                        if ($status === 1) { $badge = ['label' => 'Offen', 'bg' => 'bg-blue-100', 'text' => 'text-blue-800']; }
+                                        elseif ($status === 2) { $badge = ['label' => 'Gesendet', 'bg' => 'bg-purple-100', 'text' => 'text-purple-800']; }
+                                        elseif ($status === 3) { $badge = ['label' => 'Teilweise bezahlt', 'bg' => 'bg-orange-100', 'text' => 'text-orange-800']; }
+                                        elseif ($status === 4) { $badge = ['label' => 'Bezahlt', 'bg' => 'bg-green-100', 'text' => 'text-green-800']; }
+                                        elseif ($status === 6) { $badge = ['label' => 'Storniert', 'bg' => 'bg-red-100', 'text' => 'text-red-800']; }
+                                    @endphp
+                                    <span class="inline-block {{ $badge['bg'] }} {{ $badge['text'] }} text-xs px-2 py-1 rounded-full">
+                                        {{ $badge['label'] }}
+                                    </span>
                                 </td>
                                 <td class="px-3 py-4">
                                     <div class="flex space-x-2">
@@ -245,7 +264,7 @@
                                            class="text-green-600 hover:text-green-900 font-medium">Kopieren</a>
                                         <a href="{{ route('createinvoice.pdf', ['invoice_id' => $invoice->invoice_id, 'objecttype' => 'invoice', 'prev' => 'D']) }}" 
                                            class="text-red-600 hover:text-red-900 font-medium">PDF</a>
-                                        @if(auth()->user()->hasPermission('send_emails'))
+                        @if(auth()->user()->hasPermission('send_emails'))
                                             <form action="{{ route('invoice.sendmail') }}" method="POST" class="inline">
                                                 @csrf
                                                 <input type="hidden" name="objectid" value="{{ $invoice->invoice_id }}">

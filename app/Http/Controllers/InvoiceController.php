@@ -157,7 +157,14 @@ class InvoiceController extends Controller
         $invoice = Invoices::where('invoices.id', '=', $invoiceId)
             ->join('taxrates', 'invoices.tax_id', '=', 'taxrates.id')
             ->join('customers', 'customers.id', '=', 'invoices.customer_id')
-            ->where('customers.client_id', '=', $clientId) // Sicherstellen, dass der Kunde zum aktuellen Client gehört
+            ->leftJoin('clients', 'invoices.client_version_id', '=', 'clients.id')
+            ->where(function($query) use ($clientId) {
+                // Zugriff erlauben, wenn der Customer dem Client gehört
+                // ODER die Rechnung mit einer Client-Version dieses Clients (oder Parent) erstellt wurde
+                $query->where('customers.client_id', $clientId)
+                      ->orWhere('clients.id', $clientId)
+                      ->orWhere('clients.parent_client_id', $clientId);
+            })
             ->select(
                 'invoices.id as invoice_id',
                 'invoices.*',
@@ -458,6 +465,33 @@ class InvoiceController extends Controller
                 'offer_id' => $request->offer_id,
                 'comment' => $request->comment
             ]);
+            return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function updateStatus(Request $request)
+    {
+        try {
+            $validated = $request->validate([
+                'invoice_id' => 'required|integer|exists:invoices,id',
+                'status' => 'required|integer|in:0,1,2,3,4,6,7',
+            ]);
+
+            $invoice = Invoices::findOrFail($validated['invoice_id']);
+
+            // Downgrade nur mit entsprechender Berechtigung erlauben
+            $newStatus = (int) $validated['status'];
+            $oldStatus = (int) ($invoice->status ?? 0);
+            if ($newStatus < $oldStatus && !Auth::user()->hasPermission('unlock_invoices')) {
+                return response()->json(['message' => 'Kein Recht zum Herabstufen des Status.'], 403);
+            }
+
+            // Optional: Archiv-Status 7 nur setzen, wenn gewünscht; ansonsten normal
+            $invoice->status = $newStatus;
+            $invoice->save();
+
+            return response()->json(['message' => 'Status erfolgreich aktualisiert.'], 200);
+        } catch (\Exception $e) {
             return response()->json(['message' => 'Fehler: ' . $e->getMessage()], 500);
         }
     }

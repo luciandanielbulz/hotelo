@@ -18,7 +18,8 @@ class Invoices extends Model
         'number',
         'comment',
         'description',
-        'depositamount'
+        'depositamount',
+        'status',
     ];
 
     public function invoicePositions()

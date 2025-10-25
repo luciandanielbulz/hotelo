@@ -85,9 +85,7 @@
                                 <a href="{{ route('invoice.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('invoice.index') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
                                     Alle Rechnungen
                                 </a>
-                                <a href="{{ route('invoice.index_archivated') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('invoice.index_archivated') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
-                                    Archivierte
-                                </a>
+                                <!-- Archivierte über Status-Tab in der Liste gefiltert -->
                                 <a href="{{ route('invoiceupload.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('invoiceupload.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
                                     Ausgabenverwaltung
                                 </a>
