@@ -192,7 +192,7 @@ Route::middleware(['auth','verified'])->group(function(){
         ->middleware('permission:send_emails');
     Route::get('/emaillist', [OutgoingEmailController::class, 'index'])
         ->name('outgoingemails.index')
-        ->middleware('permission:view_messages');
+        ->middleware('permission:view_email_list');
 
     Route::resource('invoice',InvoiceController::class);
 
