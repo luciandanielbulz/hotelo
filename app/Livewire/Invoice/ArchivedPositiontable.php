@@ -71,8 +71,7 @@ class ArchivedPositiontable extends Component
         $invoice = Invoices::find($invoiceId);
 
         if ($invoice) {
-            $invoice->archived = false;
-            $invoice->archiveddate = null;
+            $invoice->status = 0; // Entwurf (oder gewünschter Zielstatus)
             $invoice->save();
 
             session()->flash('message', 'Rechnung erfolgreich wiederhergestellt.');
@@ -106,7 +105,7 @@ class ArchivedPositiontable extends Component
                       ->orWhere('clients.id', $clientId)
                       ->orWhere('clients.parent_client_id', $clientId);
             })
-            ->where('invoices.archived', true) // NUR archivierte Rechnungen anzeigen
+            ->where('invoices.status', 7) // NUR Status 7 (Archiviert)
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
                     $query->where('customers.customername', 'like', "%$search%")
@@ -118,7 +117,7 @@ class ArchivedPositiontable extends Component
         // Sortierung anwenden
         switch ($this->sortBy) {
             case 'oldest':
-                $query->orderBy('invoices.archiveddate', 'asc')
+                $query->orderBy('invoices.updated_at', 'asc')
                       ->orderBy('invoices.number', 'asc');
                 break;
             case 'number':
@@ -130,7 +129,7 @@ class ArchivedPositiontable extends Component
                 break;
             case 'newest':
             default:
-                $query->orderBy('invoices.archiveddate', 'desc')
+                $query->orderBy('invoices.updated_at', 'desc')
                       ->orderBy('invoices.number', 'desc');
                 break;
         }
@@ -138,10 +137,9 @@ class ArchivedPositiontable extends Component
         $query->select(
                 'invoices.id as invoice_id',
                 'invoices.number',
-                'invoices.archived',
-                'invoices.archiveddate',
+                'invoices.status',
+                DB::raw('invoices.updated_at as archiveddate'),
                 'invoices.created_at',
-                'invoices.updated_at',
                 'invoices.date',
                 'invoices.description',
                 'customers.customername',
@@ -152,10 +150,9 @@ class ArchivedPositiontable extends Component
             ->groupBy(
                 'invoices.id',
                 'invoices.number',
-                'invoices.archived',
-                'invoices.archiveddate',
-                'invoices.created_at',
+                'invoices.status',
                 'invoices.updated_at',
+                'invoices.created_at',
                 'invoices.date',
                 'invoices.description',
                 'customers.customername',

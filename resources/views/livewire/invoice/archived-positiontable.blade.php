@@ -181,7 +181,6 @@
                             <th scope="col" class="py-4 pl-6 pr-3 text-left text-sm font-semibold text-gray-900">Rechnung</th>
                             <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Kunde</th>
                             <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Betrag</th>
-                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Archiviert</th>
                             <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Aktionen</th>
                         </tr>
                     </thead>
@@ -208,15 +207,6 @@
                                     @endif
                                 </td>
                                 <td class="px-3 py-4">
-                                    @if($invoice->archiveddate)
-                                        <span class="inline-block bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full">
-                                            {{ \Carbon\Carbon::parse($invoice->archiveddate)->translatedFormat('d.m.Y') }}
-                                        </span>
-                                    @else
-                                        <span class="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">Unbekannt</span>
-                                    @endif
-                                </td>
-                                <td class="px-3 py-4">
                                     <div class="flex space-x-2">
                                         <a href="{{ route('createinvoice.pdf', ['invoice_id' => $invoice->invoice_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}" 
                                            class="text-blue-600 hover:text-blue-900 font-medium">Vorschau</a>
@@ -233,7 +223,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-12 text-center">
+                                <td colspan="4" class="px-6 py-12 text-center">
                                     <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6m0 0l6-6m-6 6V3"/>
                                     </svg>

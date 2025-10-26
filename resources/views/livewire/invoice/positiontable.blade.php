@@ -78,10 +78,12 @@
                                 {{ $invoice->customername ?: $invoice->companyname ?: 'Kein Kunde' }}
                             </p>
                         </div>
-                        @if($invoice->sent_date)
-                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Gesendet</span>
-                        @else
-                            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium">Entwurf</span>
+                        @if($statusFilter === 'all')
+                            @if($invoice->sent_date)
+                                <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-medium">Gesendet</span>
+                            @else
+                                <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-medium">Entwurf</span>
+                            @endif
                         @endif
                     </div>
                     
@@ -214,7 +216,9 @@
                             <th scope="col" class="py-4 pl-6 pr-3 text-left text-sm font-semibold text-gray-900">Rechnung</th>
                             <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Kunde</th>
                             <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Betrag</th>
-                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                            @if($statusFilter === 'all')
+                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                            @endif
                             <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Aktionen</th>
                         </tr>
                     </thead>
@@ -240,20 +244,22 @@
                                         <span class="text-gray-400">Kein Betrag</span>
                                     @endif
                                 </td>
-                                <td class="px-3 py-4">
-                                    @php
-                                        $status = (int) ($invoice->status ?? 0);
-                                        $badge = ['label' => 'Entwurf', 'bg' => 'bg-yellow-100', 'text' => 'text-yellow-800'];
-                                        if ($status === 1) { $badge = ['label' => 'Offen', 'bg' => 'bg-blue-100', 'text' => 'text-blue-800']; }
-                                        elseif ($status === 2) { $badge = ['label' => 'Gesendet', 'bg' => 'bg-purple-100', 'text' => 'text-purple-800']; }
-                                        elseif ($status === 3) { $badge = ['label' => 'Teilweise bezahlt', 'bg' => 'bg-orange-100', 'text' => 'text-orange-800']; }
-                                        elseif ($status === 4) { $badge = ['label' => 'Bezahlt', 'bg' => 'bg-green-100', 'text' => 'text-green-800']; }
-                                        elseif ($status === 6) { $badge = ['label' => 'Storniert', 'bg' => 'bg-red-100', 'text' => 'text-red-800']; }
-                                    @endphp
-                                    <span class="inline-block {{ $badge['bg'] }} {{ $badge['text'] }} text-xs px-2 py-1 rounded-full">
-                                        {{ $badge['label'] }}
-                                    </span>
-                                </td>
+                                @if($statusFilter === 'all')
+                                    <td class="px-3 py-4">
+                                        @php
+                                            $status = (int) ($invoice->status ?? 0);
+                                            $badge = ['label' => 'Entwurf', 'bg' => 'bg-yellow-100', 'text' => 'text-yellow-800'];
+                                            if ($status === 1) { $badge = ['label' => 'Offen', 'bg' => 'bg-blue-100', 'text' => 'text-blue-800']; }
+                                            elseif ($status === 2) { $badge = ['label' => 'Gesendet', 'bg' => 'bg-purple-100', 'text' => 'text-purple-800']; }
+                                            elseif ($status === 3) { $badge = ['label' => 'Teilweise bezahlt', 'bg' => 'bg-orange-100', 'text' => 'text-orange-800']; }
+                                            elseif ($status === 4) { $badge = ['label' => 'Bezahlt', 'bg' => 'bg-green-100', 'text' => 'text-green-800']; }
+                                            elseif ($status === 6) { $badge = ['label' => 'Storniert', 'bg' => 'bg-red-100', 'text' => 'text-red-800']; }
+                                        @endphp
+                                        <span class="inline-block {{ $badge['bg'] }} {{ $badge['text'] }} text-xs px-2 py-1 rounded-full">
+                                            {{ $badge['label'] }}
+                                        </span>
+                                    </td>
+                                @endif
                                 <td class="px-3 py-4">
                                     <div class="flex space-x-2">
                                         <a href="{{ route('invoice.edit', $invoice->invoice_id) }}"
@@ -281,7 +287,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-12 text-center">
+                                <td colspan="{{ $statusFilter === 'all' ? 5 : 4 }}" class="px-6 py-12 text-center">
                                     <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                                     </svg>

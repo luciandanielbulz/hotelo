@@ -46,7 +46,7 @@ class InvoiceController extends Controller
                       ->orWhere('clients.id', $clientId)
                       ->orWhere('clients.parent_client_id', $clientId);
             })
-            ->where('invoices.archived', '=', true)
+            ->where('invoices.status', '=', 7) // Status 7 = Archiviert
             ->orderBy('invoices.id', 'desc')
             ->when($search, function ($query, $search) {
                 return $query->where(function ($query) use ($search) {
