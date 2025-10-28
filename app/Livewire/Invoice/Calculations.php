@@ -66,13 +66,17 @@ class Calculations extends Component
 
         // Platzhalter verarbeiten
         if (!empty($this->documentFooter)) {
-            $creatorName = null;
+            $creatorFullName = null;
             if (!empty($invoice->created_by)) {
                 $creator = User::find($invoice->created_by);
-                $creatorName = $creator ? $creator->name : null;
+                if ($creator) {
+                    $creatorFullName = trim(($creator->name ?? '') . ' ' . ($creator->lastname ?? ''));
+                }
             }
+            $authUser = auth()->user();
+            $authFullName = $authUser ? trim(($authUser->name ?? '') . ' ' . ($authUser->lastname ?? '')) : '';
             $variables = [
-                '{creator}' => $creatorName ?? (auth()->user()->name ?? ''),
+                '{creator}' => $creatorFullName ?: $authFullName,
             ];
             $this->documentFooter = TemplateHelper::replacePlaceholders($this->documentFooter, $variables);
         }

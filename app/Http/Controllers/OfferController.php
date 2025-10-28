@@ -203,13 +203,17 @@ class OfferController extends Controller
         // View zurückgeben
         // Dokument-Fußzeile-Variablen (z. B. {creator}) ersetzen
         if (!empty($offerWithDetails->document_footer)) {
-            $creatorName = null;
+            $creatorFullName = null;
             if (!empty($offerWithDetails->created_by)) {
                 $creator = \App\Models\User::find($offerWithDetails->created_by);
-                $creatorName = $creator ? $creator->name : null;
+                if ($creator) {
+                    $creatorFullName = trim(($creator->name ?? '') . ' ' . ($creator->lastname ?? ''));
+                }
             }
+            $authUser = auth()->user();
+            $authFullName = $authUser ? trim(($authUser->name ?? '') . ' ' . ($authUser->lastname ?? '')) : '';
             $variables = [
-                '{creator}' => $creatorName ?? (auth()->user()->name ?? ''),
+                '{creator}' => $creatorFullName ?: $authFullName,
             ];
             $offerWithDetails->document_footer = \App\Helpers\TemplateHelper::replacePlaceholders($offerWithDetails->document_footer, $variables);
         }

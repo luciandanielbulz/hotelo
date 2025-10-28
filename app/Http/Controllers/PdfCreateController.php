@@ -811,13 +811,17 @@ class PdfCreateController extends Controller
 
         // Dokument-Fußzeile direkt unter dem Gesamtbetrag
         if (!empty($client->document_footer)) {
-            $creatorName = null;
+            $creatorFullName = null;
             if (!empty($invoice->created_by)) {
                 $creator = User::find($invoice->created_by);
-                $creatorName = $creator ? $creator->name : null;
+                if ($creator) {
+                    $creatorFullName = trim(($creator->name ?? '') . ' ' . ($creator->lastname ?? ''));
+                }
             }
+            $authUser = auth()->user();
+            $authFullName = $authUser ? trim(($authUser->name ?? '') . ' ' . ($authUser->lastname ?? '')) : '';
             $variables = [
-                '{creator}' => $creatorName ?? (auth()->user()->name ?? ''),
+                '{creator}' => $creatorFullName ?: $authFullName,
             ];
             $footerContent = TemplateHelper::replacePlaceholders($client->document_footer, $variables);
             $html .= '<div style="margin-top: 16px; font-size: ' . $fontSizes['tax_notice'] . ';">' . $footerContent . '</div>';
@@ -1019,13 +1023,17 @@ class PdfCreateController extends Controller
 
         // Dokument-Fußzeile direkt unter dem Gesamtbetrag
         if (!empty($client->document_footer)) {
-            $creatorName = null;
+            $creatorFullName = null;
             if (!empty($offer->created_by)) {
                 $creator = User::find($offer->created_by);
-                $creatorName = $creator ? $creator->name : null;
+                if ($creator) {
+                    $creatorFullName = trim(($creator->name ?? '') . ' ' . ($creator->lastname ?? ''));
+                }
             }
+            $authUser = auth()->user();
+            $authFullName = $authUser ? trim(($authUser->name ?? '') . ' ' . ($authUser->lastname ?? '')) : '';
             $variables = [
-                '{creator}' => $creatorName ?? (auth()->user()->name ?? ''),
+                '{creator}' => $creatorFullName ?: $authFullName,
             ];
             $footerContent = TemplateHelper::replacePlaceholders($client->document_footer, $variables);
             $html .= '<div style="margin-top: 16px; font-size: ' . $fontSizes['tax_notice'] . ';">' . $footerContent . '</div>';
