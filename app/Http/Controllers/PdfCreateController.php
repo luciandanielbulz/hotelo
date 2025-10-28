@@ -288,6 +288,20 @@ class PdfCreateController extends Controller
             $client->max_upload_size = $clientSettings->max_upload_size;
         }
 
+        // Fallback: Wenn die in der gespeicherten Version leere Dokument-Fußzeile hat,
+        // verwende die aktive Version des Parent-Clients (aktueller Stand)
+        if (empty($client->document_footer)) {
+            $activeClient = Clients::where(function($q) use ($parentId) {
+                    $q->where('id', $parentId)
+                      ->orWhere('parent_client_id', $parentId);
+                })
+                ->where('is_active', true)
+                ->first();
+            if ($activeClient && !empty($activeClient->document_footer)) {
+                $client->document_footer = $activeClient->document_footer;
+            }
+        }
+
         return [
             'offer' => $offer,
             'positions' => $positions,
@@ -353,6 +367,20 @@ class PdfCreateController extends Controller
             $client->offer_prefix = $clientSettings->offer_prefix;
             $client->invoice_prefix = $clientSettings->invoice_prefix;
             $client->max_upload_size = $clientSettings->max_upload_size;
+        }
+
+        // Fallback: Wenn die in der gespeicherten Version leere Dokument-Fußzeile hat,
+        // verwende die aktive Version des Parent-Clients (aktueller Stand)
+        if (empty($client->document_footer)) {
+            $activeClient = Clients::where(function($q) use ($parentId) {
+                    $q->where('id', $parentId)
+                      ->orWhere('parent_client_id', $parentId);
+                })
+                ->where('is_active', true)
+                ->first();
+            if ($activeClient && !empty($activeClient->document_footer)) {
+                $client->document_footer = $activeClient->document_footer;
+            }
         }
 
         return [
