@@ -35,7 +35,42 @@
             </div>
         @endif
     @endif
+    <!-- Status -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div>
+            <label for="invoice-status" class="block text-sm font-bold text-gray-800 mb-1">Status</label>
+            <div class="relative">
+                <select id="invoice-status" wire:model="status"
+                        class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium appearance-none">
+                    @php
+                        $currentStatus = (int) ($details->status ?? 0);
+                        $canDowngrade = auth()->user() && auth()->user()->hasPermission('unlock_invoices');
+                        $canSend = auth()->user() && auth()->user()->hasPermission('send_emails');
+                        $statusOptions = [
+                            0 => 'Entwurf',
+                            1 => 'Offen',
+                            2 => 'Gesendet',
+                            3 => 'Teilweise bezahlt',
+                            4 => 'Bezahlt',
+                            6 => 'Storniert',
+                            7 => 'Archiviert',
+                        ];
+                    @endphp
+                    @foreach($statusOptions as $value => $label)
+                        @php $isSelected = $currentStatus === (int)$value; @endphp
+                        @if(!$canSend && $value === 2 && !$isSelected)
+                            @continue
+                        @endif
+                        @if($canDowngrade || $value >= $currentStatus)
+                            <option value="{{ $value }}">{{ $label }}</option>
+                        @endif
+                    @endforeach
+                </select>
+                <svg class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 w-4 h-4 text-gray-600" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M4.22 6.22a.75.75 0 0 1 1.06 0L8 8.94l2.72-2.72a.75.75 0 1 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L4.22 7.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                </svg>
+            </div>
+        </div>
         <!-- Steuersatz -->
         <div>
             <label for="taxrateid" class="block text-sm font-bold text-gray-800 mb-1">Steuersatz</label>

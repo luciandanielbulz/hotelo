@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Helpers\TemplateHelper;
+use App\Models\User;
 
 /**
  * DomPDF-Implementierung des PdfCreateControllers
@@ -779,6 +781,20 @@ class PdfCreateController extends Controller
             $html .= '<div style="margin-top: 20px; font-size: ' . $fontSizes['tax_notice'] . ';">Gemäß § 13b UStG liegt die Steuerschuldnerschaft beim Leistungsempfänger.</div>';
         }
 
+        // Dokument-Fußzeile direkt unter dem Gesamtbetrag
+        if (!empty($client->document_footer)) {
+            $creatorName = null;
+            if (!empty($invoice->created_by)) {
+                $creator = User::find($invoice->created_by);
+                $creatorName = $creator ? $creator->name : null;
+            }
+            $variables = [
+                '{creator}' => $creatorName ?? (auth()->user()->name ?? ''),
+            ];
+            $footerContent = TemplateHelper::replacePlaceholders($client->document_footer, $variables);
+            $html .= '<div style="margin-top: 16px; font-size: ' . $fontSizes['tax_notice'] . ';">' . $footerContent . '</div>';
+        }
+
         // Footer hinzufügen
         $footer = $this->generateFooter($client);
         $html .= $footer;
@@ -971,6 +987,20 @@ class PdfCreateController extends Controller
         // Steuerliche Hinweise für Angebote
         if ($client->smallbusiness) {
             $html .= '<div style="margin-top: 20px; font-size: ' . $fontSizes['tax_notice'] . ';">Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG</div>';
+        }
+
+        // Dokument-Fußzeile direkt unter dem Gesamtbetrag
+        if (!empty($client->document_footer)) {
+            $creatorName = null;
+            if (!empty($offer->created_by)) {
+                $creator = User::find($offer->created_by);
+                $creatorName = $creator ? $creator->name : null;
+            }
+            $variables = [
+                '{creator}' => $creatorName ?? (auth()->user()->name ?? ''),
+            ];
+            $footerContent = TemplateHelper::replacePlaceholders($client->document_footer, $variables);
+            $html .= '<div style="margin-top: 16px; font-size: ' . $fontSizes['tax_notice'] . ';">' . $footerContent . '</div>';
         }
 
         // Signature Section

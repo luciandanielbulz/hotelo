@@ -111,6 +111,7 @@ class OfferController extends Controller
             'description' => 'test',
             'tax_id' => $client->tax_id ?? 1, // Verwende Client-Steuersatz oder Fallback
             'condition_id' => $customer->condition_id,
+            'created_by' => Auth::id(),
         ]);
 
         // Aktualisiere die `lastoffer`-Spalte in den Client-Einstellungen
@@ -173,13 +174,15 @@ class OfferController extends Controller
                 'offers.id as offer_id',
                 'offers.*',
                 'offers.date as date',
+                'offers.created_by as created_by',
                 'customers.companyname as companyname',
                 'taxrates.taxrate',
                 'customers.customername as customername',
                 'customers.address as address',
                 'customers.country as country',
                 'customers.postalcode as postalcode',
-                'customers.location as location'
+                'customers.location as location',
+                DB::raw('clients.document_footer as document_footer')
             )
             ->first();
 
@@ -198,6 +201,19 @@ class OfferController extends Controller
         $conditions = Condition::where('client_id', $user->client_id)->get();
 
         // View zurückgeben
+        // Dokument-Fußzeile-Variablen (z. B. {creator}) ersetzen
+        if (!empty($offerWithDetails->document_footer)) {
+            $creatorName = null;
+            if (!empty($offerWithDetails->created_by)) {
+                $creator = \App\Models\User::find($offerWithDetails->created_by);
+                $creatorName = $creator ? $creator->name : null;
+            }
+            $variables = [
+                '{creator}' => $creatorName ?? (auth()->user()->name ?? ''),
+            ];
+            $offerWithDetails->document_footer = \App\Helpers\TemplateHelper::replacePlaceholders($offerWithDetails->document_footer, $variables);
+        }
+
         return view('offer.edit', compact('offerWithDetails', 'conditions', 'total_price'));
     }
 

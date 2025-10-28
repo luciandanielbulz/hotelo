@@ -20,6 +20,8 @@ class Invoices extends Model
         'description',
         'depositamount',
         'status',
+        'created_by',
+        'client_version_id',
     ];
 
     public function invoicePositions()

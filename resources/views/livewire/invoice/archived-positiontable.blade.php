@@ -241,7 +241,7 @@
     <!-- Pagination -->
     @if($invoices->hasPages())
         <div class="mt-6">
-            <x-pagination :paginator="$invoices" />
+            {{ $invoices->links('livewire::tailwind') }}
         </div>
     @endif
 </div> 

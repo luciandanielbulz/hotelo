@@ -105,3 +105,11 @@
         </div>
     </div>
 </div> 
+
+@if(!empty($documentFooter))
+<div class="mt-4 flex justify-end">
+    <div class="w-full md:w-1/2 lg:w-1/2 xl:w-1/2 bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
+        <div class="prose prose-sm max-w-none text-gray-700">{!! $documentFooter !!}</div>
+    </div>
+</div>
+@endif

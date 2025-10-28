@@ -133,13 +133,15 @@
                     
                     <!-- Action Buttons -->
                     <div class="flex space-x-1 flex-wrap">
-                        <a href="{{ route('invoice.edit', $invoice->invoice_id) }}" 
-                           class="bg-blue-500 hover:bg-blue-600 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
-                           title="Bearbeiten">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                            </svg>
-                        </a>
+                        @if((int)($invoice->status ?? 0) !== 4 || auth()->user()->hasPermission('unlock_invoices'))
+                            <a href="{{ route('invoice.edit', $invoice->invoice_id) }}" 
+                               class="bg-blue-500 hover:bg-blue-600 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
+                               title="Bearbeiten">
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                </svg>
+                            </a>
+                        @endif
                         <a href="{{ route('createinvoice.pdf', ['invoice_id' => $invoice->invoice_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}" 
                            class="bg-gray-500 hover:bg-gray-600 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
                            title="Vorschau">
@@ -262,8 +264,10 @@
                                 @endif
                                 <td class="px-3 py-4">
                                     <div class="flex space-x-2">
-                                        <a href="{{ route('invoice.edit', $invoice->invoice_id) }}"
-                                           class="text-blue-600 hover:text-blue-900 font-medium">Bearbeiten</a>
+                                        @if((int)($invoice->status ?? 0) !== 4 || auth()->user()->hasPermission('unlock_invoices'))
+                                            <a href="{{ route('invoice.edit', $invoice->invoice_id) }}"
+                                               class="text-blue-600 hover:text-blue-900 font-medium">Bearbeiten</a>
+                                        @endif
                                         <a href="{{ route('createinvoice.pdf', ['invoice_id' => $invoice->invoice_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}" 
                                            class="text-gray-600 hover:text-gray-900 font-medium">Vorschau</a>
                                         <a href="{{ route('invoice.copy', $invoice->invoice_id) }}"
@@ -305,7 +309,7 @@
         <!-- Pagination -->
     @if($invoices->hasPages())
         <div class="mt-6">
-            <x-pagination :paginator="$invoices" />
+            {{ $invoices->links('livewire::tailwind') }}
         </div>
     @endif
 </div>

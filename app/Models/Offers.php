@@ -22,7 +22,9 @@ class Offers extends Model
         'condition_id',
         'offer_id',
         'comment',
-        'description'
+        'description',
+        'created_by',
+        'client_version_id'
     ];
 
     /**

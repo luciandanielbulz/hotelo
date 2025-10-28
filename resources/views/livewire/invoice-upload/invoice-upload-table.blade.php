@@ -195,7 +195,7 @@
         
         @if(!$invoiceuploads->isEmpty())
             <div class="mt-4">
-                <x-pagination :paginator="$invoiceuploads" />
+                {{ $invoiceuploads->links('livewire::tailwind') }}
             </div>
         @endif
     </div>

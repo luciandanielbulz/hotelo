@@ -34,6 +34,7 @@ class Invoicedetails extends Component
     public $invoiceNumber;
     public $periodfrom;
     public $periodto;
+    public $status;
     
     protected $stored_taxrateid; // Speichert ursprünglichen Steuersatz für Wiederherstellung
 
@@ -74,6 +75,7 @@ class Invoicedetails extends Component
         $this->condition_id = $this->details->condition_id;
         $this->periodfrom = $this->details->periodfrom ? Carbon::parse($this->details->periodfrom)->format('Y-m-d') : '';
         $this->periodto = $this->details->periodto ? Carbon::parse($this->details->periodto)->format('Y-m-d') : '';
+        $this->status = (int) ($this->details->status ?? 0);
         //dd($this->taxrateid);
     }
 
@@ -130,6 +132,7 @@ class Invoicedetails extends Component
                     'condition_id' => 'required|integer',
                     'periodfrom' => 'nullable|date',
                     'periodto' => 'nullable|date|after_or_equal:periodfrom',
+                    'status' => 'required|integer|in:0,1,2,3,4,6,7',
                 ]);
                 \Log::info('Validierung erfolgreich');
             } catch (\Exception $e) {
@@ -158,6 +161,11 @@ class Invoicedetails extends Component
             }
 
             $invoice = Invoices::findOrFail($this->invoiceId);
+            // Wenn Rechnung bereits bezahlt ist und kein Entsperr-Recht, keine Änderungen erlauben
+            if ((int)($invoice->status ?? 0) === 4 && !Auth::user()->hasPermission('unlock_invoices')) {
+                $this->message = 'Diese Rechnung ist bezahlt. Ihnen fehlt die Berechtigung zur Bearbeitung.';
+                return;
+            }
             
             \Log::info('Vor dem Update:', [
                 'alte_condition_id' => $invoice->condition_id,
@@ -166,11 +174,23 @@ class Invoicedetails extends Component
                 'neue_reverse_charge' => $this->reverse_charge,
             ]);
             
+            $oldStatus = (int) ($invoice->status ?? 0);
+            $newStatus = (int) ($this->status ?? $oldStatus);
+
+            // Downgrade nur mit Berechtigung erlauben
+            if ($newStatus < $oldStatus && !Auth::user()->hasPermission('unlock_invoices')) {
+                $this->message = 'Kein Recht zum Herabstufen des Status.';
+                // Status im Formular zurücksetzen
+                $this->status = $oldStatus;
+                return;
+            }
+
             $invoice->tax_id = $this->taxrateid;
             $invoice->reverse_charge = (bool) $this->reverse_charge;
             $invoice->date = $this->invoiceDate;
             $invoice->number = $this->invoiceNumber;
             $invoice->condition_id = $this->condition_id;
+            $invoice->status = $newStatus;
             
             // Null-Werte für leere Datumsfelder setzen
             $invoice->periodfrom = !empty($this->periodfrom) ? $this->periodfrom : null;

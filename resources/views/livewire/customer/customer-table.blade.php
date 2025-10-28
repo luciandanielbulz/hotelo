@@ -258,7 +258,7 @@
     <!-- Pagination -->
     @if($customers->hasPages())
         <div class="mt-6">
-            <x-pagination :paginator="$customers" />
+            {{ $customers->links('livewire::tailwind') }}
         </div>
     @endif
 </div> 

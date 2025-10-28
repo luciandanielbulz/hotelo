@@ -118,6 +118,7 @@ class InvoiceController extends Controller
             'description' => '',
             'tax_id' => $client->tax_id, // Steuersatz vom Client übernehmen
             'condition_id' => $customer->condition_id,
+            'created_by' => Auth::id(),
         ]);
 
         // Aktualisiere die lastinvoice Nummer in den Client-Einstellungen
@@ -200,6 +201,11 @@ class InvoiceController extends Controller
         $user = Auth::user();
         $conditions = Condition::where('client_id', $user->client_id)->get();
 
+        // Wenn Rechnung "Bezahlt" (Status 4) ist, Bearbeitung nur mit Berechtigung erlauben
+        if ((int) ($invoice->status ?? 0) === 4 && !Auth::user()->hasPermission('unlock_invoices')) {
+            abort(403, 'Diese Rechnung ist bezahlt. Ihnen fehlt die Berechtigung zur Bearbeitung.');
+        }
+
         // View zurückgeben
         return view('invoice.edit', compact('invoice', 'conditions', 'invoicepositions', 'total_price'));
     }
@@ -270,6 +276,7 @@ class InvoiceController extends Controller
                 'archiveddate' => '',
                 'sequence' => $invoice->sequence,
                 'comment' => $invoice->comment,
+                'created_by' => Auth::id(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -319,6 +326,11 @@ class InvoiceController extends Controller
         $customer = Customer::find($invoice->customer_id);
         if (!$customer || $customer->client_id !== $user->client_id) {
             abort(403, 'Sie sind nicht berechtigt, diese Rechnung zu bearbeiten.');
+        }
+
+        // Wenn Rechnung "Bezahlt" (Status 4) ist, Bearbeitung nur mit Berechtigung erlauben
+        if ((int) ($invoice->status ?? 0) === 4 && !Auth::user()->hasPermission('unlock_invoices')) {
+            abort(403, 'Diese Rechnung ist bezahlt. Ihnen fehlt die Berechtigung zur Bearbeitung.');
         }
 
         // Validierung der Eingaben
@@ -379,6 +391,9 @@ class InvoiceController extends Controller
             ]);
 
             $invoice = Invoices::findOrFail($validated['invoice_id']);
+            if ((int) ($invoice->status ?? 0) === 4 && !Auth::user()->hasPermission('unlock_invoices')) {
+                return response()->json(['message' => 'Diese Rechnung ist bezahlt. Keine Bearbeitung erlaubt.'], 403);
+            }
             $invoice->tax_id = $validated['tax_id'];
             $invoice->save();
 
@@ -405,6 +420,9 @@ class InvoiceController extends Controller
 
             //dd($validated);
             $invoice = Invoices::findOrFail($validated['invoice_id']);
+            if ((int) ($invoice->status ?? 0) === 4 && !Auth::user()->hasPermission('unlock_invoices')) {
+                return response()->json(['message' => 'Diese Rechnung ist bezahlt. Keine Bearbeitung erlaubt.'], 403);
+            }
             $invoice->date = $validated['invoicedate'];
             $invoice->save();
 
@@ -430,6 +448,9 @@ class InvoiceController extends Controller
 
             //dd($validated);
             $invoice = Invoices::findOrFail($validated['invoice_id']);
+            if ((int) ($invoice->status ?? 0) === 4 && !Auth::user()->hasPermission('unlock_invoices')) {
+                return response()->json(['message' => 'Diese Rechnung ist bezahlt. Keine Bearbeitung erlaubt.'], 403);
+            }
             $invoice->description = $validated['description'];
             $invoice->save();
 
@@ -456,6 +477,9 @@ class InvoiceController extends Controller
 
             //dd($validated);
             $invoice = Invoices::findOrFail($validated['invoice_id']);
+            if ((int) ($invoice->status ?? 0) === 4 && !Auth::user()->hasPermission('unlock_invoices')) {
+                return response()->json(['message' => 'Diese Rechnung ist bezahlt. Keine Bearbeitung erlaubt.'], 403);
+            }
             $invoice->comment = $validated['comment'];
             $invoice->save();
 
@@ -509,6 +533,9 @@ class InvoiceController extends Controller
 
                 //dd($validated);
                 $invoice = Invoices::findOrFail($validated['invoice_id']);
+                if ((int) ($invoice->status ?? 0) === 4 && !Auth::user()->hasPermission('unlock_invoices')) {
+                    return response()->json(['message' => 'Diese Rechnung ist bezahlt. Keine Bearbeitung erlaubt.'], 403);
+                }
                 $invoice->number = $validated['number'];
                 $invoice->save();
 
@@ -536,6 +563,9 @@ class InvoiceController extends Controller
 
             //dd($validated);
             $invoice = Invoices::findOrFail($validated['invoice_id']);
+            if ((int) ($invoice->status ?? 0) === 4 && !Auth::user()->hasPermission('unlock_invoices')) {
+                return response()->json(['message' => 'Diese Rechnung ist bezahlt. Keine Bearbeitung erlaubt.'], 403);
+            }
             $invoice->condition_id = $validated['condition_id'];
             $invoice->save();
 
@@ -562,6 +592,9 @@ class InvoiceController extends Controller
 
             //dd($validated);
             $invoice = Invoices::findOrFail($validated['invoice_id']);
+            if ((int) ($invoice->status ?? 0) === 4 && !Auth::user()->hasPermission('unlock_invoices')) {
+                return response()->json(['message' => 'Diese Rechnung ist bezahlt. Keine Bearbeitung erlaubt.'], 403);
+            }
             $invoice->depositamount = $validated['depositamount'];
             $invoice->save();
 
@@ -647,6 +680,7 @@ class InvoiceController extends Controller
             'archiveddate' => '',
             'sequence' => $offer->sequence,
             'comment' => $offer->comment,
+            'created_by' => Auth::id(),
             'created_at' => now(),
             'updated_at' => now(),
         ]);

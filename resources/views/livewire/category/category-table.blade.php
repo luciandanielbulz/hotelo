@@ -160,7 +160,7 @@
         <!-- Pagination -->
         @if($categories->hasPages())
             <div class="bg-gray-50 px-6 py-3 border-t border-gray-200">
-                <x-pagination :paginator="$categories" />
+                {{ $categories->links('livewire::tailwind') }}
             </div>
         @endif
     </div>

@@ -54,13 +54,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                                 </svg>
                             </button>
-                            <!-- Dropdown Menü -->
+                    <!-- Dropdown Menü -->
                             <div x-show="offersSubmenu" @click.away="offersSubmenu = false" class="mt-2 space-y-1 pl-5" @if(!request()->routeIs('offer.*')) x-cloak @endif>
                                 <a href="{{ route('offer.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('offer.index') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
-                                    Abgebote
+                                    Angebote
                                 </a>
                                 <a href="{{ route('offer.index_archivated') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('offer.index_archivated') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
-                                    Archivierte Abgebote
+                                    Archivierte Angebote
                                 </a>
                             </div>
                         </li>
@@ -175,11 +175,6 @@
                                 @if($user->hasPermission('manage_users'))
                                     <a href="{{ route('users.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('users.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
                                         Benutzer
-                                    </a>
-                                @endif
-                                @if($user->hasPermission('view_clients'))
-                                    <a href="{{ route('logos.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('logos.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
-                                        Logos
                                     </a>
                                 @endif
                                 @if($user->hasPermission('edit_my_client_settings'))

@@ -96,6 +96,7 @@ class ClientsController extends Controller
             'smallbusiness' => ['required', 'boolean'],
             'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'signature' => ['nullable', 'string', 'max:1000'],
+            'document_footer' => ['nullable', 'string'],
             'style' => ['nullable', 'string', 'max:500'],
             'company_registration_number' => ['nullable', 'string', 'max:100'],
             'tax_number' => ['nullable', 'string', 'max:100'],
@@ -221,6 +222,7 @@ class ClientsController extends Controller
             'smallbusiness' => ['required', 'boolean'],
             'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'signature' => ['nullable', 'string', 'max:1000'],
+            'document_footer' => ['nullable', 'string'],
             'style' => ['nullable', 'string', 'max:500'],
             'company_registration_number' => ['nullable', 'string', 'max:100'],
             'tax_number' => ['nullable', 'string', 'max:100'],
@@ -509,6 +511,7 @@ class ClientsController extends Controller
             'smallbusiness' => ['required', 'boolean'],
             'logo' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif', 'max:2048'],
             'signature' => ['nullable', 'string', 'max:1000'],
+            'document_footer' => ['nullable', 'string'],
             'style' => ['nullable', 'string', 'max:500'],
             'company_registration_number' => ['nullable', 'string', 'max:100'],
             'tax_number' => ['nullable', 'string', 'max:100'],
@@ -547,7 +550,7 @@ class ClientsController extends Controller
             $changesToCheck = [
                 'clientname', 'companyname', 'business', 'address', 'postalcode', 
                 'location', 'email', 'phone', 'tax_id', 'webpage', 'bank', 
-                'accountnumber', 'vat_number', 'bic', 'smallbusiness', 'signature', 
+                'accountnumber', 'vat_number', 'bic', 'smallbusiness', 'signature', 'document_footer', 
                 'style', 'company_registration_number', 'tax_number', 'management', 
                 'regional_court', 'color'
             ];

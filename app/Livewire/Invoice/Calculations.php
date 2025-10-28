@@ -6,6 +6,9 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use App\Models\Invoices;
 use App\Models\Taxrates;
+use App\Models\Clients;
+use App\Models\User;
+use App\Helpers\TemplateHelper;
 use Illuminate\Support\Facades\DB;
 
 class Calculations extends Component
@@ -17,6 +20,7 @@ class Calculations extends Component
     public $invoice;
     public $total_price;
     public $tax_rate;
+    public $documentFooter;
 
     public function mount($invoiceId)
     {
@@ -50,6 +54,28 @@ class Calculations extends Component
         // Weitere Daten laden
         $this->invoice = $invoice;  // Hier kannst du das komplette Invoice-Objekt weitergeben
         $this->depositAmount = $invoice->depositamount;
+
+        // Dokument-Fußzeile aus der Client-Version laden (falls vorhanden)
+        $this->documentFooter = null;
+        if ($invoice && $invoice->client_version_id) {
+            $clientVersion = Clients::find($invoice->client_version_id);
+            if ($clientVersion) {
+                $this->documentFooter = $clientVersion->document_footer;
+            }
+        }
+
+        // Platzhalter verarbeiten
+        if (!empty($this->documentFooter)) {
+            $creatorName = null;
+            if (!empty($invoice->created_by)) {
+                $creator = User::find($invoice->created_by);
+                $creatorName = $creator ? $creator->name : null;
+            }
+            $variables = [
+                '{creator}' => $creatorName ?? (auth()->user()->name ?? ''),
+            ];
+            $this->documentFooter = TemplateHelper::replacePlaceholders($this->documentFooter, $variables);
+        }
 
         //dd($this->total_price);
     }

@@ -28,6 +28,7 @@ class Clients extends Model
         'smallbusiness',
         'logo',
         'signature',
+        'document_footer',
         'style',
         'company_registration_number',
         'tax_number',

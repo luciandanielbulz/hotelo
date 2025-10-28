@@ -107,7 +107,7 @@
         
         <!-- Paginierungslinks -->
         <div class="mt-4">
-            <x-pagination :paginator="$currencies" />
+            {{ $currencies->links('livewire::tailwind') }}
         </div>
     @else
         <div class="text-center py-12">

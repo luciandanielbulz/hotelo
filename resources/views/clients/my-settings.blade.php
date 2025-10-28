@@ -119,15 +119,31 @@
             <!-- Versteckte Felder -->
             <input type="hidden" name="style" value="{{ old('style', $clients->style) }}">
 
-            <!-- Signatur -->
+            <!-- E-Mail Signatur -->
             <div class="border-b border-gray-900/10 pb-6">
-                <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Signatur</h3>
+                <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">E-Mail Signatur</h3>
                 <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6">
                     <div class="sm:col-span-6">
-                        <label for="signature" class="block text-sm/6 font-medium text-gray-900 mb-1">Signatur</label>
+                        <label for="signature" class="block text-sm/6 font-medium text-gray-900 mb-1">E-Mail Signatur</label>
                         <div class="mt-1">
                             <textarea name="signature" id="signature" rows="3" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 @error('signature') border-red-500 outline-red-500 @enderror">{{ old('signature', $clients->signature) }}</textarea>
                             @error('signature')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dokument-Fußzeile (Angebote & Rechnungen) -->
+            <div class="border-b border-gray-900/10 pb-6">
+                <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Dokument-Fußzeile (Angebote & Rechnungen)</h3>
+                <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6">
+                    <div class="sm:col-span-6">
+                        <label for="document_footer" class="block text-sm/6 font-medium text-gray-900 mb-1">Dokument-Fußzeile</label>
+                        <div class="mt-1">
+                            <textarea name="document_footer" id="document_footer" rows="3" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 @error('document_footer') border-red-500 outline-red-500 @enderror">{{ old('document_footer', $clients->document_footer) }}</textarea>
+                            @error('document_footer')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
@@ -204,7 +220,26 @@
                         ['insert', ['link']],
                         ['view', ['fullscreen', 'codeview', 'help']]
                     ],
-                    placeholder: 'Geben Sie hier Ihre Signatur ein...',
+                    placeholder: 'Geben Sie hier Ihre E-Mail Signatur ein...',
+                });
+
+                $('#document_footer').summernote({
+                    height: 200,
+                    toolbar: [
+                        ['style', ['bold', 'italic', 'underline', 'clear']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['link']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ],
+                    placeholder: 'Text, der in Angeboten/Rechnungen unter der Summe angezeigt wird...',
+                });
+
+                // Sicherstellen, dass der Editor-Inhalt beim Absenden im Textarea landet
+                $('form[action="{{ route('clients.update-my-settings') }}"]').on('submit', function() {
+                    const sig = $('#signature').summernote('code');
+                    const docf = $('#document_footer').summernote('code');
+                    $('#signature').val(sig);
+                    $('#document_footer').val(docf);
                 });
             });
 
