@@ -55,9 +55,11 @@ class Calculations extends Component
         $this->invoice = $invoice;  // Hier kannst du das komplette Invoice-Objekt weitergeben
         $this->depositAmount = $invoice->depositamount;
 
-        // Dokument-Fußzeile aus der Client-Version laden (falls vorhanden)
+        // Dokument-Fußzeile: bevorzugt aus der Rechnung, sonst aus der Client-Version
         $this->documentFooter = null;
-        if ($invoice && $invoice->client_version_id) {
+        if ($invoice && !empty($invoice->document_footer)) {
+            $this->documentFooter = $invoice->document_footer;
+        } elseif ($invoice && $invoice->client_version_id) {
             $clientVersion = Clients::find($invoice->client_version_id);
             if ($clientVersion) {
                 $this->documentFooter = $clientVersion->document_footer;

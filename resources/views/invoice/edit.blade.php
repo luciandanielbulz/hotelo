@@ -214,8 +214,13 @@
 
         
 
-    </div>
+        
 
+    </div>
+    <!-- Dokument-Fußzeile (Editor) - eigener Abstand unter der Zusammenfassung -->
+    <div class="mt-6">
+        <livewire:invoice.document-footer :invoiceId="$invoice->id" />
+    </div>
     <script>
         function handleCustomerUpdated(event) {
             // Schließe das Modal

@@ -88,7 +88,7 @@ class InvoiceController extends Controller
                 $query->where('id', $client_id)
                       ->orWhere('parent_client_id', $client_id);
             })
-            ->select('id', 'tax_id')
+            ->select('id', 'tax_id', 'document_footer')
             ->first();
         
         // Fallback: Falls keine aktive Version gefunden wird, suche den ursprünglichen Client
@@ -118,6 +118,7 @@ class InvoiceController extends Controller
             'description' => '',
             'tax_id' => $client->tax_id, // Steuersatz vom Client übernehmen
             'condition_id' => $customer->condition_id,
+            'document_footer' => $client->document_footer ?? null,
             'created_by' => Auth::id(),
         ]);
 
@@ -276,6 +277,7 @@ class InvoiceController extends Controller
                 'archiveddate' => '',
                 'sequence' => $invoice->sequence,
                 'comment' => $invoice->comment,
+                'document_footer' => $invoice->document_footer ?? null,
                 'created_by' => Auth::id(),
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -680,6 +682,7 @@ class InvoiceController extends Controller
             'archiveddate' => '',
             'sequence' => $offer->sequence,
             'comment' => $offer->comment,
+            'document_footer' => optional(\App\Models\Clients::find($offer->client_version_id ?? $client->id))->document_footer,
             'created_by' => Auth::id(),
             'created_at' => now(),
             'updated_at' => now(),

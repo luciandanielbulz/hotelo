@@ -1,0 +1,100 @@
+<div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+    <!-- Dokument-Fußzeile (Angebote & Rechnungen) -->
+    <div class="border-b border-gray-900/10 pb-6">
+        <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Dokument-Fußzeile</h3>
+        <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6">
+            <div class="sm:col-span-6">
+                
+                <div class="mt-1" wire:ignore>
+                    <textarea name="document_footer" id="document_footer" rows="3" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 @error('document_footer') border-red-500 outline-red-500 @enderror">{!! $footerContent !!}</textarea>
+                    @error('document_footer')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="mt-3">
+                    <button type="button"
+                            id="save_footer_btn_{{ $invoiceId }}"
+                            class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none">
+                        Speichern
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Einbindung von Summernote -->
+    @push('styles')
+        <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
+    @endpush
+
+    @push('scripts')
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#signature').summernote({
+                    height: 300, // Höhe des Editors
+                    toolbar: [
+                        ['style', ['bold', 'italic', 'underline', 'clear']],
+                        ['font', ['strikethrough', 'superscript', 'subscript']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['link']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ],
+                    placeholder: 'Geben Sie hier Ihre E-Mail Signatur ein...',
+                });
+
+                $('#document_footer').summernote({
+                    height: 200,
+                    toolbar: [
+                        ['style', ['bold', 'italic', 'underline', 'clear']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['insert', ['link']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ],
+                    placeholder: 'Text, der in Angeboten/Rechnungen unter der Summe angezeigt wird...',
+                });
+                // Editor mit DB-Inhalt befüllen
+                $('#document_footer').summernote('code', @js($footerContent));
+
+                // Speichern-Button: Inhalt an Livewire senden
+                $('#save_footer_btn_{{ $invoiceId }}').on('click', function(){
+                    const html = $('#document_footer').summernote('code');
+                    if (window.Livewire) {
+                        Livewire.find(@this.__instance.id).set('footerContent', html || '');
+                        Livewire.find(@this.__instance.id).call('saveFooter');
+                    }
+                });
+
+                // Sicherstellen, dass der Editor-Inhalt beim Absenden im Textarea landet
+                $('form[action="{{ route('clients.update-my-settings') }}"]').on('submit', function() {
+                    const sig = $('#signature').summernote('code');
+                    const docf = $('#document_footer').summernote('code');
+                    $('#signature').val(sig);
+                    $('#document_footer').val(docf);
+                });
+            });
+
+            function previewImage(input) {
+                const preview = document.getElementById('preview');
+                const previewContainer = document.getElementById('logo-preview');
+                
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        preview.src = e.target.result;
+                        previewContainer.classList.remove('hidden');
+                    }
+                    
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    preview.src = '#';
+                    previewContainer.classList.add('hidden');
+                }
+            }
+        </script>
+    @endpush
+</div>
+
+

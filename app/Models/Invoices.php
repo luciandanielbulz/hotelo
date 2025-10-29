@@ -18,6 +18,7 @@ class Invoices extends Model
         'number',
         'comment',
         'description',
+        'document_footer',
         'depositamount',
         'status',
         'created_by',
