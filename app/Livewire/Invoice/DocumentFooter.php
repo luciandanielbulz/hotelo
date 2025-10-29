@@ -37,21 +37,8 @@ class DocumentFooter extends Component
                 'footerContent' => 'nullable|string',
             ]);
 
-            // Teams/Editor-Markup bereinigen
-            $clean = $this->footerContent ?? '';
-            // Entferne umschließendes <span data-teams="true"> innerhalb eines <p>
-            $clean = preg_replace('/<p>\s*<span[^>]*data-teams=\"true\"[^>]*>/i', '<p>', $clean);
-            $clean = preg_replace('/<\/span>\s*<\/p>/i', '</p>', $clean);
-            // Style-Attribute margin-left o.Ä. entfernen
-            $clean = preg_replace('/\sstyle=\"[^\"]*\"/i', '', $clean);
-            // Mehrfache verschachtelte <p><p> -> ein <p>
-            $clean = preg_replace('/<p>\s*<p>/i', '<p>', $clean);
-            $clean = preg_replace('/<\/p>\s*<\/p>/i', '</p>', $clean);
-            // Überflüssige Wrapper-<p> um nur <br/>&nbsp; etc. optional glätten (vorsichtig)
-            $clean = preg_replace('/<p>\s*&nbsp;\s*<\/p>/i', '<p>&nbsp;</p>', $clean);
-
             $invoice = Invoices::findOrFail($this->invoiceId);
-            $invoice->document_footer = $clean;
+            $invoice->document_footer = $this->footerContent ?? '';
             $invoice->save();
 
             // Zusammenfassung aktualisieren (lädt footer neu)
@@ -64,10 +51,7 @@ class DocumentFooter extends Component
         }
     }
 
-    public function updatedFooterContent(): void
-    {
-        $this->saveFooter();
-    }
+    // Keine Auto-Speicherung mehr über Property-Änderung
 
     public function render()
     {

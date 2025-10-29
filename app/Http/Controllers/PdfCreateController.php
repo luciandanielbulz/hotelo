@@ -809,8 +809,14 @@ class PdfCreateController extends Controller
             $html .= '<div style="margin-top: 20px; font-size: ' . $fontSizes['tax_notice'] . ';">Gemäß § 13b UStG liegt die Steuerschuldnerschaft beim Leistungsempfänger.</div>';
         }
 
-        // Dokument-Fußzeile direkt unter dem Gesamtbetrag
-        if (!empty($client->document_footer)) {
+        // Dokument-Fußzeile direkt unter dem Gesamtbetrag (Priorität: Rechnungs-Fußzeile)
+        $docFooterSource = '';
+        if (!empty($invoice->document_footer)) {
+            $docFooterSource = $invoice->document_footer;
+        } elseif (!empty($client->document_footer)) {
+            $docFooterSource = $client->document_footer;
+        }
+        if (!empty($docFooterSource)) {
             $creatorFullName = null;
             if (!empty($invoice->created_by)) {
                 $creator = User::find($invoice->created_by);
@@ -823,7 +829,7 @@ class PdfCreateController extends Controller
             $variables = [
                 '{creator}' => $creatorFullName ?: $authFullName,
             ];
-            $footerContent = TemplateHelper::replacePlaceholders($client->document_footer, $variables);
+            $footerContent = TemplateHelper::replacePlaceholders($docFooterSource, $variables);
             $html .= '<div style="margin-top: 16px; font-size: ' . $fontSizes['tax_notice'] . ';">' . $footerContent . '</div>';
         }
 
