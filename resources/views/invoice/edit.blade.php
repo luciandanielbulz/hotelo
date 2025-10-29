@@ -48,8 +48,12 @@
     </div>
 
     <div class="space-y-6">
-        <!-- Kundendaten Karte -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg" x-data="{ openCustomerModal: false }">
+        <!-- Kundendaten, Status, Beschreibung in gemeinsamer Karte -->
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg mb-6">
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <!-- Kundendaten Karte (1/3) -->
+            <div class="md:col-span-1">
+                <div class="h-full" x-data="{ openCustomerModal: false }">
             <!-- Mobile Header -->
             <div class="md:hidden mb-4">
                 <h2 class="text-lg font-semibold text-gray-900 flex items-center justify-center">
@@ -142,10 +146,30 @@
                     </div>
                 </div>
             </div>
+                </div>
+            </div>
+            <!-- Mitte (1/3): Status -->
+            <div class="md:col-span-1 md:border-l md:border-gray-200/60 md:pl-6">
+                <livewire:invoice.status-select :invoiceId="$invoice->id" />
+            </div>
+            <!-- Rechts (1/3): Beschreibung Intern -->
+            <div class="md:col-span-1 md:border-l md:border-gray-200/60 md:pl-6">
+                <div class="h-full">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
+                        </svg>
+                        Beschreibung (intern)
+                    </h2>
+                    <livewire:invoice.comment-description :invoiceId="$invoice->id" />
+                </div>
+            </div>
+            </div>
+        </div>
         </div>
 
         <!-- Rechnungsdetails Karte -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg mb-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -155,22 +179,13 @@
             <livewire:invoice.invoicedetails :invoiceId="$invoice->id"/>
         </div>
 
-        <!-- Zusätzliche Informationen Karte -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                Zusätzliche Informationen
-            </h2>
-            <livewire:invoice.comment-description :invoiceId="$invoice->id" />
-        </div>
+        
 
         <!-- Positionen Karte -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg mb-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
                 Positionen
             </h2>
@@ -191,7 +206,7 @@
                     <livewire:invoice.depositamount :invoiceId="$invoice->id"/>
                 </div>
                 <!-- Summenbereich (2. und 3. Drittel) -->
-                <div class="md:col-span-2">
+                <div class="md:col-span-2 md:border-l md:border-gray-200/60 md:pl-6">
                     <livewire:invoice.calculations :invoiceId="$invoice->id"/>
                 </div>
             </div>

@@ -10,6 +10,7 @@ class Depositamount extends Component
 {
     public $invoiceId;
     public $depositAmount;
+    protected bool $isSaving = false;
 
     public function mount($invoiceId)
     {
@@ -20,24 +21,57 @@ class Depositamount extends Component
 
     public function sendUpdateAmount()
     {
-        $invoiceId = $this->invoiceId;
-
-        $this->validate([
-            'depositAmount' => 'nullable|numeric|min:0',  // Validierung
-        ]);
-
-        // Wenn depositAmount leer oder null ist, setze es auf 0
-        if (empty($this->depositAmount)) {
-            $this->depositAmount = 0;
+        if ($this->isSaving) {
+            return;
         }
+        $this->isSaving = true;
 
-        // Speichern des Wertes in der DB
-        DB::table('invoices')
-            ->where('id', $invoiceId)  // Sicherstellen, dass die richtige Rechnung aktualisiert wird
-            ->update(['depositamount' => $this->depositAmount]);
+        try {
+            $invoiceId = $this->invoiceId;
 
-        // Event dispatchen, um die Summen zu aktualisieren
-        $this->dispatch('updateSums');
+            // Wert normalisieren (dezimales Komma, Tausenderpunkte, Leerzeichen)
+            $raw = is_string($this->depositAmount) ? trim($this->depositAmount) : $this->depositAmount;
+            if ($raw === null || $raw === '') {
+                $normalized = 0;
+            } else {
+                if (is_string($raw)) {
+                    // Entferne Tausenderpunkte und Leerzeichen, ersetze Komma durch Punkt
+                    $raw = str_replace([' ', "\u{00A0}"], '', $raw);
+                    $raw = str_replace(['.'], '', $raw); // Tausenderpunkte
+                    $raw = str_replace([','], '.', $raw); // Dezimalkomma
+                }
+                $normalized = (float) $raw;
+            }
+
+            // Nicht negativ
+            if ($normalized < 0) {
+                $normalized = 0;
+            }
+
+            // Auf 2 Nachkommastellen runden
+            $normalized = round($normalized, 2);
+
+            // Property auf den bereinigten Wert setzen, damit die UI konsistent ist
+            $this->depositAmount = $normalized;
+
+            // Validierung nach Normalisierung
+            $this->validate([
+                'depositAmount' => 'nullable|numeric|min:0',
+            ]);
+
+            // Speichern des Wertes in der DB
+            DB::table('invoices')
+                ->where('id', $invoiceId)
+                ->update(['depositamount' => $this->depositAmount]);
+
+            // Event dispatchen, um die Summen zu aktualisieren und Toast anzeigen
+            $this->dispatch('updateSums');
+            $this->dispatch('notify', message: 'Anzahlung gespeichert.', type: 'success');
+        } catch (\Exception $e) {
+            $this->dispatch('notify', message: 'Fehler beim Speichern der Anzahlung: ' . $e->getMessage(), type: 'error');
+        } finally {
+            $this->isSaving = false;
+        }
     }
 
     public function loadData($invoiceId)
@@ -60,5 +94,11 @@ class Depositamount extends Component
     public function render()
     {
         return view('livewire.invoice.depositamount');
+    }
+
+    // Auto-Save nach Eingabe-Pause
+    public function updatedDepositAmount()
+    {
+        $this->sendUpdateAmount();
     }
 }

@@ -38,6 +38,9 @@ class Invoicedetails extends Component
     
     protected $stored_taxrateid; // Speichert ursprünglichen Steuersatz für Wiederherstellung
 
+    protected bool $isSaving = false;
+    protected ?string $lastChangedProperty = null;
+
 
     public function mount($invoiceId)
     {
@@ -99,11 +102,17 @@ class Invoicedetails extends Component
                 $this->message = 'Reverse Charge deaktiviert - ursprünglicher Steuersatz wiederhergestellt.';
             }
         }
+        // Änderungen sofort speichern
+        $this->updateInvoiceDetails();
     }
 
     public function updateInvoiceDetails()
     {
         try {
+            if ($this->isSaving) {
+                return;
+            }
+            $this->isSaving = true;
             \Log::info('updateInvoiceDetails gestartet', [
                 'invoiceId' => $this->invoiceId,
                 'condition_id' => $this->condition_id,
@@ -124,20 +133,26 @@ class Invoicedetails extends Component
 
             // Validierung mit ausführlichem Logging
             try {
-                $this->validate([
+                $rules = [
                     'taxrateid' => 'required|integer',
                     'reverse_charge' => 'boolean',
                     'invoiceDate' => 'required|date',
                     'invoiceNumber' => 'required|string|max:100',
                     'condition_id' => 'required|integer',
                     'periodfrom' => 'nullable|date',
-                    'periodto' => 'nullable|date|after_or_equal:periodfrom',
-                    'status' => 'required|integer|in:0,1,2,3,4,6,7',
-                ]);
+                ];
+                // Range-Validierung nur erzwingen, wenn periodto geändert wurde
+                if ($this->lastChangedProperty !== 'periodfrom') {
+                    $rules['periodto'] = 'nullable|date|after_or_equal:periodfrom';
+                } else {
+                    $rules['periodto'] = 'nullable|date';
+                }
+                $this->validate($rules);
                 \Log::info('Validierung erfolgreich');
             } catch (\Exception $e) {
                 \Log::error('Validierung fehlgeschlagen: ' . $e->getMessage());
                 $this->message = 'Validierung fehlgeschlagen: ' . $e->getMessage();
+                $this->dispatch('notify', message: $this->message, type: 'error');
                 return;
             }
 
@@ -174,23 +189,11 @@ class Invoicedetails extends Component
                 'neue_reverse_charge' => $this->reverse_charge,
             ]);
             
-            $oldStatus = (int) ($invoice->status ?? 0);
-            $newStatus = (int) ($this->status ?? $oldStatus);
-
-            // Downgrade nur mit Berechtigung erlauben
-            if ($newStatus < $oldStatus && !Auth::user()->hasPermission('unlock_invoices')) {
-                $this->message = 'Kein Recht zum Herabstufen des Status.';
-                // Status im Formular zurücksetzen
-                $this->status = $oldStatus;
-                return;
-            }
-
             $invoice->tax_id = $this->taxrateid;
             $invoice->reverse_charge = (bool) $this->reverse_charge;
             $invoice->date = $this->invoiceDate;
             $invoice->number = $this->invoiceNumber;
             $invoice->condition_id = $this->condition_id;
-            $invoice->status = $newStatus;
             
             // Null-Werte für leere Datumsfelder setzen
             $invoice->periodfrom = !empty($this->periodfrom) ? $this->periodfrom : null;
@@ -205,6 +208,7 @@ class Invoicedetails extends Component
             ]);
 
             $this->message = 'Details erfolgreich aktualisiert.';
+            $this->dispatch('notify', message: $this->message, type: 'success');
             
             // Event dispatchen, um andere Komponenten über die Änderung zu informieren
             $this->dispatch('updateSums');
@@ -220,6 +224,24 @@ class Invoicedetails extends Component
             ]);
             
             $this->message = 'Fehler beim Speichern: ' . $e->getMessage();
+            $this->dispatch('notify', message: $this->message, type: 'error');
+        } finally {
+            $this->isSaving = false;
+        }
+    }
+
+    // Auto-Save nach debounce-Änderungen der relevanten Felder
+    public function updated($propertyName, $value = null)
+    {
+        if ($this->isSaving) {
+            return;
+        }
+        $autoSaveFields = [
+            'taxrateid', 'invoiceDate', 'invoiceNumber', 'periodfrom', 'periodto', 'condition_id'
+        ];
+        if (in_array($propertyName, $autoSaveFields, true)) {
+            $this->lastChangedProperty = $propertyName;
+            $this->updateInvoiceDetails();
         }
     }
 

@@ -59,6 +59,35 @@
         </div>
     </div>
     
+    <!-- Global Toast Container (oben rechts) -->
+    <div id="toast-root" class="fixed top-4 right-4 z-[100000] space-y-3" x-data="{ toasts: [] }"
+         x-init="
+            window.addEventListener('notify', (e) => {
+                const id = Date.now() + Math.random();
+                let payload = Array.isArray(e.detail) ? e.detail[0] : e.detail;
+                if (payload === undefined || payload === null) payload = {};
+                const message = typeof payload === 'string' ? payload : (payload.message ?? 'Erfolgreich gespeichert.');
+                const type = typeof payload === 'object' && payload.type ? payload.type : 'success';
+                toasts.push({ id, message, type });
+                setTimeout(() => { toasts = toasts.filter(t => t.id !== id); }, 3000);
+            });
+         ">
+        <template x-for="toast in toasts" :key="toast.id">
+            <div x-transition.opacity
+                 class="rounded-lg shadow-lg border px-4 py-3 min-w-64 max-w-sm"
+                 :class="toast.type === 'success' ? 'bg-green-50 border-green-200 text-green-900' : (toast.type === 'error' ? 'bg-red-50 border-red-200 text-red-900' : 'bg-gray-50 border-gray-200 text-gray-900')">
+                <div class="flex items-start">
+                    <div class="mt-0.5 mr-2" :class="toast.type === 'success' ? 'text-green-500' : (toast.type === 'error' ? 'text-red-500' : 'text-gray-500')">
+                        <svg x-show="toast.type === 'success'" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" /></svg>
+                        <svg x-show="toast.type === 'error'" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z" clip-rule="evenodd" /></svg>
+                        <svg x-show="toast.type !== 'success' && toast.type !== 'error'" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path d="M2 5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0116 9v6a2 2 0 01-2 2H4a2 2 0 01-2-2V5z" /></svg>
+                    </div>
+                    <div class="text-sm font-medium" x-text="toast.message"></div>
+                </div>
+            </div>
+        </template>
+    </div>
+
     @livewireScripts
     @stack('scripts')
 </body>
