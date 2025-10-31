@@ -99,6 +99,7 @@ class Offerdetails extends Component
             ]);
 
             $this->message = 'Details erfolgreich aktualisiert.';
+            $this->dispatch('notify', message: $this->message, type: 'success');
             
             // Event dispatchen, um die Seite zu aktualisieren (da Zusammenfassung im Blade-Template berechnet wird)
             $this->dispatch('updateOfferSummary');
@@ -113,7 +114,76 @@ class Offerdetails extends Component
             ]);
             
             $this->message = 'Fehler beim Speichern: ' . $e->getMessage();
+            $this->dispatch('notify', message: $this->message, type: 'error');
         }
+    }
+
+    // Auto-Save: Nur Steuersatz separat speichern, ohne andere Felder zu verlangen
+    public function updatedTaxrateid($value)
+    {
+        try {
+            $this->validate([
+                'taxrateid' => 'required|integer',
+            ]);
+
+            $offer = Offers::findOrFail($this->offerId);
+            $offer->tax_id = (int) $this->taxrateid;
+            $offer->save();
+
+            $this->message = 'Steuersatz gespeichert.';
+            $this->dispatch('notify', message: $this->message, type: 'success');
+        } catch (\Exception $e) {
+            $this->message = 'Fehler beim Speichern des Steuersatzes: ' . $e->getMessage();
+            $this->dispatch('notify', message: $this->message, type: 'error');
+        }
+    }
+
+    public function updatedOfferDate($value)
+    {
+        try {
+            $this->validate([
+                'offerDate' => 'required|date',
+            ]);
+            $offer = Offers::findOrFail($this->offerId);
+            $offer->date = $this->offerDate; // Y-m-d
+            $offer->save();
+            $this->message = 'Datum gespeichert.';
+            $this->dispatch('notify', message: $this->message, type: 'success');
+        } catch (\Exception $e) {
+            $this->message = 'Fehler beim Speichern des Datums: ' . $e->getMessage();
+            $this->dispatch('notify', message: $this->message, type: 'error');
+        }
+    }
+
+    public function updatedOfferNumber($value)
+    {
+        try {
+            $this->validate([
+                'offerNumber' => 'required|numeric',
+            ]);
+            $offer = Offers::findOrFail($this->offerId);
+            $offer->number = $this->offerNumber;
+            $offer->save();
+            $this->message = 'Nummer gespeichert.';
+            $this->dispatch('notify', message: $this->message, type: 'success');
+            $this->dispatch('updateOfferSummary');
+        } catch (\Exception $e) {
+            $this->message = 'Fehler beim Speichern der Nummer: ' . $e->getMessage();
+            $this->dispatch('notify', message: $this->message, type: 'error');
+        }
+    }
+
+    // Öffentliche Methoden für direkte Aufrufe aus dem Template
+    public function saveOfferDate($value)
+    {
+        $this->offerDate = $value;
+        $this->updatedOfferDate($value);
+    }
+
+    public function saveTaxrate($value)
+    {
+        $this->taxrateid = (int) $value;
+        $this->updatedTaxrateid($value);
     }
 
     public function render()

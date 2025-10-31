@@ -1028,26 +1028,27 @@ class PdfCreateController extends Controller
         }
 
         // Dokument-Fußzeile direkt unter dem Gesamtbetrag
-        if (!empty($client->document_footer)) {
-            $creatorFullName = null;
-            if (!empty($offer->created_by)) {
-                $creator = User::find($offer->created_by);
-                if ($creator) {
-                    $creatorFullName = trim(($creator->name ?? '') . ' ' . ($creator->lastname ?? ''));
-                }
-            }
-            $authUser = auth()->user();
-            $authFullName = $authUser ? trim(($authUser->name ?? '') . ' ' . ($authUser->lastname ?? '')) : '';
-            $variables = [
-                '{creator}' => $creatorFullName ?: $authFullName,
-            ];
-            $footerContent = TemplateHelper::replacePlaceholders($client->document_footer, $variables);
-            $html .= '<div style="margin-top: 16px; font-size: ' . $fontSizes['tax_notice'] . ';">' . $footerContent . '</div>';
-        }
+        // if (!empty($client->document_footer)) {
+        //     $creatorFullName = null;
+        //     if (!empty($offer->created_by)) {
+        //         $creator = User::find($offer->created_by);
+        //         if ($creator) {
+        //             $creatorFullName = trim(($creator->name ?? '') . ' ' . ($creator->lastname ?? ''));
+        //         }
+        //     }
+        //     $authUser = auth()->user();
+        //     $authFullName = $authUser ? trim(($authUser->name ?? '') . ' ' . ($authUser->lastname ?? '')) : '';
+        //     $variables = [
+        //         '{creator}' => $creatorFullName ?: $authFullName,
+        //     ];
+        //     $footerContent = TemplateHelper::replacePlaceholders($client->document_footer, $variables);
+        //     $html .= '<div style="margin-top: 16px; font-size: ' . $fontSizes['tax_notice'] . ';">' . $footerContent . '</div>';
+        // }
 
         // Signature Section
         $html .= '<div class="signature-section">
-            Bei Annahme des Angebots bitten wir um Unterfertigung
+            <br>
+            Bei Annahme des Angebots bitten wir um Unterfertigung<br>
             <div class="signature-line"></div>
             <div style="margin-top: 5px;">Unterschrift Kunde</div>
         </div>';

@@ -34,8 +34,11 @@
     </div>
 
     <div class="space-y-6">
-        <!-- Kundendaten Karte -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg" x-data="{ openCustomerModal: false }">
+        <!-- Kundendaten + Beschreibung (2 Spalten wie Rechnung) -->
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <!-- Kundendaten (links 1/2) -->
+                <div x-data="{ openCustomerModal: false }">
             <!-- Mobile Header -->
             <div class="md:hidden mb-4">
                 <h2 class="text-lg font-semibold text-gray-900 flex items-center justify-center">
@@ -128,10 +131,22 @@
                     </div>
                 </div>
             </div>
+                </div>
+                <!-- Beschreibung/Kommentar (rechts 1/2) -->
+                <div class="md:border-l md:border-gray-200/60 md:pl-6">
+                    <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/>
+                        </svg>
+                        Zusätzliche Informationen
+                    </h2>
+                    <livewire:offer.comment-description :offerId="$offerWithDetails->id" />
+                </div>
+            </div>
         </div>
 
         <!-- Angebotsdetails Karte -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg mb-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -141,19 +156,10 @@
             <livewire:offer.offerdetails :offerId="$offerWithDetails->id" />
         </div>
 
-        <!-- Zusätzliche Informationen Karte -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
-            <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                Zusätzliche Informationen
-            </h2>
-            <livewire:offer.comment-description :offerId="$offerWithDetails->id" />
-        </div>
+        
 
         <!-- Positionen Karte -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg mb-6 mt-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <svg class="w-5 h-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
@@ -226,6 +232,7 @@
             </div>
         </div>
 
+        {{-- 
         @if(!empty($offerWithDetails->document_footer))
         <div class="mt-4 flex justify-end">
             <div class="w-full md:w-1/2 lg:w-1/2 xl:w-1/2 bg-white rounded-lg p-4 border border-gray-200 shadow-sm">
@@ -233,6 +240,7 @@
             </div>
         </div>
         @endif
+        --}}
 
     <script>
         document.addEventListener('comment-updated', (event) => {
