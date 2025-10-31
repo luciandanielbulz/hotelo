@@ -1,5 +1,5 @@
 <!-- resources/views/components/sidebar.blade.php -->
-<div x-data="{ offersSubmenu: {{ request()->routeIs('offer.*') ? 'true' : 'false' }}, salesSubmenu: {{ (request()->routeIs('sales.*') || request()->routeIs('bankdata.*')) ? 'true' : 'false' }}, invoicesSubmenu: {{ (request()->routeIs('invoice.*') || request()->routeIs('invoiceupload.*')) ? 'true' : 'false' }}, adminSubmenu: {{ (request()->routeIs('roles.*') || request()->routeIs('permissions.*') || request()->routeIs('clients.*') || request()->routeIs('users.*') || request()->routeIs('logos.*') || request()->routeIs('clients.my-settings')) ? 'true' : 'false' }}, profileSubmenu: {{ request()->routeIs('profile.*') ? 'true' : 'false' }} }" class="flex h-screen flex-col gap-y-5 overflow-y-auto bg-white px-6 border-r border-gray-200">
+<div x-data="{ offersSubmenu: {{ request()->routeIs('offer.*') ? 'true' : 'false' }}, salesSubmenu: {{ (request()->routeIs('sales.*') || request()->routeIs('bankdata.*')) ? 'true' : 'false' }}, invoicesSubmenu: {{ (request()->routeIs('invoice.*') || request()->routeIs('invoiceupload.*')) ? 'true' : 'false' }}, adminSubmenu: {{ (request()->routeIs('roles.*') || request()->routeIs('permissions.*') || request()->routeIs('clients.*') || request()->routeIs('users.*') || request()->routeIs('logos.*') || request()->routeIs('clients.my-settings') || request()->routeIs('condition.*') || request()->routeIs('currencies.*') || request()->routeIs('categories.*') || request()->routeIs('maintenance.*') || request()->routeIs('server-monitoring.*') || request()->routeIs('version.index') || request()->routeIs('client-settings.*')) ? 'true' : 'false' }}, profileSubmenu: {{ request()->routeIs('profile.*') ? 'true' : 'false' }} }" class="flex h-screen flex-col gap-y-5 overflow-y-auto bg-white px-6 border-r border-gray-200">
     <!-- Logo -->
     <div class="flex h-16 shrink-0 items-center">
         <a href="{{ route('dashboard') }}">
@@ -128,7 +128,7 @@
                         </li>
                     @endif
 
-                    @if($user && $user->hasPermission('view_email_list'))
+                    @if($user && $user->hasPermission('view_messages'))
                         <li>
                             <a href="{{ route('outgoingemails.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold {{ request()->routeIs('outgoingemails.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
                                 <!-- SVG Icon -->
@@ -175,6 +175,46 @@
                                 @if($user->hasPermission('manage_users'))
                                     <a href="{{ route('users.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('users.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
                                         Benutzer
+                                    </a>
+                                @endif
+                                @if($user->hasPermission('view_conditions'))
+                                    <a href="{{ route('condition.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('condition.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                        Konditionen
+                                    </a>
+                                @endif
+                                @if($user->hasPermission('manage_currencies'))
+                                    <a href="{{ route('currencies.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('currencies.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                        Währungen
+                                    </a>
+                                @endif
+                                @if($user->hasPermission('manage_categories'))
+                                    <a href="{{ route('categories.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('categories.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                        Kategorien
+                                    </a>
+                                @endif
+                                @if($user->hasPermission('manage_maintenance'))
+                                    <a href="{{ route('maintenance.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('maintenance.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                        Wartungsmodus
+                                    </a>
+                                @endif
+                                @if($user->hasPermission('view_server_monitoring'))
+                                    <a href="{{ route('server-monitoring.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('server-monitoring.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                        Server-Monitoring
+                                    </a>
+                                @endif
+                                @if($user->hasPermission('view_system_info'))
+                                    <a href="{{ route('version.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('version.index') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                        System-Info
+                                    </a>
+                                @endif
+                                @if($user->hasPermission('edit_client_settings'))
+                                    <a href="{{ route('client-settings.edit') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('client-settings.edit') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                        Globale Einstellungen
+                                    </a>
+                                @endif
+                                @if($user->hasPermission('manage_all_clients'))
+                                    <a href="{{ route('client-settings.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('client-settings.index') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                        Alle Client-Einstellungen
                                     </a>
                                 @endif
                                 @if($user->hasPermission('edit_my_client_settings'))
