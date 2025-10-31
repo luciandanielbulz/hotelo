@@ -56,8 +56,9 @@ class Invoicedetails extends Component
         $user = Auth::user();
         $this->conditions = Condition::where('client_id', $user->client_id)->get();
         
-        // Client-Daten für Kleinunternehmer-Prüfung laden
-        $this->client = Clients::findOrFail($user->client_id);
+        // Client-Daten für Kleinunternehmer-Prüfung laden (immer aktive Version verwenden)
+        $userClient = Clients::findOrFail($user->client_id);
+        $this->client = $userClient->getCurrentVersion() ?? $userClient;
 
         $this->taxrateid = $this->details->tax_id;
         $this->reverse_charge = (bool) ($this->details->reverse_charge ?? false);
