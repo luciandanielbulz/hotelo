@@ -207,11 +207,6 @@
                                         System-Info
                                     </a>
                                 @endif
-                                @if($user->hasPermission('edit_client_settings'))
-                                    <a href="{{ route('client-settings.edit') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('client-settings.edit') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
-                                        Globale Einstellungen
-                                    </a>
-                                @endif
                                 @if($user->hasPermission('manage_all_clients'))
                                     <a href="{{ route('client-settings.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('client-settings.index') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
                                         Alle Client-Einstellungen
