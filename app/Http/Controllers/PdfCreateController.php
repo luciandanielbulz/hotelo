@@ -1191,6 +1191,23 @@ class PdfCreateController extends Controller
             'client_id' => $request->user()->client_id,
         ]);
 
+        // Falls eine Rechnung versendet wurde und diese aktuell "Offen" ist (1),
+        // setze den Status auf "Gesendet" (2). Andere Stati bleiben unverändert.
+        if ($documentType === 'invoice') {
+            try {
+                $invoiceId = (int) $request->input('invoice_id');
+                $invoice = Invoices::find($invoiceId);
+                if ($invoice && (int)($invoice->status ?? 0) === 1) {
+                    $invoice->status = 2; // Gesendet
+                    $invoice->save();
+                }
+            } catch (\Exception $e) {
+                \Log::warning('Rechnungsstatus nach E-Mail-Versand konnte nicht aktualisiert werden: ' . $e->getMessage(), [
+                    'invoice_id' => $request->input('invoice_id'),
+                ]);
+            }
+        }
+
         $documentNameGerman = $documentType === 'invoice' ? 'Rechnung' : 'Angebot';
         return redirect()->route('outgoingemails.index')
                         ->with('success', $documentNameGerman . ' wurde erfolgreich per E-Mail versendet.');

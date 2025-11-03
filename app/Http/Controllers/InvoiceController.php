@@ -512,6 +512,11 @@ class InvoiceController extends Controller
                 return response()->json(['message' => 'Kein Recht zum Herabstufen des Status.'], 403);
             }
 
+            // "Gesendet" (2) nur mit send_emails erlaubt
+            if ($newStatus === 2 && !Auth::user()->hasPermission('send_emails')) {
+                return response()->json(['message' => 'Keine Berechtigung, den Status "Gesendet" zu setzen.'], 403);
+            }
+
             // Optional: Archiv-Status 7 nur setzen, wenn gewünscht; ansonsten normal
             $invoice->status = $newStatus;
             $invoice->save();

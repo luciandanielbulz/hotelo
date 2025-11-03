@@ -21,8 +21,9 @@ class StatusSelect extends Component
 
     public function getStatusOptionsProperty(): array
     {
-        $invoice = Invoices::findOrFail($this->invoiceId);
-        $currentStatus = (int) ($invoice->status ?? 0);
+		// Verwende den in der Komponente gehaltenen Status statt DB-Read,
+		// um Race-Conditions und kurzes "Wegschnappen" der Auswahl zu vermeiden
+		$currentStatus = (int) ($this->status ?? 0);
         $canDowngrade = Auth::user() && Auth::user()->hasPermission('unlock_invoices');
         $canSend = Auth::user() && Auth::user()->hasPermission('send_emails');
 
@@ -37,17 +38,13 @@ class StatusSelect extends Component
         ];
 
         // Filter Optionen je nach Berechtigung und aktuellem Status
-        $filtered = [];
-        foreach ($options as $value => $label) {
-            if (!$canSend && (int)$value === 2 && $currentStatus !== 2) {
-                continue;
-            }
-            if ($canDowngrade || (int)$value >= $currentStatus) {
-                $filtered[$value] = $label;
-            }
-        }
+		// Stabile, feste Reihenfolge beibehalten; nur "Gesendet" ggf. ausblenden
+		$filtered = $options;
+		if (!$canSend && $currentStatus !== 2) {
+			unset($filtered[2]);
+		}
 
-        return $filtered;
+		return $filtered;
     }
 
     // Wird automatisch aufgerufen, wenn sich $status ändert (durch wire:model)
@@ -66,7 +63,7 @@ class StatusSelect extends Component
 
         $oldStatus = (int) ($invoice->status ?? 0);
 
-        // Downgrade nur mit Berechtigung
+		// Downgrade nur mit Berechtigung
         if ($newStatus < $oldStatus && !$user->hasPermission('unlock_invoices')) {
             $this->status = $oldStatus;
             $this->message = 'Kein Recht zum Herabstufen des Status.';
@@ -74,9 +71,22 @@ class StatusSelect extends Component
             return;
         }
 
+		// "Gesendet" (2) nur mit send_emails erlaubt
+		if ($newStatus === 2 && !$user->hasPermission('send_emails')) {
+			$this->status = $oldStatus;
+			$this->message = 'Keine Berechtigung, den Status "Gesendet" zu setzen.';
+			$this->dispatch('notify', message: $this->message, type: 'error');
+			return;
+		}
+
         // Speichern
         $invoice->status = $newStatus;
         $invoice->save();
+
+		// UI-Status nach erfolgreichem Speichern sicher auf neuen Wert setzen
+		$this->status = $newStatus;
+		// Zur Sicherheit aus der DB nachladen (verhindert Inkonsistenzen bei parallelen Updates)
+		$this->status = (int) (Invoices::find($this->invoiceId)->status ?? $newStatus);
 
         $this->message = 'Status erfolgreich aktualisiert.';
         $this->dispatch('notify', message: $this->message, type: 'success');
