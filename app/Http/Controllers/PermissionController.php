@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PermissionController extends Controller
 {
@@ -46,7 +47,7 @@ class PermissionController extends Controller
         //dd($request);
 
         $validatedData = $request->validate([
-            'name' => ['required', 'string', 'max:50'],
+            'name' => ['required', 'string', 'max:50', 'unique:permissions,name'],
             'description' => ['nullable', 'string', 'max:200'],
             'category' => ['nullable', 'string', 'max:100'],
         ]);
@@ -92,7 +93,7 @@ class PermissionController extends Controller
         try {
             // Hier wird die Validierung durchgeführt
             $validatedData = $request->validate([
-                'name' => ['required', 'string', 'max:200'],
+                'name' => ['required', 'string', 'max:200', Rule::unique('permissions', 'name')->ignore($permission->id)],
                 'description' => ['nullable', 'string', 'max:200'],
                 'category' => ['nullable', 'string', 'max:100'],
             ]);
