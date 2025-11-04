@@ -181,7 +181,7 @@
             </div>
 
             <!-- Farbe -->
-            <div class="border-t border-gray-200 pt-6">
+            <div class="pt-6 pb-6">
                 <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Farbe</h3>
                 
                 <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -189,6 +189,22 @@
                         <x-input name="color" type="color" placeholder="Farbe für Rechnungen und Angebote" label="Farbe für Rechnungen und Angebote" value="{{ old('color', $clients->color) }}" />
                     </div>
                 </div>
+            </div>
+
+            <!-- Nummerierung & Präfixe -->
+            <div class="border-t border-gray-200 pt-6">
+                <h3 class="text-base font-semibold leading-7 text-gray-900 mb-2">Nummerierung & Präfixe</h3>
+                <p class="text-sm text-gray-600">Die Nummerierung (letzte Angebots-/Rechnungsnummer, Formate, Präfixe) wird in den <strong>Statischen Einstellungen</strong> verwaltet.</p>
+                @php($user = Auth::user())
+                @if($user && $user->hasPermission('edit_client_settings'))
+                    <div class="mt-3">
+                        <a href="{{ route('client-settings.edit') }}" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600">
+                            Zu den Statischen Einstellungen
+                        </a>
+                    </div>
+                @else
+                    <p class="mt-2 text-sm text-gray-500">Ihnen fehlt die Berechtigung <code>edit_client_settings</code>, um die Nummern-Einstellungen zu ändern.</p>
+                @endif
             </div>
 
             <!-- Schaltflächen -->
