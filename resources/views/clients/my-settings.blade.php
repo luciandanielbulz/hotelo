@@ -146,6 +146,13 @@
                             @error('document_footer')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
+                            <div class="mt-2 rounded-md border border-gray-200 bg-gray-50 p-3">
+                                <p class="text-sm text-gray-700 font-medium">Verfügbare Platzhalter</p>
+                                <ul class="mt-1 text-sm text-gray-600 list-disc list-inside">
+                                    <li><code>{creator}</code> – Vollständiger Name des Erstellers (Rechnung/Angebot); fällt auf den aktuell eingeloggten Benutzer zurück.</li>
+                                </ul>
+                                <p class="mt-1 text-sm text-gray-500">Beispiel: Mit freundlichen Grüßen<br><code>{creator}</code></p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -181,7 +188,7 @@
             </div>
 
             <!-- Farbe -->
-            <div class="pt-6 pb-6">
+            <div class="pb-6">
                 <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Farbe</h3>
                 
                 <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -192,7 +199,7 @@
             </div>
 
             <!-- Nummerierung & Präfixe -->
-            <div class="border-t border-gray-200 pt-6">
+            <div class="border-t border-gray-200">
                 <h3 class="text-base font-semibold leading-7 text-gray-900 mb-2">Nummerierung & Präfixe</h3>
                 <p class="text-sm text-gray-600">Die Nummerierung (letzte Angebots-/Rechnungsnummer, Formate, Präfixe) wird in den <strong>Statischen Einstellungen</strong> verwaltet.</p>
                 @php($user = Auth::user())
