@@ -43,7 +43,7 @@
         <div class="md:border-l md:border-gray-200/60 md:pl-6">
             <!-- Nummer -->
             <label for="invoiceNumber" class="block text-sm font-bold text-gray-800 mb-1">Nummer</label>
-            <input type="text" name="invoiceNumber" id="invoiceNumber" wire:model.debounce.600ms="invoiceNumber"  
+            <input type="text" name="invoiceNumber" id="invoiceNumber" wire:model.debounce.600ms="invoiceNumber" wire:blur="updateInvoiceDetails" wire:keydown.enter.prevent="updateInvoiceDetails"  
                    class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium placeholder-gray-600"
                    placeholder="Rechnungsnummer"/>
             <!-- Konditionen -->

@@ -210,6 +210,8 @@ class Invoicedetails extends Component
 
             $this->message = 'Details erfolgreich aktualisiert.';
             $this->dispatch('notify', message: $this->message, type: 'success');
+            // Browser-Event, damit z. B. der Header die neue Rechnungsnummer sofort anzeigt
+            $this->dispatch('invoiceNumberChanged', number: $this->invoiceNumber);
             
             // Event dispatchen, um andere Komponenten über die Änderung zu informieren
             $this->dispatch('updateSums');

@@ -4,14 +4,14 @@
         <!-- Mobile Header - zentriert -->
         <div class="md:hidden text-center mb-4">
             <h1 class="text-2xl font-bold text-gray-900">Rechnung bearbeiten</h1>
-            <p class="text-gray-600 mt-1">Rechnung #{{ $invoice->number }} vom {{ \Carbon\Carbon::parse($invoice->date)->translatedFormat('d.m.Y') }}</p>
+            <p class="text-gray-600 mt-1">Rechnung #<span class="js-invoice-number">{{ $invoice->number }}</span> vom {{ \Carbon\Carbon::parse($invoice->date)->translatedFormat('d.m.Y') }}</p>
         </div>
         
         <!-- Desktop Header - mit Buttons -->
         <div class="hidden md:flex md:items-center md:justify-between">
             <div>
                 <h1 class="text-2xl font-bold text-gray-900">Rechnung bearbeiten</h1>
-                <p class="text-gray-600">Rechnung #{{ $invoice->number }} vom {{ \Carbon\Carbon::parse($invoice->date)->translatedFormat('d.m.Y') }}</p>
+                <p class="text-gray-600">Rechnung #<span class="js-invoice-number">{{ $invoice->number }}</span> vom {{ \Carbon\Carbon::parse($invoice->date)->translatedFormat('d.m.Y') }}</p>
             </div>
             <div class="flex space-x-3">
                 <a href="{{ route('invoice.index') }}" 
@@ -238,6 +238,18 @@
         document.addEventListener('comment-updated', (event) => {
             console.log(event.detail[0].message);
             // Alert entfernt - Erfolgsmeldung wird jetzt nur noch in der Komponente angezeigt
+        });
+
+        // Live-Aktualisierung der Rechnungsnummer im Header
+        document.addEventListener('invoiceNumberChanged', (event) => {
+            try {
+                const newNumber = event.detail.number ?? '';
+                document.querySelectorAll('.js-invoice-number').forEach(el => {
+                    el.textContent = newNumber;
+                });
+            } catch (e) {
+                console.warn('Konnte Header-Rechnungsnummer nicht aktualisieren:', e);
+            }
         });
     </script>
     <script></script>
