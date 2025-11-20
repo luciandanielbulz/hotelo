@@ -87,6 +87,9 @@
                     <div class="sm:col-span-1">
                         <x-input name="regional_court" type="text" placeholder="Handelsregistergericht" label="Handelsregistergericht" value="{{ old('regional_court', $clients->regional_court) }}" />
                     </div>
+                    <div class="sm:col-span-1">
+                        <x-input name="dgnr" type="text" placeholder="DGNR" label="DGNR" value="{{ old('dgnr', $clients->dgnr) }}" />
+                    </div>
                 </div>
             </div>
 
