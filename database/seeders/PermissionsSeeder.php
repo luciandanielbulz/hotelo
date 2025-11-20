@@ -30,6 +30,7 @@ class PermissionsSeeder extends Seeder
                 'view_offers' => 'Angebote sehen',
                 'view_invoices' => 'Rechnungen sehen',
                 'send_emails' => 'E-Mails versenden (Angebote und Rechnungen)',
+                'use_translation' => 'Textübersetzung mit GPT verwenden',
             ],
 
             // Kommunikation

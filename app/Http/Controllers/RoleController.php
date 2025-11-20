@@ -103,6 +103,48 @@ class RoleController extends Controller
     }
 
     /**
+     * Copy a role with a new name.
+     */
+    public function copy(Request $request, Role $role)
+    {
+        try {
+            $validatedData = $request->validate([
+                'name' => ['required', 'string', 'max:50', 'unique:roles,name'],
+                'description' => ['nullable', 'string', 'max:200'],
+            ]);
+
+            // Neue Rolle erstellen
+            $newRole = Role::create([
+                'name' => $validatedData['name'],
+                'description' => $validatedData['description'] ?? $role->description,
+            ]);
+
+            // Alle Berechtigungen der ursprünglichen Rolle kopieren
+            $permissions = $role->permissions()->pluck('permissions.id')->toArray();
+            if (!empty($permissions)) {
+                $newRole->permissions()->attach($permissions);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Rolle erfolgreich kopiert!',
+                'role' => $newRole
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validierungsfehler: ' . implode(', ', $e->errors()['name'] ?? ['Der Rollenname ist bereits vergeben.']),
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Fehler beim Kopieren der Rolle: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Role $role)

@@ -11,6 +11,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\InvoicepositionController;
 use App\Http\Controllers\OfferpositionController;
+use App\Http\Controllers\TranslationController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\PdfCreateController;
 use App\Http\Controllers\PermissionController;
@@ -199,6 +200,11 @@ Route::middleware(['auth','verified'])->group(function(){
 
     /*Rechnungs-Positionen*/
     Route::resource('invoiceposition', InvoicepositionController::class);
+    
+    /*Übersetzung*/
+    Route::post('/api/translate', [TranslationController::class, 'translate'])
+        ->name('api.translate')
+        ->middleware('permission:use_translation');
 
     /*
     |--------------------------------------------------------------------------
@@ -236,6 +242,7 @@ Route::middleware(['auth','verified'])->group(function(){
 
     /*Rolen*/
     Route::resource('roles', RoleController::class);
+    Route::post('/roles/{role}/copy', [RoleController::class, 'copy'])->name('roles.copy');
 
     /* Rechte */
     Route::resource('permissions', PermissionController::class);
