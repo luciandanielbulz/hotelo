@@ -32,6 +32,7 @@ class Clients extends Model
         'style',
         'company_registration_number',
         'tax_number',
+        'dgnr',
         'management',
         'regional_court',
         'color',

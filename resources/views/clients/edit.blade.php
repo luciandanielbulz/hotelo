@@ -78,6 +78,9 @@
                     <div class="sm:col-span-1">
                         <x-input name="company_registration_number" type="text" placeholder="Firmenbuchnummer" label="Firmenbuchnummer" value="{{ old('company_registration_number', $clients->company_registration_number) }}" />
                     </div>
+                    <div class="sm:col-span-1">
+                        <x-input name="dgnr" type="text" placeholder="DGNR" label="DGNR" value="{{ old('dgnr', $clients->dgnr) }}" />
+                    </div>
                 </div>
                 <div class="grid md:grid-cols-4 sm:grid-cols-1 pb-4 gap-x-6">
                     <div class="sm:col-span-1">

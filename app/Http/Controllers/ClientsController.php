@@ -100,6 +100,7 @@ class ClientsController extends Controller
             'style' => ['nullable', 'string', 'max:500'],
             'company_registration_number' => ['nullable', 'string', 'max:100'],
             'tax_number' => ['nullable', 'string', 'max:100'],
+            'dgnr' => ['nullable', 'string', 'max:100'],
             'management' => ['nullable', 'string', 'max:200'],
             'regional_court' => ['nullable', 'string', 'max:200'],
             'color' => ['nullable', 'string', 'max:7'],
@@ -226,6 +227,7 @@ class ClientsController extends Controller
             'style' => ['nullable', 'string', 'max:500'],
             'company_registration_number' => ['nullable', 'string', 'max:100'],
             'tax_number' => ['nullable', 'string', 'max:100'],
+            'dgnr' => ['nullable', 'string', 'max:100'],
             'management' => ['nullable', 'string', 'max:200'],
             'regional_court' => ['nullable', 'string', 'max:200'],
             'color' => ['nullable', 'string', 'max:7'],
@@ -238,6 +240,12 @@ class ClientsController extends Controller
 
             // 1. Client-Daten (versioniert) - Neue Version erstellen
             $clientData = $validatedData;
+            
+            // Stelle sicher, dass alle nullable Felder auch bei null/leer vorhanden sind
+            // Konvertiere leere Strings zu null für nullable Felder
+            if (!isset($clientData['dgnr']) || $clientData['dgnr'] === '') {
+                $clientData['dgnr'] = null;
+            }
 
             // Logo hochladen, falls vorhanden
             if ($request->hasFile('logo')) {
@@ -259,9 +267,14 @@ class ClientsController extends Controller
             // Erstelle nur neue Version wenn sich Client-Daten geändert haben
             $hasClientChanges = false;
             foreach ($clientData as $key => $value) {
-                if ($key !== 'logo' && isset($client->{$key}) && $client->{$key} != $value) {
-                    $hasClientChanges = true;
-                    break;
+                if ($key !== 'logo') {
+                    $oldValue = $client->{$key} ?? null;
+                    $newValue = $value ?? null;
+                    // Prüfe auf Änderung (auch wenn von null zu Wert oder umgekehrt)
+                    if ($oldValue != $newValue) {
+                        $hasClientChanges = true;
+                        break;
+                    }
                 }
             }
             
@@ -515,6 +528,7 @@ class ClientsController extends Controller
             'style' => ['nullable', 'string', 'max:500'],
             'company_registration_number' => ['nullable', 'string', 'max:100'],
             'tax_number' => ['nullable', 'string', 'max:100'],
+            'dgnr' => ['nullable', 'string', 'max:100'],
             'management' => ['nullable', 'string', 'max:200'],
             'regional_court' => ['nullable', 'string', 'max:200'],
             'color' => ['nullable', 'string', 'max:7'],
@@ -551,12 +565,15 @@ class ClientsController extends Controller
                 'clientname', 'companyname', 'business', 'address', 'postalcode', 
                 'location', 'email', 'phone', 'tax_id', 'webpage', 'bank', 
                 'accountnumber', 'vat_number', 'bic', 'smallbusiness', 'signature', 'document_footer', 
-                'style', 'company_registration_number', 'tax_number', 'management', 
+                'style', 'company_registration_number', 'tax_number', 'dgnr', 'management', 
                 'regional_court', 'color'
             ];
             
             foreach ($changesToCheck as $field) {
-                if (isset($validatedData[$field]) && $client->{$field} != $validatedData[$field]) {
+                $oldValue = $client->{$field} ?? null;
+                $newValue = $validatedData[$field] ?? null;
+                // Prüfe auf Änderung (auch wenn von null zu Wert oder umgekehrt)
+                if ($oldValue != $newValue) {
                     $hasChanges = true;
                     break;
                 }
@@ -570,6 +587,13 @@ class ClientsController extends Controller
             if ($hasChanges) {
                 // Erstelle neue Version mit geänderten Daten
                 $newVersionData = $validatedData;
+                
+                // Stelle sicher, dass alle nullable Felder auch bei null/leer vorhanden sind
+                // Konvertiere leere Strings zu null für nullable Felder
+                if (!isset($newVersionData['dgnr']) || $newVersionData['dgnr'] === '') {
+                    $newVersionData['dgnr'] = null;
+                }
+                
                 if ($request->hasFile('logo')) {
                     $logoName = $this->uploadLogo($request->file('logo'));
                     if (!$logoName) {

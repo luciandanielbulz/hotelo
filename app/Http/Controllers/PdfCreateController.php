@@ -302,6 +302,20 @@ class PdfCreateController extends Controller
             }
         }
 
+        // Fallback: Wenn die DGNR in der referenzierten Version leer ist,
+        // verwende die DGNR vom Parent-Client oder der aktiven Version
+        if (empty($client->dgnr)) {
+            $activeClient = Clients::where(function($q) use ($parentId) {
+                    $q->where('id', $parentId)
+                      ->orWhere('parent_client_id', $parentId);
+                })
+                ->where('is_active', true)
+                ->first();
+            if ($activeClient && !empty($activeClient->dgnr)) {
+                $client->dgnr = $activeClient->dgnr;
+            }
+        }
+
         return [
             'offer' => $offer,
             'positions' => $positions,
@@ -380,6 +394,34 @@ class PdfCreateController extends Controller
                 ->first();
             if ($activeClient && !empty($activeClient->document_footer)) {
                 $client->document_footer = $activeClient->document_footer;
+            }
+        }
+
+        // Fallback: Wenn die Farbe in der referenzierten Version leer oder schwarz ist,
+        // verwende die Farbe vom Parent-Client oder der aktiven Version
+        if (empty($client->color) || $client->color === '#000000' || $client->color === null) {
+            $activeClient = Clients::where(function($q) use ($parentId) {
+                    $q->where('id', $parentId)
+                      ->orWhere('parent_client_id', $parentId);
+                })
+                ->where('is_active', true)
+                ->first();
+            if ($activeClient && !empty($activeClient->color) && $activeClient->color !== '#000000') {
+                $client->color = $activeClient->color;
+            }
+        }
+
+        // Fallback: Wenn die DGNR in der referenzierten Version leer ist,
+        // verwende die DGNR vom Parent-Client oder der aktiven Version
+        if (empty($client->dgnr)) {
+            $activeClient = Clients::where(function($q) use ($parentId) {
+                    $q->where('id', $parentId)
+                      ->orWhere('parent_client_id', $parentId);
+                })
+                ->where('is_active', true)
+                ->first();
+            if ($activeClient && !empty($activeClient->dgnr)) {
+                $client->dgnr = $activeClient->dgnr;
             }
         }
 
@@ -497,7 +539,7 @@ class PdfCreateController extends Controller
             $contactRows[] = '<tr><td style="text-align: left;">Tel.: ' . htmlspecialchars($client->phone) . '</td></tr>';
         }
         if (!empty($client->email)) {
-            $contactRows[] = '<tr><td style="text-align: left;">E.Mail: ' . htmlspecialchars($client->email) . '</td></tr>';
+            $contactRows[] = '<tr><td style="text-align: left;">E-Mail: ' . htmlspecialchars($client->email) . '</td></tr>';
         }
         if (!empty($client->webpage)) {
             $contactRows[] = '<tr><td style="text-align: left;">Web: ' . htmlspecialchars($client->webpage) . '</td></tr>';
@@ -521,6 +563,9 @@ class PdfCreateController extends Controller
         }
         if (!empty($client->tax_number)) {
             $legalRows[] = '<tr><td style="text-align: left;">Steuer-Nr.: ' . htmlspecialchars($client->tax_number) . '</td></tr>';
+        }
+        if (!empty($client->dgnr)) {
+            $legalRows[] = '<tr><td style="text-align: left;">DGNR: ' . htmlspecialchars($client->dgnr) . '</td></tr>';
         }
         if (!empty($client->management)) {
             $legalRows[] = '<tr><td style="text-align: left;">Geschäftsführung: ' . htmlspecialchars_decode($client->management) . '</td></tr>';
