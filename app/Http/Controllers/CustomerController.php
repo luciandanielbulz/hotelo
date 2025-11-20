@@ -78,7 +78,7 @@ class CustomerController extends Controller
             'postalcode' => ['required', 'integer'],
             'location' => ['required', 'string', 'max:200'],
             'country' => ['required', 'string', 'max:200'],
-            'tax_id' => ['required', 'string', 'max:100'],
+            'tax_id' => ['required', 'integer'],
             'phone' => ['nullable', 'string', 'max:30'],
             'fax' => ['nullable', 'string', 'max:200'],
             'email' => ['nullable', 'string', 'max:200'],

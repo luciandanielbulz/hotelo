@@ -32,16 +32,16 @@
                 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
                     <div class="sm:col-span-2">
-                        <x-dropdown_body name="salutation_id" id="salutation_id" value="" :options="$salutations->pluck('name', 'id')" :selected="old('salutation', 1)" label="Anrede" placeholder="Bitte auswählen" class="w-full appearance-none rounded-lg bg-white/70 backdrop-blur-sm py-3 pl-3 pr-8 text-base text-gray-900 border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-dropdown_body name="salutation_id" id="salutation_id" value="" :options="$salutations->pluck('name', 'id')" :selected="old('salutation_id', 1)" label="Anrede" placeholder="Bitte auswählen" class="w-full appearance-none rounded-lg bg-white/70 backdrop-blur-sm py-3 pl-3 pr-8 text-base text-gray-900 border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                     <div class="sm:col-span-2">
-                        <x-input name="title" type="text" placeholder="Titel" label="Titel" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300"/>
+                        <x-input name="title" type="text" placeholder="Titel" label="Titel" value="{{ old('title') }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300"/>
                     </div>
                     <div class="sm:col-span-4">
-                        <x-input name="customername" type="text" placeholder="Kundenname" label="Kundenname" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="customername" type="text" placeholder="Kundenname" label="Kundenname" value="{{ old('customername') }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                     <div class="sm:col-span-4">
-                        <x-input name="customer_number" type="text" placeholder="Kundennummer" label="Kundennummer" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="customer_number" type="text" placeholder="Kundennummer" label="Kundennummer" value="{{ old('customer_number') }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                 </div>
             </div>
@@ -57,13 +57,13 @@
                 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
                     <div class="sm:col-span-6">
-                        <x-input name="companyname" type="text" placeholder="Firmenname" label="Firmenname" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="companyname" type="text" placeholder="Firmenname" label="Firmenname" value="{{ old('companyname') }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                     <div class="sm:col-span-3">
-                        <x-input name="vat_number" type="text" placeholder="UID" label="UID" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="vat_number" type="text" placeholder="UID" label="UID" value="{{ old('vat_number') }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                     <div class="sm:col-span-3">
-                        <x-dropdown_body name="tax_id" id="tax_id" value="" :options="$taxrates->pluck('taxrate', 'id')" :selected="old('taxrate', $standardtaxrate)" label="Umsatzsteuer in %" placeholder="Bitte auswählen" class="w-full appearance-none rounded-lg bg-white/70 backdrop-blur-sm py-3 pl-3 pr-8 text-base text-gray-900 border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-dropdown_body name="tax_id" id="tax_id" value="" :options="$taxrates->pluck('taxrate', 'id')" :selected="old('tax_id', $standardtaxrate)" label="Umsatzsteuer in %" placeholder="Bitte auswählen" class="w-full appearance-none rounded-lg bg-white/70 backdrop-blur-sm py-3 pl-3 pr-8 text-base text-gray-900 border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                 </div>
             </div>
@@ -80,22 +80,22 @@
                 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
                     <div class="sm:col-span-6">
-                        <x-input name="address" type="text" placeholder="Adresse" label="Adresse" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="address" type="text" placeholder="Adresse" label="Adresse" value="{{ old('address') }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                     
                 </div>
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
                     <div class="sm:col-span-2">
-                        <x-input name="postalcode" type="text" placeholder="Postleitzahl" label="Postleitzahl" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="postalcode" type="text" placeholder="Postleitzahl" label="Postleitzahl" value="{{ old('postalcode') }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                     <div class="sm:col-span-4">
-                        <x-input name="location" type="text" placeholder="Ort" label="Ort" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="location" type="text" placeholder="Ort" label="Ort" value="{{ old('location') }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                     
                 </div>
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
                     <div class="sm:col-span-4">
-                        <x-input name="country" type="text" placeholder="Land" label="Land" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="country" type="text" placeholder="Land" label="Land" value="{{ old('country', 'Österreich') }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                 </div>
             </div>
@@ -111,13 +111,13 @@
                 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
                     <div class="sm:col-span-6">
-                        <x-input name="email" type="email" placeholder="E-Mail" label="E-Mail" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="email" type="email" placeholder="E-Mail" label="E-Mail" value="{{ old('email') }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                     <div class="sm:col-span-3">
-                        <x-input name="phone" type="text" placeholder="Telefonnummer" label="Telefon" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="phone" type="text" placeholder="Telefonnummer" label="Telefon" value="{{ old('phone') }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                     <div class="sm:col-span-3">
-                        <x-input name="fax" type="text" placeholder="Fax" label="Fax" value="" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="fax" type="text" placeholder="Fax" label="Fax" value="{{ old('fax') }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                 </div>
             </div>
@@ -133,7 +133,7 @@
                 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
                     <div class="sm:col-span-4">
-                        <x-dropdown_body name="condition_id" id="condition_id" value="" :options="$conditions->pluck('conditionname', 'id')" :selected="old('conditionname', 1)" label="Konditionen" placeholder="Bitte auswählen" class="w-full appearance-none rounded-lg bg-white/70 backdrop-blur-sm py-3 pl-3 pr-8 text-base text-gray-900 border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-dropdown_body name="condition_id" id="condition_id" value="" :options="$conditions->pluck('conditionname', 'id')" :selected="old('condition_id', 1)" label="Konditionen" placeholder="Bitte auswählen" class="w-full appearance-none rounded-lg bg-white/70 backdrop-blur-sm py-3 pl-3 pr-8 text-base text-gray-900 border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                 </div>
             </div>
@@ -149,7 +149,7 @@
                 
                 <div class="grid grid-cols-1 gap-6">
                     <div>
-                        <x-input name="emailsubject" type="text" placeholder="E-Mail Betreff" label="E-Mail Betreff" value="{objekt} {objektnummer}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="emailsubject" type="text" placeholder="E-Mail Betreff" label="E-Mail Betreff" value="{{ old('emailsubject', '{objekt} {objektnummer}') }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
                     </div>
                     <div>
                         <label for="emailbody" class="block text-sm font-medium text-gray-900 mb-2">
@@ -158,7 +158,7 @@
                                 Variablen: aktuelles_jahr (Y0), aktuelles_monat (M0), objekt (O), objekt_mit_artikel (OA), objektnummer (ON), signatur (S), aktueller_monatsname (M0N)
                             </span>
                         </label>
-                        <textarea name="emailbody" id="emailbody" rows="8" class="block w-full rounded-lg bg-white/70 backdrop-blur-sm px-4 py-3 text-base text-gray-900 border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder:text-gray-400">Sehr geehrte Damen und Herren,<br><br>anbei {objekt_mit_artikel} {objektnummer}<br><br>{signatur}</textarea>
+                        <textarea name="emailbody" id="emailbody" rows="8" class="block w-full rounded-lg bg-white/70 backdrop-blur-sm px-4 py-3 text-base text-gray-900 border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300 placeholder:text-gray-400">{{ old('emailbody', 'Sehr geehrte Damen und Herren,<br><br>anbei {objekt_mit_artikel} {objektnummer}<br><br>{signatur}') }}</textarea>
                     </div>
                 </div>
             </div>
