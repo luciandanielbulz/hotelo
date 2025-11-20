@@ -851,7 +851,7 @@ class PdfCreateController extends Controller
         if ($client->smallbusiness) {
             $html .= '<div style="margin-top: 20px; font-size: ' . $fontSizes['tax_notice'] . ';">Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG</div>';
         } elseif ($reverseCharge) {
-            $html .= '<div style="margin-top: 20px; font-size: ' . $fontSizes['tax_notice'] . ';">Gemäß § 13b UStG liegt die Steuerschuldnerschaft beim Leistungsempfänger.</div>';
+            $html .= '<div style="margin-top: 20px; font-size: ' . $fontSizes['tax_notice'] . ';">Steuerschuldnerschaft des Leistungsempfängers gemäß § 19 Abs 1a UStG (Reverse Charge).</div>';
         }
 
         // Dokument-Fußzeile direkt unter dem Gesamtbetrag (Priorität: Rechnungs-Fußzeile)
