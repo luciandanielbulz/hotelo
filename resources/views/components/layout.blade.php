@@ -42,8 +42,13 @@
 
 <body>
     <div class="min-h-screen bg-gray-50">
+        {{-- Flowbite Navbar für Tablets und Mobile (unter lg) --}}
+        <div class="lg:hidden">
+            <x-navbar-tablet />
+        </div>
+
         <div class="flex">
-            <!-- Sidebar -->
+            <!-- Sidebar für Desktop (lg+) -->
             <aside class="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0">
                 @include('components.sidebar', ['user' => auth()->user()])
             </aside>

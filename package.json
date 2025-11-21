@@ -20,6 +20,7 @@
     "dependencies": {
         "@ckeditor/ckeditor5-build-classic": "^44.3.0",
         "esbuild": "^0.25.5",
+        "flowbite": "^4.0.1",
         "form-data": "^4.0.4",
         "summernote": "^0.9.1"
     }

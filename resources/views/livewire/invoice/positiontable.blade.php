@@ -314,3 +314,48 @@
     @endif
 </div>
 
+<script>
+    // Sofort beim Laden prüfen und View-Mode setzen
+    document.addEventListener('livewire:init', function() {
+        const screenWidth = window.innerWidth;
+        
+        // Desktop (lg >= 1024px): IMMER Tabellenansicht
+        if (screenWidth >= 1024) {
+            @this.set('viewMode', 'table');
+            @this.call('setScreenWidth', screenWidth);
+        } 
+        // Tablet (768px - 1024px): Kartenansicht
+        else if (screenWidth >= 768 && screenWidth < 1024) {
+            @this.set('viewMode', 'cards');
+            @this.call('setScreenWidth', screenWidth);
+        } 
+        // Mobile (< 768px): Kartenansicht
+        else {
+            @this.set('viewMode', 'cards');
+            @this.call('setScreenWidth', screenWidth);
+        }
+        
+        // Bei Resize erneut prüfen
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                const newWidth = window.innerWidth;
+                // Desktop (lg >= 1024px): Tabellenansicht
+                if (newWidth >= 1024) {
+                    @this.set('viewMode', 'table');
+                } 
+                // Tablet (768px - 1024px): Kartenansicht
+                else if (newWidth >= 768 && newWidth < 1024) {
+                    @this.set('viewMode', 'cards');
+                } 
+                // Mobile (< 768px): Kartenansicht
+                else {
+                    @this.set('viewMode', 'cards');
+                }
+                @this.call('setScreenWidth', newWidth);
+            }, 250);
+        });
+    });
+</script>
+

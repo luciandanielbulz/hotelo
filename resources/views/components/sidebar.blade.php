@@ -56,10 +56,10 @@
                             </button>
                     <!-- Dropdown Menü -->
                             <div x-show="offersSubmenu" @click.away="offersSubmenu = false" class="mt-2 space-y-1 pl-5" @if(!request()->routeIs('offer.*')) x-cloak @endif>
-                                <a href="{{ route('offer.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('offer.index') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                <a href="{{ route('offer.index', ['view' => 'table']) }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('offer.index') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
                                     Angebote
                                 </a>
-                                <a href="{{ route('offer.index_archivated') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('offer.index_archivated') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                <a href="{{ route('offer.index_archivated', ['view' => 'table']) }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('offer.index_archivated') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
                                     Archivierte Angebote
                                 </a>
                             </div>
@@ -82,10 +82,10 @@
                             </button>
                             <!-- Dropdown Menü -->
                             <div x-show="invoicesSubmenu" @click.away="invoicesSubmenu = false" class="mt-2 space-y-1 pl-5" @if(!(request()->routeIs('invoice.*') || request()->routeIs('invoiceupload.*'))) x-cloak @endif>
-                                <a href="{{ route('invoice.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('invoice.index') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                <a href="{{ route('invoice.index', ['view' => 'table']) }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('invoice.index') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
                                     Alle Rechnungen
                                 </a>
-                                <a href="{{ route('invoice.index_archivated') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('invoice.index_archivated') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                <a href="{{ route('invoice.index_archivated', ['view' => 'table']) }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('invoice.index_archivated') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
                                     Archivierte Rechnungen
                                 </a>
                                 <a href="{{ route('invoiceupload.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('invoiceupload.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
