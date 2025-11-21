@@ -1,9 +1,9 @@
 <div>
     <!-- Erweiterte Such- und Filter-Sektion -->
     <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 mb-6 border border-white/20 shadow-lg">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
             <!-- Suchfeld -->
-            <div class="md:col-span-2">
+            <div class="w-full md:w-[35%] flex-shrink-0">
                 <div class="relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -18,7 +18,7 @@
             </div>
             
             <!-- Sortierung -->
-            <div>
+            <div class="w-full md:w-auto flex-shrink-0">
                 <select wire:model.live="sortBy" 
                         class="block w-full py-3 px-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-gray-900">
                     <option value="newest">Neueste zuerst</option>
@@ -29,17 +29,17 @@
             </div>
             
             <!-- View Toggle - nur auf Desktop-Geräten -->
-            <div class="hidden md:flex space-x-2">
+            <div class="hidden md:flex space-x-2 ml-auto">
                 <button wire:click="setViewMode('cards')" 
-                        class="flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-300 {{ $viewMode === 'cards' ? 'bg-blue-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
-                    <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap flex items-center justify-center {{ $viewMode === 'cards' ? 'bg-blue-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
+                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                     </svg>
                     Karten
                 </button>
                 <button wire:click="setViewMode('table')" 
-                        class="flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-300 {{ $viewMode === 'table' ? 'bg-blue-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
-                    <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="flex-1 px-8 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap flex items-center justify-center {{ $viewMode === 'table' ? 'bg-blue-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
+                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0V4a1 1 0 011-1h12a1 1 0 011 1v16"/>
                     </svg>
                     Tabelle
@@ -57,9 +57,7 @@
                     <!-- Kunde Header -->
                     <div class="flex items-start justify-between mb-3 gap-2">
                         <div class="flex items-center space-x-2 min-w-0 flex-1">
-                            <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow-lg flex-shrink-0">
-                                {{ substr($customer->customername ?: $customer->companyname ?: 'K', 0, 1) }}
-                            </div>
+                            <x-customer-initial :name="$customer->customername ?: $customer->companyname" />
                             <div class="min-w-0 flex-1">
                                 <h3 class="font-bold text-gray-900 truncate text-base">
                                     {{ $customer->customername ?: $customer->companyname }}
@@ -178,7 +176,7 @@
                     <thead class="bg-gray-50/50">
                         <tr>
                             <th scope="col" class="py-4 pl-6 pr-3 text-left text-sm font-semibold text-gray-900">Kunde</th>
-                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Kontakt</th>
+                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900 hidden lg:table-cell">Kontakt</th>
                             <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Adresse</th>
                             <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Aktionen</th>
                         </tr>
@@ -188,9 +186,7 @@
                             <tr class="hover:bg-white/50 transition-colors duration-200">
                                 <td class="py-4 pl-6 pr-3">
                                     <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white font-bold">
-                                            {{ substr($customer->customername ?: $customer->companyname ?: 'K', 0, 1) }}
-                                        </div>
+                                        <x-customer-initial :name="$customer->customername ?: $customer->companyname" class="hidden lg:block" />
                                         <div>
                                             <div class="font-medium text-gray-900">
                                                 {{ $customer->customername ?: $customer->companyname }}
@@ -202,7 +198,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-3 py-4">
+                                <td class="px-3 py-4 hidden lg:table-cell">
                                     @if($customer->email)
                                         <div class="text-sm text-gray-900">{{ $customer->email }}</div>
                                         <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">Mit E-Mail</span>
@@ -261,4 +257,49 @@
             {{ $customers->links('livewire::tailwind') }}
         </div>
     @endif
-</div> 
+</div>
+
+<script>
+    // Sofort beim Laden prüfen und View-Mode setzen
+    document.addEventListener('livewire:init', function() {
+        const screenWidth = window.innerWidth;
+        
+        // Desktop (lg >= 1024px): IMMER Tabellenansicht
+        if (screenWidth >= 1024) {
+            @this.set('viewMode', 'table');
+            @this.call('setScreenWidth', screenWidth);
+        } 
+        // Tablet (768px - 1024px): Kartenansicht
+        else if (screenWidth >= 768 && screenWidth < 1024) {
+            @this.set('viewMode', 'cards');
+            @this.call('setScreenWidth', screenWidth);
+        } 
+        // Mobile (< 768px): Kartenansicht
+        else {
+            @this.set('viewMode', 'cards');
+            @this.call('setScreenWidth', screenWidth);
+        }
+        
+        // Bei Resize erneut prüfen
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                const newWidth = window.innerWidth;
+                // Desktop (lg >= 1024px): Tabellenansicht
+                if (newWidth >= 1024) {
+                    @this.set('viewMode', 'table');
+                } 
+                // Tablet (768px - 1024px): Kartenansicht
+                else if (newWidth >= 768 && newWidth < 1024) {
+                    @this.set('viewMode', 'cards');
+                } 
+                // Mobile (< 768px): Kartenansicht
+                else {
+                    @this.set('viewMode', 'cards');
+                }
+                @this.call('setScreenWidth', newWidth);
+            }, 250);
+        });
+    });
+</script> 

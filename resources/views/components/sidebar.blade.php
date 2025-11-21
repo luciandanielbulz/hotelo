@@ -28,7 +28,7 @@
                     <!-- Dynamische Menüpunkte basierend auf Berechtigungen -->
                     @if($user && $user->hasPermission('view_customers'))
                         <li>
-                            <a href="{{ route('customer.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold {{ request()->routeIs('customer.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                            <a href="{{ route('customer.index', ['view' => 'table']) }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold {{ request()->routeIs('customer.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
                                 <!-- SVG Icon -->
                                 <svg class="h-6 w-6 shrink-0 {{ request()->routeIs('customer.*') ? 'text-gray-700' : 'text-gray-500 group-hover:text-gray-900' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />

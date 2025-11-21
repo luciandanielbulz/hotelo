@@ -24,14 +24,53 @@ class CustomerTable extends Component
 
     public function mount()
     {
-        // Auf Smartphones standardmäßig Kartenansicht, auf Desktop Tabellenansicht
-        $userAgent = request()->userAgent();
-        $isMobile = preg_match('/(iPhone|Android|Mobile|webOS|BlackBerry|IEMobile|Opera Mini)/i', $userAgent);
+        // Prüfe Query-Parameter 'view' (wird von Navbar oder Sidebar gesetzt)
+        $viewParam = request()->query('view');
         
-        if ($isMobile) {
+        if ($viewParam === 'cards') {
+            // Aufruf über Navbar (Tablet/Mobile) → Kartenansicht
             $this->viewMode = 'cards';
-        } else {
+        } elseif ($viewParam === 'table') {
+            // Aufruf über Sidebar (Desktop) → Tabellenansicht
             $this->viewMode = 'table';
+        } else {
+            // Kein Query-Parameter: Standard basierend auf User-Agent und Bildschirmbreite
+            $userAgent = request()->userAgent();
+            $isMobile = preg_match('/(iPhone|Android|Mobile|webOS|BlackBerry|IEMobile|Opera Mini)/i', $userAgent);
+            $isTablet = preg_match('/(iPad|Android|Tablet|PlayBook|Silk)/i', $userAgent);
+            
+            // Prüfe Session für Bildschirmbreite (wird per JavaScript gesetzt)
+            $screenWidth = session('screen_width');
+            
+            // Tablet-Erkennung: User-Agent ODER Bildschirmbreite zwischen 768px und 1024px (md bis lg)
+            $isTabletByWidth = $screenWidth && $screenWidth >= 768 && $screenWidth < 1024;
+            
+            // Standard: Tabellenansicht (Desktop)
+            $this->viewMode = 'table';
+            
+            // Nur wenn Tablet/Mobile erkannt, auf Kartenansicht wechseln
+            if ($isMobile || $isTablet || $isTabletByWidth) {
+                $this->viewMode = 'cards';
+            }
+        }
+    }
+    
+    public function setScreenWidth($width)
+    {
+        // Setze Bildschirmbreite in Session und passe View-Mode an
+        session(['screen_width' => $width]);
+        
+        // Desktop (lg >= 1024px): IMMER Tabellenansicht
+        if ($width >= 1024) {
+            $this->viewMode = 'table';
+        } 
+        // Tablet-Breite (768px - 1024px): Kartenansicht
+        elseif ($width >= 768 && $width < 1024) {
+            $this->viewMode = 'cards';
+        } 
+        // Mobile (< 768px): Kartenansicht
+        else {
+            $this->viewMode = 'cards';
         }
     }
 
@@ -47,11 +86,15 @@ class CustomerTable extends Component
 
     public function setViewMode($mode)
     {
-        // Auf mobilen Geräten ViewMode nicht ändern - immer cards
+        // Auf mobilen Geräten und Tablets ViewMode nicht ändern - immer cards
         $userAgent = request()->userAgent();
         $isMobile = preg_match('/(iPhone|Android|Mobile|webOS|BlackBerry|IEMobile|Opera Mini)/i', $userAgent);
+        $isTablet = preg_match('/(iPad|Android|Tablet|PlayBook|Silk)/i', $userAgent);
+        $screenWidth = session('screen_width');
+        $isTabletByWidth = $screenWidth && $screenWidth >= 768 && $screenWidth < 1024;
         
-        if (!$isMobile) {
+        // Nur auf Desktop (>= 1024px) ViewMode ändern lassen
+        if (!$isMobile && !$isTablet && !$isTabletByWidth) {
             $this->viewMode = $mode;
         }
     }

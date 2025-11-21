@@ -1,6 +1,6 @@
 <div>
     <div class="flex justify-end">
-        <div class="w-full md:w-1/2 lg:w-1/2 xl:w-1/2 bg-gradient-to-r from-gray-50 to-slate-50 rounded-lg p-4 border border-gray-200 shadow-sm">
+        <div class="w-full md:w-4/5 lg:w-1/2 xl:w-1/2 bg-gradient-to-r from-gray-50 to-slate-50 rounded-lg p-4 border border-gray-200 shadow-sm">
         <!-- Header -->
         <div class="flex items-center mb-3">
             <svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

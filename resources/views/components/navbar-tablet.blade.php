@@ -40,7 +40,7 @@ foreach ($candidates as $c) {
                     </a>
 
                     @if(auth()->user()->hasPermission('view_customers'))
-                    <a href="{{ route('customer.index') }}" 
+                    <a href="{{ route('customer.index', ['view' => 'cards']) }}" 
                        class="inline-flex items-center px-1 pt-6 border-b-2 text-base font-medium leading-5 transition duration-150 ease-in-out {{ request()->routeIs('customer.*') ? 'border-brand text-heading' : 'border-transparent text-body hover:text-heading hover:border-neutral-tertiary' }}">
                         Kunden
                     </a>
@@ -217,7 +217,7 @@ foreach ($candidates as $c) {
                 </a>
 
                 @if(auth()->user()->hasPermission('view_customers'))
-                <a href="{{ route('customer.index') }}" 
+                <a href="{{ route('customer.index', ['view' => 'cards']) }}" 
                    class="block px-4 py-2 text-base font-medium text-heading hover:bg-neutral-tertiary rounded-base {{ request()->routeIs('customer.*') ? 'bg-neutral-secondary-soft' : '' }}">
                     Kunden
                 </a>
