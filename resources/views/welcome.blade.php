@@ -6,21 +6,9 @@
 
         <title>Laravel</title>
 
-        <!-- PWA Meta Tags -->
-        <meta name="application-name" content="{{ config('app.name') }}">
-        <meta name="theme-color" content="#4CAF50">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-title" content="{{ config('app.name') }}">
-        
         <!-- Favicon -->
         <link rel="icon" type="image/svg+xml" href="{{ asset('logo/VenditioIcon.svg') }}">
         <link rel="alternate icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-        
-        <!-- Apple Touch Icons -->
-        <link rel="apple-touch-icon" href="{{ asset('logo/Logo transparent.png') }}">
-        
-        <!-- Web App Manifest -->
-        <link rel="manifest" href="{{ asset('manifest.json') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

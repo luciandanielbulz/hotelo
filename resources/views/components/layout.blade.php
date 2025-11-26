@@ -8,26 +8,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name') }}</title>
     
-    <!-- PWA Meta Tags -->
-    <meta name="application-name" content="{{ config('app.name') }}">
-    <meta name="description" content="Venditio - Ihre Business-Management-Lösung">
-    <meta name="theme-color" content="#4CAF50">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="{{ config('app.name') }}">
-    <meta name="mobile-web-app-capable" content="yes">
-    
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="{{ asset('logo/VenditioIcon.svg') }}">
     <link rel="alternate icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-    
-    <!-- Apple Touch Icons -->
-    <link rel="apple-touch-icon" href="{{ asset('logo/Logo transparent.png') }}">
-    <link rel="apple-touch-icon" sizes="192x192" href="{{ asset('logo/Logo transparent.png') }}">
-    <link rel="apple-touch-icon" sizes="512x512" href="{{ asset('logo/Logo transparent.png') }}">
-    
-    <!-- Web App Manifest -->
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     <!-- CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -116,38 +99,5 @@
 
     @livewireScripts
     @stack('scripts')
-    
-    <!-- Service Worker Registration -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then((registration) => {
-                        console.log('Service Worker registered successfully:', registration.scope);
-                        
-                        // Check for updates
-                        registration.addEventListener('updatefound', () => {
-                            const newWorker = registration.installing;
-                            newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    // New service worker available, show update notification
-                                    if (confirm('Eine neue Version ist verfügbar. Seite neu laden?')) {
-                                        window.location.reload();
-                                    }
-                                }
-                            });
-                        });
-                    })
-                    .catch((error) => {
-                        console.log('Service Worker registration failed:', error);
-                    });
-            });
-            
-            // Listen for service worker updates
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                window.location.reload();
-            });
-        }
-    </script>
 </body>
 </html>
