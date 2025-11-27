@@ -486,29 +486,69 @@ class PdfCreateController extends Controller
             return null;
         }
 
-        // Für DomPDF: Verwende direkt Base64, da relative Pfade nicht zuverlässig funktionieren
+        // Für DomPDF: Versuche verschiedene Ansätze
         try {
-            // Prüfe ob die Quelldatei lesbar ist
+            // Methode 1: Versuche das Logo in das public-Verzeichnis zu kopieren (funktioniert im Testsystem)
+            $publicLogoPath = public_path('temp_logos');
+            if (!file_exists($publicLogoPath)) {
+                try {
+                    mkdir($publicLogoPath, 0755, true);
+                    \Log::info('temp_logos Verzeichnis erstellt: ' . $publicLogoPath);
+                } catch (\Exception $e) {
+                    \Log::warning('Konnte temp_logos Verzeichnis nicht erstellen: ' . $e->getMessage() . ' - verwende Base64');
+                    // Weiter mit Base64
+                }
+            }
+            
+            // Prüfe ob das Verzeichnis beschreibbar ist
+            if (file_exists($publicLogoPath) && !is_writable($publicLogoPath)) {
+                \Log::warning('temp_logos Verzeichnis ist nicht beschreibbar: ' . $publicLogoPath);
+                // Versuche Berechtigungen zu setzen
+                try {
+                    chmod($publicLogoPath, 0755);
+                } catch (\Exception $e) {
+                    \Log::warning('Konnte Berechtigungen für temp_logos nicht setzen: ' . $e->getMessage());
+                }
+            }
+            
+            // Versuche zu kopieren, wenn Verzeichnis existiert und beschreibbar ist
+            if (file_exists($publicLogoPath) && is_writable($publicLogoPath)) {
+                $tempLogoFile = $publicLogoPath . '/' . basename($client->logo);
+                
+                // Prüfe ob die Quelldatei lesbar ist
+                if (is_readable($logoPath)) {
+                    if (copy($logoPath, $tempLogoFile)) {
+                        // Verifiziere dass die Kopie existiert
+                        if (file_exists($tempLogoFile)) {
+                            // Relativer URL-Pfad für DomPDF
+                            $relativePath = 'temp_logos/' . basename($client->logo);
+                            
+                            \Log::info('Logo temporär kopiert: ' . $tempLogoFile . ' -> ' . $relativePath);
+                            return $relativePath;
+                        }
+                    }
+                }
+            }
+            
+            // Methode 2: Fallback zu Base64 wenn Kopieren fehlschlägt
+            \Log::info('Kopieren in temp_logos fehlgeschlagen, verwende Base64 für Client ' . $client->id);
+            
             if (!is_readable($logoPath)) {
-                \Log::error('Logo-Datei ist nicht lesbar: ' . $logoPath);
+                \Log::error('Logo-Datei ist nicht lesbar für Base64: ' . $logoPath);
                 return null;
             }
             
-            // Lese die Bilddatei
             $imageData = file_get_contents($logoPath);
             if ($imageData === false) {
                 \Log::error('Konnte Logo-Datei nicht lesen: ' . $logoPath);
                 return null;
             }
             
-            // Konvertiere zu Base64
             $base64 = base64_encode($imageData);
-            
-            // Bestimme MIME-Type
             $mimeType = mime_content_type($logoPath);
             
             if (!$mimeType) {
-                // Fallback für MIME-Type basierend auf Dateiendung
+                // Fallback für MIME-Type
                 $extension = strtolower(pathinfo($logoPath, PATHINFO_EXTENSION));
                 $mimeTypes = [
                     'jpg' => 'image/jpeg',
@@ -521,20 +561,30 @@ class PdfCreateController extends Controller
                 $mimeType = $mimeTypes[$extension] ?? 'image/jpeg';
             }
             
-            // Erstelle Data URI
-            $dataUri = 'data:' . $mimeType . ';base64,' . $base64;
-            
-            \Log::info('Logo als Base64 konvertiert für Client ' . $client->id . ' (Version: ' . ($client->version ?? 'N/A') . ', Größe: ' . strlen($imageData) . ' bytes, MIME: ' . $mimeType . ')');
-            
-            return $dataUri;
+            \Log::info('Logo als Base64 konvertiert für Client ' . $client->id);
+            return 'data:' . $mimeType . ';base64,' . $base64;
             
         } catch (\Exception $e) {
             \Log::error('Fehler bei der Logo-Verarbeitung für DomPDF: ' . $e->getMessage(), [
                 'logo_path' => $logoPath,
                 'client_id' => $client->id,
-                'version' => $client->version ?? 'N/A',
                 'trace' => $e->getTraceAsString()
             ]);
+            
+            // Letzter Fallback: Base64
+            try {
+                if (is_readable($logoPath)) {
+                    $imageData = file_get_contents($logoPath);
+                    if ($imageData !== false) {
+                        $base64 = base64_encode($imageData);
+                        $mimeType = mime_content_type($logoPath) ?: 'image/jpeg';
+                        return 'data:' . $mimeType . ';base64,' . $base64;
+                    }
+                }
+            } catch (\Exception $e2) {
+                \Log::error('Auch Base64-Fallback fehlgeschlagen: ' . $e2->getMessage());
+            }
+            
             return null;
         }
     }
