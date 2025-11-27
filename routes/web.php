@@ -57,6 +57,44 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
+// Route für Client-Logos (muss VOR anderen Routen stehen, damit sie nicht überschrieben wird)
+Route::get('/storage/logos/{filename}', function ($filename) {
+    // URL-decode den Dateinamen
+    $filename = urldecode($filename);
+    
+    // Sicherheitsprüfung: Nur Dateinamen mit erlaubten Zeichen
+    if (preg_match('/[^a-zA-Z0-9._()-]/', basename($filename))) {
+        abort(403, 'Ungültiger Dateiname');
+    }
+    
+    $path = storage_path('app/public/logos/' . $filename);
+    
+    if (!File::exists($path)) {
+        abort(404, 'Logo nicht gefunden: ' . $filename);
+    }
+    
+    // Bestimme MIME-Type basierend auf Dateiendung
+    $mimeType = 'image/jpeg'; // Standard
+    $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+    $mimeTypes = [
+        'jpg' => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'png' => 'image/png',
+        'gif' => 'image/gif',
+        'svg' => 'image/svg+xml',
+        'webp' => 'image/webp'
+    ];
+    
+    if (isset($mimeTypes[$extension])) {
+        $mimeType = $mimeTypes[$extension];
+    }
+    
+    return response()->file($path, [
+        'Content-Type' => $mimeType,
+        'Cache-Control' => 'public, max-age=31536000', // 1 Jahr Cache
+    ]);
+})->name('logo.show')->where('filename', '.*');
+
 /*
 |==========================================================================
 | GESCHÜTZTE ROUTEN (Auth & Verified Middleware)

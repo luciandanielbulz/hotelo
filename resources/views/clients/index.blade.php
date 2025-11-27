@@ -30,17 +30,33 @@
                                 <tr data-id="{{ $client->id }}" class="hover:bg-indigo-100 cursor-pointer">
                                     <td class="hidden sm:table-cell whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6">
                                         @php
-                                            $logoExists = $client->logo && \Storage::disk('public')->exists('logos/' . $client->logo);
-                                            $logoUrl = $client->logo ? asset('storage/logos/' . rawurlencode($client->logo)) : null;
+                                            $logoName = $client->logo;
+                                            $logoExists = false;
+                                            $logoUrl = null;
+                                            
+                                            if ($logoName) {
+                                                // Prüfe zuerst mit Storage-Facade
+                                                $logoExists = \Storage::disk('public')->exists('logos/' . $logoName);
+                                                
+                                                // Falls Storage-Facade false zurückgibt, prüfe direkt mit file_exists
+                                                if (!$logoExists) {
+                                                    $directPath = storage_path('app/public/logos/' . $logoName);
+                                                    $logoExists = file_exists($directPath);
+                                                }
+                                                
+                                                if ($logoExists) {
+                                                    $logoUrl = asset('storage/logos/' . rawurlencode($logoName));
+                                                }
+                                            }
                                         @endphp
                                         @if($logoExists && $logoUrl)
                                             <img src="{{ $logoUrl }}" 
                                                  alt="Logo" 
                                                  class="h-10 w-auto object-contain"
-                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='inline'; console.error('Logo konnte nicht geladen werden: {{ $logoUrl }}');">
                                             <span class="text-gray-400" style="display: none;">Kein Logo</span>
                                         @else
-                                            <span class="text-gray-400">Kein Logo</span>
+                                            <span class="text-gray-400">Kein Logo{{ $logoName ? ' (' . $logoName . ')' : '' }}</span>
                                         @endif
                                     </td>
                                     <td class="hidden sm:table-cell whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6">{{ $client->clientname }}</td>

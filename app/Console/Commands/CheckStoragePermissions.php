@@ -44,15 +44,24 @@ class CheckStoragePermissions extends Command
         $storageLink = public_path('storage');
         if (is_link($storageLink)) {
             $target = readlink($storageLink);
-            if ($target === storage_path('app/public')) {
+            $expectedTarget = storage_path('app/public');
+            
+            // Normalisiere Pfade für Vergleich (behandle relative und absolute Pfade)
+            $targetReal = realpath($storageLink);
+            $expectedReal = realpath($expectedTarget);
+            
+            if ($targetReal && $expectedReal && $targetReal === $expectedReal) {
                 $success[] = 'Storage-Link existiert und zeigt auf korrektes Verzeichnis';
             } else {
-                $issues[] = "Storage-Link zeigt auf falsches Verzeichnis: {$target}";
+                $issues[] = "Storage-Link zeigt auf falsches Verzeichnis: {$target} (erwartet: {$expectedTarget})";
+                $issues[] = "Lösung: Löschen Sie 'public/storage' und führen Sie 'php artisan storage:link' aus";
             }
         } elseif (file_exists($storageLink)) {
-            $issues[] = 'public/storage existiert, ist aber kein Link';
+            $issues[] = 'public/storage existiert, ist aber kein Link (vermutlich ein Verzeichnis)';
+            $issues[] = "Lösung: Löschen Sie 'public/storage' und führen Sie 'php artisan storage:link' aus";
         } else {
-            $issues[] = 'Storage-Link existiert nicht. Führen Sie "php artisan storage:link" aus.';
+            $issues[] = 'Storage-Link existiert nicht.';
+            $issues[] = "Lösung: Führen Sie 'php artisan storage:link' aus";
         }
 
         // Prüfe public/temp_logos
