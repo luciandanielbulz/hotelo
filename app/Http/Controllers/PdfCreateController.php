@@ -448,12 +448,17 @@ class PdfCreateController extends Controller
     private function prepareLogoForDomPDF($client)
     {
         if (!$client->logo) {
+            \Log::info('Client hat kein Logo (Client ID: ' . $client->id . ', Version: ' . ($client->version ?? 'N/A') . ')');
             return null;
         }
 
+        // Hauptpfad: storage/app/public/logos/
+        $mainPath = storage_path('app/public/logos/' . $client->logo);
+        
         // Mehrere mögliche Pfade prüfen
         $possiblePaths = [
-            storage_path('app/public/logos/' . $client->logo),
+            $mainPath,
+            public_path('storage/logos/' . $client->logo),
             public_path('logo/' . $client->logo),
             storage_path('app/logos/' . $client->logo),
             public_path('logos/' . $client->logo),
@@ -463,12 +468,21 @@ class PdfCreateController extends Controller
         foreach ($possiblePaths as $path) {
             if (file_exists($path)) {
                 $logoPath = $path;
+                \Log::info('Logo gefunden für Client ' . $client->id . ' (Version: ' . ($client->version ?? 'N/A') . '): ' . $path);
                 break;
             }
         }
         
         if (!$logoPath) {
-            \Log::warning('Logo nicht gefunden: ' . $client->logo . ' in keinem der Pfade: ' . implode(', ', $possiblePaths));
+            \Log::warning('Logo nicht gefunden für Client ' . $client->id . ' (Version: ' . ($client->version ?? 'N/A') . '): ' . $client->logo . ' in keinem der Pfade: ' . implode(', ', $possiblePaths));
+            // Prüfe auch mit Storage-Facade
+            if (\Storage::disk('public')->exists('logos/' . $client->logo)) {
+                $logoPath = \Storage::disk('public')->path('logos/' . $client->logo);
+                \Log::info('Logo über Storage-Facade gefunden: ' . $logoPath);
+            }
+        }
+        
+        if (!$logoPath) {
             return null;
         }
 

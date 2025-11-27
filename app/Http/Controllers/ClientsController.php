@@ -253,13 +253,19 @@ class ClientsController extends Controller
                 $logoName = $this->uploadLogo($request->file('logo'));
                 if ($logoName) {
                     $clientData['logo'] = $logoName;
-                    Log::info('Logo wurde für neue Version vorbereitet: ' . $logoName);
+                    // Prüfe ob die Datei wirklich existiert
+                    $logoPath = storage_path('app/public/logos/' . $logoName);
+                    if (file_exists($logoPath)) {
+                        Log::info('Logo wurde erfolgreich hochgeladen und existiert: ' . $logoName . ' (Pfad: ' . $logoPath . ')');
+                    } else {
+                        Log::error('Logo wurde hochgeladen, aber Datei existiert nicht: ' . $logoPath);
+                    }
                 } else {
                     DB::rollBack();
                     return redirect()->back()->withErrors(['logo' => 'Logo konnte nicht hochgeladen werden.'])->withInput();
                 }
             } else {
-                Log::info('Keine Logo-Datei im Request gefunden');
+                Log::info('Keine Logo-Datei im Request gefunden, behalte aktuelles Logo: ' . ($client->logo ?? 'kein Logo'));
                 // Behalte das aktuelle Logo für die neue Version
                 $clientData['logo'] = $client->logo;
             }

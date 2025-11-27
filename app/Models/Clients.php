@@ -176,8 +176,23 @@ class Clients extends Model
             // Überschreibe mit neuen Daten
             $newVersionData = array_merge($newVersionData, $newData);
             
+            // Logging für Debugging
+            if (isset($newVersionData['logo'])) {
+                \Log::info('Erstelle neue Version mit Logo: ' . $newVersionData['logo']);
+            }
+            
             // Erstelle neue Version
             $newVersion = self::create($newVersionData);
+            
+            // Verifiziere dass das Logo korrekt gespeichert wurde
+            if ($newVersion->logo) {
+                $logoPath = storage_path('app/public/logos/' . $newVersion->logo);
+                if (file_exists($logoPath)) {
+                    \Log::info('Logo in neuer Version verifiziert: ' . $newVersion->logo . ' (Version ID: ' . $newVersion->id . ')');
+                } else {
+                    \Log::warning('Logo in neuer Version gespeichert, aber Datei existiert nicht: ' . $logoPath);
+                }
+            }
             
             DB::commit();
             
