@@ -47,17 +47,19 @@
             </div>
         </div>
         <!-- Status Filter Tabs -->
-        <div class="mt-4">
-            <div class="inline-flex items-center rounded-xl p-1 text-sm font-medium text-gray-600 bg-gray-50 overflow-x-auto">
-                <button wire:click="setStatusFilter('all')" class="px-4 py-2 rounded-lg transition {{ $statusFilter === 'all' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Alle</button>
-                <button wire:click="setStatusFilter('draft')" class="px-4 py-2 rounded-lg transition {{ $statusFilter === 'draft' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Entwurf</button>
-                <button wire:click="setStatusFilter('open')" class="px-4 py-2 rounded-lg transition {{ $statusFilter === 'open' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Offen</button>
-                @if(auth()->user()->hasPermission('view_email_list'))
-                    <button wire:click="setStatusFilter('sent')" class="px-4 py-2 rounded-lg transition {{ $statusFilter === 'sent' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Gesendet</button>
-                @endif
-                <button wire:click="setStatusFilter('partial')" class="px-4 py-2 rounded-lg transition {{ $statusFilter === 'partial' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Teilweise bezahlt</button>
-                <button wire:click="setStatusFilter('paid')" class="px-4 py-2 rounded-lg transition {{ $statusFilter === 'paid' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Bezahlt</button>
-                <button wire:click="setStatusFilter('cancelled')" class="px-4 py-2 rounded-lg transition {{ $statusFilter === 'cancelled' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Storniert</button>
+        <div class="mt-4 -mx-4 sm:mx-0 px-4 sm:px-0">
+            <div class="flex items-center rounded-xl p-1 text-sm font-medium text-gray-600 bg-gray-50 overflow-x-auto" style="scrollbar-width: thin; -webkit-overflow-scrolling: touch;">
+                <div class="flex items-center space-x-1 sm:space-x-0 min-w-max">
+                    <button wire:click="setStatusFilter('all')" class="px-2 sm:px-4 py-2 rounded-lg transition whitespace-nowrap flex-shrink-0 {{ $statusFilter === 'all' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Alle</button>
+                    <button wire:click="setStatusFilter('draft')" class="px-2 sm:px-4 py-2 rounded-lg transition whitespace-nowrap flex-shrink-0 {{ $statusFilter === 'draft' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Entwurf</button>
+                    <button wire:click="setStatusFilter('open')" class="px-2 sm:px-4 py-2 rounded-lg transition whitespace-nowrap flex-shrink-0 {{ $statusFilter === 'open' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Offen</button>
+                    @if(auth()->user()->hasPermission('view_email_list'))
+                        <button wire:click="setStatusFilter('sent')" class="px-2 sm:px-4 py-2 rounded-lg transition whitespace-nowrap flex-shrink-0 {{ $statusFilter === 'sent' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Gesendet</button>
+                    @endif
+                    <button wire:click="setStatusFilter('partial')" class="px-2 sm:px-4 py-2 rounded-lg transition whitespace-nowrap flex-shrink-0 {{ $statusFilter === 'partial' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Teilweise</button>
+                    <button wire:click="setStatusFilter('paid')" class="px-2 sm:px-4 py-2 rounded-lg transition whitespace-nowrap flex-shrink-0 {{ $statusFilter === 'paid' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Bezahlt</button>
+                    <button wire:click="setStatusFilter('cancelled')" class="px-2 sm:px-4 py-2 rounded-lg transition whitespace-nowrap flex-shrink-0 {{ $statusFilter === 'cancelled' ? 'bg-gray-200 text-gray-900' : 'hover:text-gray-900' }}">Storniert</button>
+                </div>
             </div>
         </div>
     </div>
@@ -317,44 +319,41 @@
 <script>
     // Sofort beim Laden prüfen und View-Mode setzen
     document.addEventListener('livewire:init', function() {
-        const screenWidth = window.innerWidth;
+        const componentId = @js($this->getId());
         
-        // Desktop (lg >= 1024px): IMMER Tabellenansicht
-        if (screenWidth >= 1024) {
-            @this.set('viewMode', 'table');
-            @this.call('setScreenWidth', screenWidth);
-        } 
-        // Tablet (768px - 1024px): Kartenansicht
-        else if (screenWidth >= 768 && screenWidth < 1024) {
-            @this.set('viewMode', 'cards');
-            @this.call('setScreenWidth', screenWidth);
-        } 
-        // Mobile (< 768px): Kartenansicht
-        else {
-            @this.set('viewMode', 'cards');
-            @this.call('setScreenWidth', screenWidth);
+        function updateViewMode() {
+            const component = Livewire.find(componentId);
+            if (!component) {
+                return;
+            }
+            
+            const screenWidth = window.innerWidth;
+            
+            // Desktop (lg >= 1024px): IMMER Tabellenansicht
+            if (screenWidth >= 1024) {
+                component.set('viewMode', 'table');
+                component.call('setScreenWidth', screenWidth);
+            } 
+            // Tablet (768px - 1024px): Kartenansicht
+            else if (screenWidth >= 768 && screenWidth < 1024) {
+                component.set('viewMode', 'cards');
+                component.call('setScreenWidth', screenWidth);
+            } 
+            // Mobile (< 768px): Kartenansicht
+            else {
+                component.set('viewMode', 'cards');
+                component.call('setScreenWidth', screenWidth);
+            }
         }
+        
+        // Initiale Prüfung nach Livewire-Initialisierung
+        setTimeout(updateViewMode, 100);
         
         // Bei Resize erneut prüfen
         let resizeTimer;
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() {
-                const newWidth = window.innerWidth;
-                // Desktop (lg >= 1024px): Tabellenansicht
-                if (newWidth >= 1024) {
-                    @this.set('viewMode', 'table');
-                } 
-                // Tablet (768px - 1024px): Kartenansicht
-                else if (newWidth >= 768 && newWidth < 1024) {
-                    @this.set('viewMode', 'cards');
-                } 
-                // Mobile (< 768px): Kartenansicht
-                else {
-                    @this.set('viewMode', 'cards');
-                }
-                @this.call('setScreenWidth', newWidth);
-            }, 250);
+            resizeTimer = setTimeout(updateViewMode, 250);
         });
     });
 </script>

@@ -58,7 +58,7 @@
             </aside>
 
             <!-- Main content -->
-            <main class="w-full px-4 lg:pl-64 lg:px-0">
+            <main class="w-full xs:px-4 md:px-4 lg:pl-64 lg:px-0">
                 <div class="mx-auto sm:px-6 lg:px-8">
                     <div class="py-4 max-w-7xl mx-auto">
                         {{ $slot }}

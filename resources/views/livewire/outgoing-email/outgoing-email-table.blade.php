@@ -1,6 +1,12 @@
 <div>
     <!-- Erweiterte Such- und Filter-Sektion -->
     <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 mb-6 border border-white/20 shadow-lg">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+            </svg>
+            Filterung
+        </h2>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <!-- Suchfeld -->
             <div class="md:col-span-2">
@@ -46,7 +52,7 @@
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
                     <tr>
-                        <th scope="col" class="py-4 pl-6 pr-3 text-left text-sm font-semibold text-gray-900">
+                        <th scope="col" class="hidden sm:table-cell py-4 pl-6 pr-3 text-left text-sm font-semibold text-gray-900">
                             <div class="flex items-center space-x-2">
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
@@ -62,7 +68,7 @@
                                 <span>Nummer</span>
                             </div>
                         </th>
-                        <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
+                        <th scope="col" class="hidden sm:table-cell px-3 py-4 text-left text-sm font-semibold text-gray-900">
                             <div class="flex items-center space-x-2">
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -70,7 +76,7 @@
                                 <span>Kunde</span>
                             </div>
                         </th>
-                        <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
+                        <th scope="col" class="hidden sm:table-cell px-3 py-4 text-left text-sm font-semibold text-gray-900">
                             <div class="flex items-center space-x-2">
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
@@ -86,7 +92,7 @@
                                 <span>Sendezeit</span>
                             </div>
                         </th>
-                        <th scope="col" class="px-3 py-4 text-center text-sm font-semibold text-gray-900">
+                        <th scope="col" class="hidden sm:table-cell px-3 py-4 text-center text-sm font-semibold text-gray-900">
                             <div class="flex items-center justify-center space-x-2">
                                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
@@ -120,7 +126,7 @@
                         @endphp
 
                         <tr class="hover:bg-blue-50/50 transition-colors duration-200">
-                            <td class="whitespace-nowrap py-4 pl-6 pr-3 text-sm">
+                            <td class="hidden sm:table-cell whitespace-nowrap py-4 pl-6 pr-3 text-sm">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $typeClass }}">
                                     @if($row->type == 1)
                                         <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +151,7 @@
                                     {{ $row->objectnumber }}
                                 </a>
                             </td>
-                            <td class="px-3 py-4 text-sm text-gray-900">
+                            <td class="hidden sm:table-cell px-3 py-4 text-sm text-gray-900">
                                 <div class="flex items-center">
                                     <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
@@ -153,7 +159,7 @@
                                     <span class="truncate max-w-xs" title="{{ $customerName }}">{{ $customerName }}</span>
                                 </div>
                             </td>
-                            <td class="px-3 py-4 text-sm text-gray-900">
+                            <td class="hidden sm:table-cell px-3 py-4 text-sm text-gray-900">
                                 <div class="flex items-center">
                                     <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
@@ -167,7 +173,7 @@
                                     <span class="text-xs text-gray-500">{{ $sendDate->format('H:i:s') }}</span>
                                 </div>
                             </td>
-                            <td class="whitespace-nowrap px-3 py-4 text-sm text-center">
+                            <td class="hidden sm:table-cell whitespace-nowrap px-3 py-4 text-sm text-center">
                                 <div class="flex justify-center">
                                     <span class="inline-flex items-center justify-center w-8 h-8 rounded-full {{ $row->withattachment ? 'bg-green-100' : 'bg-red-100' }}">
                                         <i class="fa-solid {{ $attachmentIcon }} {{ $attachmentColor }} text-sm"></i>

@@ -20,6 +20,14 @@ export default {
           'body': '#6b7280',
           'fg-brand': '#2563eb',
         },
+        screens: {
+            xs: '400px',  // ← NEU (für iPhones)
+            sm: '640px',
+            md: '768px',
+            lg: '1024px',
+            xl: '1280px',
+            '2xl': '1536px',
+        },
         borderColor: {
           'default': '#e5e7eb',
           'default-medium': '#d1d5db',
