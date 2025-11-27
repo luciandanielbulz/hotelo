@@ -64,14 +64,10 @@
                 @method('PUT')
                 
                 <!-- Mobile: Vertikales Layout, Desktop: Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <x-input type="number" step="0.01" name="amount" label="Menge" value="{{ old('amount', $invoicepositioncontent->amount) }}" placeholder="Geben Sie die Menge ein" />
                     <x-dropdown_body name="unit_id" label="Einheit" :options="$units->pluck('unitdesignation', 'id')" selected="{{ old('unit_id', $invoicepositioncontent->unit_id) }}" />
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <x-input type="number" step="0.01" name="price" label="Preis/EH" value="{{ old('price', $invoicepositioncontent->price) }}" placeholder="Preis eingeben" />
-                    <x-input name="sequence" label="Reihenfolge" value="{{ old('sequence', $invoicepositioncontent->sequence) }}" placeholder="Reihenfolge eingeben" />
                 </div>
 
                 <div>
@@ -134,10 +130,6 @@
             <form method="POST" action="{{ route('invoiceposition.update', ['invoiceposition' => $invoicepositioncontent->id]) }}" class="space-y-6">
                 @csrf
                 @method('PUT')
-                
-                <div class="md:w-1/3">
-                    <x-input name="sequence" label="Reihenfolge" value="{{ $invoicepositioncontent->sequence }}" placeholder="Reihenfolge eingeben" />
-                </div>
 
                 <div>
                     <div class="flex items-center justify-between mb-2">
