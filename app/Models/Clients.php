@@ -161,7 +161,8 @@ class Clients extends Model
                               ->max('version') + 1;
 
             // Erstelle neue Version mit allen aktuellen Daten
-            $newVersionData = $this->toArray();
+            // Verwende getAttributes() statt toArray() um sicherzustellen, dass alle Felder enthalten sind
+            $newVersionData = $this->getAttributes();
             
             // Entferne ID und Timestamps für neue Version
             unset($newVersionData['id'], $newVersionData['created_at'], $newVersionData['updated_at']);
@@ -176,10 +177,22 @@ class Clients extends Model
             // Überschreibe mit neuen Daten
             $newVersionData = array_merge($newVersionData, $newData);
             
-            // Logging für Debugging
-            if (isset($newVersionData['logo'])) {
-                \Log::info('Erstelle neue Version mit Logo: ' . $newVersionData['logo']);
+            // Stelle sicher, dass das Logo-Feld explizit gesetzt ist (auch wenn null)
+            if (isset($newData['logo'])) {
+                $newVersionData['logo'] = $newData['logo'];
+                \Log::info('Logo explizit in newVersionData gesetzt: ' . ($newData['logo'] ?? 'null'));
+            } elseif (!isset($newVersionData['logo'])) {
+                // Falls Logo nicht in newVersionData ist, übernehme es von der alten Version
+                $newVersionData['logo'] = $this->logo;
+                \Log::info('Logo von alter Version übernommen: ' . ($this->logo ?? 'null'));
             }
+            
+            // Logging für Debugging
+            \Log::info('Erstelle neue Version mit folgenden Daten:', [
+                'logo' => $newVersionData['logo'] ?? 'nicht gesetzt',
+                'companyname' => $newVersionData['companyname'] ?? 'nicht gesetzt',
+                'version' => $newVersionData['version'] ?? 'nicht gesetzt'
+            ]);
             
             // Erstelle neue Version
             $newVersion = self::create($newVersionData);
@@ -188,10 +201,16 @@ class Clients extends Model
             if ($newVersion->logo) {
                 $logoPath = storage_path('app/public/logos/' . $newVersion->logo);
                 if (file_exists($logoPath)) {
-                    \Log::info('Logo in neuer Version verifiziert: ' . $newVersion->logo . ' (Version ID: ' . $newVersion->id . ')');
+                    \Log::info('Logo in neuer Version verifiziert: ' . $newVersion->logo . ' (Version ID: ' . $newVersion->id . ', Pfad existiert)');
                 } else {
                     \Log::warning('Logo in neuer Version gespeichert, aber Datei existiert nicht: ' . $logoPath);
+                    // Prüfe auch mit Storage-Facade
+                    if (\Storage::disk('public')->exists('logos/' . $newVersion->logo)) {
+                        \Log::info('Logo existiert über Storage-Facade: ' . \Storage::disk('public')->path('logos/' . $newVersion->logo));
+                    }
                 }
+            } else {
+                \Log::warning('Neue Version wurde ohne Logo erstellt (Version ID: ' . $newVersion->id . ')');
             }
             
             DB::commit();

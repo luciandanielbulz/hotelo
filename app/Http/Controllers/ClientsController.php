@@ -22,27 +22,80 @@ class ClientsController extends Controller
     private function uploadLogo($file)
     {
         try {
+            $logosDir = 'logos';
+            $storagePath = storage_path('app/public/' . $logosDir);
+            
+            // Prüfe ob das Storage-Verzeichnis existiert
+            if (!file_exists(storage_path('app/public'))) {
+                Log::error('Storage-Verzeichnis existiert nicht: ' . storage_path('app/public'));
+                try {
+                    mkdir(storage_path('app/public'), 0755, true);
+                    Log::info('Storage-Verzeichnis erstellt: ' . storage_path('app/public'));
+                } catch (\Exception $e) {
+                    Log::error('Konnte Storage-Verzeichnis nicht erstellen: ' . $e->getMessage());
+                    return false;
+                }
+            }
+            
             // Stelle sicher, dass das logos Verzeichnis existiert
-            if (!Storage::disk('public')->exists('logos')) {
-                Storage::disk('public')->makeDirectory('logos');
-                Log::info('Logos Verzeichnis erstellt');
+            if (!Storage::disk('public')->exists($logosDir)) {
+                try {
+                    Storage::disk('public')->makeDirectory($logosDir);
+                    Log::info('Logos Verzeichnis erstellt: ' . $storagePath);
+                } catch (\Exception $e) {
+                    Log::error('Konnte Logos-Verzeichnis nicht erstellen: ' . $e->getMessage());
+                    // Versuche es direkt mit mkdir als Fallback
+                    if (!file_exists($storagePath)) {
+                        try {
+                            mkdir($storagePath, 0755, true);
+                            Log::info('Logos-Verzeichnis mit mkdir erstellt: ' . $storagePath);
+                        } catch (\Exception $e2) {
+                            Log::error('Auch mkdir fehlgeschlagen: ' . $e2->getMessage());
+                            return false;
+                        }
+                    }
+                }
+            }
+            
+            // Prüfe ob das Verzeichnis beschreibbar ist
+            if (!is_writable($storagePath)) {
+                Log::error('Logos-Verzeichnis ist nicht beschreibbar: ' . $storagePath . ' (Berechtigungen: ' . substr(sprintf('%o', fileperms($storagePath)), -4) . ')');
+                // Versuche Berechtigungen zu setzen
+                try {
+                    chmod($storagePath, 0755);
+                    Log::info('Berechtigungen für Logos-Verzeichnis gesetzt: ' . $storagePath);
+                } catch (\Exception $e) {
+                    Log::error('Konnte Berechtigungen nicht setzen: ' . $e->getMessage());
+                    return false;
+                }
             }
 
             // Generiere einen eindeutigen Dateinamen
             $logoName = time() . '_' . $file->getClientOriginalName();
             
             // Speichere das Logo
-            $logoPath = $file->storeAs('logos', $logoName, 'public');
+            $logoPath = $file->storeAs($logosDir, $logoName, 'public');
             
             if ($logoPath) {
-                Log::info('Logo erfolgreich hochgeladen: ' . $logoName);
-                return $logoName;
+                // Verifiziere dass die Datei wirklich existiert
+                $fullPath = storage_path('app/public/' . $logoPath);
+                if (file_exists($fullPath)) {
+                    Log::info('Logo erfolgreich hochgeladen und verifiziert: ' . $logoName . ' (Pfad: ' . $fullPath . ', Größe: ' . filesize($fullPath) . ' bytes)');
+                    return $logoName;
+                } else {
+                    Log::error('Logo wurde hochgeladen, aber Datei existiert nicht: ' . $fullPath);
+                    return false;
+                }
             } else {
-                Log::error('Logo Upload fehlgeschlagen');
+                Log::error('Logo Upload fehlgeschlagen - storeAs gab false zurück');
                 return false;
             }
         } catch (\Exception $e) {
-            Log::error('Fehler beim Logo Upload: ' . $e->getMessage());
+            Log::error('Fehler beim Logo Upload: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
             return false;
         }
     }
@@ -286,12 +339,22 @@ class ClientsController extends Controller
             
             if ($request->hasFile('logo')) {
                 $hasClientChanges = true;
+                Log::info('Logo-Änderung erkannt, neue Version wird erstellt');
             }
             
             $newVersion = null;
             if ($hasClientChanges) {
+                // Stelle sicher, dass das Logo-Feld explizit gesetzt ist
+                if ($request->hasFile('logo') && isset($clientData['logo'])) {
+                    Log::info('Übergebe Logo an createNewVersion: ' . $clientData['logo']);
+                } elseif (!isset($clientData['logo'])) {
+                    // Falls Logo nicht in clientData ist, aber vorhanden sein sollte
+                    $clientData['logo'] = $client->logo;
+                    Log::info('Logo aus alter Version übernommen: ' . ($client->logo ?? 'kein Logo'));
+                }
+                
                 $newVersion = $client->createNewVersion($clientData);
-                Log::info('Neue Client-Version erstellt: ID ' . $newVersion->id . ' (Version: ' . $newVersion->version . ')');
+                Log::info('Neue Client-Version erstellt: ID ' . $newVersion->id . ' (Version: ' . $newVersion->version . ', Logo: ' . ($newVersion->logo ?? 'kein Logo') . ')');
             }
             
             DB::commit();
