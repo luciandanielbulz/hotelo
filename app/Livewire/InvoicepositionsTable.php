@@ -36,7 +36,7 @@ class InvoicepositionsTable extends Component
 
         //dd($highestseqnumber);
 
-        $test = InvoicePositions::create([
+        $test = Invoicepositions::create([
             'invoice_id' => $this->invoiceId,
             'designation' => "Beschreibung",
             'sequence' => $highestseqnumber,
@@ -62,7 +62,7 @@ class InvoicepositionsTable extends Component
 
         $highestseqnumber = $highestseqnumber + 2;
 
-        InvoicePositions::create([
+        Invoicepositions::create([
             'invoice_id' => $this->invoiceId,
             'designation' => "",
             'sequence' => $highestseqnumber,
@@ -89,7 +89,7 @@ class InvoicepositionsTable extends Component
     {
         //dd($positionId);
         // Prüfen, ob die Position existiert
-        $position = InvoicePositions::find($positionId);
+        $position = Invoicepositions::find($positionId);
 
         if ($position) {
             $position->delete(); // Datensatz löschen
@@ -97,5 +97,67 @@ class InvoicepositionsTable extends Component
 
         // Positionen neu laden
         $this->loadPositions();
+    }
+
+    public function movePositionUp($positionId)
+    {
+        try {
+            $position = Invoicepositions::find($positionId);
+            if (!$position || $position->invoice_id != $this->invoiceId) {
+                return;
+            }
+
+            // Finde die Position mit der nächstniedrigeren sequence
+            $previousPosition = Invoicepositions::where('invoice_id', $this->invoiceId)
+                ->where('sequence', '<', $position->sequence)
+                ->orderBy('sequence', 'desc')
+                ->first();
+
+            if ($previousPosition) {
+                // Tausche die sequence-Werte
+                $tempSequence = $position->sequence;
+                $position->sequence = $previousPosition->sequence;
+                $previousPosition->sequence = $tempSequence;
+                
+                $position->save();
+                $previousPosition->save();
+            }
+
+            // Positionen neu laden
+            $this->loadPositions();
+        } catch (\Exception $e) {
+            \Log::error('Fehler beim Verschieben nach oben: ' . $e->getMessage());
+        }
+    }
+
+    public function movePositionDown($positionId)
+    {
+        try {
+            $position = Invoicepositions::find($positionId);
+            if (!$position || $position->invoice_id != $this->invoiceId) {
+                return;
+            }
+
+            // Finde die Position mit der nächsthöheren sequence
+            $nextPosition = Invoicepositions::where('invoice_id', $this->invoiceId)
+                ->where('sequence', '>', $position->sequence)
+                ->orderBy('sequence', 'asc')
+                ->first();
+
+            if ($nextPosition) {
+                // Tausche die sequence-Werte
+                $tempSequence = $position->sequence;
+                $position->sequence = $nextPosition->sequence;
+                $nextPosition->sequence = $tempSequence;
+                
+                $position->save();
+                $nextPosition->save();
+            }
+
+            // Positionen neu laden
+            $this->loadPositions();
+        } catch (\Exception $e) {
+            \Log::error('Fehler beim Verschieben nach unten: ' . $e->getMessage());
+        }
     }
 }

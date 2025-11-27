@@ -31,7 +31,7 @@ class OfferpositionsTable extends Component
     {
         //dd($positionId);
         // Prüfen, ob die Position existiert
-        $position = OfferPositions::find($positionId);
+        $position = Offerpositions::find($positionId);
 
         if ($position) {
             $position->delete(); // Datensatz löschen
@@ -49,7 +49,7 @@ class OfferpositionsTable extends Component
         $highestseqnumber = $highestseqnumber + 2;
 
 
-        OfferPositions::create([
+        Offerpositions::create([
             'offer_id' => $this->offerId,
             'designation' => "Beschreibung",
             'sequence' => $highestseqnumber,
@@ -74,7 +74,7 @@ class OfferpositionsTable extends Component
 
         $highestseqnumber = $highestseqnumber + 2;
 
-        OfferPositions::create([
+        Offerpositions::create([
             'offer_id' => $this->offerId,
             'sequence' => $highestseqnumber,
             'designation' => "",
@@ -90,6 +90,68 @@ class OfferpositionsTable extends Component
 
         // Positionen neu laden
         $this->loadPositions();
+    }
+
+    public function movePositionUp($positionId)
+    {
+        try {
+            $position = Offerpositions::find($positionId);
+            if (!$position || $position->offer_id != $this->offerId) {
+                return;
+            }
+
+            // Finde die Position mit der nächstniedrigeren sequence
+            $previousPosition = Offerpositions::where('offer_id', $this->offerId)
+                ->where('sequence', '<', $position->sequence)
+                ->orderBy('sequence', 'desc')
+                ->first();
+
+            if ($previousPosition) {
+                // Tausche die sequence-Werte
+                $tempSequence = $position->sequence;
+                $position->sequence = $previousPosition->sequence;
+                $previousPosition->sequence = $tempSequence;
+                
+                $position->save();
+                $previousPosition->save();
+            }
+
+            // Positionen neu laden
+            $this->loadPositions();
+        } catch (\Exception $e) {
+            \Log::error('Fehler beim Verschieben nach oben: ' . $e->getMessage());
+        }
+    }
+
+    public function movePositionDown($positionId)
+    {
+        try {
+            $position = Offerpositions::find($positionId);
+            if (!$position || $position->offer_id != $this->offerId) {
+                return;
+            }
+
+            // Finde die Position mit der nächsthöheren sequence
+            $nextPosition = Offerpositions::where('offer_id', $this->offerId)
+                ->where('sequence', '>', $position->sequence)
+                ->orderBy('sequence', 'asc')
+                ->first();
+
+            if ($nextPosition) {
+                // Tausche die sequence-Werte
+                $tempSequence = $position->sequence;
+                $position->sequence = $nextPosition->sequence;
+                $nextPosition->sequence = $tempSequence;
+                
+                $position->save();
+                $nextPosition->save();
+            }
+
+            // Positionen neu laden
+            $this->loadPositions();
+        } catch (\Exception $e) {
+            \Log::error('Fehler beim Verschieben nach unten: ' . $e->getMessage());
+        }
     }
 
     public function render()

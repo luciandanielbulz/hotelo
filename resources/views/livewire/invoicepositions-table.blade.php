@@ -198,6 +198,33 @@
                                 <td class="px-3 py-4 text-sm text-gray-900 font-bold">{{ number_format($position->price * $position->amount, 2, ',', '.') }} €</td>
                                 <td class="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                     <div class="flex items-center justify-end space-x-2">
+                                        <!-- Pfeil-Buttons (nur LG) -->
+                                        <div class="hidden lg:flex items-center space-x-1">
+                                            @php
+                                                $currentIndex = $loop->index;
+                                                $totalPositions = count($positions);
+                                                $canMoveUp = $currentIndex > 0;
+                                                $canMoveDown = $currentIndex < $totalPositions - 1;
+                                            @endphp
+                                            <button type="button" 
+                                                    wire:click="movePositionUp({{ $position->id }})"
+                                                    @if(!$canMoveUp) disabled @endif
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    title="Nach oben">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                                                </svg>
+                                            </button>
+                                            <button type="button" 
+                                                    wire:click="movePositionDown({{ $position->id }})"
+                                                    @if(!$canMoveDown) disabled @endif
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    title="Nach unten">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                                </svg>
+                                            </button>
+                                        </div>
                                         <a href="{{ route('invoiceposition.edit', $position->id) }}" 
                                            class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-200 shadow-md hover:shadow-lg text-xs">
                                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -236,6 +263,33 @@
                                 <td></td>
                                 <td class="py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                     <div class="flex items-center justify-end space-x-2">
+                                        <!-- Pfeil-Buttons (nur LG) -->
+                                        <div class="hidden lg:flex items-center space-x-1">
+                                            @php
+                                                $currentIndex = $loop->index;
+                                                $totalPositions = count($positions);
+                                                $canMoveUp = $currentIndex > 0;
+                                                $canMoveDown = $currentIndex < $totalPositions - 1;
+                                            @endphp
+                                            <button type="button" 
+                                                    wire:click="movePositionUp({{ $position->id }})"
+                                                    @if(!$canMoveUp) disabled @endif
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    title="Nach oben">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                                                </svg>
+                                            </button>
+                                            <button type="button" 
+                                                    wire:click="movePositionDown({{ $position->id }})"
+                                                    @if(!$canMoveDown) disabled @endif
+                                                    class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    title="Nach unten">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                                </svg>
+                                            </button>
+                                        </div>
                                         <a href="{{ route('invoiceposition.edit', $position->id) }}" 
                                            class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-medium rounded-lg hover:from-blue-600 hover:to-indigo-600 transition-all duration-200 shadow-md hover:shadow-lg text-xs">
                                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
