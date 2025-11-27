@@ -57,8 +57,8 @@
                     <!-- Angebot Header -->
                     <div class="flex items-start justify-between mb-3">
                         <div class="flex-1 min-w-0">
-                            <h3 class="font-bold text-gray-900 truncate text-lg">
-                                #{{ $offer->number }}
+                            <h3 class="font-bold truncate text-lg">
+                                <span class="text-green-800">#{{ $offer->number }}</span>
                             </h3>
                             <p class="text-sm font-medium text-gray-700 truncate">
                                 {{ $offer->customername ?: $offer->companyname ?: 'Kein Kunde' }}
@@ -190,7 +190,7 @@
                             <tr class="hover:bg-white/50 transition-colors duration-200">
                                 <td class="py-4 pl-6 pr-3">
                                     <div>
-                                        <div class="font-medium text-gray-900">Angebot #{{ $offer->number }}</div>
+                                        <div class="font-medium text-gray-900"><span class="text-green-800 font-semibold">#{{ $offer->number }}</span></div>
                                         <div class="text-sm text-gray-600">{{ \Carbon\Carbon::parse($offer->date)->translatedFormat('d.m.Y') }}</div>
                                         @if($offer->description)
                                             <div class="text-xs text-gray-500">{{ $offer->description }}</div>

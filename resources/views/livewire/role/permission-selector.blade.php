@@ -10,7 +10,7 @@
                     Berechtigungen verwalten
                 </div>
             </h3>
-            <div class="text-sm text-gray-500">
+            <div class="hidden sm:block text-sm text-gray-500">
                 <span class="font-medium text-indigo-600">{{ $selectedCount }}</span> von {{ $totalCount }} ausgewählt
             </div>
         </div>
@@ -38,7 +38,7 @@
         </div>
 
         <!-- Schnellaktionen -->
-        <div class="flex justify-between items-center">
+        <div class="hidden sm:flex justify-between items-center">
             <div class="flex space-x-2">
                 <button wire:click="selectAll" type="button" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -94,7 +94,7 @@
                                     <span class="text-sm text-gray-500">({{ $permissions->count() }} Berechtigungen)</span>
                                 </button>
                                 
-                                <div class="flex space-x-2">
+                                <div class="hidden sm:flex space-x-2">
                                     <button wire:click="selectAllInCategory('{{ $category }}')" type="button" class="text-xs text-indigo-600 hover:text-indigo-800">
                                         Alle auswählen
                                     </button>

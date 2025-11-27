@@ -17,11 +17,11 @@
                         <thead class="bg-gray-50">
                             <tr>
                                 <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-m font-semibold text-gray-900 sm:pl-6">E-Mail/Login</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-m font-semibold text-gray-900">Vorname</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-m font-semibold text-gray-900">Nachname</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-m font-semibold text-gray-900">Role</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-m font-semibold text-gray-900">Client</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-m font-semibold text-gray-900">Aktiv</th>
+                                <th scope="col" class="hidden sm:table-cell px-3 py-3.5 text-left text-m font-semibold text-gray-900">Vorname</th>
+                                <th scope="col" class="hidden sm:table-cell px-3 py-3.5 text-left text-m font-semibold text-gray-900">Nachname</th>
+                                <th scope="col" class="hidden sm:table-cell px-3 py-3.5 text-left text-m font-semibold text-gray-900">Role</th>
+                                <th scope="col" class="hidden sm:table-cell px-3 py-3.5 text-left text-m font-semibold text-gray-900">Client</th>
+                                <th scope="col" class="hidden sm:table-cell px-3 py-3.5 text-left text-m font-semibold text-gray-900">Aktiv</th>
                                 <th scope="col" class="px-3 py-3.5 text-right text-m font-semibold text-gray-900"></th>
                                 <th scope="col" class="px-3 py-3.5 text-right text-m font-semibold text-gray-900"></th>
                             </tr>
@@ -30,19 +30,29 @@
                             @foreach ($users as $user)
                                 <tr data-id="{{ $user->user_id }}" class="hover:bg-indigo-100 cursor-pointer">
                                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-m text-gray-900 sm:pl-6">{{ $user->user_email }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-m text-gray-500">{{ $user->user_name }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-m text-gray-500">{{ $user->lastname }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-m text-gray-500">{{ $user->role_name }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-m text-gray-500">{{ $user->clientname }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-m text-gray-500">{{ $user->isactive ? 'Ja' : 'Nein' }}</td>
+                                    <td class="hidden sm:table-cell whitespace-nowrap px-3 py-4 text-m text-gray-500">{{ $user->user_name }}</td>
+                                    <td class="hidden sm:table-cell whitespace-nowrap px-3 py-4 text-m text-gray-500">{{ $user->lastname }}</td>
+                                    <td class="hidden sm:table-cell whitespace-nowrap px-3 py-4 text-m text-gray-500">{{ $user->role_name }}</td>
+                                    <td class="hidden sm:table-cell whitespace-nowrap px-3 py-4 text-m text-gray-500">{{ $user->clientname }}</td>
+                                    <td class="hidden sm:table-cell whitespace-nowrap px-3 py-4 text-m text-gray-500">{{ $user->isactive ? 'Ja' : 'Nein' }}</td>
                                     <td class="text-right whitespace-nowrap px-2 py-2 text-m">
-                                        <a href="{{ route('users.edit', $user->user_id) }}" class="rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">Bearbeiten</a>
+                                        <a href="{{ route('users.edit', $user->user_id) }}" class="inline-flex items-center justify-center rounded-md bg-gray-300 px-2 sm:px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200" title="Bearbeiten">
+                                            <svg class="w-4 h-4 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                            </svg>
+                                            <span class="hidden sm:inline">Bearbeiten</span>
+                                        </a>
                                     </td>
                                     <td class="text-right whitespace-nowrap px-2 py-2 text-m">
                                         @if (Auth::user()->hasPermission('reset_user_password'))
                                             <div class="flex space-x-2">
-                                                <a href="{{ route('users.show-reset-password', $user->user_id) }}" class="rounded-md bg-red-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-red-200">Passwort zurücksetzen</a>
-                                                <button onclick="diagnoseUser({{ $user->user_id }})" class="rounded-md bg-blue-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-blue-200">Diagnose</button>
+                                                <a href="{{ route('users.show-reset-password', $user->user_id) }}" class="inline-flex items-center justify-center rounded-md bg-red-300 px-2 sm:px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-red-200" title="Passwort zurücksetzen">
+                                                    <svg class="w-4 h-4 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+                                                    </svg>
+                                                    <span class="hidden sm:inline">Passwort zurücksetzen</span>
+                                                </a>
+                                                <button onclick="diagnoseUser({{ $user->user_id }})" class="hidden sm:inline-flex items-center rounded-md bg-blue-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-blue-200">Diagnose</button>
                                             </div>
                                         @endif
                                     </td>

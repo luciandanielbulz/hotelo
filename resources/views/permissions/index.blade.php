@@ -46,7 +46,7 @@
     @endif
 
     <!-- Statistiken -->
-    <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="hidden sm:grid mt-6 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div class="bg-white overflow-hidden shadow rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
@@ -168,7 +168,7 @@
                             <thead class="bg-gray-50">
                                 <tr>
                                     <th scope="col" class="py-3.5 pl-6 pr-3 text-left text-sm font-semibold text-gray-900">Name</th>
-                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Beschreibung</th>
+                                    <th scope="col" class="hidden sm:table-cell px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Beschreibung</th>
                                     <th scope="col" class="px-3 py-3.5 text-center text-sm font-semibold text-gray-900">Aktionen</th>
                                 </tr>
                             </thead>
@@ -181,19 +181,19 @@
                                                 {{ $permission->name }}
                                             </div>
                                         </td>
-                                        <td class="px-3 py-4 text-sm text-gray-500">
+                                        <td class="hidden sm:table-cell px-3 py-4 text-sm text-gray-500">
                                             {{ $permission->description ?: 'Keine Beschreibung vorhanden' }}
                                         </td>
                                         <td class="px-3 py-4 text-sm text-center">
                                             <div class="flex justify-center space-x-2">
                                                 <a href="{{ route('permissions.edit', $permission->id) }}" 
-                                                   class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
-                                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                   class="inline-flex items-center justify-center rounded-md bg-blue-600 px-2 sm:px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" title="Bearbeiten">
+                                                    <svg class="w-4 h-4 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                                     </svg>
-                                                    Bearbeiten
+                                                    <span class="hidden sm:inline">Bearbeiten</span>
                                                 </a>
-                                                <form action="{{ route('permissions.destroy', $permission->id) }}" method="POST" class="inline">
+                                                <form action="{{ route('permissions.destroy', $permission->id) }}" method="POST" class="hidden sm:inline">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" 

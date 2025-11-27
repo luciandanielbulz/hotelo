@@ -14,36 +14,36 @@
         </div>
     </div>
 
-    <div class="mt-8 flow-root sm:items-center sm:max-w-7xl">
-        <div class="-mx-4 -my-2 overflow-x-auto  sm:-mx-6 lg:-mx-8">
-            <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+    <div class="mt-8 flow-root">
+        <div class="overflow-hidden sm:-mx-6 lg:-mx-8 sm:overflow-x-auto">
+            <div class="w-full sm:inline-block sm:min-w-full align-middle sm:px-6 lg:px-8">
                 <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
-                    <table class="min-w-full divide-y divide-gray-300">
+                    <table class="w-full divide-y divide-gray-300">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Name</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Beschreibung</th>
+                                <th scope="col" class="hidden sm:table-cell px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Beschreibung</th>
                                 <th scope="col" class="px-3 py-3.5 text-right text-sm font-semibold text-gray-900">Aktionen</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 bg-white">
                             @foreach ($roles as $role)
                                 <tr data-id="{{ $role->id }}" class="hover:bg-indigo-100 cursor-pointer">
-                                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6">{{ $role->name }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $role->description }}</td>
-                                    <td class="text-right whitespace-nowrap px-3 py-4 text-sm">
+                                    <td class="py-4 pl-4 pr-3 text-sm text-gray-900 sm:pl-6 sm:whitespace-nowrap">{{ $role->name }}</td>
+                                    <td class="hidden sm:table-cell whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ $role->description }}</td>
+                                    <td class="text-right px-3 py-4 text-sm sm:whitespace-nowrap">
                                         <div class="flex items-center justify-end gap-2">
-                                            <button onclick="openCopyModal({{ $role->id }}, '{{ addslashes($role->name) }}', '{{ addslashes($role->description ?? '') }}')" class="inline-flex items-center rounded-md bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-600 transition-colors">
-                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <button onclick="openCopyModal({{ $role->id }}, '{{ addslashes($role->name) }}', '{{ addslashes($role->description ?? '') }}')" class="hidden sm:inline-flex items-center justify-center rounded-md bg-blue-500 px-2 sm:px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-600 transition-colors" title="Kopieren">
+                                                <svg class="w-4 h-4 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
                                                 </svg>
-                                                Kopieren
+                                                <span class="hidden md:inline">Kopieren</span>
                                             </button>
-                                            <a href="{{ route('roles.edit', $role->id) }}" class="inline-flex items-center rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200">
-                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <a href="{{ route('roles.edit', $role->id) }}" class="inline-flex items-center justify-center rounded-md bg-gray-300 px-2 sm:px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200" title="Bearbeiten">
+                                                <svg class="w-4 h-4 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                                 </svg>
-                                                Bearbeiten
+                                                <span class="hidden md:inline">Bearbeiten</span>
                                             </a>
                                         </div>
                                     </td>

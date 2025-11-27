@@ -73,8 +73,8 @@
                     <!-- Rechnung Header -->
                     <div class="flex items-start justify-between mb-3">
                         <div class="flex-1 min-w-0">
-                            <h3 class="font-bold text-gray-900 truncate text-lg">
-                                #{{ $invoice->number }}
+                            <h3 class="font-bold truncate text-lg">
+                                <span class="text-blue-600">#{{ $invoice->number }}</span>
                             </h3>
                             <p class="text-sm font-medium text-gray-700 truncate">
                                 {{ $invoice->customername ?: $invoice->companyname ?: 'Kein Kunde' }}
@@ -231,7 +231,7 @@
                             <tr class="hover:bg-white/50 transition-colors duration-200">
                                 <td class="py-4 pl-6 pr-3">
                                     <div>
-                                        <div class="font-medium text-gray-900">Rechnung #{{ $invoice->number }}</div>
+                                        <div class="font-medium text-gray-900"><span class="text-blue-600 font-semibold">#{{ $invoice->number }}</span></div>
                                         <div class="text-sm text-gray-600">{{ \Carbon\Carbon::parse($invoice->date)->translatedFormat('d.m.Y') }}</div>
                                         @if($invoice->description)
                                             <div class="text-xs text-gray-500">{{ $invoice->description }}</div>

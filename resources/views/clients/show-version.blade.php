@@ -301,10 +301,15 @@
                         
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Logo</label>
-                            @if($specificVersion->logo)
+                            @php
+                                $logoExists = $specificVersion->logo && \Storage::disk('public')->exists('logos/' . $specificVersion->logo);
+                                $logoUrl = $specificVersion->logo ? asset('storage/logos/' . rawurlencode($specificVersion->logo)) : null;
+                            @endphp
+                            @if($logoExists && $logoUrl)
                                 <div class="mt-2 p-3 bg-gray-50 rounded-lg border">
-                                    <img src="{{ asset('storage/logos/' . $specificVersion->logo) }}" 
-                                         alt="Logo" class="h-16 w-auto object-contain mx-auto">
+                                    <img src="{{ $logoUrl }}" 
+                                         alt="Logo" class="h-16 w-auto object-contain mx-auto"
+                                         onerror="this.style.display='none';">
                                     <p class="text-xs text-gray-500 text-center mt-2">{{ $specificVersion->logo }}</p>
                                 </div>
                             @else

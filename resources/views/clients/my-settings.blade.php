@@ -176,10 +176,14 @@
                     </div>
 
                     <div class="sm:col-span-1">
-                        @if($clients->logo)
+                        @php
+                            $logoExists = $clients->logo && \Storage::disk('public')->exists('logos/' . $clients->logo);
+                            $logoUrl = $clients->logo ? asset('storage/logos/' . rawurlencode($clients->logo)) : null;
+                        @endphp
+                        @if($logoExists && $logoUrl)
                             <div class="mt-1">
                                 <p class="text-sm font-medium text-gray-900 mb-2">Aktuelles Logo:</p>
-                                <img src="{{ asset('storage/logos/' . $clients->logo) }}" alt="Aktuelles Logo" class="h-20 w-auto object-contain border rounded">
+                                <img src="{{ $logoUrl }}" alt="Aktuelles Logo" class="h-20 w-auto object-contain border rounded" onerror="this.style.display='none';">
                             </div>
                         @endif
                         <div id="logo-preview" class="hidden mt-2">
