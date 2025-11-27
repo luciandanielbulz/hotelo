@@ -51,9 +51,9 @@
     <div class="space-y-6">
         <!-- Kundendaten, Status, Beschreibung in gemeinsamer Karte -->
         <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg mb-6">
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <!-- Kundendaten Karte (1/2) -->
-            <div class="md:col-span-1">
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Kundendaten Karte (1/3 im LG, 1/2 im MD) -->
+            <div class="md:col-span-1 lg:col-span-1">
                 <div class="h-full" x-data="{ openCustomerModal: false }">
             <!-- Mobile Header -->
             <div class="md:hidden mb-4">
@@ -153,8 +153,14 @@
             </div>
                 </div>
             </div>
-            <!-- Rechts (1/2): Beschreibung Intern -->
-            <div class="md:col-span-1 md:border-l md:border-gray-200/60 md:pl-6">
+            <!-- Mitte (1/3 im LG, 1/2 im MD): Status -->
+            <div class="md:col-span-1 lg:col-span-1 md:border-l md:border-gray-200/60 md:pl-6 lg:border-l lg:pl-6">
+                <div class="h-full">
+                    <livewire:invoice.status-select :invoiceId="$invoice->id" />
+                </div>
+            </div>
+            <!-- Rechts (1/3 im LG, 1/2 im MD): Beschreibung Intern -->
+            <div class="md:col-span-1 lg:col-span-1 md:border-l md:border-gray-200/60 md:pl-6 lg:border-l lg:pl-6">
                 <div class="h-full">
                     <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                         <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -168,11 +174,6 @@
             </div>
             </div>
         </div>
-        </div>
-
-        <!-- Status Karte -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg mb-6">
-            <livewire:invoice.status-select :invoiceId="$invoice->id" />
         </div>
 
         <!-- Rechnungsdetails Karte -->

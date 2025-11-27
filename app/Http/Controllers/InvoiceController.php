@@ -791,8 +791,12 @@ class InvoiceController extends Controller
         // PDF Dateinamen erstellen
         $pdf_filename = 'Rechnung_' . $clientdata->number . '.pdf';
 
+        // Status der Rechnung prüfen
+        $invoiceStatus = (int)($clientdata->status ?? 0);
+        $isDraft = ($invoiceStatus === 0); // Entwurf
+
         // Werte an die View weitergeben
-        return view('invoice.sendmail', compact('clientdata', 'emailsubject', 'emailbody', 'pdf_filename'));
+        return view('invoice.sendmail', compact('clientdata', 'emailsubject', 'emailbody', 'pdf_filename', 'isDraft', 'invoiceStatus'));
     }
 
 
