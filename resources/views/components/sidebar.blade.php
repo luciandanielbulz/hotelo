@@ -113,12 +113,12 @@
                             <div x-show="salesSubmenu" @click.away="salesSubmenu = false" class="mt-2 space-y-1 pl-5" @if(!(request()->routeIs('sales.*') || request()->routeIs('bankdata.*'))) x-cloak @endif>
                                 @if($user->hasPermission('view_sales_analysis'))
                                     <a href="{{ route('sales.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('sales.index') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
-                                        Umsatz
+                                        Umsatzbericht
                                     </a>
                                 @endif
                                 @if($user->hasPermission('view_sales_analysis'))
                                     <a href="{{ route('bankdata.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('bankdata.index') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
-                                        Ausgabenliste
+                                        Zahlungsverkehr
                                     </a>
                                     <a href="{{ route('bankdata.upload.form') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('bankdata.upload.form') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
                                         Bankdatenupload

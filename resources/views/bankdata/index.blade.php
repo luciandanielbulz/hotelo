@@ -2,8 +2,8 @@
     <div class="px-4 sm:px-6 lg:px-8">
         <div class="sm:flex sm:items-center">
             <div class="sm:flex-auto">
-                <h1 class="text-base font-semibold leading-6 text-gray-900">Bankdaten / Ausgaben</h1>
-                <p class="mt-2 text-sm text-gray-700">Eine Liste aller importierten Bankdaten und Ausgaben.</p>
+                <h1 class="text-base font-semibold leading-6 text-gray-900">Zahlungsverkehr</h1>
+                <p class="mt-2 text-sm text-gray-700">Eine Übersicht aller importierten Bankdaten, Einnahmen und Ausgaben.</p>
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none space-x-2">
                 <button onclick="showAddExpenseModal()" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
@@ -31,6 +31,16 @@
                     </svg>
                     JSON-Datei hochladen
                 </a>
+                <button 
+                    type="button"
+                    x-data=""
+                    x-on:click="$dispatch('open-modal', 'delete-bankdata-year')"
+                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    Jahr löschen
+                </button>
             </div>
         </div>
         
@@ -1546,6 +1556,9 @@
                  year: urlParams.get('year'),
                  per_page: urlParams.get('per_page')
              });
-         });
-         </script>
-     </x-layout> 
+        });
+        </script>
+
+        <!-- Modal zum Löschen von Bankdaten nach Jahr -->
+        <x-delete-bankdata-year-modal :availableYears="$availableYears" />
+    </x-layout>

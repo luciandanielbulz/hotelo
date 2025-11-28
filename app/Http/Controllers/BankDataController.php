@@ -493,6 +493,62 @@ class BankDataController extends Controller
         return redirect()->back()->with('error', 'Ungültiges JSON-Format.');
     }
 
+    // Prüfe ob Daten vorhanden sind
+    if (empty($data) || !is_array($data)) {
+        return redirect()->back()->with('error', 'Die JSON-Datei enthält keine Daten oder ist kein Array.');
+    }
+
+    // Definiere erwartete Felder
+    $requiredFields = [
+        'referenceNumber' => 'Referenznummer',
+        'amount' => 'Betrag',
+        'booking' => 'Buchungsdatum',
+    ];
+
+    $requiredNestedFields = [
+        'amount.value' => 'Betrag (Wert)',
+        'amount.currency' => 'Betrag (Währung)',
+    ];
+
+    // Prüfe die Struktur anhand des ersten Eintrags
+    $firstRow = $data[0] ?? null;
+    if (!$firstRow) {
+        return redirect()->back()->with('error', 'Die JSON-Datei enthält keine Einträge.');
+    }
+
+    $missingFields = [];
+    
+    // Prüfe erforderliche Felder
+    foreach ($requiredFields as $field => $label) {
+        if (!isset($firstRow[$field])) {
+            $missingFields[] = $label . ' (' . $field . ')';
+        }
+    }
+
+    // Prüfe verschachtelte Felder
+    foreach ($requiredNestedFields as $fieldPath => $label) {
+        $parts = explode('.', $fieldPath);
+        $value = $firstRow;
+        foreach ($parts as $part) {
+            if (!isset($value[$part])) {
+                $missingFields[] = $label . ' (' . $fieldPath . ')';
+                break;
+            }
+            $value = $value[$part];
+        }
+    }
+
+    // Wenn Felder fehlen, zeige Fehlermeldung
+    if (!empty($missingFields)) {
+        $errorMessage = 'Die Quelldatei enthält nicht alle erwarteten Spalten. Fehlende Felder: ' . implode(', ', $missingFields);
+        Log::warning('JSON upload validation failed', [
+            'missing_fields' => $missingFields,
+            'available_fields' => array_keys($firstRow),
+            'sample_row' => $firstRow
+        ]);
+        return redirect()->back()->with('error', $errorMessage);
+    }
+
     // Debug: Logge die JSON-Struktur
     Log::info('JSON upload started', [
         'data_count' => count($data),
@@ -1060,5 +1116,52 @@ class BankDataController extends Controller
         // Fallback: Zurück zur Index-Seite
         return redirect()->route('bankdata.index')
             ->with('success', 'Bankdatensatz erfolgreich aktualisiert.');
+    }
+
+    // Löscht alle Bankdaten eines Jahres nach Typ
+    public function deleteByYear(Request $request)
+    {
+        $user = Auth::user();
+        $clientId = $user->client_id;
+
+        // Validierung
+        $request->validate([
+            'year' => 'required|integer|min:2000|max:2100',
+            'type' => 'required|in:income,expense',
+        ]);
+
+        $year = $request->input('year');
+        $type = $request->input('type');
+
+        // Prüfe, ob Bankdaten für das Jahr und den Typ existieren
+        $count = BankData::where('client_id', $clientId)
+            ->whereYear('date', $year)
+            ->where('type', $type)
+            ->count();
+
+        if ($count === 0) {
+            $typeLabel = $type === 'income' ? 'Einnahmen' : 'Ausgaben';
+            return redirect()->route('bankdata.index')
+                ->with('error', "Keine {$typeLabel} für das Jahr {$year} gefunden.");
+        }
+
+        // Lösche alle Bankdaten für das Jahr und den Typ
+        $deleted = BankData::where('client_id', $clientId)
+            ->whereYear('date', $year)
+            ->where('type', $type)
+            ->delete();
+
+        Log::info('BankData deleted by year and type', [
+            'user_id' => $user->id,
+            'client_id' => $clientId,
+            'year' => $year,
+            'type' => $type,
+            'deleted_count' => $deleted
+        ]);
+
+        $typeLabel = $type === 'income' ? 'Einnahmen' : 'Ausgaben';
+
+        return redirect()->route('bankdata.index')
+            ->with('success', "{$deleted} {$typeLabel} für das Jahr {$year} wurden erfolgreich gelöscht.");
     }
 }

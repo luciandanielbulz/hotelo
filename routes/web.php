@@ -158,6 +158,10 @@ Route::middleware(['auth','verified'])->group(function(){
         ->name('bankdata.add-expense')
         ->middleware('permission:view_sales_analysis');
 
+    Route::delete('/bankdata/delete-year', [BankDataController::class, 'deleteByYear'])
+        ->name('bankdata.delete-year')
+        ->middleware('permission:view_sales_analysis');
+
 
 
     /*

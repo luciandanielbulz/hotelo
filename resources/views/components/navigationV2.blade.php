@@ -191,7 +191,7 @@ class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
                                             </svg>
                                         </div>
                                         <div>
-                                            <div class="font-medium">Umsatz</div>
+                                            <div class="font-medium">Umsatzbericht</div>
                                             <div class="text-xs text-gray-500">Umsatzauswertung</div>
                                         </div>
                                     </a>
@@ -203,7 +203,7 @@ class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
                                             </svg>
                                         </div>
                                         <div>
-                                            <div class="font-medium">Ausgabenliste</div>
+                                            <div class="font-medium">Zahlungsverkehr</div>
                                             <div class="text-xs text-gray-500">Alle Ausgaben anzeigen</div>
                                         </div>
                                     </a>
@@ -617,8 +617,8 @@ class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
                         </svg>
                     </button>
                     <div x-show="salesExpanded" x-transition class="pl-4 space-y-2" style="display: none;">
-                        <a href="{{ route('sales.index') }}" class="block px-4 py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200">Umsatz</a>
-                        <a href="{{ route('bankdata.index') }}" class="block px-4 py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200">Ausgabenliste</a>
+                        <a href="{{ route('sales.index') }}" class="block px-4 py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200">Umsatzbericht</a>
+                        <a href="{{ route('bankdata.index') }}" class="block px-4 py-2 text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200">Zahlungsverkehr</a>
                     </div>
                 </div>
             @endif
