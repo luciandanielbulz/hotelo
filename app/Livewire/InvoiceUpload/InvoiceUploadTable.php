@@ -17,6 +17,8 @@ class InvoiceUploadTable extends Component
     public $dateTo = '';
     public $confirmingDeletion = false;
     public $itemToDelete = null;
+    public $sortField = 'invoice_date';
+    public $sortDirection = 'desc';
 
     public function mount()
     {
@@ -38,6 +40,17 @@ class InvoiceUploadTable extends Component
 
     public function updatingDateTo()
     {
+        $this->resetPage();
+    }
+
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
         $this->resetPage();
     }
 
@@ -104,8 +117,10 @@ class InvoiceUploadTable extends Component
         $clientId = $user->client_id;
 
         $query = InvoiceUpload::where('client_id', $clientId)
-                              ->with('currency') // Laden der Währungsbeziehung
-                              ->orderBy('invoice_date', 'desc');
+                              ->with('currency'); // Laden der Währungsbeziehung
+
+        // Sortierung anwenden
+        $query->orderBy($this->sortField, $this->sortDirection);
 
         // Falls ein Suchtext vorhanden ist
         if (!empty($this->search)) {
