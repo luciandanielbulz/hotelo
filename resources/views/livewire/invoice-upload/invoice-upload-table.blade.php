@@ -103,17 +103,17 @@
                     @if($invoiceuploads->isEmpty())
                         <p class="text-gray-600 p-4">Keine Rechnungen gefunden.</p>
                     @else
-                        <table class="min-w-full divide-y divide-gray-400">
+                        <table class="min-w-full divide-y divide-gray-400 table-fixed">
                             <thead class="bg-gray-100">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Rechnungsdatum</th>
-                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Lieferant</th>
-                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Beschreibung</th>
-                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Rechnungsnummer</th>
-                                    <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Preis</th>
+                                    <th class="w-16 px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">ID</th>
+                                    <th class="w-28 px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Re-Datum</th>
+                                    <th class="w-40 px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Lieferant</th>
+                                    <th class="w-64 px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Beschreibung</th>
+                                    <th class="w-40 px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Re-Nummer</th>
+                                    <th class="w-32 px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Preis</th>
                                     @if(\Schema::hasColumn('invoice_uploads', 'payment_type'))
-                                        <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Zahlungsart</th>
+                                        <th class="w-36 px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Zahlungsart</th>
                                     @endif
                                     <th class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider border-b-2 border-gray-300">Aktionen</th>
                                 </tr>
@@ -125,13 +125,15 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                             {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d.m.Y') }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 truncate" title="{{ $invoice->invoice_vendor ?? '-' }}">
                                             {{ $invoice->invoice_vendor ?? '-' }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $invoice->description ?? '-' }}
+                                        <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                                            <div class="truncate" title="{{ $invoice->description ?? '-' }}">
+                                                {{ $invoice->description ?? '-' }}
+                                            </div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 truncate" title="{{ $invoice->invoice_number ?? '-' }}">
                                             {{ $invoice->invoice_number ?? '-' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
