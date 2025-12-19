@@ -40,73 +40,25 @@
                             </div>
 
                             <div>
-                                <x-input name="invoicemultiplikator" type="number" placeholder="Rechnung Multiplikator" label="Rechnung Multiplikator" value="{{ old('invoicemultiplikator', $clientSettings->invoicemultiplikator) }}" />
-                                <p class="mt-1 text-sm text-gray-600">Faktor für Rechnungsnummern-Berechnung</p>
-                            </div>
-
-                            <div>
                                 <x-input name="lastoffer" type="number" placeholder="Letzte Angebotsnummer" label="Letzte Angebotsnummer" value="{{ old('lastoffer', $clientSettings->lastoffer) }}" />
                                 <p class="mt-1 text-sm text-orange-600"><strong>Achtung:</strong> Nächste Angebotsnummer wird {{ $clientSettings->lastoffer + 1 }}</p>
                             </div>
-
-                            <div>
-                                <x-input name="offermultiplikator" type="number" placeholder="Angebot Multiplikator" label="Angebot Multiplikator" value="{{ old('offermultiplikator', $clientSettings->offermultiplikator) }}" />
-                                <p class="mt-1 text-sm text-gray-600">Faktor für Angebotsnummern-Berechnung</p>
-                            </div>
                         </div>
                     </div>
 
-                    <!-- Formatierung -->
-                    <div class="mb-8">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Nummernformate</h3>
-                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                            <div>
-                                <label for="invoice_number_format" class="block text-sm font-medium text-gray-700 mb-1">Rechnungsnummer-Format</label>
-                                <select name="invoice_number_format" id="invoice_number_format" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('invoice_number_format') border-red-500 @enderror">
-                                    <option value="YYYY*1000+N" {{ old('invoice_number_format', $clientSettings->invoice_number_format) == 'YYYY*1000+N' ? 'selected' : '' }}>Jahr*1000+Nummer (z.B. 2025001)</option>
-                                    <option value="YYYYNN" {{ old('invoice_number_format', $clientSettings->invoice_number_format) == 'YYYYNN' ? 'selected' : '' }}>Jahr + Nummer (z.B. 20250001)</option>
-                                    <option value="YY*1000+N" {{ old('invoice_number_format', $clientSettings->invoice_number_format) == 'YY*1000+N' ? 'selected' : '' }}>Jahr(2-stellig)*1000+Nummer (z.B. 25001)</option>
-                                    <option value="YYYY_MM+N" {{ old('invoice_number_format', $clientSettings->invoice_number_format) == 'YYYY_MM+N' ? 'selected' : '' }}>Jahr_Monat+Nummer (z.B. 2025_01001)</option>
-                                    <option value="YYYY*10000+N+1000" {{ old('invoice_number_format', $clientSettings->invoice_number_format) == 'YYYY*10000+N+1000' ? 'selected' : '' }}>Jahr*10000+(Nummer+1000) - Rechnungen (z.B. 20251001)</option>
-                                    <option value="N" {{ old('invoice_number_format', $clientSettings->invoice_number_format) == 'N' ? 'selected' : '' }}>Nur fortlaufende Nummer (z.B. 1, 2, 3...)</option>
-                                </select>
-                                @error('invoice_number_format')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                                <p class="mt-1 text-sm text-gray-600">Format für automatische Rechnungsnummerierung</p>
+                    <!-- Hinweis zu Nummernformaten und Präfixen -->
+                    <div class="mb-8 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                </svg>
                             </div>
-
-                            <div>
-                                <label for="offer_number_format" class="block text-sm font-medium text-gray-700 mb-1">Angebotsnummer-Format</label>
-                                <select name="offer_number_format" id="offer_number_format" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('offer_number_format') border-red-500 @enderror">
-                                    <option value="" {{ old('offer_number_format', $clientSettings->offer_number_format) == '' ? 'selected' : '' }}>Wie Rechnungsformat</option>
-                                    <option value="YYYY*1000+N" {{ old('offer_number_format', $clientSettings->offer_number_format) == 'YYYY*1000+N' ? 'selected' : '' }}>Jahr*1000+Nummer (z.B. 2025001)</option>
-                                    <option value="YYYYNN" {{ old('offer_number_format', $clientSettings->offer_number_format) == 'YYYYNN' ? 'selected' : '' }}>Jahr + Nummer (z.B. 20250001)</option>
-                                    <option value="YY*1000+N" {{ old('offer_number_format', $clientSettings->offer_number_format) == 'YY*1000+N' ? 'selected' : '' }}>Jahr(2-stellig)*1000+Nummer (z.B. 25001)</option>
-                                    <option value="YYYY_MM+N" {{ old('offer_number_format', $clientSettings->offer_number_format) == 'YYYY_MM+N' ? 'selected' : '' }}>Jahr_Monat+Nummer (z.B. 2025_01001)</option>
-                                    <option value="YYYY*10000+N+6000" {{ old('offer_number_format', $clientSettings->offer_number_format) == 'YYYY*10000+N+6000' ? 'selected' : '' }}>Jahr*10000+(Nummer+6000) - Angebote (z.B. 20256001)</option>
-                                    <option value="N" {{ old('offer_number_format', $clientSettings->offer_number_format) == 'N' ? 'selected' : '' }}>Nur fortlaufende Nummer (z.B. 1, 2, 3...)</option>
-                                </select>
-                                @error('offer_number_format')
-                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                @enderror
-                                <p class="mt-1 text-sm text-gray-600">Format für automatische Angebotsnummerierung</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Präfixe -->
-                    <div class="mb-8">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Präfixe</h3>
-                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                            <div>
-                                <x-input name="invoice_prefix" type="text" placeholder="R-" label="Rechnungs-Präfix" value="{{ old('invoice_prefix', $clientSettings->invoice_prefix) }}" />
-                                <p class="mt-1 text-sm text-gray-600">Präfix für Rechnungsnummern (z.B. "R-", "RECH-")</p>
-                            </div>
-
-                            <div>
-                                <x-input name="offer_prefix" type="text" placeholder="A-" label="Angebots-Präfix" value="{{ old('offer_prefix', $clientSettings->offer_prefix) }}" />
-                                <p class="mt-1 text-sm text-gray-600">Präfix für Angebotsnummern (z.B. "A-", "ANG-")</p>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-blue-800">Nummernformate und Präfixe</h3>
+                                <div class="mt-2 text-sm text-blue-700">
+                                    <p>Nummernformate und Präfixe werden jetzt in den <a href="{{ route('clients.my-settings') }}" class="font-medium underline hover:text-blue-800">Firmen-Einstellungen</a> verwaltet.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -122,33 +74,6 @@
                         </div>
                     </div>
 
-                    <!-- Nummern-Vorschau -->
-                    <div class="mb-8">
-                        <h3 class="text-lg font-medium text-gray-900 mb-4">Vorschau der nächsten Nummern</h3>
-                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Nächste Rechnungsnummer:</label>
-                                    <div class="mt-1">
-                                        <span id="next_invoice_preview" class="text-lg font-mono text-indigo-600">{{ $clientSettings->generateInvoiceNumber() }}</span>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700">Nächste Angebotsnummer:</label>
-                                    <div class="mt-1">
-                                        <span id="next_offer_preview" class="text-lg font-mono text-indigo-600">{{ $clientSettings->generateOfferNumber() }}</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button type="button" id="update_preview" class="mt-3 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                                </svg>
-                                Vorschau aktualisieren
-                            </button>
-                        </div>
-                    </div>
-
                     <!-- Aktionen -->
                     <div class="flex items-center justify-end gap-x-6 pt-6">
                         <a href="{{ route('clients.my-settings') }}" class="text-sm font-semibold text-gray-900">Abbrechen</a>
@@ -160,44 +85,4 @@
             </div>
         </form>
     </div>
-
-    @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const updatePreviewBtn = document.getElementById('update_preview');
-                const invoicePreview = document.getElementById('next_invoice_preview');
-                const offerPreview = document.getElementById('next_offer_preview');
-
-                updatePreviewBtn.addEventListener('click', function() {
-                    // Hole aktuelle Formularwerte
-                    const formData = new FormData();
-                    formData.append('lastinvoice', document.querySelector('[name="lastinvoice"]').value);
-                    formData.append('lastoffer', document.querySelector('[name="lastoffer"]').value);
-                    formData.append('invoicemultiplikator', document.querySelector('[name="invoicemultiplikator"]').value);
-                    formData.append('offermultiplikator', document.querySelector('[name="offermultiplikator"]').value);
-                    formData.append('invoice_number_format', document.querySelector('[name="invoice_number_format"]').value);
-                    formData.append('offer_number_format', document.querySelector('[name="offer_number_format"]').value);
-
-                    // Anfrage an Preview-Endpoint
-                    fetch('{{ route("client-settings.preview") }}', {
-                        method: 'GET',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'Accept': 'application/json',
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.next_invoice_number && data.next_offer_number) {
-                            invoicePreview.textContent = data.next_invoice_number;
-                            offerPreview.textContent = data.next_offer_number;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Fehler beim Aktualisieren der Vorschau:', error);
-                    });
-                });
-            });
-        </script>
-    @endpush
 </x-layout> 

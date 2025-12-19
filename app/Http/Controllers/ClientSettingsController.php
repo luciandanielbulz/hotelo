@@ -44,8 +44,6 @@ class ClientSettingsController extends Controller
                 'client_id' => $originalClientId,
                 'lastinvoice' => 0,
                 'lastoffer' => 0,
-                'invoicemultiplikator' => 1000,
-                'offermultiplikator' => 1000,
                 'invoice_number_format' => 'YYYYNN',
                 'max_upload_size' => 2048,
                 'invoice_prefix' => null,
@@ -79,16 +77,12 @@ class ClientSettingsController extends Controller
         }
         
         // Validierung der statischen Einstellungen
+        // Nummernformate und Präfixe werden jetzt in clients.my-settings verwaltet
+        // Multiplikatoren werden nicht mehr verwendet
         $validatedData = $request->validate([
             'lastinvoice' => ['required', 'integer', 'min:0'],
             'lastoffer' => ['required', 'integer', 'min:0'],
-            'invoicemultiplikator' => ['required', 'integer', 'min:1'],
-            'offermultiplikator' => ['required', 'integer', 'min:1'],
-            'invoice_number_format' => ['required', 'string', 'max:50'],
-            'offer_number_format' => ['nullable', 'string', 'max:50'],
             'max_upload_size' => ['required', 'integer', 'min:1', 'max:100'],
-            'invoice_prefix' => ['nullable', 'string', 'max:10'],
-            'offer_prefix' => ['nullable', 'string', 'max:10'],
         ]);
         
         try {
@@ -164,8 +158,6 @@ class ClientSettingsController extends Controller
                 'client_id' => $originalClientId,
                 'lastinvoice' => 0,
                 'lastoffer' => 0,
-                'invoicemultiplikator' => 1000,
-                'offermultiplikator' => 1000,
                 'invoice_number_format' => 'YYYYNN',
                 'max_upload_size' => 2048,
                 'invoice_prefix' => null,
