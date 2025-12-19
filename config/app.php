@@ -14,9 +14,88 @@ return [
     | framework needs to place the application's name in a notification or
     | any other location as required by the application or its packages.
     |
+    | The application name can be set dynamically based on the domain.
+    | Define domain-to-name mappings in the 'domain_names' array below.
+    | The AppServiceProvider will override this value based on the current domain.
+    |
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Domain to Application Name Mapping
+    |--------------------------------------------------------------------------
+    |
+    | This array maps domains to application names. When a request comes from
+    | one of these domains, the application name will be automatically set.
+    | If no mapping is found, the default APP_NAME will be used.
+    |
+    */
+
+    'domain_names' => [
+        'venditio.at' => 'quickBill',
+        'kmu-office.at' => 'KMU-Office',
+        // Füge hier weitere Domain-Mappings hinzu
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Domain to Logo Mapping
+    |--------------------------------------------------------------------------
+    |
+    | This array maps domains to logo filenames. When a request comes from
+    | one of these domains, the corresponding logo will be used.
+    | The logo files should be located in the public/logo directory.
+    | If no mapping is found, the default logo will be used.
+    |
+    */
+
+    'domain_logos' => [
+        'venditio.at' => 'VenditioLogo.png',
+        'kmu-office.at' => 'VenditioLogo.png', // Ändere dies zu deinem KMU-Office Logo
+        // Füge hier weitere Domain-zu-Logo-Mappings hinzu
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Logo
+    |--------------------------------------------------------------------------
+    |
+    | The default logo filename to use when no domain-specific logo is found.
+    |
+    */
+
+    'default_logo' => 'VenditioLogo.png',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Domain to Favicon Mapping
+    |--------------------------------------------------------------------------
+    |
+    | This array maps domains to favicon filenames. When a request comes from
+    | one of these domains, the corresponding favicon will be used.
+    | The favicon files should be located in the public/logo directory.
+    | If no mapping is found, the default favicon will be used.
+    |
+    */
+
+    'domain_favicons' => [
+        'venditio.at' => 'VenditioIcon.svg',
+        'kmu-office.at' => 'VenditioIcon.svg', // Ändere dies zu deinem KMU-Office Favicon
+        // Füge hier weitere Domain-zu-Favicon-Mappings hinzu
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Default Favicon
+    |--------------------------------------------------------------------------
+    |
+    | The default favicon filename to use when no domain-specific favicon is found.
+    |
+    */
+
+    'default_favicon' => 'VenditioIcon.svg',
 
     /*
     |--------------------------------------------------------------------------

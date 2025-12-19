@@ -30,5 +30,28 @@ class AppServiceProvider extends ServiceProvider
         Blade::component('components.dropdown', 'dropdown');
         Blade::component('button', Button::class);
         Blade::component('input', Input::class);
+        
+        // Setze den App-Namen basierend auf der Domain
+        $this->setAppNameByDomain();
+    }
+    
+    /**
+     * Setzt den App-Namen basierend auf der aktuellen Domain
+     */
+    protected function setAppNameByDomain(): void
+    {
+        // Nur ausführen, wenn eine Request-Instanz verfügbar ist (nicht im Console-Modus)
+        if (!app()->runningInConsole()) {
+            try {
+                $host = request()->getHost();
+                $domainNames = config('app.domain_names', []);
+                
+                if (isset($domainNames[$host])) {
+                    config(['app.name' => $domainNames[$host]]);
+                }
+            } catch (\Exception $e) {
+                // Ignoriere Fehler, wenn request() nicht verfügbar ist
+            }
+        }
     }
 }

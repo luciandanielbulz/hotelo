@@ -205,20 +205,59 @@
                 </div>
             </div>
 
-            <!-- Nummerierung & Präfixe -->
-            <div class="border-t border-gray-200">
-                <h3 class="text-base font-semibold leading-7 text-gray-900 mb-2">Nummerierung & Präfixe</h3>
-                <p class="text-sm text-gray-600">Die Nummerierung (letzte Angebots-/Rechnungsnummer, Formate, Präfixe) wird in den <strong>Statischen Einstellungen</strong> verwaltet.</p>
-                @php($user = Auth::user())
-                @if($user && $user->hasPermission('edit_client_settings'))
-                    <div class="mt-3">
-                        <a href="{{ route('client-settings.edit') }}" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-600">
-                            Zu den Statischen Einstellungen
-                        </a>
+            <!-- Nummernformate -->
+            <div class="border-t border-gray-200 pb-6">
+                <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Nummernformate</h3>
+                <div class="grid md:grid-cols-2 sm:grid-cols-1 pb-4 gap-x-6">
+                    <div class="sm:col-span-1">
+                        <label for="invoice_number_format" class="block text-sm font-medium text-gray-700 mb-1">Rechnungsnummer-Format</label>
+                        <select name="invoice_number_format" id="invoice_number_format" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('invoice_number_format') border-red-500 @enderror">
+                            <option value="YYYY*1000+N" {{ old('invoice_number_format', $clients->invoice_number_format ?? ($clientSettings->invoice_number_format ?? '')) == 'YYYY*1000+N' ? 'selected' : '' }}>Jahr*1000+Nummer (z.B. 2025001)</option>
+                            <option value="YYYYNN" {{ old('invoice_number_format', $clients->invoice_number_format ?? ($clientSettings->invoice_number_format ?? '')) == 'YYYYNN' ? 'selected' : '' }}>Jahr + Nummer (z.B. 20250001)</option>
+                            <option value="YY*1000+N" {{ old('invoice_number_format', $clients->invoice_number_format ?? ($clientSettings->invoice_number_format ?? '')) == 'YY*1000+N' ? 'selected' : '' }}>Jahr(2-stellig)*1000+Nummer (z.B. 25001)</option>
+                            <option value="YYYY_MM+N" {{ old('invoice_number_format', $clients->invoice_number_format ?? ($clientSettings->invoice_number_format ?? '')) == 'YYYY_MM+N' ? 'selected' : '' }}>Jahr_Monat+Nummer (z.B. 2025_01001)</option>
+                            <option value="YYYY*10000+N+1000" {{ old('invoice_number_format', $clients->invoice_number_format ?? ($clientSettings->invoice_number_format ?? '')) == 'YYYY*10000+N+1000' ? 'selected' : '' }}>Jahr*10000+(Nummer+1000) - Rechnungen (z.B. 20251001)</option>
+                            <option value="N" {{ old('invoice_number_format', $clients->invoice_number_format ?? ($clientSettings->invoice_number_format ?? '')) == 'N' ? 'selected' : '' }}>Nur fortlaufende Nummer (z.B. 1, 2, 3...)</option>
+                        </select>
+                        @error('invoice_number_format')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-1 text-sm text-gray-600">Format für automatische Rechnungsnummerierung</p>
                     </div>
-                @else
-                    <p class="mt-2 text-sm text-gray-500">Ihnen fehlt die Berechtigung <code>edit_client_settings</code>, um die Nummern-Einstellungen zu ändern.</p>
-                @endif
+
+                    <div class="sm:col-span-1">
+                        <label for="offer_number_format" class="block text-sm font-medium text-gray-700 mb-1">Angebotsnummer-Format</label>
+                        <select name="offer_number_format" id="offer_number_format" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm @error('offer_number_format') border-red-500 @enderror">
+                            <option value="" {{ old('offer_number_format', $clients->offer_number_format ?? ($clientSettings->offer_number_format ?? '')) == '' ? 'selected' : '' }}>Wie Rechnungsformat</option>
+                            <option value="YYYY*1000+N" {{ old('offer_number_format', $clients->offer_number_format ?? ($clientSettings->offer_number_format ?? '')) == 'YYYY*1000+N' ? 'selected' : '' }}>Jahr*1000+Nummer (z.B. 2025001)</option>
+                            <option value="YYYYNN" {{ old('offer_number_format', $clients->offer_number_format ?? ($clientSettings->offer_number_format ?? '')) == 'YYYYNN' ? 'selected' : '' }}>Jahr + Nummer (z.B. 20250001)</option>
+                            <option value="YY*1000+N" {{ old('offer_number_format', $clients->offer_number_format ?? ($clientSettings->offer_number_format ?? '')) == 'YY*1000+N' ? 'selected' : '' }}>Jahr(2-stellig)*1000+Nummer (z.B. 25001)</option>
+                            <option value="YYYY_MM+N" {{ old('offer_number_format', $clients->offer_number_format ?? ($clientSettings->offer_number_format ?? '')) == 'YYYY_MM+N' ? 'selected' : '' }}>Jahr_Monat+Nummer (z.B. 2025_01001)</option>
+                            <option value="YYYY*10000+N+6000" {{ old('offer_number_format', $clients->offer_number_format ?? ($clientSettings->offer_number_format ?? '')) == 'YYYY*10000+N+6000' ? 'selected' : '' }}>Jahr*10000+(Nummer+6000) - Angebote (z.B. 20256001)</option>
+                            <option value="N" {{ old('offer_number_format', $clients->offer_number_format ?? ($clientSettings->offer_number_format ?? '')) == 'N' ? 'selected' : '' }}>Nur fortlaufende Nummer (z.B. 1, 2, 3...)</option>
+                        </select>
+                        @error('offer_number_format')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+                        <p class="mt-1 text-sm text-gray-600">Format für automatische Angebotsnummerierung</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Präfixe -->
+            <div class="border-t border-gray-200 pb-6">
+                <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Präfixe</h3>
+                <div class="grid md:grid-cols-2 sm:grid-cols-1 pb-4 gap-x-6">
+                    <div class="sm:col-span-1">
+                        <x-input name="invoice_prefix" type="text" placeholder="R-" label="Rechnungs-Präfix" value="{{ old('invoice_prefix', $clients->invoice_prefix ?? ($clientSettings->invoice_prefix ?? '')) }}" />
+                        <p class="mt-1 text-sm text-gray-600">Präfix für Rechnungsnummern (z.B. "R-", "RECH-")</p>
+                    </div>
+
+                    <div class="sm:col-span-1">
+                        <x-input name="offer_prefix" type="text" placeholder="A-" label="Angebots-Präfix" value="{{ old('offer_prefix', $clients->offer_prefix ?? ($clientSettings->offer_prefix ?? '')) }}" />
+                        <p class="mt-1 text-sm text-gray-600">Präfix für Angebotsnummern (z.B. "A-", "ANG-")</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Schaltflächen -->

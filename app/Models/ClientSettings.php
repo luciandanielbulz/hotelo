@@ -20,6 +20,7 @@ class ClientSettings extends Model
         'invoice_prefix',
         'offer_prefix',
         'max_upload_size',
+        'zip_filename_template',
     ];
 
     protected $casts = [

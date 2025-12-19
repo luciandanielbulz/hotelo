@@ -10,7 +10,7 @@
                 </div>
                 <div class="ml-5 w-0 flex-1">
                     <dl>
-                        <dt class="text-sm font-medium text-gray-500 truncate">Venditio Version</dt>
+                        <dt class="text-sm font-medium text-gray-500 truncate">quickBill Version</dt>
                         <dd class="text-lg font-medium text-gray-900">{{ $version }}</dd>
                     </dl>
                 </div>

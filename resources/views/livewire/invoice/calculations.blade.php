@@ -1,6 +1,6 @@
 <div>
     <div class="flex justify-end">
-        <div class="w-full md:w-4/5 lg:w-1/2 xl:w-1/2 bg-gradient-to-r from-gray-50 to-slate-50 rounded-lg p-4 border border-gray-200 shadow-sm">
+        <div class="w-full md:w-4/5 lg:w-1/2 xl:w-1/2 bg-gray-50 rounded-lg p-4 border border-gray-200 shadow-sm">
         <!-- Header -->
         <div class="flex items-center mb-3">
             <svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -11,7 +11,7 @@
         
         <div class="space-y-3">
             <!-- Zwischensumme -->
-            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 border border-blue-200">
+            <div class="bg-blue-50 rounded-lg p-3 border border-blue-200">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
                         <svg class="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -24,7 +24,7 @@
             </div>
 
             <!-- Umsatzsteuer -->
-            <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-3 border border-green-200">
+            <div class="bg-green-50 rounded-lg p-3 border border-green-200">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
                         <svg class="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,7 +41,7 @@
             </div>
 
             <!-- Gesamtsumme -->
-            <div class="bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg p-4 border-2 border-purple-300 shadow-md">
+            <div class="bg-purple-50 rounded-lg p-4 border-2 border-purple-300 shadow-md">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -57,7 +57,7 @@
 
             @if ($depositAmount > 0)
                 <!-- Anzahlung -->
-                <div class="bg-gradient-to-r from-orange-50 to-red-50 rounded-lg p-3 border border-orange-200">
+                <div class="bg-orange-50 rounded-lg p-3 border border-orange-200">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center">
                             <svg class="w-4 h-4 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,7 +72,7 @@
                 </div>
 
                 <!-- Zu Zahlen -->
-                <div class="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg p-4 border-2 border-emerald-300 shadow-md">
+                <div class="bg-emerald-50 rounded-lg p-4 border-2 border-emerald-300 shadow-md">
                     <div class="flex justify-between items-center">
                         <div class="flex items-center">
                             <svg class="w-5 h-5 mr-2 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,7 +89,7 @@
 
             <!-- Reverse Charge Hinweis -->
             @if($invoice->reverse_charge)
-                <div class="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg p-3 border border-amber-200">
+                <div class="bg-amber-50 rounded-lg p-3 border border-amber-200">
                     <div class="flex items-start">
                         <svg class="w-4 h-4 mr-2 text-amber-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.664-.833-2.464 0L4.34 16.5c-.77.833.192 2.5 1.732 2.5z"/>

@@ -75,7 +75,43 @@ class Invoicedetails extends Component
         
         $this->depositamount = $this->details->depositamount;
         $this->invoiceDate = $this->details->date ? Carbon::parse($this->details->date)->format('Y-m-d') : '';
-        $this->invoiceNumber = $this->details->number;
+        
+        // Lade die Nummer und füge Präfix hinzu, falls es fehlt
+        $invoiceNumber = $this->details->number;
+        
+        // Hole das Präfix aus der Client-Version (versioniert)
+        $invoiceClient = null;
+        if ($this->details->client_version_id) {
+            $invoiceClient = Clients::find($this->details->client_version_id);
+        }
+        
+        // Fallback: Aktuelle aktive Client-Version
+        if (!$invoiceClient) {
+            $invoiceClient = $this->client;
+        }
+        
+        // Hole Präfix aus Client (versioniert) oder ClientSettings
+        $originalClientId = ($invoiceClient ? ($invoiceClient->parent_client_id ?? $invoiceClient->id) : null) ?? $user->client_id;
+        $clientSettings = \App\Models\ClientSettings::where('client_id', $originalClientId)->first();
+        
+        $invoicePrefix = null;
+        if ($invoiceClient) {
+            $invoicePrefix = $invoiceClient->invoice_prefix ?? null;
+        }
+        if (empty($invoicePrefix) && $clientSettings) {
+            $invoicePrefix = $clientSettings->invoice_prefix ?? null;
+        }
+        
+        // Füge Präfix hinzu, falls es fehlt und ein Präfix vorhanden ist
+        if (!empty($invoicePrefix) && !empty($invoiceNumber)) {
+            // Prüfe, ob die Nummer bereits das Präfix hat
+            if (strpos($invoiceNumber, $invoicePrefix) !== 0) {
+                // Präfix fehlt, füge es hinzu
+                $invoiceNumber = $invoicePrefix . $invoiceNumber;
+            }
+        }
+        
+        $this->invoiceNumber = $invoiceNumber;
         $this->condition_id = $this->details->condition_id;
         $this->periodfrom = $this->details->periodfrom ? Carbon::parse($this->details->periodfrom)->format('Y-m-d') : '';
         $this->periodto = $this->details->periodto ? Carbon::parse($this->details->periodto)->format('Y-m-d') : '';
@@ -193,7 +229,43 @@ class Invoicedetails extends Component
             $invoice->tax_id = $this->taxrateid;
             $invoice->reverse_charge = (bool) $this->reverse_charge;
             $invoice->date = $this->invoiceDate;
-            $invoice->number = $this->invoiceNumber;
+            
+            // Stelle sicher, dass das Präfix vorhanden ist
+            $invoiceNumber = $this->invoiceNumber;
+            
+            // Hole das Präfix aus der Client-Version (versioniert)
+            $invoiceClient = null;
+            if ($invoice->client_version_id) {
+                $invoiceClient = Clients::find($invoice->client_version_id);
+            }
+            
+            // Fallback: Aktuelle aktive Client-Version
+            if (!$invoiceClient) {
+                $invoiceClient = $this->client;
+            }
+            
+            // Hole Präfix aus Client (versioniert) oder ClientSettings
+            $originalClientId = ($invoiceClient ? ($invoiceClient->parent_client_id ?? $invoiceClient->id) : null) ?? $user->client_id;
+            $clientSettings = \App\Models\ClientSettings::where('client_id', $originalClientId)->first();
+            
+            $invoicePrefix = null;
+            if ($invoiceClient) {
+                $invoicePrefix = $invoiceClient->invoice_prefix ?? null;
+            }
+            if (empty($invoicePrefix) && $clientSettings) {
+                $invoicePrefix = $clientSettings->invoice_prefix ?? null;
+            }
+            
+            // Füge Präfix hinzu, falls es fehlt und ein Präfix vorhanden ist
+            if (!empty($invoicePrefix) && !empty($invoiceNumber)) {
+                // Prüfe, ob die Nummer bereits das Präfix hat
+                if (strpos($invoiceNumber, $invoicePrefix) !== 0) {
+                    // Präfix fehlt, füge es hinzu
+                    $invoiceNumber = $invoicePrefix . $invoiceNumber;
+                }
+            }
+            
+            $invoice->number = $invoiceNumber;
             $invoice->condition_id = $this->condition_id;
             
             // Null-Werte für leere Datumsfelder setzen

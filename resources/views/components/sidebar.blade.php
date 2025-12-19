@@ -3,7 +3,7 @@
     <!-- Logo -->
     <div class="flex h-16 shrink-0 items-center">
         <a href="{{ route('dashboard') }}">
-            <img src="{{ asset('logo/VenditioLogo.png') }}" alt="Venditio" class="h-12 w-auto" />
+            <img src="{{ asset('logo/quickBill HauptLogo2.png') }}" alt="{{ config('app.name', 'quickBill') }}" class="h-12 w-auto" />
         </a>
     </div>
 
@@ -227,7 +227,7 @@
             <li class="-mx-6 mt-auto border-t border-gray-200">
                 <div class="flex items-center gap-x-2 px-6 py-3">
                     <a href="{{ route('profile.edit') }}" class="flex items-center gap-x-4 flex-1 rounded-md hover:bg-gray-100 px-2 py-2">
-                        <div class="h-8 w-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
+                        <div class="h-8 w-8 bg-blue-500 rounded-lg flex items-center justify-center">
                             <span class="text-white text-sm font-medium">{{ substr(auth()->user()->name, 0, 1) }}</span>
                         </div>
                         <div class="flex flex-col">

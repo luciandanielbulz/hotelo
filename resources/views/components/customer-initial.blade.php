@@ -15,7 +15,7 @@
     $initial = strtoupper(substr($name ?: 'K', 0, 1));
 @endphp
 
-<div class="{{ $sizeConfig['container'] }} bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0 {{ $class }}">
+<div class="{{ $sizeConfig['container'] }} bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0 {{ $class }}">
     <span class="block {{ $sizeConfig['span'] }} text-center w-full">{{ $initial }}</span>
 </div>
 

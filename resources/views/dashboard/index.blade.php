@@ -1,7 +1,7 @@
 <x-layout>
     <!-- Einfache Hero Section -->
     <div class="mb-8">
-        <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-white">
+        <div class="bg-blue-600 rounded-2xl p-8 text-white">
             <h1 class="text-3xl font-bold mb-2">Willkommen zurück, {{ auth()->user()->name }}! 👋</h1>
             <p class="text-blue-100">Ihre Geschäftsübersicht</p>
         </div>
@@ -17,7 +17,7 @@
                    class="group bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
                     
                     <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-gradient-to-r {{ $index % 4 == 0 ? 'from-blue-500 to-cyan-500' : ($index % 4 == 1 ? 'from-green-500 to-emerald-500' : ($index % 4 == 2 ? 'from-purple-500 to-pink-500' : 'from-orange-500 to-red-500')) }} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <div class="w-12 h-12 {{ $index % 4 == 0 ? 'bg-blue-500' : ($index % 4 == 1 ? 'bg-green-500' : ($index % 4 == 2 ? 'bg-purple-500' : 'bg-orange-500')) }} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
                             @if($tile['title'] == 'Kunden')
                                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />

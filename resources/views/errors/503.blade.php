@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Wartungsmodus - {{ config('app.name', 'Venditio') }}</title>
+    <title>Wartungsmodus - {{ config('app.name', 'quickBill') }}</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -27,7 +27,7 @@
         }
     </style>
 </head>
-<body class="h-full bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+<body class="h-full bg-blue-50">
     <div class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-md w-full space-y-8">
             <div class="text-center">
@@ -46,7 +46,7 @@
                 
                 <!-- Untertitel -->
                 <p class="mt-2 text-sm text-gray-600">
-                    {{ config('app.name', 'Venditio') }} wird gerade gewartet
+                    {{ config('app.name', 'quickBill') }} wird gerade gewartet
                 </p>
             </div>
 
@@ -119,7 +119,7 @@
 
             <!-- Footer -->
             <div class="text-center text-xs text-gray-400">
-                <p>{{ config('app.name', 'Venditio') }} &copy; {{ date('Y') }}</p>
+                <p>{{ config('app.name', 'quickBill') }} &copy; {{ date('Y') }}</p>
                 <p class="mt-1">Status: <span class="text-orange-600 font-medium">Wartung</span></p>
             </div>
         </div>

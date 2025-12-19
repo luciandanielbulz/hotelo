@@ -36,6 +36,10 @@ class Clients extends Model
         'management',
         'regional_court',
         'color',
+        'invoice_number_format',
+        'offer_number_format',
+        'invoice_prefix',
+        'offer_prefix',
         'valid_from',
         'valid_to',
         'is_active',
@@ -328,6 +332,8 @@ class Clients extends Model
             'management' => 'Geschäftsführung',
             'regional_court' => 'Handelsregistergericht',
             'color' => 'Farbe',
+            'invoice_number_format' => 'Rechnungsnummer-Format',
+            'offer_number_format' => 'Angebotsnummer-Format',
             'invoice_prefix' => 'Rechnungs-Präfix',
             'offer_prefix' => 'Angebots-Präfix'
         ];

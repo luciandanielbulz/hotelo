@@ -9,6 +9,7 @@ use ZipArchive;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Clients;
+use App\Models\ClientSettings;
 
 class InvoiceUploadController extends Controller
 {
@@ -498,10 +499,19 @@ class InvoiceUploadController extends Controller
                 ->with('error', 'ZIP-Datei konnte nicht erstellt werden. Fehlercode: ' . $res);
         }
 
-        // 6) Beispieldateien hinzufügen - NUR eigene Client-Daten
+        // 6) Hole ClientSettings für Template
+        $client = Clients::find($clientId);
+        $parentId = $client ? ($client->parent_client_id ?? $client->id) : $clientId;
+        $clientSettings = ClientSettings::where('client_id', $parentId)->first();
+        $template = $clientSettings && $clientSettings->zip_filename_template 
+            ? $clientSettings->zip_filename_template 
+            : '{date}_{index}_{vendor}';
+
+        // 7) Beispieldateien hinzufügen - NUR eigene Client-Daten
         $invoices = InvoiceUpload::where('client_id', $clientId)
             ->whereYear('invoice_date', $parsedMonth->year)
             ->whereMonth('invoice_date', $parsedMonth->month)
+            ->with('category')
             ->get();
 
         //dd($invoices);
@@ -518,7 +528,15 @@ class InvoiceUploadController extends Controller
                 $extension = pathinfo($filePath, PATHINFO_EXTENSION);
 
                 // 3) Neuen Dateinamen bauen, z. B. "2025-01-15_1_ABC123.pdf"
-                $newFileName = $formattedDate . '_' . $i . '_' . ($invoice->invoice_vendor ?? 'NR') . '.' . $extension;
+                $newFileName = $this->generateZipFileName($template, [
+                    'date' => $formattedDate,
+                    'index' => $i,
+                    'vendor' => $invoice->invoice_vendor ?? 'NR',
+                    'invoice_number' => $invoice->invoice_number ?? '',
+                    'category' => $invoice->category ? $invoice->category->name : '',
+                    'payment_type' => $invoice->payment_type ?? 'elektronisch',
+                    'ext' => $extension,
+                ]);
 
                 // Datei mit neuem Namen ins ZIP packen
                 $zip->addFile($filePath, $newFileName);
@@ -547,8 +565,8 @@ class InvoiceUploadController extends Controller
                 ->with('error', 'ZIP-Datei wurde nicht erstellt.');
         }
 
-                 // 9) ZIP als Download zurückgeben & danach löschen
-         return response()->download($zipPath)->deleteFileAfterSend(true);
+        // 9) ZIP als Download zurückgeben & danach löschen
+        return response()->download($zipPath)->deleteFileAfterSend(true);
 
         } catch (\Exception $e) {
             // Globale Error-Behandlung
@@ -623,6 +641,114 @@ class InvoiceUploadController extends Controller
             'decoded_month' => urldecode($month),
             'route_working' => true
         ]);
+    }
+
+    /**
+     * Zeigt die Einstellungsseite für ZIP-Dateinamen
+     */
+    public function settings()
+    {
+        $user = Auth::user();
+        $clientId = $user->client_id;
+        
+        // Hole Client und bestimme parent_client_id
+        $client = Clients::find($clientId);
+        if (!$client) {
+            abort(403, 'Client nicht gefunden');
+        }
+        
+        $parentId = $client->parent_client_id ?? $client->id;
+        $clientSettings = ClientSettings::where('client_id', $parentId)->first();
+        
+        // Erstelle ClientSettings falls nicht vorhanden
+        if (!$clientSettings) {
+            $clientSettings = ClientSettings::create([
+                'client_id' => $parentId,
+                'lastinvoice' => 0,
+                'lastoffer' => 0,
+                'invoicemultiplikator' => 1000,
+                'offermultiplikator' => 1000,
+                'invoice_number_format' => 'YYYYNN',
+                'max_upload_size' => 2048,
+                'zip_filename_template' => '{date}_{index}_{vendor}.{ext}',
+            ]);
+        }
+        
+        return view('invoiceupload.settings', compact('clientSettings'));
+    }
+
+    /**
+     * Aktualisiert die ZIP-Dateinamen-Einstellungen
+     */
+    public function updateSettings(Request $request)
+    {
+        $user = Auth::user();
+        $clientId = $user->client_id;
+        
+        $request->validate([
+            'zip_filename_template' => 'nullable|string|max:255',
+        ]);
+        
+        // Hole Client und bestimme parent_client_id
+        $client = Clients::find($clientId);
+        if (!$client) {
+            abort(403, 'Client nicht gefunden');
+        }
+        
+        $parentId = $client->parent_client_id ?? $client->id;
+        $clientSettings = ClientSettings::where('client_id', $parentId)->first();
+        
+        if (!$clientSettings) {
+            $clientSettings = ClientSettings::create([
+                'client_id' => $parentId,
+                'zip_filename_template' => $request->zip_filename_template ?? '{date}_{index}_{vendor}',
+            ]);
+        } else {
+            $clientSettings->zip_filename_template = $request->zip_filename_template;
+            $clientSettings->save();
+        }
+        
+        return redirect()->route('invoiceupload.index')
+            ->with('success', 'ZIP-Dateinamen-Einstellungen erfolgreich gespeichert!');
+    }
+
+    /**
+     * Generiert einen Dateinamen basierend auf dem Template
+     */
+    private function generateZipFileName($template, $data)
+    {
+        $fileName = $template;
+        
+        // Ersetze Platzhalter (außer {ext}, das wird später automatisch hinzugefügt)
+        $fileName = str_replace('{date}', $data['date'] ?? '', $fileName);
+        $fileName = str_replace('{index}', $data['index'] ?? '', $fileName);
+        $fileName = str_replace('{vendor}', $data['vendor'] ?? 'NR', $fileName);
+        $fileName = str_replace('{invoice_number}', $data['invoice_number'] ?? '', $fileName);
+        $fileName = str_replace('{category}', $data['category'] ?? '', $fileName);
+        $fileName = str_replace('{payment_type}', $data['payment_type'] ?? 'elektronisch', $fileName);
+        
+        // Entferne {ext} Platzhalter falls vorhanden (wird automatisch hinzugefügt)
+        $fileName = str_replace('{ext}', '', $fileName);
+        $fileName = str_replace('.{ext}', '', $fileName);
+        $fileName = str_replace('{ext}.', '', $fileName);
+        
+        // Entferne doppelte Unterstriche und bereinige
+        $fileName = preg_replace('/_{2,}/', '_', $fileName);
+        $fileName = trim($fileName, '_');
+        $fileName = trim($fileName, '.');
+        
+        // Falls kein Template verwendet wurde, verwende Standard-Format
+        if ($fileName === $template && strpos($template, '{') === false) {
+            $fileName = ($data['date'] ?? '') . '_' . ($data['index'] ?? '') . '_' . ($data['vendor'] ?? 'NR');
+        }
+        
+        // Dateiendung automatisch hinzufügen
+        $extension = $data['ext'] ?? '';
+        if (!empty($extension)) {
+            $fileName .= '.' . $extension;
+        }
+        
+        return $fileName;
     }
 
 }

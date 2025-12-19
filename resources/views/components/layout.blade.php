@@ -9,7 +9,7 @@
     <title>{{ config('app.name') }}</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="{{ asset('logo/VenditioIcon.svg') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ \App\Helpers\TemplateHelper::getFaviconPath() }}">
     <link rel="alternate icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
     <!-- CSS -->

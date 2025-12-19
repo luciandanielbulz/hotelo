@@ -1,16 +1,5 @@
 @php
-$candidates = [
-    'logo/VenditioLogo.png',
-    'VenditioLogo.png',
-    'logo/VenditioLogoOhne.png',
-];
-$logoPath = null;
-foreach ($candidates as $c) {
-    if (file_exists(public_path($c))) { 
-        $logoPath = asset($c); 
-        break; 
-    }
-}
+$logoPath = asset('logo/quickBill HauptLogo2.png');
 @endphp
 
 <nav x-data="{ open: false, offersOpen: false, invoicesOpen: false, adminOpen: false }" 
@@ -24,7 +13,7 @@ foreach ($candidates as $c) {
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-1 group">
                         @if($logoPath)
-                            <img src="{{ $logoPath }}" alt="Venditio" class="inline-block h-11 w-auto" />
+                            <img src="{{ $logoPath }}" alt="{{ config('app.name') }}" class="inline-block h-11 w-auto" />
                         @else
                             <x-application-icon class="inline-block h-9 w-auto fill-current text-heading" />
                         @endif
@@ -194,7 +183,7 @@ foreach ($candidates as $c) {
         <div class="px-4 py-3 border-b border-default flex items-center justify-between">
             <div class="flex items-center gap-2">
                 @if($logoPath)
-                    <img src="{{ $logoPath }}" alt="Venditio" class="h-11 w-auto" />
+                    <img src="{{ $logoPath }}" alt="quickBill" class="h-11 w-auto" />
                 @else
                     <x-application-icon class="h-6 w-auto fill-current text-heading" />
                 @endif

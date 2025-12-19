@@ -50,7 +50,7 @@
     <div class="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg border border-white/20 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
+                <thead class="bg-gray-100">
                     <tr>
                         <th scope="col" class="hidden sm:table-cell py-4 pl-6 pr-3 text-left text-sm font-semibold text-gray-900">
                             <div class="flex items-center space-x-2">
@@ -117,8 +117,8 @@
                             $typeClass = $row->type == 1 ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800';
                             // Farben für Nummer: Blau für Rechnungen, Grün für Angebote
                             $numberColorClass = $row->type == 1 
-                                ? 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700' 
-                                : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700';
+                                ? 'bg-blue-500 hover:bg-blue-600' 
+                                : 'bg-green-500 hover:bg-green-600';
                             $fileLink = $row->filename;
                             $customerName = $row->customername ?: $row->companyname;
                             $attachmentIcon = $row->withattachment ? 'fa-check' : 'fa-x';

@@ -59,7 +59,7 @@
                 <p class="mt-1 text-xs text-gray-500">Aktivieren Sie diese Option, um bestehende Einträge mit gleicher Referenznummer zu überschreiben.</p>
             </div>
 
-            <button class="mt-4 inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 border border-transparent rounded-lg font-semibold text-sm text-white shadow-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:shadow-xl transition-all duration-300" type="submit">Hochladen</button>
+            <button class="mt-4 inline-flex items-center px-6 py-3 bg-indigo-600 border border-transparent rounded-lg font-semibold text-sm text-white shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:shadow-xl transition-all duration-300" type="submit">Hochladen</button>
         </div>
     </form>
 

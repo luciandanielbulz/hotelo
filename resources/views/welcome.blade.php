@@ -4,10 +4,10 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Laravel</title>
+        <title>quickBill</title>
 
         <!-- Favicon -->
-        <link rel="icon" type="image/svg+xml" href="{{ asset('logo/VenditioIcon.svg') }}">
+        <link rel="icon" type="image/svg+xml" href="{{ \App\Helpers\TemplateHelper::getFaviconPath() }}">
         <link rel="alternate icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
         <!-- Fonts -->
@@ -43,12 +43,12 @@
 
             <div class="max-w-7xl mx-auto p-6 lg:p-8">
                 <div class="flex justify-center">
-                    <img src="{{ asset('logo/VenditioLogo.png') }}" alt="Venditio" class="logo">
+                    <img src="{{ asset('logo/quickBill-Logo-alone.png') }}" alt="{{ config('app.name', 'quickBill') }}" class="logo">
                 </div>
 
                 <div class="mt-16">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-                        <a href="/docs" class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
+                        <a href="/docs" class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gray-800/50 dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
                             <div>
                                 <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
@@ -59,7 +59,7 @@
                                 <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Dokumentation</h2>
 
                                 <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                    Suchen Sie nach einer benutzerfreundlichen Lösung, um Ihre Rechnungen mühelos zu verwalten? Mit Venditio wird die Verrechnung zum Kinderspiel! Unser intuitives Tool bietet Ihnen alles, was Sie brauchen, um Ihre Rechnungen schnell zu erstellen, zu verfolgen und zu versenden – alles an einem Ort.
+                                    Suchen Sie nach einer benutzerfreundlichen Lösung, um Ihre Rechnungen mühelos zu verwalten? Mit quickBill wird die Verrechnung zum Kinderspiel! Unser intuitives Tool bietet Ihnen alles, was Sie brauchen, um Ihre Rechnungen schnell zu erstellen, zu verfolgen und zu versenden – alles an einem Ort.
                                 </p>
                             </div>
 

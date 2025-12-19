@@ -415,6 +415,8 @@ Route::get('/createInvoicePdf', [PdfCreateController::class,'createInvoicePdf'])
     Route::post('/invoiceupload/upload', [InvoiceUploadController::class, 'store'])->name('invoiceupload.upload.store');
     //Route::resource('invoiceupload', InvoiceUploadController::class);
     Route::get ('/invoiceupload/index', [InvoiceUploadController::class, 'index'])->name('invoiceupload.index');
+    Route::get('/invoiceupload/settings', [InvoiceUploadController::class, 'settings'])->name('invoiceupload.settings');
+    Route::put('/invoiceupload/settings', [InvoiceUploadController::class, 'updateSettings'])->name('invoiceupload.update-settings');
     Route::get ('/invoiceupload/{id}/edit', [InvoiceUploadController::class, 'edit'])->name('invoiceupload.edit');
     Route::put ('/invoiceupload/{id}', [InvoiceUploadController::class, 'update'])->name('invoiceupload.update');
     Route::delete('/invoiceupload/{id}', [InvoiceUploadController::class, 'destroy'])->name('invoiceupload.destroy');

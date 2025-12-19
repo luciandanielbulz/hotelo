@@ -2,10 +2,7 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <div class="min-h-screen bg-gradient-to-br from-indigo-900 via-indigo-800 to-purple-900 overflow-hidden">
-        <!-- Background Pattern -->
-        <div class="absolute inset-0 bg-gradient-to-br from-indigo-50/10 to-purple-50/10"></div>
-        <div class="absolute inset-0" style="background-image: radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.1) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(147, 51, 234, 0.1) 0%, transparent 50%);"></div>
+    <div class="min-h-screen bg-indigo-900 overflow-hidden">
         
         <div class="relative min-h-screen flex">
             <!-- Left Side - Marketing Content -->
@@ -14,10 +11,10 @@
                     <!-- Logo & Brand -->
                     <div class="flex items-center mb-6">
                         <div class="bg-white rounded-lg p-3 mr-3 shadow-md">
-                            <img src="{{ asset('logo/Logo transparent.png') }}" alt="Venditio" style="height: 48px; width: auto; object-fit: contain;" />
+                            <img src="{{ asset('logo/quickBill-Logo-alone.png') }}" alt="quickBill" style="height: 48px; width: auto; object-fit: contain;" />
                         </div>
                         <div>
-                            <h1 class="text-3xl font-bold text-white">Venditio</h1>
+                            <h1 class="text-3xl font-bold text-white">quickBill</h1>
                             <p class="text-indigo-200 text-base">Ihr Partner für digitale Rechnungsabwicklung</p>
                         </div>
                     </div>
@@ -25,13 +22,13 @@
                     <!-- Main Headline -->
                     <h2 class="text-4xl font-extrabold text-white leading-tight mb-5">
                         Rechnungen 
-                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-300">digital</span> 
+                        <span class="text-cyan-300">digital</span> 
                         verwalten
                     </h2>
                     
                     <p class="text-lg text-indigo-100 mb-6 leading-relaxed">
                         Automatisieren Sie Ihre Rechnungsprozesse, sparen Sie Zeit und reduzieren Sie Fehler. 
-                        Mit Venditio haben Sie alle Ihre Finanzdokumente im Griff.
+                        Mit quickBill haben Sie alle Ihre Finanzdokumente im Griff.
                     </p>
 
                     <!-- Features Grid -->
@@ -100,10 +97,10 @@
                     <div class="lg:hidden text-center mb-6">
                         <div class="flex justify-center mb-3">
                             <div class="bg-white rounded-lg p-4 shadow-md">
-                                <img src="{{ asset('logo/Logo transparent.png') }}" alt="Venditio" style="height: 56px; width: auto; object-fit: contain;" />
+                                <img src="{{ asset('logo/quickBill-Logo-alone.png') }}" alt="quickBill" style="height: 56px; width: auto; object-fit: contain;" />
                             </div>
                         </div>
-                        <h1 class="text-2xl font-bold text-white mb-1">Venditio</h1>
+                        <h1 class="text-2xl font-bold text-white mb-1">quickBill</h1>
                         <p class="text-indigo-200 text-sm">Digitale Rechnungsabwicklung</p>
                     </div>
 
@@ -193,7 +190,7 @@
                             <div class="pt-1">
                                 <button
                                     type="submit"
-                                    class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-lg text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 transform hover:scale-[1.01] shadow-md hover:shadow-lg">
+                                    class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 shadow-md hover:shadow-lg">
                                     <span class="absolute left-0 inset-y-0 flex items-center pl-4">
                                         <svg class="h-5 w-5 text-indigo-300 group-hover:text-indigo-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
@@ -232,7 +229,7 @@
                     <!-- Footer -->
                     <div class="text-center mt-6">
                         <p class="text-xs text-white/70">
-                            © {{ date('Y') }} Venditio. Revolutionieren Sie Ihre Rechnungsabwicklung.
+                            © {{ date('Y') }} quickBill. Revolutionieren Sie Ihre Rechnungsabwicklung.
                         </p>
                     </div>
                 </div>

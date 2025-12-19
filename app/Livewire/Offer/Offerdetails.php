@@ -40,7 +40,45 @@ class Offerdetails extends Component
 
         $this->taxrateid = $this->details->tax_id;
         $this->offerDate = $this->details->date ? $this->details->date->format('Y-m-d') : '';
-        $this->offerNumber = $this->details->number;
+        
+        // Lade die Nummer und füge Präfix hinzu, falls es fehlt
+        $offerNumber = $this->details->number;
+        
+        // Hole das Präfix aus der Client-Version (versioniert)
+        $user = \Illuminate\Support\Facades\Auth::user();
+        $offerClient = null;
+        if ($this->details->client_version_id) {
+            $offerClient = \App\Models\Clients::find($this->details->client_version_id);
+        }
+        
+        // Fallback: Aktuelle aktive Client-Version
+        if (!$offerClient) {
+            $userClient = \App\Models\Clients::find($user->client_id);
+            $offerClient = $userClient ? $userClient->getCurrentVersion() : null;
+        }
+        
+        // Hole Präfix aus Client (versioniert) oder ClientSettings
+        $originalClientId = ($offerClient ? ($offerClient->parent_client_id ?? $offerClient->id) : null) ?? $user->client_id;
+        $clientSettings = \App\Models\ClientSettings::where('client_id', $originalClientId)->first();
+        
+        $offerPrefix = null;
+        if ($offerClient) {
+            $offerPrefix = $offerClient->offer_prefix ?? null;
+        }
+        if (empty($offerPrefix) && $clientSettings) {
+            $offerPrefix = $clientSettings->offer_prefix ?? null;
+        }
+        
+        // Füge Präfix hinzu, falls es fehlt und ein Präfix vorhanden ist
+        if (!empty($offerPrefix) && !empty($offerNumber)) {
+            // Prüfe, ob die Nummer bereits das Präfix hat
+            if (strpos($offerNumber, $offerPrefix) !== 0) {
+                // Präfix fehlt, füge es hinzu
+                $offerNumber = $offerPrefix . $offerNumber;
+            }
+        }
+        
+        $this->offerNumber = $offerNumber;
     }
 
     public function updateDetails()
@@ -76,7 +114,7 @@ class Offerdetails extends Component
             $this->validate([
                 'taxrateid' => 'required|integer',
                 'offerDate' => 'required|date',
-                'offerNumber' => 'required|numeric',
+                'offerNumber' => 'required|string|max:100',
             ]);
             
             \Log::info('=== ANGEBOT Validierung erfolgreich ===', []);
@@ -90,7 +128,45 @@ class Offerdetails extends Component
             
             $offer->tax_id = $this->taxrateid;
             $offer->date = $this->offerDate;
-            $offer->number = $this->offerNumber;
+            
+            // Stelle sicher, dass das Präfix vorhanden ist
+            $offerNumber = $this->offerNumber;
+            
+            // Hole das Präfix aus der Client-Version (versioniert)
+            $user = \Illuminate\Support\Facades\Auth::user();
+            $offerClient = null;
+            if ($offer->client_version_id) {
+                $offerClient = \App\Models\Clients::find($offer->client_version_id);
+            }
+            
+            // Fallback: Aktuelle aktive Client-Version
+            if (!$offerClient) {
+                $userClient = \App\Models\Clients::find($user->client_id);
+                $offerClient = $userClient ? $userClient->getCurrentVersion() : null;
+            }
+            
+            // Hole Präfix aus Client (versioniert) oder ClientSettings
+            $originalClientId = ($offerClient ? ($offerClient->parent_client_id ?? $offerClient->id) : null) ?? $user->client_id;
+            $clientSettings = \App\Models\ClientSettings::where('client_id', $originalClientId)->first();
+            
+            $offerPrefix = null;
+            if ($offerClient) {
+                $offerPrefix = $offerClient->offer_prefix ?? null;
+            }
+            if (empty($offerPrefix) && $clientSettings) {
+                $offerPrefix = $clientSettings->offer_prefix ?? null;
+            }
+            
+            // Füge Präfix hinzu, falls es fehlt und ein Präfix vorhanden ist
+            if (!empty($offerPrefix) && !empty($offerNumber)) {
+                // Prüfe, ob die Nummer bereits das Präfix hat
+                if (strpos($offerNumber, $offerPrefix) !== 0) {
+                    // Präfix fehlt, füge es hinzu
+                    $offerNumber = $offerPrefix . $offerNumber;
+                }
+            }
+            
+            $offer->number = $offerNumber;
             $saved = $offer->save();
             
             \Log::info('Nach dem Update:', [
@@ -159,11 +235,54 @@ class Offerdetails extends Component
     {
         try {
             $this->validate([
-                'offerNumber' => 'required|numeric',
+                'offerNumber' => 'required|string|max:100',
             ]);
+            
             $offer = Offers::findOrFail($this->offerId);
-            $offer->number = $this->offerNumber;
+            
+            // Stelle sicher, dass das Präfix vorhanden ist
+            $offerNumber = $this->offerNumber;
+            
+            // Hole das Präfix aus der Client-Version (versioniert)
+            $user = \Illuminate\Support\Facades\Auth::user();
+            $offerClient = null;
+            if ($offer->client_version_id) {
+                $offerClient = \App\Models\Clients::find($offer->client_version_id);
+            }
+            
+            // Fallback: Aktuelle aktive Client-Version
+            if (!$offerClient) {
+                $userClient = \App\Models\Clients::find($user->client_id);
+                $offerClient = $userClient ? $userClient->getCurrentVersion() : null;
+            }
+            
+            // Hole Präfix aus Client (versioniert) oder ClientSettings
+            $originalClientId = ($offerClient ? ($offerClient->parent_client_id ?? $offerClient->id) : null) ?? $user->client_id;
+            $clientSettings = \App\Models\ClientSettings::where('client_id', $originalClientId)->first();
+            
+            $offerPrefix = null;
+            if ($offerClient) {
+                $offerPrefix = $offerClient->offer_prefix ?? null;
+            }
+            if (empty($offerPrefix) && $clientSettings) {
+                $offerPrefix = $clientSettings->offer_prefix ?? null;
+            }
+            
+            // Füge Präfix hinzu, falls es fehlt und ein Präfix vorhanden ist
+            if (!empty($offerPrefix) && !empty($offerNumber)) {
+                // Prüfe, ob die Nummer bereits das Präfix hat
+                if (strpos($offerNumber, $offerPrefix) !== 0) {
+                    // Präfix fehlt, füge es hinzu
+                    $offerNumber = $offerPrefix . $offerNumber;
+                }
+            }
+            
+            $offer->number = $offerNumber;
             $offer->save();
+            
+            // Aktualisiere die lokale Variable
+            $this->offerNumber = $offerNumber;
+            
             $this->message = 'Nummer gespeichert.';
             $this->dispatch('notify', message: $this->message, type: 'success');
             $this->dispatch('updateOfferSummary');

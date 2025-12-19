@@ -61,7 +61,7 @@ class VersionCommand extends Command
     {
         $buildInfo = VersionService::getBuildInfo();
 
-        $this->info("=== Venditio Versionsinformationen ===");
+        $this->info("=== quickBill Versionsinformationen ===");
         $this->line("");
         
         $this->info("Aktuelle Version: " . $buildInfo['version']);

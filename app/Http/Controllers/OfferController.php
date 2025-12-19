@@ -18,6 +18,36 @@ use App\Helpers\TemplateHelper;
 class OfferController extends Controller
 {
     /**
+     * Generiere eine Angebotsnummer basierend auf dem Format
+     */
+    private function generateOfferNumberWithFormat($format, $number, $multiplikator = 1000)
+    {
+        $year = date('Y');
+        $yearShort = date('y');
+        $month = date('m');
+        
+        switch ($format) {
+            case 'YYYY*1000+N':
+                return ($year * 1000) + $number;
+            case 'YYYYNN':
+                return $year . str_pad($number, 4, '0', STR_PAD_LEFT);
+            case 'YY*1000+N':
+                return ($yearShort * 1000) + $number;
+            case 'YYYY_MM+N':
+                return $year . '_' . $month . str_pad($number, 3, '0', STR_PAD_LEFT);
+            case 'YYYY*10000+N+1000':
+                return ($year * 10000) + ($number + 1000);
+            case 'YYYY*10000+N+6000':
+                return ($year * 10000) + ($number + 6000);
+            case 'N':
+                return $number;
+            default:
+                // Fallback für unbekannte Formate
+                return $year . str_pad($number, 4, '0', STR_PAD_LEFT);
+        }
+    }
+
+    /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
@@ -80,12 +110,12 @@ class OfferController extends Controller
                 $query->where('id', $client_id)
                       ->orWhere('parent_client_id', $client_id);
             })
-            ->select('id', 'tax_id')
+            ->select('id', 'tax_id', 'offer_prefix', 'offer_number_format', 'invoice_number_format')
             ->first();
         
         // Fallback: Falls keine aktive Version gefunden wird, suche den ursprünglichen Client
         if (!$client) {
-            $client = Clients::where('id', '=', $client_id)->select('id', 'tax_id')->first();
+            $client = Clients::where('id', '=', $client_id)->select('id', 'tax_id', 'offer_prefix', 'offer_number_format', 'invoice_number_format')->first();
         }
 
         if (!$client) {
@@ -101,7 +131,22 @@ class OfferController extends Controller
         }
 
         $offer_raw_number = $clientSettings->lastoffer ?? 0;
-        $offernumber = $clientSettings->generateOfferNumber();
+        
+        // Verwende das Format aus dem Client (versioniert), mit Fallback auf ClientSettings
+        $offerNumberFormat = $client->offer_number_format ?? $clientSettings->offer_number_format ?? $client->invoice_number_format ?? $clientSettings->invoice_number_format ?? 'YYYYNN';
+        
+        // Generiere die Nummer mit dem richtigen Format
+        $offernumber = $this->generateOfferNumberWithFormat(
+            $offerNumberFormat,
+            $offer_raw_number + 1,
+            $clientSettings->offermultiplikator ?? 1000
+        );
+        
+        // Füge das Präfix hinzu (versioniert aus Client, mit Fallback auf ClientSettings)
+        $offerPrefix = $client->offer_prefix ?? $clientSettings->offer_prefix ?? '';
+        if (!empty($offerPrefix)) {
+            $offernumber = $offerPrefix . $offernumber;
+        }
 
         // Erstelle das Angebot mit der berechneten Nummer
         $offer = Offers::create([

@@ -51,7 +51,7 @@
         <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
             <div class="mb-6">
                 <h2 class="text-lg font-semibold text-gray-900 flex items-center">
-                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg flex items-center justify-center text-white font-bold text-xs mr-3">
+                    <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-xs mr-3">
                         {{ $invoicepositioncontent->sequence }}
                     </div>
                     Position bearbeiten
@@ -103,7 +103,7 @@
                 <!-- Speichern Button -->
                 <div class="flex justify-center md:justify-start pt-4">
                     <input type="hidden" name="id" value="{{ $invoicepositioncontent->id }}">
-                    <button type="submit" class="w-full md:w-auto inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <button type="submit" class="w-full md:w-auto inline-flex items-center justify-center px-8 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
@@ -117,7 +117,7 @@
         <div class="bg-green-50/60 backdrop-blur-lg rounded-xl p-6 border border-green-200 shadow-lg">
             <div class="mb-6">
                 <h2 class="text-lg font-semibold text-green-700 flex items-center">
-                    <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg flex items-center justify-center text-white mr-3">
+                    <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white mr-3">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
                         </svg>
@@ -153,7 +153,7 @@
                     <input type="hidden" name="price" value="{{ $invoicepositioncontent->price }}">
                     <input type="hidden" name="designation" value="{{ $invoicepositioncontent->designation }}">
                     <input type="hidden" name="amount" value="{{ $invoicepositioncontent->amount }}">
-                    <button type="submit" class="w-full md:w-auto inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-green-500 to-teal-500 text-white font-semibold rounded-lg hover:from-green-600 hover:to-teal-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <button type="submit" class="w-full md:w-auto inline-flex items-center justify-center px-8 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-xl">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
@@ -216,7 +216,7 @@
                 </div>
 
                 <div class="flex gap-3">
-                    <button onclick="translateText()" class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-semibold rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <button onclick="translateText()" class="flex-1 px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl">
                         Übersetzen
                     </button>
                     <button onclick="closeTranslationModal()" class="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors">

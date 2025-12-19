@@ -135,8 +135,13 @@ class PdfCreateController extends Controller
             $canvas->text($x, $y, $pageText, $font, $size, array(0.5, 0.5, 0.5));
         });
         
-        // Je nach Modus ausgeben
-        $filename = 'Angebot_' . ($data['client']->offer_prefix ?? '') . $data['offer']->number . '.pdf';
+        // Je nach Modus ausgeben - prüfe ob Präfix bereits in Nummer enthalten ist
+        $offerNumberForFilename = $data['offer']->number;
+        $offerPrefixForFilename = $data['client']->offer_prefix ?? '';
+        if (!empty($offerPrefixForFilename) && strpos($offerNumberForFilename, $offerPrefixForFilename) !== 0) {
+            $offerNumberForFilename = $offerPrefixForFilename . $offerNumberForFilename;
+        }
+        $filename = 'Angebot_' . $offerNumberForFilename . '.pdf';
         $pdfOutput = $pdf->getDomPDF()->output();
         
         switch ($preview) {
@@ -214,8 +219,13 @@ class PdfCreateController extends Controller
             $canvas->text($x, $y, $pageText, $font, $size, array(0.5, 0.5, 0.5));
         });
 
-        // Je nach Modus ausgeben
-        $filename = 'Rechnung_' . ($data['client']->invoice_prefix ?? '') . $data['invoice']->number . '.pdf';
+        // Je nach Modus ausgeben - prüfe ob Präfix bereits in Nummer enthalten ist
+        $invoiceNumberForFilename = $data['invoice']->number;
+        $invoicePrefixForFilename = $data['client']->invoice_prefix ?? '';
+        if (!empty($invoicePrefixForFilename) && strpos($invoiceNumberForFilename, $invoicePrefixForFilename) !== 0) {
+            $invoiceNumberForFilename = $invoicePrefixForFilename . $invoiceNumberForFilename;
+        }
+        $filename = 'Rechnung_' . $invoiceNumberForFilename . '.pdf';
         $pdfOutput = $pdf->getDomPDF()->output();
         
         switch ($preview) {
@@ -277,14 +287,19 @@ class PdfCreateController extends Controller
             throw new \Exception('Client-Daten für Angebot nicht gefunden. Offer ID: ' . $objectId . ', Client ID: ' . $clientId);
         }
 
-        // Lade Client-Settings (Präfixe und andere statische Daten)
+        // Lade Client-Settings (für Fallback und max_upload_size)
         $parentId = $client->parent_client_id ?? $client->id;
         $clientSettings = \App\Models\ClientSettings::where('client_id', $parentId)->first();
         
-        // Füge Settings zu Client hinzu für einfachen Zugriff
-        if ($clientSettings) {
-            $client->offer_prefix = $clientSettings->offer_prefix;
+        // Präfixe und Nummernformate sind jetzt versioniert in Clients-Tabelle
+        // Fallback auf ClientSettings für Rückwärtskompatibilität
+        if (empty($client->invoice_prefix) && $clientSettings) {
             $client->invoice_prefix = $clientSettings->invoice_prefix;
+        }
+        if (empty($client->offer_prefix) && $clientSettings) {
+            $client->offer_prefix = $clientSettings->offer_prefix;
+        }
+        if ($clientSettings) {
             $client->max_upload_size = $clientSettings->max_upload_size;
         }
 
@@ -372,14 +387,19 @@ class PdfCreateController extends Controller
             throw new \Exception('Client-Daten für Rechnung nicht gefunden. Invoice ID: ' . $objectId . ', Client ID: ' . $clientId);
         }
 
-        // Lade Client-Settings (Präfixe und andere statische Daten)
+        // Lade Client-Settings (für Fallback und max_upload_size)
         $parentId = $client->parent_client_id ?? $client->id;
         $clientSettings = \App\Models\ClientSettings::where('client_id', $parentId)->first();
         
-        // Füge Settings zu Client hinzu für einfachen Zugriff
-        if ($clientSettings) {
-            $client->offer_prefix = $clientSettings->offer_prefix;
+        // Präfixe und Nummernformate sind jetzt versioniert in Clients-Tabelle
+        // Fallback auf ClientSettings für Rückwärtskompatibilität
+        if (empty($client->invoice_prefix) && $clientSettings) {
             $client->invoice_prefix = $clientSettings->invoice_prefix;
+        }
+        if (empty($client->offer_prefix) && $clientSettings) {
+            $client->offer_prefix = $clientSettings->offer_prefix;
+        }
+        if ($clientSettings) {
             $client->max_upload_size = $clientSettings->max_upload_size;
         }
 
@@ -781,9 +801,17 @@ class PdfCreateController extends Controller
                  htmlspecialchars($client->postalcode) . ' ' . 
                  htmlspecialchars($client->location) . '</div>';
         
+        // Stelle sicher, dass das Präfix nicht doppelt angezeigt wird
+        $invoiceNumber = $invoice->number;
+        $invoicePrefix = $client->invoice_prefix ?? '';
+        if (!empty($invoicePrefix) && strpos($invoiceNumber, $invoicePrefix) !== 0) {
+            // Präfix fehlt, füge es hinzu
+            $invoiceNumber = $invoicePrefix . $invoiceNumber;
+        }
+        
         $html .= '<div class="document-info">
             <table style="font-size: ' . $fontSizes['document_info_large'] . ';">
-                <tr><td class="text-left">Rechnungs-Nr.</td><td class="text-right">' . htmlspecialchars(($client->invoice_prefix ?? '') . $invoice->number) . '</td></tr>
+                <tr><td class="text-left">Rechnungs-Nr.</td><td class="text-right">' . htmlspecialchars($invoiceNumber) . '</td></tr>
             </table>
             <table style="font-size: ' . $fontSizes['document_info_small'] . ';">
                 <tr><td class="text-left">Rechnungsdatum</td><td class="text-right">' . htmlspecialchars($formattedDate) . '</td></tr>';
@@ -820,8 +848,8 @@ class PdfCreateController extends Controller
         }
         $html .= '</table></div>';
 
-        // Document Title
-        $html .= '<div class="document-title">Rechnung Nr. ' . htmlspecialchars(($client->invoice_prefix ?? '') . $invoice->number) . '</div>';
+        // Document Title (verwende bereits formatierte Nummer)
+        $html .= '<div class="document-title">Rechnung Nr. ' . htmlspecialchars($invoiceNumber) . '</div>';
 
         // Intro Text
         $html .= '<div class="intro-text">Vielen Dank für Ihren Auftrag und das damit verbundene Vertrauen! Hiermit stellen wir Ihnen die folgenden Leistungen in Rechnung:</div>';
@@ -1036,9 +1064,17 @@ class PdfCreateController extends Controller
                  htmlspecialchars($client->postalcode) . ' ' . 
                  htmlspecialchars($client->location) . '</div>';
         
+        // Stelle sicher, dass das Präfix nicht doppelt angezeigt wird
+        $offerNumber = $offer->number;
+        $offerPrefix = $client->offer_prefix ?? '';
+        if (!empty($offerPrefix) && strpos($offerNumber, $offerPrefix) !== 0) {
+            // Präfix fehlt, füge es hinzu
+            $offerNumber = $offerPrefix . $offerNumber;
+        }
+        
         $html .= '<div class="document-info">
             <table style="font-size: ' . $fontSizes['document_info_large'] . ';">
-                <tr><td class="text-left">Angebots-Nr.</td><td class="text-right">' . htmlspecialchars(($client->offer_prefix ?? '') . $offer->number) . '</td></tr>
+                <tr><td class="text-left">Angebots-Nr.</td><td class="text-right">' . htmlspecialchars($offerNumber) . '</td></tr>
             </table>
             <table style="font-size: ' . $fontSizes['document_info_small'] . ';">
                 <tr><td class="text-left">Angebotsdatum</td><td class="text-right">' . htmlspecialchars($formattedDate) . '</td></tr>
@@ -1070,8 +1106,8 @@ class PdfCreateController extends Controller
         }
         $html .= '</table></div>';
 
-        // Document Title
-        $html .= '<div class="document-title">Angebot ' . htmlspecialchars(($client->offer_prefix ?? '') . $offer->number) . '</div>';
+        // Document Title (verwende bereits formatierte Nummer)
+        $html .= '<div class="document-title">Angebot ' . htmlspecialchars($offerNumber) . '</div>';
 
         // Intro Text
         $html .= '<div class="intro-text">Unter Einhaltung unserer allg. Geschäftsbedingungen, erlauben wir uns, Ihnen folgendes Angebot zu unterbreiten:</div>';

@@ -562,8 +562,41 @@ class ClientsController extends Controller
         }
         
         $taxrates = Taxrates::all();
+        
+        // Lade ClientSettings für Fallback-Werte (falls Felder noch nicht in Clients sind)
+        $originalClientId = $clients->parent_client_id ?? $clients->id;
+        $clientSettings = \App\Models\ClientSettings::where('client_id', $originalClientId)->first();
+        
+        // Wenn Nummernformate/Präfixe noch nicht in Clients sind, aber in ClientSettings existieren,
+        // migriere sie zu Clients (nur für aktive Version)
+        if ($clientSettings && $clients->is_active) {
+            $needsUpdate = false;
+            $updateData = [];
+            
+            if (empty($clients->invoice_number_format) && !empty($clientSettings->invoice_number_format)) {
+                $updateData['invoice_number_format'] = $clientSettings->invoice_number_format;
+                $needsUpdate = true;
+            }
+            if (empty($clients->offer_number_format) && !empty($clientSettings->offer_number_format)) {
+                $updateData['offer_number_format'] = $clientSettings->offer_number_format;
+                $needsUpdate = true;
+            }
+            if (empty($clients->invoice_prefix) && !empty($clientSettings->invoice_prefix)) {
+                $updateData['invoice_prefix'] = $clientSettings->invoice_prefix;
+                $needsUpdate = true;
+            }
+            if (empty($clients->offer_prefix) && !empty($clientSettings->offer_prefix)) {
+                $updateData['offer_prefix'] = $clientSettings->offer_prefix;
+                $needsUpdate = true;
+            }
+            
+            if ($needsUpdate) {
+                $clients->update($updateData);
+                $clients->refresh();
+            }
+        }
 
-        return view('clients.my-settings', compact('clients', 'taxrates'));
+        return view('clients.my-settings', compact('clients', 'taxrates', 'clientSettings'));
     }
 
     /**
@@ -574,7 +607,7 @@ class ClientsController extends Controller
     {
         $user = Auth::user();
         
-        // Validierung der Eingabedaten (NUR versionierte Daten, OHNE statische Einstellungen!)
+        // Validierung der Eingabedaten (inkl. Nummernformate und Präfixe - versioniert!)
         $validatedData = $request->validate([
             'clientname' => ['required', 'string', 'max:50'],
             'companyname' => ['required', 'string', 'max:200', 'min:1'],
@@ -601,6 +634,10 @@ class ClientsController extends Controller
             'management' => ['nullable', 'string', 'max:200'],
             'regional_court' => ['nullable', 'string', 'max:200'],
             'color' => ['nullable', 'string', 'max:7'],
+            'invoice_number_format' => ['nullable', 'string', 'max:50'],
+            'offer_number_format' => ['nullable', 'string', 'max:50'],
+            'invoice_prefix' => ['nullable', 'string', 'max:10'],
+            'offer_prefix' => ['nullable', 'string', 'max:10'],
         ]);
 
         try {
@@ -635,7 +672,8 @@ class ClientsController extends Controller
                 'location', 'email', 'phone', 'tax_id', 'webpage', 'bank', 
                 'accountnumber', 'vat_number', 'bic', 'smallbusiness', 'signature', 'document_footer', 
                 'style', 'company_registration_number', 'tax_number', 'dgnr', 'management', 
-                'regional_court', 'color'
+                'regional_court', 'color', 'invoice_number_format', 'offer_number_format',
+                'invoice_prefix', 'offer_prefix'
             ];
             
             foreach ($changesToCheck as $field) {

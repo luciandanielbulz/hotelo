@@ -558,7 +558,7 @@ class SalesController extends Controller
         $html .= '
     </table>
     
-    <p><em>Erstellt mit Venditio - ' . date('d.m.Y H:i') . '</em></p>
+    <p><em>Erstellt mit quickBill - ' . date('d.m.Y H:i') . '</em></p>
 </body>
 </html>';
 

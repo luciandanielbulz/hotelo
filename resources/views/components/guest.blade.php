@@ -8,7 +8,7 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Favicon -->
-        <link rel="icon" type="image/svg+xml" href="{{ asset('logo/VenditioIcon.svg') }}">
+        <link rel="icon" type="image/svg+xml" href="{{ \App\Helpers\TemplateHelper::getFaviconPath() }}">
         <link rel="alternate icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
         <!-- Fonts -->
@@ -22,7 +22,7 @@
     <body class="font-sans text-gray-900 antialiased">
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
             <div>
-                <h2 class="text-4xl font-extrabold dark:text-white">Venditio</h2>
+                <h2 class="text-4xl font-extrabold dark:text-white">quickBill</h2>
                 <!--<a href="/">
                     <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
                 </a>-->
