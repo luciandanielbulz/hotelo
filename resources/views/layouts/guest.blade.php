@@ -9,7 +9,7 @@
 
         <!-- Favicon -->
         <link rel="icon" type="image/svg+xml" href="{{ \App\Helpers\TemplateHelper::getFaviconPath() }}">
-        <link rel="alternate icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+        <link rel="alternate icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v={{ file_exists(public_path('favicon.ico')) ? filemtime(public_path('favicon.ico')) : time() }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
