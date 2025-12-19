@@ -1,4 +1,27 @@
 <x-layout>
+    <!-- Session-Nachrichten als Toasts anzeigen -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session()->has('success'))
+                window.dispatchEvent(new CustomEvent('notify', {
+                    detail: {
+                        message: '{{ session('success') }}',
+                        type: 'success'
+                    }
+                }));
+            @endif
+
+            @if(session()->has('error'))
+                window.dispatchEvent(new CustomEvent('notify', {
+                    detail: {
+                        message: '{{ session('error') }}',
+                        type: 'error'
+                    }
+                }));
+            @endif
+        });
+    </script>
+    
     <!-- Alpine.js-Scope um den gesamten relevanten Bereich erweitert -->
     <div x-data="{ open: false }" x-cloak>
         <!-- Modernes Modal für ZIP-Downloads -->

@@ -40,16 +40,20 @@ class TemplateHelper
     /**
      * Gibt den Favicon-Pfad basierend auf der aktuellen Domain zurück.
      *
-     * @return string Der Asset-Pfad zum Favicon
+     * @return string Der Asset-Pfad zum Favicon mit Cache-Busting
      */
     public static function getFaviconPath(): string
     {
         $host = request()->getHost();
         $domainFavicons = config('app.domain_favicons', []);
-        $defaultFavicon = config('app.default_favicon', 'quickBillIcon.svg');
+        $defaultFavicon = config('app.default_favicon', 'VenditioIcon.svg');
         
         $faviconFilename = $domainFavicons[$host] ?? $defaultFavicon;
+        $faviconPath = public_path('logo/' . $faviconFilename);
         
-        return asset('logo/' . $faviconFilename);
+        // Cache-Busting basierend auf Dateiänderungszeit
+        $version = file_exists($faviconPath) ? filemtime($faviconPath) : time();
+        
+        return asset('logo/' . $faviconFilename) . '?v=' . $version;
     }
 }

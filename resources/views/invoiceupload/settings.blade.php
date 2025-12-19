@@ -365,8 +365,14 @@
                     `;
                 } else {
                     element.innerHTML = `
-                        <span class="bg-gray-300 text-gray-700 px-2 py-1 rounded font-mono text-sm">
+                        <span class="bg-gray-300 text-gray-700 px-2 py-1 rounded font-mono text-sm flex items-center gap-1">
                             ${token.value === ' ' ? '␣' : token.value}
+                            <button 
+                                type="button" 
+                                onclick="removeToken(${index})" 
+                                class="text-gray-600 hover:text-red-600 ml-1 font-bold">
+                                ×
+                            </button>
                         </span>
                     `;
                 }

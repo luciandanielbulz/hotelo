@@ -75,7 +75,7 @@ class InvoiceUploadTable extends Component
             ->first();
 
         if (!$invoice) {
-            session()->flash('error', 'Sie haben keine Berechtigung, diese Rechnung zu löschen.');
+            $this->dispatch('notify', message: 'Sie haben keine Berechtigung, diese Rechnung zu löschen.', type: 'error');
             return;
         }
 
@@ -88,10 +88,10 @@ class InvoiceUploadTable extends Component
             // Datensatz aus der Datenbank löschen
             $invoice->delete();
 
-            session()->flash('success', 'Rechnung erfolgreich gelöscht!');
+            $this->dispatch('notify', message: 'Rechnung erfolgreich gelöscht!', type: 'success');
             
         } catch (\Exception $e) {
-            session()->flash('error', 'Fehler beim Löschen der Rechnung: ' . $e->getMessage());
+            $this->dispatch('notify', message: 'Fehler beim Löschen der Rechnung: ' . $e->getMessage(), type: 'error');
         }
 
         $this->confirmingDeletion = false;
