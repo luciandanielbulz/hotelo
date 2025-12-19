@@ -133,8 +133,8 @@
                                                 {{ $invoice->description ? \Str::limit($invoice->description, 15, '...') : '-' }}
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 truncate" title="{{ $invoice->invoice_number ?? '-' }}">
-                                            {{ $invoice->invoice_number ?? '-' }}
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="{{ $invoice->invoice_number ?? '-' }}">
+                                            {{ $invoice->invoice_number ? \Str::limit($invoice->invoice_number, 15, '...') : '-' }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
                                             @if($invoice->amount && $invoice->currency)
