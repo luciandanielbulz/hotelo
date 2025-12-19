@@ -125,12 +125,12 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                             {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('d.m.Y') }}
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 truncate" title="{{ $invoice->invoice_vendor ?? '-' }}">
-                                            {{ $invoice->invoice_vendor ?? '-' }}
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" title="{{ $invoice->invoice_vendor ?? '-' }}">
+                                            {{ $invoice->invoice_vendor ? \Str::limit($invoice->invoice_vendor, 15, '...') : '-' }}
                                         </td>
                                         <td class="px-6 py-4 text-sm font-medium text-gray-900">
-                                            <div class="truncate" title="{{ $invoice->description ?? '-' }}">
-                                                {{ $invoice->description ?? '-' }}
+                                            <div title="{{ $invoice->description ?? '-' }}">
+                                                {{ $invoice->description ? \Str::limit($invoice->description, 15, '...') : '-' }}
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 truncate" title="{{ $invoice->invoice_number ?? '-' }}">
