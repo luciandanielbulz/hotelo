@@ -246,8 +246,9 @@ class ClientsController extends Controller
     {
         $clients = $client; // Für Konsistenz mit der Blade-Vorlage
         $taxrates = Taxrates::all();
+        $countries = \App\Models\Country::active()->euMembers()->ordered()->get();
 
-        return view('clients.edit', compact('clients', 'taxrates'));
+        return view('clients.edit', compact('clients', 'taxrates', 'countries'));
     }
 
     /**
@@ -265,6 +266,7 @@ class ClientsController extends Controller
             'address' => ['required', 'string', 'max:200'],
             'postalcode' => ['required', 'integer'],
             'location' => ['required', 'string', 'max:200'],
+            'country_id' => ['nullable', 'integer', 'exists:countries,id'],
             'email' => ['required', 'email', 'max:200'],
             'phone' => ['required', 'string', 'max:200'],
             'tax_id' => ['required', 'integer', 'exists:taxrates,id'],
@@ -298,6 +300,13 @@ class ClientsController extends Controller
             // Konvertiere leere Strings zu null für nullable Felder
             if (!isset($clientData['dgnr']) || $clientData['dgnr'] === '') {
                 $clientData['dgnr'] = null;
+            }
+            
+            // Behandle country_id: leere Strings oder 0 zu null, sonst zu Integer
+            if (!isset($clientData['country_id']) || $clientData['country_id'] === '' || $clientData['country_id'] === '0' || $clientData['country_id'] === 0) {
+                $clientData['country_id'] = null;
+            } else {
+                $clientData['country_id'] = (int)$clientData['country_id'];
             }
 
             // Logo hochladen, falls vorhanden
@@ -562,6 +571,7 @@ class ClientsController extends Controller
         }
         
         $taxrates = Taxrates::all();
+        $countries = \App\Models\Country::active()->euMembers()->ordered()->get();
         
         // Lade ClientSettings für Fallback-Werte (falls Felder noch nicht in Clients sind)
         $originalClientId = $clients->parent_client_id ?? $clients->id;
@@ -596,7 +606,7 @@ class ClientsController extends Controller
             }
         }
 
-        return view('clients.my-settings', compact('clients', 'taxrates', 'clientSettings'));
+        return view('clients.my-settings', compact('clients', 'taxrates', 'clientSettings', 'countries'));
     }
 
     /**
@@ -615,6 +625,7 @@ class ClientsController extends Controller
             'address' => ['required', 'string', 'max:200'],
             'postalcode' => ['required', 'integer'],
             'location' => ['required', 'string', 'max:200'],
+            'country_id' => ['nullable', 'integer', 'exists:countries,id'],
             'email' => ['required', 'email', 'max:200'],
             'phone' => ['required', 'string', 'max:200'],
             'tax_id' => ['required', 'integer', 'exists:taxrates,id'],
@@ -669,7 +680,7 @@ class ClientsController extends Controller
             $hasChanges = false;
             $changesToCheck = [
                 'clientname', 'companyname', 'business', 'address', 'postalcode', 
-                'location', 'email', 'phone', 'tax_id', 'webpage', 'bank', 
+                'location', 'country_id', 'email', 'phone', 'tax_id', 'webpage', 'bank', 
                 'accountnumber', 'vat_number', 'bic', 'smallbusiness', 'signature', 'document_footer', 
                 'style', 'company_registration_number', 'tax_number', 'dgnr', 'management', 
                 'regional_court', 'color', 'invoice_number_format', 'offer_number_format',
@@ -679,6 +690,13 @@ class ClientsController extends Controller
             foreach ($changesToCheck as $field) {
                 $oldValue = $client->{$field} ?? null;
                 $newValue = $validatedData[$field] ?? null;
+                
+                // Konvertiere country_id zu Integer für korrekten Vergleich
+                if ($field === 'country_id') {
+                    $oldValue = $oldValue ? (int)$oldValue : null;
+                    $newValue = $newValue ? (int)$newValue : null;
+                }
+                
                 // Prüfe auf Änderung (auch wenn von null zu Wert oder umgekehrt)
                 if ($oldValue != $newValue) {
                     $hasChanges = true;
@@ -699,6 +717,13 @@ class ClientsController extends Controller
                 // Konvertiere leere Strings zu null für nullable Felder
                 if (!isset($newVersionData['dgnr']) || $newVersionData['dgnr'] === '') {
                     $newVersionData['dgnr'] = null;
+                }
+                
+                // Behandle country_id: leere Strings oder 0 zu null, sonst zu Integer
+                if (!isset($newVersionData['country_id']) || $newVersionData['country_id'] === '' || $newVersionData['country_id'] === '0' || $newVersionData['country_id'] === 0) {
+                    $newVersionData['country_id'] = null;
+                } else {
+                    $newVersionData['country_id'] = (int)$newVersionData['country_id'];
                 }
                 
                 if ($request->hasFile('logo')) {

@@ -102,7 +102,16 @@
                 </div>
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
                     <div class="sm:col-span-4">
-                        <x-input name="country" type="text" placeholder="Land" label="Land" value="{{ $customer->country }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        @php
+                            $countryOptions = [];
+                            foreach ($countries as $country) {
+                                $countryOptions[$country->id] = $country->name_de ?? $country->name;
+                            }
+                            $selectedCountryId = old('country_id', $customer->country_id);
+                            // Stelle sicher, dass country_id als Integer behandelt wird
+                            $selectedCountryId = $selectedCountryId ? (int)$selectedCountryId : null;
+                        @endphp
+                        <x-dropdown_body name="country_id" id="country_id" label="Land" :options="$countryOptions" :selected="$selectedCountryId" placeholder="Bitte auswählen" />
                     </div>
                 </div>
             </div>

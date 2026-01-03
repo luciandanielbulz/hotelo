@@ -17,6 +17,7 @@ class Customer extends Model
         'postalcode',
         'location',
         'country',
+        'country_id',
         'phone',
         'fax',
         'email',
@@ -45,4 +46,11 @@ class Customer extends Model
         return $this->belongsTo(Clients::class);
     }
 
+    /**
+     * Beziehung zum Land
+     */
+    public function countryRelation()
+    {
+        return $this->belongsTo(Country::class, 'country_id');
+    }
 }

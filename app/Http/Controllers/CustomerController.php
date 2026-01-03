@@ -49,13 +49,21 @@ class CustomerController extends Controller
 
         $conditions = Condition::where('client_id', $clientId)->get(); // Automatisch nur aktive durch SoftDeletes
         $taxrates = Taxrates::all();
+        $countries = \App\Models\Country::active()->euMembers()->ordered()->get();
 
-        $standardtaxrate = Clients::where('id', $clientId)->first('tax_id')->tax_id;
+        // Hole die aktive Version des Clients
+        $userClient = Clients::find($clientId);
+        $client = $userClient ? $userClient->getCurrentVersion() : null;
+        
+        $standardtaxrate = $client ? $client->tax_id : null;
+        
+        // Hole das Land des Clients für die Vorauswahl (aus der aktiven Version)
+        $clientCountryId = $client ? $client->country_id : null;
         
         //dd($standardtaxrate);
 
         $salutations = Salutations::all(); // Alle Anreden aus der DB abrufen
-        return view('customer.create', compact('salutations', 'conditions', 'taxrates', 'standardtaxrate'));
+        return view('customer.create', compact('salutations', 'conditions', 'taxrates', 'standardtaxrate', 'countries', 'clientCountryId'));
     }
 
     /**
@@ -77,7 +85,8 @@ class CustomerController extends Controller
             'address' => ['required', 'string', 'max:200'],
             'postalcode' => ['required', 'integer'],
             'location' => ['required', 'string', 'max:200'],
-            'country' => ['required', 'string', 'max:200'],
+            'country' => ['nullable', 'string', 'max:200'], // Behalten für Rückwärtskompatibilität
+            'country_id' => ['nullable', 'integer', 'exists:countries,id'],
             'tax_id' => ['required', 'integer'],
             'phone' => ['nullable', 'string', 'max:30'],
             'fax' => ['nullable', 'string', 'max:200'],
@@ -90,6 +99,14 @@ class CustomerController extends Controller
         ]);
 
         $validatedData['client_id'] = $clientId;
+        
+        // Behandle country_id: leere Strings oder 0 zu null, sonst zu Integer
+        if (!isset($validatedData['country_id']) || $validatedData['country_id'] === '' || $validatedData['country_id'] === '0' || $validatedData['country_id'] === 0) {
+            $validatedData['country_id'] = null;
+        } else {
+            $validatedData['country_id'] = (int)$validatedData['country_id'];
+        }
+        
         //dd($validatedData);
 
         // Daten speichern
@@ -122,8 +139,9 @@ class CustomerController extends Controller
         $conditions = Condition::where('client_id', $currentClientId)->get(); // Automatisch nur aktive durch SoftDeletes
         $salutations = Salutations::all();
         $taxrates = Taxrates::all();
+        $countries = \App\Models\Country::active()->euMembers()->ordered()->get();
         //dd($taxrates);
-        return view('customer.edit', compact('customer', 'conditions', 'salutations','taxrates'));
+        return view('customer.edit', compact('customer', 'conditions', 'salutations','taxrates', 'countries'));
     }
 
     /**
@@ -142,7 +160,8 @@ class CustomerController extends Controller
                 'address' => ['required', 'string', 'max:200'],
                 'postalcode' => ['required', 'string', 'max:10'],
                 'location' => ['required', 'string', 'max:200'],
-                'country' => ['required', 'string', 'max:200'],
+                'country' => ['nullable', 'string', 'max:200'], // Behalten für Rückwärtskompatibilität
+                'country_id' => ['nullable', 'integer', 'exists:countries,id'],
                 'tax_id' => ['required', 'string', 'max:100'],
                 'phone' => ['nullable', 'string', 'max:30'],
                 'fax' => ['nullable', 'string', 'max:200'],
@@ -162,6 +181,13 @@ class CustomerController extends Controller
             return redirect()->back()->withErrors($e->errors())->withInput();
         }
         //dd($validatedData);
+        
+        // Behandle country_id: leere Strings oder 0 zu null, sonst zu Integer
+        if (!isset($validatedData['country_id']) || $validatedData['country_id'] === '' || $validatedData['country_id'] === '0' || $validatedData['country_id'] === 0) {
+            $validatedData['country_id'] = null;
+        } else {
+            $validatedData['country_id'] = (int)$validatedData['country_id'];
+        }
 
         $customer->update($validatedData);
 

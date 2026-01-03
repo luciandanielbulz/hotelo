@@ -269,17 +269,21 @@ class PdfCreateController extends Controller
             ->where('offers.id', $objectId)
             ->first('conditions.*');
 
-        $customer = Customer::join('offers', 'customers.id', '=', 'offers.customer_id')
+        $customer = Customer::with('countryRelation')->join('offers', 'customers.id', '=', 'offers.customer_id')
             ->where('offers.id', '=', $objectId)
-            ->first('customers.*');
+            ->select('customers.*')
+            ->first();
 
         // WICHTIG: Verwende die Client-Version, die im Angebot gespeichert ist
         if ($offer->client_version_id) {
-            $client = Clients::where('id', $offer->client_version_id)->first();
+            $client = Clients::with('country')->where('id', $offer->client_version_id)->first();
         } else {
             // Fallback: Verwende aktuelle aktive Version (für alte Angebote ohne client_version_id)
             $userClient = Clients::find($clientId);
             $client = $userClient ? $userClient->getCurrentVersion() : null;
+            if ($client) {
+                $client->load('country');
+            }
         }
 
         // Sicherheitsprüfung: Client muss existieren
@@ -369,17 +373,21 @@ class PdfCreateController extends Controller
             ->where('invoices.id', $objectId)
             ->first('conditions.*');
 
-        $customer = Customer::join('invoices', 'customers.id', '=', 'invoices.customer_id')
+        $customer = Customer::with('countryRelation')->join('invoices', 'customers.id', '=', 'invoices.customer_id')
             ->where('invoices.id', '=', $objectId)
-            ->first('customers.*');
+            ->select('customers.*')
+            ->first();
 
         // WICHTIG: Verwende die Client-Version, die in der Rechnung gespeichert ist
         if ($invoice->client_version_id) {
-            $client = Clients::where('id', $invoice->client_version_id)->first();
+            $client = Clients::with('country')->where('id', $invoice->client_version_id)->first();
         } else {
             // Fallback: Verwende aktuelle aktive Version (für alte Rechnungen ohne client_version_id)
             $userClient = Clients::find($clientId);
             $client = $userClient ? $userClient->getCurrentVersion() : null;
+            if ($client) {
+                $client->load('country');
+            }
         }
 
         // Sicherheitsprüfung: Client muss existieren
@@ -832,7 +840,40 @@ class PdfCreateController extends Controller
         if ($customer->postalcode || $customer->location) {
             $html .= '<tr><td>' . htmlspecialchars($customer->postalcode) . ' ' . htmlspecialchars($customer->location) . '</td></tr>';
         }
-        if ($customer->country) $html .= '<tr><td>' . htmlspecialchars($customer->country) . '</td></tr>';
+        // Land nur anzeigen, wenn Client und Kunde unterschiedliche Länder haben
+        $clientCountryId = $client->country_id ?? null;
+        $customerCountryId = $customer->country_id ?? null;
+        $showCountry = false;
+        
+        // Wenn beide country_id haben, vergleiche sie - nur anzeigen wenn unterschiedlich
+        if ($customerCountryId && $clientCountryId) {
+            // Beide haben country_id - vergleiche sie
+            $showCountry = (int)$customerCountryId !== (int)$clientCountryId;
+        } elseif ($customerCountryId && !$clientCountryId) {
+            // Customer hat country_id, Client nicht - zeige an
+            $showCountry = true;
+        } elseif (!$customerCountryId && $clientCountryId) {
+            // Customer hat keine country_id, Client hat country_id
+            // Wenn Customer altes country-String-Feld hat, versuche zu vergleichen
+            if ($customer->country && $client->country && $client->country->name_de) {
+                // Vergleiche Namen
+                $showCountry = trim($customer->country) !== trim($client->country->name_de);
+            } else {
+                // Kann nicht verglichen werden, zeige nicht an (da Client country_id hat)
+                $showCountry = false;
+            }
+        } elseif (!$customerCountryId && !$clientCountryId) {
+            // Beide haben keine country_id - zeige nicht an
+            $showCountry = false;
+        }
+        
+        if ($showCountry) {
+            if ($customer->countryRelation && $customer->countryRelation->name_de) {
+                $html .= '<tr><td>' . htmlspecialchars($customer->countryRelation->name_de) . '</td></tr>';
+            } elseif ($customer->country) {
+                $html .= '<tr><td>' . htmlspecialchars($customer->country) . '</td></tr>';
+            }
+        }
         $html .= '</table></div>';
 
         // Operation Info (weiter nach unten verschoben)
@@ -961,8 +1002,79 @@ class PdfCreateController extends Controller
         // Steuerliche Hinweise
         if ($client->smallbusiness) {
             $html .= '<div style="margin-top: 20px; font-size: ' . $fontSizes['tax_notice'] . ';">Kleinunternehmer gem. § 6 Abs. 1 Z 27 UStG</div>';
-        } elseif ($reverseCharge) {
-            $html .= '<div style="margin-top: 20px; font-size: ' . $fontSizes['tax_notice'] . ';">Steuerschuldnerschaft des Leistungsempfängers gemäß § 19 Abs 1a UStG (Reverse Charge).</div>';
+        } else {
+            // Prüfe ob Reverse Charge angezeigt werden soll - abhängig vom Land des Kunden
+            $customerCountryIso = null;
+            // Lade Country explizit - immer neu laden um sicherzustellen dass es geladen ist
+            if ($customer->country_id) {
+                // Versuche zuerst die geladene Beziehung
+                if ($customer->countryRelation && $customer->countryRelation->iso_code) {
+                    $customerCountryIso = $customer->countryRelation->iso_code;
+                }
+                // Falls nicht geladen, lade explizit
+                if (!$customerCountryIso) {
+                    $customerCountry = \App\Models\Country::find($customer->country_id);
+                    if ($customerCountry) {
+                        $customerCountryIso = $customerCountry->iso_code;
+                    }
+                }
+            }
+            
+            // Prüfe Client-Land
+            $clientCountryIso = null;
+            // Lade Country explizit - immer neu laden um sicherzustellen dass es geladen ist
+            if ($client->country_id) {
+                // Versuche zuerst die geladene Beziehung
+                if ($client->country && $client->country->iso_code) {
+                    $clientCountryIso = $client->country->iso_code;
+                }
+                // Falls nicht geladen, lade explizit
+                if (!$clientCountryIso) {
+                    $clientCountry = \App\Models\Country::find($client->country_id);
+                    if ($clientCountry) {
+                        $clientCountryIso = $clientCountry->iso_code;
+                    }
+                }
+            }
+            
+            // Prüfe ob Reverse Charge angezeigt werden soll
+            // WICHTIG: IMMER zuerst basierend auf dem Land des Kunden prüfen!
+            $showReverseCharge = false;
+            $reverseChargeText = '';
+            
+            // Prüfe ob es grenzüberschreitend ist
+            $isCrossBorder = false;
+            if ($customerCountryIso && $clientCountryIso && $customerCountryIso !== $clientCountryIso) {
+                $isCrossBorder = true;
+            }
+            
+            // WICHTIG: Wenn Kunde ein Land hat, IMMER basierend auf Kundenland entscheiden
+            if ($customerCountryIso) {
+                // Grenzüberschreitend oder nicht - Text immer abhängig vom Land des Kunden
+                if ($isCrossBorder || $reverseCharge) {
+                    $showReverseCharge = true;
+                    
+                    if ($customerCountryIso === 'DE') {
+                        // Nach deutschem Recht - Kunde ist in Deutschland
+                        $reverseChargeText = 'Steuerschuldnerschaft des Leistungsempfängers (Reverse Charge) gemäß § 13b UStG.';
+                    } elseif ($customerCountryIso === 'AT') {
+                        // Nach österreichischem Recht - Kunde ist in Österreich
+                        $reverseChargeText = 'Steuerschuldnerschaft des Leistungsempfängers (Reverse Charge) gemäß § 19 UStG.';
+                    } else {
+                        // Für andere EU-Länder: Art. 196 MwSt-Richtlinie (EU-weit korrekt)
+                        $reverseChargeText = 'Steuerschuldnerschaft des Leistungsempfängers gemäß Art. 196 MwSt-Richtlinie (Reverse Charge).';
+                    }
+                }
+            } elseif ($reverseCharge) {
+                // Fallback: Wenn kein Kundenland vorhanden, aber reverse_charge Flag gesetzt
+                // Dann verwende die österreichische Formulierung
+                $showReverseCharge = true;
+                $reverseChargeText = 'Steuerschuldnerschaft des Leistungsempfängers (Reverse Charge) gemäß § 19 UStG.';
+            }
+            
+            if ($showReverseCharge && $reverseChargeText) {
+                $html .= '<div style="margin-top: 20px; font-size: ' . $fontSizes['tax_notice'] . ';">' . htmlspecialchars($reverseChargeText) . '</div>';
+            }
         }
 
         // Dokument-Fußzeile direkt unter dem Gesamtbetrag (Priorität: Rechnungs-Fußzeile)
@@ -1090,7 +1202,40 @@ class PdfCreateController extends Controller
         if ($customer->postalcode || $customer->location) {
             $html .= '<tr><td>' . htmlspecialchars($customer->postalcode) . ' ' . htmlspecialchars($customer->location) . '</td></tr>';
         }
-        if ($customer->country) $html .= '<tr><td>' . htmlspecialchars($customer->country) . '</td></tr>';
+        // Land nur anzeigen, wenn Client und Kunde unterschiedliche Länder haben
+        $clientCountryId = $client->country_id ?? null;
+        $customerCountryId = $customer->country_id ?? null;
+        $showCountry = false;
+        
+        // Wenn beide country_id haben, vergleiche sie - nur anzeigen wenn unterschiedlich
+        if ($customerCountryId && $clientCountryId) {
+            // Beide haben country_id - vergleiche sie
+            $showCountry = (int)$customerCountryId !== (int)$clientCountryId;
+        } elseif ($customerCountryId && !$clientCountryId) {
+            // Customer hat country_id, Client nicht - zeige an
+            $showCountry = true;
+        } elseif (!$customerCountryId && $clientCountryId) {
+            // Customer hat keine country_id, Client hat country_id
+            // Wenn Customer altes country-String-Feld hat, versuche zu vergleichen
+            if ($customer->country && $client->country && $client->country->name_de) {
+                // Vergleiche Namen
+                $showCountry = trim($customer->country) !== trim($client->country->name_de);
+            } else {
+                // Kann nicht verglichen werden, zeige nicht an (da Client country_id hat)
+                $showCountry = false;
+            }
+        } elseif (!$customerCountryId && !$clientCountryId) {
+            // Beide haben keine country_id - zeige nicht an
+            $showCountry = false;
+        }
+        
+        if ($showCountry) {
+            if ($customer->countryRelation && $customer->countryRelation->name_de) {
+                $html .= '<tr><td>' . htmlspecialchars($customer->countryRelation->name_de) . '</td></tr>';
+            } elseif ($customer->country) {
+                $html .= '<tr><td>' . htmlspecialchars($customer->country) . '</td></tr>';
+            }
+        }
         $html .= '</table></div>';
 
         // Operation Info

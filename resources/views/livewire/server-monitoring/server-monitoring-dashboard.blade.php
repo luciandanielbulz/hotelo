@@ -243,4 +243,87 @@
             </div>
         </div>
     </div>
+
+    <!-- Datenbank-Informationen -->
+    @if(isset($serverData['database']))
+    <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg border border-gray-200">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Datenbank-Informationen</h3>
+                @if($serverData['database']['connected'] ?? false)
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        <span class="w-1.5 h-1.5 mr-1.5 bg-green-400 rounded-full"></span>
+                        Verbunden
+                    </span>
+                @else
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        <span class="w-1.5 h-1.5 mr-1.5 bg-red-400 rounded-full"></span>
+                        Nicht verbunden
+                    </span>
+                @endif
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg p-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">Datenbank-Typ</h4>
+                    <p class="text-lg font-semibold text-gray-900">{{ $serverData['database']['driver'] ?? 'N/A' }}</p>
+                </div>
+                
+                <div class="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">Version</h4>
+                    <p class="text-lg font-semibold text-gray-900">{{ $serverData['database']['version'] ?? 'N/A' }}</p>
+                </div>
+                
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">Datenbank-Name</h4>
+                    <p class="text-lg font-semibold text-gray-900">{{ $serverData['database']['database_name'] ?? 'N/A' }}</p>
+                </div>
+                
+                <div class="bg-gradient-to-r from-orange-50 to-red-50 rounded-lg p-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">Tabellen</h4>
+                    <p class="text-lg font-semibold text-gray-900">{{ $serverData['database']['table_count'] ?? 0 }}</p>
+                </div>
+                
+                <div class="bg-gradient-to-r from-pink-50 to-rose-50 rounded-lg p-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">Datenbank-Größe</h4>
+                    <p class="text-lg font-semibold text-gray-900">{{ $serverData['database']['size_formatted'] ?? 'N/A' }}</p>
+                </div>
+                
+                @if(isset($serverData['database']['max_connections']) && $serverData['database']['max_connections'] !== null)
+                <div class="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg p-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">Verbindungen</h4>
+                    <p class="text-lg font-semibold text-gray-900">
+                        {{ $serverData['database']['current_connections'] ?? 0 }} / {{ $serverData['database']['max_connections'] }}
+                    </p>
+                    @if($serverData['database']['max_connections'] > 0)
+                        @php
+                            $connectionPercentage = ($serverData['database']['current_connections'] ?? 0) / $serverData['database']['max_connections'] * 100;
+                        @endphp
+                        <div class="mt-2 bg-gray-200 rounded-full h-2">
+                            <div class="bg-gradient-to-r from-yellow-500 to-amber-500 h-2 rounded-full" 
+                                 style="width: {{ min($connectionPercentage, 100) }}%"></div>
+                        </div>
+                    @endif
+                </div>
+                @endif
+            </div>
+            
+            @if(isset($serverData['database']['error']))
+            <div class="mt-4 bg-red-50 border border-red-200 rounded-lg p-4">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <h4 class="text-sm font-medium text-red-800">Fehler beim Abrufen der Datenbank-Informationen</h4>
+                        <p class="mt-1 text-sm text-red-700">{{ $serverData['database']['error'] }}</p>
+                    </div>
+                </div>
+            </div>
+            @endif
+        </div>
+    </div>
+    @endif
 </div> 

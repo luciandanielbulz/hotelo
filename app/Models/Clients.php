@@ -17,6 +17,7 @@ class Clients extends Model
         'address',
         'postalcode',
         'location',
+        'country_id',
         'email',
         'phone',
         'tax_id',
@@ -401,5 +402,13 @@ class Clients extends Model
             default:
                 return htmlspecialchars($value);
         }
+    }
+
+    /**
+     * Beziehung zum Land
+     */
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
     }
 }

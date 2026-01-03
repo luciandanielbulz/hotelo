@@ -19,6 +19,8 @@ class Positiontable extends Component
     public $viewMode = 'table'; // 'cards' oder 'table' - Standard: table für Desktop
     public $sortBy = 'newest'; // 'newest', 'oldest', 'number', 'customer'
     public $statusFilter = 'all'; // all, draft, open, sent, partial, paid, cancelled
+    public $sortField = 'number'; // 'number', 'customer', 'amount'
+    public $sortDirection = 'asc'; // 'asc' oder 'desc'
 
     public function boot()
     {
@@ -27,6 +29,10 @@ class Positiontable extends Component
 
     public function mount()
     {
+        // Standardmäßig nach Nummer absteigend sortieren
+        $this->sortField = 'number';
+        $this->sortDirection = 'desc';
+        
         // Prüfe Query-Parameter 'view' (wird von Navbar oder Sidebar gesetzt)
         $viewParam = request()->query('view');
         
@@ -64,6 +70,19 @@ class Positiontable extends Component
                 }
             }
         }
+    }
+    
+    public function sortByColumn($field)
+    {
+        if ($this->sortField === $field) {
+            // Wenn bereits nach diesem Feld sortiert, Richtung umkehren
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            // Neues Feld, standardmäßig aufsteigend sortieren
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
+        $this->resetPage();
     }
     
     public function setScreenWidth($width)
@@ -176,26 +195,6 @@ class Positiontable extends Component
                 }
             });
 
-        // Sortierung anwenden
-        switch ($this->sortBy) {
-            case 'oldest':
-                $query->orderBy('invoices.date', 'asc')
-                      ->orderBy('invoices.number', 'asc');
-                break;
-            case 'number':
-                $query->orderBy('invoices.number', 'asc');
-                break;
-            case 'customer':
-                $query->orderBy('customers.customername', 'asc')
-                      ->orderBy('customers.companyname', 'asc');
-                break;
-            case 'newest':
-            default:
-                $query->orderBy('invoices.date', 'desc')
-                      ->orderBy('invoices.number', 'desc');
-                break;
-        }
-
         $query->select(
                 'invoices.id as invoice_id',
                 'invoices.number',
@@ -207,7 +206,7 @@ class Positiontable extends Component
                 'customers.customername',
                 'customers.companyname',
                 DB::raw('latest_emails.latest_sentdate as sent_date'),
-                DB::raw('SUM(invoicepositions.amount * invoicepositions.price) as total_price')
+                DB::raw('COALESCE(SUM(invoicepositions.amount * invoicepositions.price), 0) as total_price')
             )
             ->groupBy(
                 'invoices.id',
@@ -221,6 +220,48 @@ class Positiontable extends Component
                 'customers.companyname',
                 'latest_emails.latest_sentdate'
             );
+
+        // Sortierung anwenden - zuerst nach Spalten-Sortierung, dann nach alter Sortierung
+        if ($this->viewMode === 'table') {
+            // In Tabellenansicht: Spalten-Sortierung verwenden
+            switch ($this->sortField) {
+                case 'number':
+                    $query->orderBy('invoices.number', $this->sortDirection);
+                    break;
+                case 'customer':
+                    $query->orderBy('customers.customername', $this->sortDirection)
+                          ->orderBy('customers.companyname', $this->sortDirection);
+                    break;
+                case 'amount':
+                    // Für aggregierte Felder muss die Sortierung nach GROUP BY erfolgen
+                    $query->orderBy(DB::raw('COALESCE(SUM(invoicepositions.amount * invoicepositions.price), 0)'), $this->sortDirection);
+                    break;
+                default:
+                    // Fallback: Nach Nummer sortieren
+                    $query->orderBy('invoices.number', 'asc');
+                    break;
+            }
+        } else {
+            // In Kartenansicht: Alte Sortierung verwenden
+            switch ($this->sortBy) {
+                case 'oldest':
+                    $query->orderBy('invoices.date', 'asc')
+                          ->orderBy('invoices.number', 'asc');
+                    break;
+                case 'number':
+                    $query->orderBy('invoices.number', 'asc');
+                    break;
+                case 'customer':
+                    $query->orderBy('customers.customername', 'asc')
+                          ->orderBy('customers.companyname', 'asc');
+                    break;
+                case 'newest':
+                default:
+                    $query->orderBy('invoices.date', 'desc')
+                          ->orderBy('invoices.number', 'desc');
+                    break;
+            }
+        }
 
         $invoices = $query->paginate($this->perPage);
         $invoices->appends(['search' => $search]);

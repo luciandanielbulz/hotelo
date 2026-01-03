@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ServerMonitoringController extends Controller
 {
@@ -33,6 +34,7 @@ class ServerMonitoringController extends Controller
             'uptime' => $this->getUptime(),
             'load_average' => $this->getLoadAverage(),
             'network' => $this->getNetworkStats(),
+            'database' => $this->getDatabaseInfo(),
             'timestamp' => now()->toISOString(),
         ];
 
@@ -296,6 +298,115 @@ class ServerMonitoringController extends Controller
             return [
                 'bytes_received' => $totalReceived,
                 'bytes_sent' => $totalSent
+            ];
+        }
+    }
+
+    /**
+     * Datenbank-Informationen abrufen
+     */
+    private function getDatabaseInfo()
+    {
+        try {
+            $connection = DB::connection();
+            $pdo = $connection->getPdo();
+            
+            // Datenbank-Name
+            $databaseName = $connection->getDatabaseName();
+            
+            // Datenbank-Version
+            $version = $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);
+            
+            // Verbindungsstatus
+            $connected = $pdo !== null;
+            
+            // Tabellenanzahl
+            $tableCount = 0;
+            try {
+                if ($driver === 'mysql' || $driver === 'mariadb') {
+                    $tables = DB::select("SHOW TABLES");
+                    $tableCount = count($tables);
+                } elseif ($driver === 'pgsql') {
+                    $tables = DB::select("SELECT tablename FROM pg_tables WHERE schemaname = 'public'");
+                    $tableCount = count($tables);
+                } elseif ($driver === 'sqlite') {
+                    $tables = DB::select("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
+                    $tableCount = count($tables);
+                } else {
+                    // Fallback: Versuche Schema zu verwenden
+                    $tables = DB::select("SELECT table_name FROM information_schema.tables WHERE table_schema = ?", [$databaseName]);
+                    $tableCount = count($tables);
+                }
+            } catch (\Exception $e) {
+                // Tabellenanzahl konnte nicht ermittelt werden
+            }
+            
+            // Datenbank-Größe (MySQL/MariaDB)
+            $size = 0;
+            $sizeFormatted = 'N/A';
+            
+            try {
+                $result = DB::select("SELECT 
+                    ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS size_mb
+                    FROM information_schema.tables 
+                    WHERE table_schema = ?", [$databaseName]);
+                
+                if (!empty($result) && isset($result[0]->size_mb)) {
+                    $size = (float)$result[0]->size_mb;
+                    $sizeFormatted = number_format($size, 2) . ' MB';
+                    
+                    if ($size > 1024) {
+                        $sizeFormatted = number_format($size / 1024, 2) . ' GB';
+                    }
+                }
+            } catch (\Exception $e) {
+                // Größenberechnung nicht möglich (z.B. SQLite)
+            }
+            
+            // Verbindungs-Typ
+            $driver = $connection->getDriverName();
+            
+            // Maximale Verbindungen (MySQL)
+            $maxConnections = null;
+            $currentConnections = null;
+            
+            try {
+                $maxResult = DB::select("SHOW VARIABLES LIKE 'max_connections'");
+                if (!empty($maxResult)) {
+                    $maxConnections = (int)$maxResult[0]->Value;
+                }
+                
+                $currentResult = DB::select("SHOW STATUS LIKE 'Threads_connected'");
+                if (!empty($currentResult)) {
+                    $currentConnections = (int)$currentResult[0]->Value;
+                }
+            } catch (\Exception $e) {
+                // Nicht verfügbar für alle Datenbanktypen
+            }
+            
+            return [
+                'connected' => $connected,
+                'driver' => ucfirst($driver),
+                'version' => $version,
+                'database_name' => $databaseName,
+                'table_count' => $tableCount,
+                'size_mb' => $size,
+                'size_formatted' => $sizeFormatted,
+                'max_connections' => $maxConnections,
+                'current_connections' => $currentConnections,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'connected' => false,
+                'driver' => 'Unknown',
+                'version' => 'N/A',
+                'database_name' => 'N/A',
+                'table_count' => 0,
+                'size_mb' => 0,
+                'size_formatted' => 'N/A',
+                'max_connections' => null,
+                'current_connections' => null,
+                'error' => $e->getMessage(),
             ];
         }
     }

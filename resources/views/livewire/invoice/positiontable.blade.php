@@ -217,9 +217,66 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50/50">
                         <tr>
-                            <th scope="col" class="py-4 pl-6 pr-3 text-left text-sm font-semibold text-gray-900">Rechnung</th>
-                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Kunde</th>
-                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Betrag</th>
+                            <th scope="col" class="py-4 pl-6 pr-3 text-left text-sm font-semibold text-gray-900">
+                                <button wire:click="sortByColumn('number')" class="flex items-center space-x-1 hover:text-blue-600 transition-colors">
+                                    <span>Rechnung</span>
+                                    @if($sortField === 'number')
+                                        @if($sortDirection === 'asc')
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                                            </svg>
+                                        @else
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                            </svg>
+                                        @endif
+                                    @else
+                                        <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+                                        </svg>
+                                    @endif
+                                </button>
+                            </th>
+                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
+                                <button wire:click="sortByColumn('customer')" class="flex items-center space-x-1 hover:text-blue-600 transition-colors">
+                                    <span>Kunde</span>
+                                    @if($sortField === 'customer')
+                                        @if($sortDirection === 'asc')
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                                            </svg>
+                                        @else
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                            </svg>
+                                        @endif
+                                    @else
+                                        <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+                                        </svg>
+                                    @endif
+                                </button>
+                            </th>
+                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
+                                <button wire:click="sortByColumn('amount')" class="flex items-center space-x-1 hover:text-blue-600 transition-colors">
+                                    <span>Betrag</span>
+                                    @if($sortField === 'amount')
+                                        @if($sortDirection === 'asc')
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
+                                            </svg>
+                                        @else
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                            </svg>
+                                        @endif
+                                    @else
+                                        <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+                                        </svg>
+                                    @endif
+                                </button>
+                            </th>
                             @if($statusFilter === 'all')
                                 <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
                             @endif
