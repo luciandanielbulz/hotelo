@@ -20,15 +20,37 @@ return new class extends Migration
         });
 
         // Daten von clients zu client_settings migrieren
-        DB::statement("
-            UPDATE client_settings cs
-            INNER JOIN clients c ON cs.client_id = c.id OR cs.client_id = c.parent_client_id
-            SET 
-                cs.invoice_prefix = c.invoice_prefix,
-                cs.offer_prefix = c.offer_prefix,
-                cs.max_upload_size = c.max_upload_size
-            WHERE c.is_active = 1
-        ");
+        // Prüfe welche Spalten in clients existieren und kopiere nur diese
+        $hasInvoicePrefix = Schema::hasColumn('clients', 'invoice_prefix');
+        $hasOfferPrefix = Schema::hasColumn('clients', 'offer_prefix');
+        $hasMaxUploadSize = Schema::hasColumn('clients', 'max_upload_size');
+
+        // Baue UPDATE-Statement dynamisch basierend auf vorhandenen Spalten
+        $setParts = [];
+        
+        if ($hasInvoicePrefix) {
+            $setParts[] = 'cs.invoice_prefix = c.invoice_prefix';
+        }
+        
+        if ($hasOfferPrefix) {
+            $setParts[] = 'cs.offer_prefix = c.offer_prefix';
+        }
+        
+        if ($hasMaxUploadSize) {
+            $setParts[] = 'cs.max_upload_size = c.max_upload_size';
+        }
+
+        // Nur ausführen, wenn mindestens eine Spalte existiert
+        if (!empty($setParts)) {
+            $setClause = implode(', ', $setParts);
+            
+            DB::statement("
+                UPDATE client_settings cs
+                INNER JOIN clients c ON cs.client_id = c.id OR cs.client_id = c.parent_client_id
+                SET {$setClause}
+                WHERE c.is_active = 1
+            ");
+        }
     }
 
     /**
