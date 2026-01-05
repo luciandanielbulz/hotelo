@@ -30,6 +30,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\VersionController;
 use App\Http\Controllers\ServerMonitoringController;
 use App\Http\Controllers\SeoController;
+use App\Http\Controllers\FeatureController;
+use App\Http\Controllers\ContactController;
 
 
 
@@ -55,7 +57,7 @@ Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('dashboard');
     }
-    return view('auth.login');
+    return view('welcome');
 });
 
 // Route für Client-Logos (muss VOR anderen Routen stehen, damit sie nicht überschrieben wird)
@@ -99,6 +101,19 @@ Route::get('/storage/logos/{filename}', function ($filename) {
 // SEO Routen
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('seo.sitemap');
 Route::get('/robots.txt', [SeoController::class, 'robots'])->name('seo.robots');
+
+// Feature-Detailseiten (öffentlich)
+Route::get('/features/rechnungen', [FeatureController::class, 'invoices'])->name('features.invoices');
+Route::get('/features/angebote', [FeatureController::class, 'offers'])->name('features.offers');
+Route::get('/features/kundenverwaltung', [FeatureController::class, 'customers'])->name('features.customers');
+Route::get('/features/pdfs', [FeatureController::class, 'pdfs'])->name('features.pdfs');
+Route::get('/features/versand', [FeatureController::class, 'sending'])->name('features.sending');
+Route::get('/features/analysen', [FeatureController::class, 'analytics'])->name('features.analytics');
+
+// Kontaktformular (öffentlich)
+Route::get('/angebot', [ContactController::class, 'show'])->name('contact.form');
+Route::post('/angebot', [ContactController::class, 'submit'])->name('contact.submit');
+Route::get('/angebot/danke', [ContactController::class, 'thankYou'])->name('contact.thank-you');
 
 /*
 |==========================================================================
