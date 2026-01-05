@@ -29,6 +29,7 @@ use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\VersionController;
 use App\Http\Controllers\ServerMonitoringController;
+use App\Http\Controllers\SeoController;
 
 
 
@@ -94,6 +95,10 @@ Route::get('/storage/logos/{filename}', function ($filename) {
         'Cache-Control' => 'public, max-age=31536000', // 1 Jahr Cache
     ]);
 })->name('logo.show')->where('filename', '.*');
+
+// SEO Routen
+Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('seo.sitemap');
+Route::get('/robots.txt', [SeoController::class, 'robots'])->name('seo.robots');
 
 /*
 |==========================================================================

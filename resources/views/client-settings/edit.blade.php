@@ -9,6 +9,10 @@
         <form method="POST" action="{{ route('client-settings.update') }}">
             @csrf
             @method('PUT')
+            
+            @if(isset($returnTo) && $returnTo)
+                <input type="hidden" name="return_to" value="{{ $returnTo }}">
+            @endif
 
             <div class="bg-white shadow overflow-hidden sm:rounded-lg">
                 <div class="px-4 py-5 sm:p-6">

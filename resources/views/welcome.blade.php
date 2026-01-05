@@ -4,7 +4,28 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>quickBill</title>
+        @php
+            $seoData = [
+                'title' => 'quickBill - Rechnungsverwaltung einfach gemacht',
+                'description' => 'quickBill ist eine benutzerfreundliche Lösung zur mühelosen Verwaltung Ihrer Rechnungen. Erstellen, verfolgen und versenden Sie Rechnungen schnell und einfach - alles an einem Ort.',
+                'keywords' => 'Rechnungsverwaltung, Rechnung erstellen, Rechnung verwalten, Rechnungssoftware, quickBill, KMU-Office, Venditio',
+                'image' => asset('logo/quickBill-Logo-alone.png'),
+            ];
+            
+            $structuredData = [
+                \App\Helpers\SeoHelper::organizationStructuredData(),
+                \App\Helpers\SeoHelper::structuredData([
+                    'name' => 'quickBill',
+                    'description' => $seoData['description'],
+                    'url' => config('app.url'),
+                ]),
+            ];
+        @endphp
+        
+        <title>{{ $seoData['title'] }}</title>
+        
+        {{-- SEO Meta-Tags --}}
+        <x-seo-meta :seoData="$seoData" :canonicalUrl="url()->current()" :structuredData="$structuredData" />
 
         <!-- Favicon -->
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v={{ file_exists(public_path('favicon.ico')) ? filemtime(public_path('favicon.ico')) : time() }}&t={{ time() }}">

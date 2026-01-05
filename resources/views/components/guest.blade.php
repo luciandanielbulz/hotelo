@@ -5,7 +5,24 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        @php
+            $seoData = $seoData ?? [];
+            $pageTitle = isset($seoData['title']) && !empty($seoData['title']) 
+                ? $seoData['title'] . ' - ' . config('app.name', 'Laravel')
+                : config('app.name', 'Laravel');
+            $seoData['title'] = $pageTitle;
+            $structuredData = $structuredData ?? [];
+            
+            // Füge Standard-Organisation hinzu, wenn nicht vorhanden
+            if (empty($structuredData)) {
+                $structuredData[] = \App\Helpers\SeoHelper::organizationStructuredData();
+            }
+        @endphp
+        
+        <title>{{ $pageTitle }}</title>
+        
+        {{-- SEO Meta-Tags --}}
+        <x-seo-meta :seoData="$seoData" :canonicalUrl="$canonicalUrl ?? url()->current()" :structuredData="$structuredData" />
 
         <!-- Favicon -->
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v={{ file_exists(public_path('favicon.ico')) ? filemtime(public_path('favicon.ico')) : time() }}&t={{ time() }}">

@@ -14,7 +14,7 @@ class ClientSettingsController extends Controller
     /**
      * Zeigt die statischen Einstellungen des aktuellen Clients
      */
-    public function edit()
+    public function edit(Request $request)
     {
         $user = Auth::user();
         $clientId = $user->client_id;
@@ -51,7 +51,17 @@ class ClientSettingsController extends Controller
             ]);
         }
         
-        return view('client-settings.edit', compact('clientSettings', 'client'));
+        // Bestimme die Rückkehr-URL (return_to Parameter oder Referrer)
+        $returnTo = $request->get('return_to');
+        if (!$returnTo && $request->header('referer')) {
+            $referer = $request->header('referer');
+            // Prüfe, ob der Referrer die my-client-settings Seite ist
+            if (str_contains($referer, '/my-client-settings')) {
+                $returnTo = route('clients.my-settings');
+            }
+        }
+        
+        return view('client-settings.edit', compact('clientSettings', 'client', 'returnTo'));
     }
     
     /**
@@ -106,7 +116,21 @@ class ClientSettingsController extends Controller
             
             DB::commit();
             
-            return redirect()->route('client-settings.edit')
+            // Bestimme die Rückkehr-URL
+            $returnTo = $request->get('return_to');
+            
+            // Wenn kein return_to Parameter vorhanden ist, prüfe den Referrer
+            if (!$returnTo && $request->header('referer')) {
+                $referer = $request->header('referer');
+                if (str_contains($referer, '/my-client-settings')) {
+                    $returnTo = route('clients.my-settings');
+                }
+            }
+            
+            // Leite zur entsprechenden Seite weiter
+            $redirectRoute = $returnTo ?: route('client-settings.edit');
+            
+            return redirect($redirectRoute)
                            ->with('success', 'Statische Einstellungen wurden erfolgreich aktualisiert.');
                            
         } catch (\Exception $e) {
