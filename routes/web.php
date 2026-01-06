@@ -32,6 +32,7 @@ use App\Http\Controllers\ServerMonitoringController;
 use App\Http\Controllers\SeoController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DunningController;
 
 
 
@@ -259,6 +260,21 @@ Route::middleware(['auth','verified'])->group(function(){
         ->middleware('permission:view_messages');
 
     Route::resource('invoice',InvoiceController::class);
+
+    /*
+    |--------------------------------------------------------------------------
+    | MAHNWESEN
+    |--------------------------------------------------------------------------
+    | - Übersicht offener Posten / Mahnungen
+    | - Geschützt über das Recht "view_dunning"
+    */
+    Route::get('/dunning', [DunningController::class, 'index'])
+        ->name('dunning.index')
+        ->middleware('permission:view_dunning');
+    
+    Route::post('/dunning/process', [DunningController::class, 'process'])
+        ->name('dunning.process')
+        ->middleware('permission:process_dunning');
 
     /*Rechnungs-Positionen*/
     Route::resource('invoiceposition', InvoicepositionController::class);

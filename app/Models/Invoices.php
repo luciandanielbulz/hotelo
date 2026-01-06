@@ -23,6 +23,9 @@ class Invoices extends Model
         'status',
         'created_by',
         'client_version_id',
+        'dunning_stage',
+        'due_date',
+        'dunning_stage_date',
     ];
 
     public function invoicePositions()
@@ -44,5 +47,13 @@ class Invoices extends Model
     public function clientVersion()
     {
         return $this->belongsTo(Clients::class, 'client_version_id');
+    }
+
+    /**
+     * Beziehung zur Condition
+     */
+    public function condition()
+    {
+        return $this->belongsTo(Condition::class, 'condition_id');
     }
 }

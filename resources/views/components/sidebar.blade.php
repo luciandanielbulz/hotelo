@@ -95,6 +95,19 @@
                         </li>
                     @endif
 
+                    @if($user && $user->hasPermission('view_dunning'))
+                        <!-- Mahnwesen -->
+                        <li>
+                            <a href="{{ route('dunning.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold {{ request()->routeIs('dunning.index') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                <!-- SVG Icon (Warn-/Glockensymbol) -->
+                                <svg class="h-6 w-6 shrink-0 {{ request()->routeIs('dunning.index') ? 'text-gray-700' : 'text-gray-500 group-hover:text-gray-900' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m0 3.75h.007v.008H12v-.008zm9-3.75a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Mahnwesen
+                            </a>
+                        </li>
+                    @endif
+
                     @if($user && $user->hasPermission('view_sales_analysis'))
                         <!-- Umsatzauswertung Dropdown -->
                         <li>

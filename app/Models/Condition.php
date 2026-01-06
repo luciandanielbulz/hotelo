@@ -11,7 +11,14 @@ class Condition extends Model
     use HasFactory, SoftDeletes;
 
 
-    protected $fillable = ['conditionname', 'client_id'];
+    protected $fillable = [
+        'conditionname', 
+        'client_id',
+        'dunning_reminder_days',
+        'dunning_first_stage_days',
+        'dunning_second_stage_days',
+        'dunning_third_stage_days'
+    ];
 
     public $timestamps = true;
 

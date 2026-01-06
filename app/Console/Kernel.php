@@ -13,6 +13,14 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('inspire')->hourly();
+        
+        // Täglich Mahnwesen verarbeiten (um 2 Uhr morgens) - für alle Clients
+        $schedule->call(function () {
+            $clients = \App\Models\Clients::whereNull('parent_client_id')->get(); // Nur Haupt-Clients
+            foreach ($clients as $client) {
+                \App\Jobs\ProcessDunningInvoices::dispatch($client->id);
+            }
+        })->dailyAt('02:00');
     }
 
     /**

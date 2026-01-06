@@ -46,12 +46,20 @@ class ConditionController extends Controller
 
         $request->validate([
             'conditionname' => 'required|string|max:255',
+            'dunning_reminder_days' => 'nullable|integer|min:0',
+            'dunning_first_stage_days' => 'nullable|integer|min:0',
+            'dunning_second_stage_days' => 'nullable|integer|min:0',
+            'dunning_third_stage_days' => 'nullable|integer|min:0',
         ]);
 
         // Client_id automatisch setzen basierend auf dem eingeloggten User
         Condition::create([
             'conditionname' => $request->conditionname,
             'client_id' => $clientId,
+            'dunning_reminder_days' => $request->dunning_reminder_days ?? 0,
+            'dunning_first_stage_days' => $request->dunning_first_stage_days ?? 0,
+            'dunning_second_stage_days' => $request->dunning_second_stage_days ?? 0,
+            'dunning_third_stage_days' => $request->dunning_third_stage_days ?? 0,
         ]);
 
         return redirect()->route('condition.index')->with('success', 'Bedingung erfolgreich erstellt!');
@@ -103,10 +111,18 @@ class ConditionController extends Controller
 
         $request->validate([
             'conditionname' => 'required|string|max:255',
+            'dunning_reminder_days' => 'nullable|integer|min:0',
+            'dunning_first_stage_days' => 'nullable|integer|min:0',
+            'dunning_second_stage_days' => 'nullable|integer|min:0',
+            'dunning_third_stage_days' => 'nullable|integer|min:0',
         ]);
 
         $dbwirte = $condition->update([
             'conditionname' => $request->conditionname,
+            'dunning_reminder_days' => $request->dunning_reminder_days ?? 0,
+            'dunning_first_stage_days' => $request->dunning_first_stage_days ?? 0,
+            'dunning_second_stage_days' => $request->dunning_second_stage_days ?? 0,
+            'dunning_third_stage_days' => $request->dunning_third_stage_days ?? 0,
         ]);
 
         return redirect()->route('condition.index')->with('success', 'Bedingung erfolgreich aktualisiert!');

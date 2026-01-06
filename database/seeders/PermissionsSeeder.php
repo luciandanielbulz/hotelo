@@ -43,6 +43,8 @@ class PermissionsSeeder extends Seeder
             // Analysen & Berichte
             'Analysen & Berichte' => [
                 'view_sales_analysis' => 'Analyse des Umsatzes sehen',
+                'view_dunning' => 'Mahnwesen anzeigen',
+                'process_dunning' => 'Mahnwesen-Verarbeitung manuell starten',
             ],
 
             // Benutzerverwaltung
