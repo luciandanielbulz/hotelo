@@ -43,8 +43,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
                     <div class="flex items-center space-x-3">
-                        <img src="{{ asset('logo/quickBill-Logo-alone.png') }}" alt="quickBill" class="h-10 w-auto">
-                        <h1 class="text-2xl font-bold text-gray-900 hover:text-blue-900 transition-colors">quickBill</h1>
+                        <img src="{{ asset('logo/quickBill HauptLogo2.png') }}" alt="quickBill" class="h-10 w-auto">
                     </div>
                     <div class="flex items-center space-x-4">
                     @auth
