@@ -6,7 +6,7 @@
         </div>
         <div class="mt-4 sm:ml-auto sm:mt-0 sm:flex-none space-x-2">
             <a href="{{ route('condition.trashed') }}" class="inline-block rounded-md bg-gray-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">📁 Papierkorb</a>
-            <a href="{{ route('condition.create') }}" class="inline-block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">+ Neue Bedingung</a>
+            <a href="{{ route('condition.create') }}" class="inline-block rounded-md bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 px-3 py-2 text-white hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">+ Neue Bedingung</a>
         </div>
     </div>
 
@@ -52,7 +52,7 @@
                                             {{ optional($condition->created_at)->format('d.m.Y') ?? '-' }}
                                         </td>
                                         <td class="whitespace-nowrap px-3 py-4 text-right text-sm">
-                                            <a href="{{ route('condition.show', $condition->id) }}" class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 mr-2">Anzeigen</a>
+                                            <a href="{{ route('condition.show', $condition->id) }}" class="rounded-md bg-blue-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800 mr-2">Anzeigen</a>
                                             <a href="{{ route('condition.edit', $condition->id) }}" class="rounded-md bg-gray-300 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-200 mr-2">Bearbeiten</a>
                                             <form action="{{ route('condition.destroy', $condition->id) }}" method="POST" style="display:inline-block;" onsubmit="console.log('Form submitted for condition ID:', {{ $condition->id }}); return confirm('Bist du sicher, dass du diese Bedingung löschen möchtest?');">
                                                 @csrf

@@ -19,14 +19,14 @@
                     <input wire:model.live="search" 
                            type="text" 
                            placeholder="E-Mails, Kunden, Nummer oder E-Mail-Adresse suchen..." 
-                           class="block w-full pl-10 pr-3 py-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-gray-900 placeholder-gray-500">
+                           class="block w-full pl-10 pr-3 py-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-700 shadow-sm text-gray-900 placeholder-gray-500">
                 </div>
             </div>
             
             <!-- Typ-Filter -->
             <div>
                 <select wire:model.live="typeFilter" 
-                        class="block w-full py-3 px-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-gray-900">
+                        class="block w-full py-3 px-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-700 shadow-sm text-gray-900">
                     <option value="all">Alle Typen</option>
                     <option value="invoice">Nur Rechnungen</option>
                     <option value="offer">Nur Angebote</option>
@@ -36,7 +36,7 @@
             <!-- Sortierung -->
             <div>
                 <select wire:model.live="sortBy" 
-                        class="block w-full py-3 px-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-gray-900">
+                        class="block w-full py-3 px-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-700 shadow-sm text-gray-900">
                     <option value="newest">Neueste zuerst</option>
                     <option value="oldest">Älteste zuerst</option>
                     <option value="customer">Nach Kunde</option>
@@ -117,7 +117,7 @@
                             $typeClass = $row->type == 1 ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800';
                             // Farben für Nummer: Blau für Rechnungen, Grün für Angebote
                             $numberColorClass = $row->type == 1 
-                                ? 'bg-blue-500 hover:bg-blue-600' 
+                                ? 'bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300' 
                                 : 'bg-green-500 hover:bg-green-600';
                             $fileLink = $row->filename;
                             $customerName = $row->customername ?: $row->companyname;

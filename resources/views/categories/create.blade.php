@@ -57,7 +57,7 @@
                                        name="name" 
                                        id="name"
                                        value="{{ old('name') }}"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                                        placeholder="z.B. Büromaterial"
                                        required>
                                 @error('name')
@@ -71,7 +71,7 @@
                                 <textarea name="description" 
                                           id="description"
                                           rows="4"
-                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                                           placeholder="Optionale Beschreibung für diese Kategorie...">{{ old('description') }}</textarea>
                                 @error('description')
                                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -87,7 +87,7 @@
                                 <textarea name="keywords" 
                                           id="keywords"
                                           rows="3"
-                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                                           placeholder="z.B. büro, computer, laptop, monitor">{{ old('keywords') }}</textarea>
                                 <p class="mt-1 text-xs text-gray-600">
                                     Diese Keywords werden für die automatische Kategorisierung von Bankdaten verwendet. 
@@ -109,7 +109,7 @@
                                            name="color" 
                                            id="color"
                                            value="{{ old('color', '#6366f1') }}"
-                                           class="w-16 h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                                           class="w-16 h-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 cursor-pointer">
                                     <div class="flex-1">
                                         <input type="text" 
                                                id="color_preview" 
@@ -128,7 +128,7 @@
                                 <label for="type" class="block text-sm font-bold text-blue-700 mb-2">Typ</label>
                                 <select name="type" 
                                         id="type"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent">
                                     <option value="expense" {{ old('type', 'expense') == 'expense' ? 'selected' : '' }}>Ausgaben</option>
                                     <option value="income" {{ old('type', 'expense') == 'income' ? 'selected' : '' }}>Einnahmen</option>
                                 </select>
@@ -146,7 +146,7 @@
                                        value="{{ old('billing_duration_years', '1') }}"
                                        min="1"
                                        max="50"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                                        placeholder="1">
                                 @error('billing_duration_years')
                                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -163,7 +163,7 @@
                                        min="0"
                                        max="1000"
                                        step="0.01"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                                        placeholder="100.00">
                                 @error('percentage')
                                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
@@ -175,7 +175,7 @@
                                 <label for="is_active" class="block text-sm font-bold text-blue-700 mb-2">Status</label>
                                 <select name="is_active" 
                                         id="is_active"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent">
                                     <option value="1" {{ old('is_active', '1') == '1' ? 'selected' : '' }}>Aktiv</option>
                                     <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Inaktiv</option>
                                 </select>
@@ -208,14 +208,14 @@
                     <!-- Action Buttons -->
                     <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
                         <a href="{{ route('categories.index') }}"
-                           class="px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                           class="px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                             <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
                             Abbrechen
                         </a>
                         <button type="submit"
-                                class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-800 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                             <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>

@@ -5,7 +5,7 @@
             <p class="mt-2 text-sm text-gray-700">Detailansicht der Bedingung "{{ $condition->conditionname }}"</p>
         </div>
         <div class="mt-4 sm:ml-auto sm:mt-0 sm:flex-none">
-            <a href="{{ route('condition.edit', $condition->id) }}" class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Bearbeiten</a>
+            <a href="{{ route('condition.edit', $condition->id) }}" class="block rounded-md bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 px-3 py-2 text-white hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Bearbeiten</a>
         </div>
     </div>
 
@@ -48,7 +48,7 @@
         </div>
 
         <div class="mt-6 flex items-center gap-x-3">
-            <a href="{{ route('condition.edit', $condition->id) }}" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            <a href="{{ route('condition.edit', $condition->id) }}" class="rounded-md bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 px-3 py-2 text-white hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 Bearbeiten
             </a>
             <form action="{{ route('condition.destroy', $condition->id) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Bist du sicher, dass du diese Bedingung löschen möchtest?');">

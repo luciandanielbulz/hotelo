@@ -6,13 +6,13 @@
                 <p class="mt-2 text-sm text-gray-700">Erstellen Sie detaillierte Berichte über Ihre Umsätze, Einnahmen und Ausgaben mit vollständiger Aufschlüsselung</p>
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none space-x-2">
-                <button onclick="exportReport()" class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button onclick="exportReport()" class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
                     Export PDF
                 </button>
-                <button onclick="showDetailedBreakdown()" class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button onclick="showDetailedBreakdown()" class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                     </svg>
@@ -28,7 +28,7 @@
                 <!-- Zeitraum -->
                 <div>
                     <label for="year" class="block text-sm font-medium text-gray-700 mb-1">Jahr</label>
-                    <select id="year" name="year" class="w-full rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <select id="year" name="year" class="w-full rounded-md border-gray-300 text-sm focus:border-blue-900 focus:ring-blue-700">
                         <option value="">Alle Jahre</option>
                         @foreach($availableYears as $year)
                             <option value="{{ $year }}" {{ $selectedYear == $year ? 'selected' : '' }}>{{ $year }}</option>
@@ -39,7 +39,7 @@
                 <!-- Berichtstyp -->
                 <div>
                     <label for="report_type" class="block text-sm font-medium text-gray-700 mb-1">Berichtstyp</label>
-                    <select id="report_type" name="report_type" class="w-full rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <select id="report_type" name="report_type" class="w-full rounded-md border-gray-300 text-sm focus:border-blue-900 focus:ring-blue-700">
                         <option value="summary">Zusammenfassung</option>
                         <option value="detailed">Detailliert</option>
                         <option value="category_breakdown">Kategorie-Aufschlüsselung</option>
@@ -49,7 +49,7 @@
                 <!-- Gruppierung -->
                 <div>
                     <label for="grouping" class="block text-sm font-medium text-gray-700 mb-1">Gruppierung</label>
-                    <select id="grouping" name="grouping" class="w-full rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <select id="grouping" name="grouping" class="w-full rounded-md border-gray-300 text-sm focus:border-blue-900 focus:ring-blue-700">
                         <option value="year" {{ request('grouping', 'year') == 'year' ? 'selected' : '' }}>Nach Jahr</option>
                         <option value="month" {{ request('grouping') == 'month' ? 'selected' : '' }}>Nach Monat</option>
                         <option value="category" {{ request('grouping') == 'category' ? 'selected' : '' }}>Nach Kategorie</option>
@@ -58,7 +58,7 @@
 
                 <!-- Ausführen Button -->
                 <div class="flex items-end">
-                    <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300">
                         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
@@ -145,7 +145,7 @@
                                             {{ number_format($categorizedProfit, 2, ',', '.') }} €
                                         </td>
                                         <td class="whitespace-nowrap px-3 py-4 text-center text-sm">
-                                            <button onclick="showYearDetails('{{ $grouping == 'month' ? $salesposition->Jahr . '-' . $salesposition->Monat : ($grouping == 'category' ? $salesposition->Kategorie : $salesposition->Jahr) }}')" class="text-indigo-600 hover:text-indigo-900 text-xs">
+                                            <button onclick="showYearDetails('{{ $grouping == 'month' ? $salesposition->Jahr . '-' . $salesposition->Monat : ($grouping == 'category' ? $salesposition->Kategorie : $salesposition->Jahr) }}')" class="text-blue-900 hover:text-indigo-900 text-xs">
                                                 <svg class="w-4 h-4 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>

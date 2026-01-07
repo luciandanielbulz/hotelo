@@ -11,14 +11,14 @@
                 </div>
                 <input type="text" 
                        wire:model.live="search" 
-                       class="block w-full rounded-lg border-gray-300 bg-white py-2 pl-10 pr-4 text-sm shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                       class="block w-full rounded-lg border-gray-300 bg-white py-2 pl-10 pr-4 text-sm shadow-sm focus:border-blue-900 focus:ring-1 focus:ring-blue-700"
                        placeholder="Kategorien suchen...">
             </div>
 
             <!-- Status Filter -->
             <div class="relative">
                 <select wire:model.live="filterActive" 
-                        class="rounded-lg border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500">
+                        class="rounded-lg border-gray-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-blue-900 focus:ring-1 focus:ring-blue-700">
                     <option value="all">Alle Status</option>
                     <option value="active">Aktiv</option>
                     <option value="inactive">Inaktiv</option>

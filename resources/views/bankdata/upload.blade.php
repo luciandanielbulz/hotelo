@@ -26,18 +26,18 @@
         <div class="sm:col-span-6 space-y-6">
             <div>
                 <label for="json_file" class="block text-sm font-bold text-gray-800 mb-2">Wähle eine JSON-Datei:</label>
-                <input class="block w-full rounded-md bg-white px-3 py-2.5 text-base font-medium text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200" type="file" name="json_file" id="json_file" accept=".json" required>
+                <input class="block w-full rounded-md bg-white px-3 py-2.5 text-base font-medium text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900 shadow-md hover:shadow-lg transition-all duration-200" type="file" name="json_file" id="json_file" accept=".json" required>
             </div>
 
             <div>
                 <label for="auto_detect_type" class="block text-sm font-bold text-gray-800 mb-2">Automatische Einnahmen/Ausgaben-Erkennung:</label>
                 <div class="space-y-2">
                     <label class="flex items-center">
-                        <input type="radio" name="auto_detect_type" value="auto" checked class="mr-2 text-indigo-600 focus:ring-indigo-500">
+                        <input type="radio" name="auto_detect_type" value="auto" checked class="mr-2 text-blue-900 focus:ring-blue-700">
                         <span class="text-sm text-gray-700">Automatisch (positiv = Einnahmen, negativ = Ausgaben)</span>
                     </label>
                     <label class="flex items-center">
-                        <input type="radio" name="auto_detect_type" value="manual" class="mr-2 text-indigo-600 focus:ring-indigo-500">
+                        <input type="radio" name="auto_detect_type" value="manual" class="mr-2 text-blue-900 focus:ring-blue-700">
                         <span class="text-sm text-gray-700">Manuell auswählen</span>
                     </label>
                 </div>
@@ -45,7 +45,7 @@
 
             <div id="manual_type_selection" class="hidden">
                 <label for="default_type" class="block text-sm font-bold text-gray-800 mb-2">Standard-Typ für alle Transaktionen:</label>
-                <select name="default_type" id="default_type" class="block w-full rounded-md bg-white px-3 py-2.5 text-base font-medium text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600">
+                <select name="default_type" id="default_type" class="block w-full rounded-md bg-white px-3 py-2.5 text-base font-medium text-gray-900 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900">
                     <option value="expense">Ausgaben</option>
                     <option value="income">Einnahmen</option>
                 </select>
@@ -53,13 +53,13 @@
 
             <div>
                 <label class="flex items-center">
-                    <input type="checkbox" name="overwrite_duplicates" value="1" class="mr-2 text-indigo-600 focus:ring-indigo-500">
+                    <input type="checkbox" name="overwrite_duplicates" value="1" class="mr-2 text-blue-900 focus:ring-blue-700">
                     <span class="text-sm text-gray-700">Bestehende Einträge überschreiben (Duplikate löschen)</span>
                 </label>
                 <p class="mt-1 text-xs text-gray-500">Aktivieren Sie diese Option, um bestehende Einträge mit gleicher Referenznummer zu überschreiben.</p>
             </div>
 
-            <button class="mt-4 inline-flex items-center px-6 py-3 bg-indigo-600 border border-transparent rounded-lg font-semibold text-sm text-white shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 hover:shadow-xl transition-all duration-300" type="submit">Hochladen</button>
+            <button class="mt-4 inline-flex items-center px-6 py-3 bg-blue-900 border border-transparent rounded-lg font-semibold text-sm text-white shadow-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:ring-offset-2 hover:shadow-xl transition-all duration-300" type="submit">Hochladen</button>
         </div>
     </form>
 

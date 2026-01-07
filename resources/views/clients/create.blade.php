@@ -225,7 +225,7 @@
             <!-- Schaltflächen -->
             <div class="flex items-center justify-end gap-x-6  px-4 py-4 sm:px-8">
                 <a href="{{ route('clients.index') }}" class="text-sm font-semibold text-gray-900">Abbrechen</a>
-                <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-indigo-600">
+                <button type="submit" class="rounded-md bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 px-3 py-2 text-white hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-indigo-600">
                     Änderungen speichern
                 </button>
             </div>

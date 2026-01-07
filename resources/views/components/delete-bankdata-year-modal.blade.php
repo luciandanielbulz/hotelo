@@ -24,7 +24,7 @@
                 id="delete_type" 
                 name="type" 
                 required
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
                 <option value="">Bitte wählen...</option>
                 <option value="income">Einnahmen</option>
                 <option value="expense">Ausgaben</option>
@@ -40,7 +40,7 @@
                 id="delete_year" 
                 name="year" 
                 required
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
                 <option value="">Bitte wählen...</option>
                 @foreach($availableYears as $year)
                     <option value="{{ $year }}">{{ $year }}</option>

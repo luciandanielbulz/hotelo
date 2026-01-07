@@ -7,7 +7,7 @@
                 Beschreibung ändern
             </label>
             <input type="text" name="description" id="description" wire:model.lazy="description"  
-                   class="block w-full py-3 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium placeholder-gray-600"
+                   class="block w-full py-3 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium placeholder-gray-600"
                    placeholder="Kurze Beschreibung des Angebots"/>
         </div>
 

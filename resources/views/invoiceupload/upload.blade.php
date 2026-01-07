@@ -75,7 +75,7 @@
                             <label for="description" class="block text-sm font-medium text-gray-700">Beschreibung</label>
                             <div class="mt-1">
                                 <textarea name="description" id="description" rows="3"
-                                          class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 outline outline-1 -outline-offset-1 outline-gray-300">{{ old('description') }}</textarea>
+                                          class="block w-full shadow-sm sm:text-sm border-gray-300 rounded-md focus:ring-blue-700 focus:border-blue-900 outline outline-1 -outline-offset-1 outline-gray-300">{{ old('description') }}</textarea>
                             </div>
                         </div>
                         <div class="sm:col-span-2">
@@ -83,17 +83,17 @@
                             <div class="mt-1">
                                 <input type="text" name="invoice_number" id="invoice_number"
                                        value="{{ old('invoice_number') }}"
-                                       class="block w-full rounded-md bg-white px-3 py-2.5 text-base font-medium text-gray-900 border border-gray-300 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 shadow-md hover:shadow-lg transition-all duration-200">
+                                       class="block w-full rounded-md bg-white px-3 py-2.5 text-base font-medium text-gray-900 border border-gray-300 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-blue-900 shadow-md hover:shadow-lg transition-all duration-200">
                             </div>
                         </div>
                     </div>
                     <div class="mt-5 flex justify-end space-x-3">
                         <a href="{{ route('invoiceupload.upload.create') }}"
-                           class="inline-flex items-center px-6 py-3 bg-white border-2 border-gray-400 rounded-lg font-semibold text-sm text-gray-800 shadow-md hover:bg-gray-100 hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 hover:shadow-lg transition-all duration-300">
+                           class="inline-flex items-center px-6 py-3 bg-white border-2 border-gray-400 rounded-lg font-semibold text-sm text-gray-800 shadow-md hover:bg-gray-100 hover:border-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 hover:shadow-lg transition-all duration-300">
                             Abbrechen
                         </a>
                         <button type="submit"
-                                class="inline-flex items-center px-6 py-3 bg-indigo-600 border border-transparent rounded-lg font-semibold text-sm text-white shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 hover:shadow-xl transition-all duration-300">
+                                class="inline-flex items-center px-6 py-3 bg-blue-900 border border-transparent rounded-lg font-semibold text-sm text-white shadow-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 hover:shadow-xl transition-all duration-300">
                             Hochladen
                         </button>
                     </div>

@@ -16,7 +16,7 @@
                 {{ $autoRefresh ? 'Auto-Refresh aus' : 'Auto-Refresh an' }}
             </button>
             <button wire:click="loadServerData" 
-                    class="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-xs rounded-md hover:bg-blue-700 transition-colors">
+                    class="inline-flex items-center px-3 py-1 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white text-xs rounded-md hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-lg hover:scale-105 active:scale-95 transition-all duration-300">
                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>

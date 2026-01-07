@@ -55,7 +55,7 @@
                         </dt>
                         <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                             @if($invoice->filepath)
-                                <a href="{{ Storage::url($invoice->filepath) }}" target="_blank" class="text-indigo-600 hover:text-indigo-900">
+                                <a href="{{ Storage::url($invoice->filepath) }}" target="_blank" class="text-blue-900 hover:text-indigo-900">
                                     Rechnung als PDF anzeigen
                                 </a>
                             @else
@@ -68,7 +68,7 @@
         </div>
 
         <div class="mt-6">
-            <a href="{{ route('invoiceupload.index') }}" class="text-sm font-semibold text-indigo-600 hover:text-indigo-900">
+            <a href="{{ route('invoiceupload.index') }}" class="text-sm font-semibold text-blue-900 hover:text-indigo-900">
                 &larr; Zurück zur Übersicht
             </a>
         </div>

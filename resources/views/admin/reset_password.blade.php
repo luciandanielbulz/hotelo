@@ -83,7 +83,7 @@
                     <!-- Absenden -->
                     <div>
                         <button type="submit"
-                            class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                            class="flex w-full justify-center rounded-md bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 transition-all duration-300">
                             Passwort zurücksetzen
                         </button>
                     </div>

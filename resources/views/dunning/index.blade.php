@@ -50,7 +50,7 @@
                 <form action="{{ route('dunning.process') }}" method="POST" class="inline">
                     @csrf
                     <button type="submit" 
-                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                         </svg>
@@ -164,13 +164,13 @@
                        id="search" 
                        value="{{ $search }}" 
                        placeholder="Rechnungsnummer oder Kunde..."
-                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
             </div>
             <div class="sm:w-48">
                 <label for="stage" class="block text-sm font-medium text-gray-700 mb-2">Mahnstufe</label>
                 <select name="stage" 
                         id="stage" 
-                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
                     <option value="all" {{ $stage === 'all' ? 'selected' : '' }}>Alle</option>
                     <option value="1" {{ $stage === '1' ? 'selected' : '' }}>Erinnerung</option>
                     <option value="2" {{ $stage === '2' ? 'selected' : '' }}>1. Mahnung</option>
@@ -180,12 +180,12 @@
             </div>
             <div class="flex items-end">
                 <button type="submit" 
-                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                     Filtern
                 </button>
                 @if($search || $stage !== 'all')
                     <a href="{{ route('dunning.index') }}" 
-                       class="ml-2 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                       class="ml-2 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                         Zurücksetzen
                     </a>
                 @endif
@@ -259,7 +259,7 @@
                                             @endif
                                         </td>
                                         <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                            <a href="{{ route('invoice.show', $invoice->id) }}" class="text-indigo-600 hover:text-indigo-900">
+                                            <a href="{{ route('invoice.show', $invoice->id) }}" class="text-blue-900 hover:text-blue-800">
                                                 Anzeigen
                                             </a>
                                         </td>

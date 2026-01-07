@@ -93,7 +93,7 @@
                                        id="name" 
                                        required
                                        value="{{ old('name') }}"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-blue-900 transition-colors"
                                        placeholder="Ihr Name">
                             </div>
 
@@ -106,7 +106,7 @@
                                        id="email" 
                                        required
                                        value="{{ old('email') }}"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-blue-900 transition-colors"
                                        placeholder="ihre@email.de">
                             </div>
                         </div>
@@ -120,7 +120,7 @@
                                        name="company" 
                                        id="company"
                                        value="{{ old('company') }}"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-blue-900 transition-colors"
                                        placeholder="Ihre Firma">
                             </div>
 
@@ -132,7 +132,7 @@
                                        name="phone" 
                                        id="phone"
                                        value="{{ old('phone') }}"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-blue-900 transition-colors"
                                        placeholder="+43 1 234 567 89">
                             </div>
                         </div>
@@ -145,7 +145,7 @@
                                       id="message" 
                                       rows="6" 
                                       required
-                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-none"
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-blue-900 transition-colors resize-none"
                                       placeholder="Beschreiben Sie Ihre Anforderungen oder stellen Sie uns Fragen...">{{ old('message') }}</textarea>
                             <p class="mt-2 text-sm text-gray-500">Bitte beschreiben Sie Ihre Anforderungen, damit wir Ihnen das beste Angebot erstellen können.</p>
                         </div>
@@ -155,7 +155,7 @@
                                    name="privacy" 
                                    id="privacy" 
                                    required
-                                   class="mt-1 h-4 w-4 text-blue-900 focus:ring-blue-500 border-gray-300 rounded">
+                                   class="mt-1 h-4 w-4 text-blue-900 focus:ring-blue-700 border-gray-300 rounded">
                             <label for="privacy" class="ml-3 text-sm text-gray-600">
                                 Ich habe die <a href="#" class="text-blue-900 hover:text-blue-800 underline">Datenschutzerklärung</a> gelesen und stimme zu. <span class="text-blue-900">*</span>
                             </label>

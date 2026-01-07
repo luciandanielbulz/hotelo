@@ -81,7 +81,7 @@
                     <!-- Aktionen -->
                     <div class="flex items-center justify-end gap-x-6 pt-6">
                         <a href="{{ route('clients.my-settings') }}" class="text-sm font-semibold text-gray-900">Abbrechen</a>
-                        <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600">
+                        <button type="submit" class="rounded-md bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 px-3 py-2 text-white hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                             Einstellungen speichern
                         </button>
                     </div>

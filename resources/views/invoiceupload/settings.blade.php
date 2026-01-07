@@ -169,11 +169,11 @@
                             onclick="loadTemplate('{date}_{index}_{vendor}')"
                             class="bg-white px-4 py-3 rounded-lg border border-gray-300 hover:bg-gray-100 hover:shadow-md transition-all text-left">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Datum</span>
+                                <span class="bg-blue-900 text-white px-2 py-1 rounded text-xs">Datum</span>
                                 <span class="text-gray-400">_</span>
-                                <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Nummer</span>
+                                <span class="bg-blue-900 text-white px-2 py-1 rounded text-xs">Nummer</span>
                                 <span class="text-gray-400">_</span>
-                                <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Lieferant</span>
+                                <span class="bg-blue-900 text-white px-2 py-1 rounded text-xs">Lieferant</span>
                             </div>
                             <p class="text-xs text-gray-600 mt-2">Standard</p>
                         </button>
@@ -182,11 +182,11 @@
                             onclick="loadTemplate('{date}_{vendor}_{invoice_number}')"
                             class="bg-white px-4 py-3 rounded-lg border border-gray-300 hover:bg-gray-100 hover:shadow-md transition-all text-left">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Datum</span>
+                                <span class="bg-blue-900 text-white px-2 py-1 rounded text-xs">Datum</span>
                                 <span class="text-gray-400">_</span>
-                                <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Lieferant</span>
+                                <span class="bg-blue-900 text-white px-2 py-1 rounded text-xs">Lieferant</span>
                                 <span class="text-gray-400">_</span>
-                                <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Rechnungsnr.</span>
+                                <span class="bg-blue-900 text-white px-2 py-1 rounded text-xs">Rechnungsnr.</span>
                             </div>
                             <p class="text-xs text-gray-600 mt-2">Mit Rechnungsnr.</p>
                         </button>
@@ -195,11 +195,11 @@
                             onclick="loadTemplate('{category}_{date}_{index}')"
                             class="bg-white px-4 py-3 rounded-lg border border-gray-300 hover:bg-gray-100 hover:shadow-md transition-all text-left">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Kategorie</span>
+                                <span class="bg-blue-900 text-white px-2 py-1 rounded text-xs">Kategorie</span>
                                 <span class="text-gray-400">_</span>
-                                <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Datum</span>
+                                <span class="bg-blue-900 text-white px-2 py-1 rounded text-xs">Datum</span>
                                 <span class="text-gray-400">_</span>
-                                <span class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Nummer</span>
+                                <span class="bg-blue-900 text-white px-2 py-1 rounded text-xs">Nummer</span>
                             </div>
                             <p class="text-xs text-gray-600 mt-2">Mit Kategorie</p>
                         </button>
@@ -213,7 +213,7 @@
                         Abbrechen
                     </a>
                     <button type="submit" 
-                            class="px-6 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-all duration-300">
+                            class="px-6 py-2 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-medium rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300">
                         Speichern
                     </button>
                 </div>
@@ -353,7 +353,7 @@
                 if (token.type === 'placeholder') {
                     const label = getPlaceholderLabel(token.value);
                     element.innerHTML = `
-                        <span class="bg-blue-500 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-2">
+                        <span class="bg-blue-900 text-white px-3 py-1 rounded-lg text-sm flex items-center gap-2">
                             ${label}
                             <button 
                                 type="button" 

@@ -14,7 +14,7 @@
                 <div class="mt-3">
                     <button type="button"
                             id="save_footer_btn_{{ $invoiceId }}"
-                            class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none">
+                            class="rounded-md bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 px-3 py-2 text-white hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none">
                         Speichern
                     </button>
                 </div>

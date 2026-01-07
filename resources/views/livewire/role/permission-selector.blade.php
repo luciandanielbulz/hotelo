@@ -11,7 +11,7 @@
                 </div>
             </h3>
             <div class="hidden sm:block text-sm text-gray-500">
-                <span class="font-medium text-indigo-600">{{ $selectedCount }}</span> von {{ $totalCount }} ausgewählt
+                <span class="font-medium text-blue-900">{{ $selectedCount }}</span> von {{ $totalCount }} ausgewählt
             </div>
         </div>
 
@@ -25,13 +25,13 @@
                         </svg>
                     </div>
                     <input wire:model.live="search" type="text" placeholder="Berechtigungen oder Kategorien suchen..." 
-                           class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm bg-white text-gray-900 placeholder-gray-500 sm:text-sm">
+                           class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent shadow-sm bg-white text-gray-900 placeholder-gray-500 sm:text-sm">
                 </div>
             </div>
             
             <div class="flex items-center space-x-2">
                 <label class="flex items-center">
-                    <input wire:model.live="showOnlySelected" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    <input wire:model.live="showOnlySelected" type="checkbox" class="rounded border-gray-300 text-blue-900 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                     <span class="ml-2 text-sm text-gray-700">Nur ausgewählte</span>
                 </label>
             </div>
@@ -40,13 +40,13 @@
         <!-- Schnellaktionen -->
         <div class="hidden sm:flex justify-between items-center">
             <div class="flex space-x-2">
-                <button wire:click="selectAll" type="button" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button wire:click="selectAll" type="button" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path>
                     </svg>
                     Alle auswählen
                 </button>
-                <button wire:click="deselectAll" type="button" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button wire:click="deselectAll" type="button" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -63,7 +63,7 @@
             </div>
             
             <div class="flex space-x-2">
-                <button wire:click="expandAllCategories" type="button" class="inline-flex items-center px-3 py-2 border border-blue-300 shadow-sm text-sm font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <button wire:click="expandAllCategories" type="button" class="inline-flex items-center px-3 py-2 border border-blue-300 shadow-sm text-sm font-medium rounded-md text-blue-900 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
                     </svg>
@@ -95,7 +95,7 @@
                                 </button>
                                 
                                 <div class="hidden sm:flex space-x-2">
-                                    <button wire:click="selectAllInCategory('{{ $category }}')" type="button" class="text-xs text-indigo-600 hover:text-indigo-800">
+                                    <button wire:click="selectAllInCategory('{{ $category }}')" type="button" class="text-xs text-blue-900 hover:text-indigo-800">
                                         Alle auswählen
                                     </button>
                                     <button wire:click="deselectAllInCategory('{{ $category }}')" type="button" class="text-xs text-red-600 hover:text-red-800">
@@ -118,7 +118,7 @@
                                                         name="permissions[]" 
                                                         value="{{ $permission->id }}"
                                                         {{ in_array($permission->id, $selectedPermissions) ? 'checked' : '' }}
-                                                        class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded pointer-events-none">
+                                                        class="h-4 w-4 text-blue-900 focus:ring-blue-700 border-gray-300 rounded pointer-events-none">
                                                 </div>
                                                 <div class="ml-3 min-w-0 flex-1">
                                                     @if($permission->description)

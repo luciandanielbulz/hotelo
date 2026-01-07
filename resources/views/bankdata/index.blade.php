@@ -18,14 +18,14 @@
                     </svg>
                     Auto-Kategorisierung
                 </button>
-                <button onclick="showKeywordSuggestions()" class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button onclick="showKeywordSuggestions()" class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                     </svg>
                     Keyword-Vorschläge
                 </button>
 
-                <a href="{{ route('bankdata.upload.form') }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <a href="{{ route('bankdata.upload.form') }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                     </svg>
@@ -80,7 +80,7 @@
                 <!-- Typ-Filter -->
                 <div class="flex items-center space-x-2">
                     <label for="type_filter" class="text-sm font-medium text-gray-700">Typ:</label>
-                    <select id="type_filter" name="type" class="rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <select id="type_filter" name="type" class="rounded-md border-gray-300 text-sm focus:border-blue-900 focus:ring-blue-700">
                         <option value="all" {{ request('type') == 'all' ? 'selected' : '' }}>Alle</option>
                         <option value="income" {{ request('type') == 'income' ? 'selected' : '' }}>Einnahmen</option>
                         <option value="expense" {{ request('type') == 'expense' ? 'selected' : '' }}>Ausgaben</option>
@@ -90,7 +90,7 @@
                 <!-- Kategorie-Filter -->
                 <div class="flex items-center space-x-2">
                     <label for="category_filter" class="text-sm font-medium text-gray-700">Kategorie:</label>
-                    <select id="category_filter" name="category" class="rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <select id="category_filter" name="category" class="rounded-md border-gray-300 text-sm focus:border-blue-900 focus:ring-blue-700">
                         <option value="all" {{ request('category') == 'all' ? 'selected' : '' }}>Alle Kategorien</option>
                         <option value="none" {{ request('category') == 'none' ? 'selected' : '' }}>Ohne Kategorie</option>
                         @foreach($filteredCategories as $category)
@@ -104,7 +104,7 @@
                 <!-- Jahresfilter -->
                 <div class="flex items-center space-x-2">
                     <label for="year_filter" class="text-sm font-medium text-gray-700">Jahr:</label>
-                    <select id="year_filter" name="year" class="rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <select id="year_filter" name="year" class="rounded-md border-gray-300 text-sm focus:border-blue-900 focus:ring-blue-700">
                         <option value="all">Alle Jahre</option>
                         @foreach($availableYears as $year)
                             <option value="{{ $year }}" {{ $searchValues['year'] == $year ? 'selected' : '' }}>{{ $year }}</option>
@@ -115,7 +115,7 @@
                 <!-- Elemente pro Seite -->
                 <div class="flex items-center space-x-2">
                     <label for="per_page_filter" class="text-sm font-medium text-gray-700">Anzeigen:</label>
-                    <select id="per_page_filter" name="per_page" class="rounded-md border-gray-300 text-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <select id="per_page_filter" name="per_page" class="rounded-md border-gray-300 text-sm focus:border-blue-900 focus:ring-blue-700">
                         <option value="10" {{ $searchValues['per_page'] == 10 ? 'selected' : '' }}>10</option>
                         <option value="15" {{ $searchValues['per_page'] == 15 ? 'selected' : '' }}>15</option>
                         <option value="25" {{ $searchValues['per_page'] == 25 ? 'selected' : '' }}>25</option>
@@ -142,7 +142,7 @@
                            id="searchPartner" 
                            value="{{ $searchValues['partner'] ?? '' }}"
                            placeholder="Partner-Name eingeben..."
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
                 </div>
 
                 <!-- Betrag-Suche -->
@@ -153,7 +153,7 @@
                            value="{{ $searchValues['amount'] ?? '' }}"
                            step="0.01"
                            placeholder="Betrag eingeben..."
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
                 </div>
 
                 <!-- Datum-Suche -->
@@ -162,13 +162,13 @@
                     <input type="date" 
                            id="searchDate" 
                            value="{{ $searchValues['date'] ?? '' }}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
                 </div>
 
                 <!-- Such-Buttons -->
                 <div class="flex items-end space-x-2">
                     <button onclick="performSearch()" 
-                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            class="px-4 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700">
                         <svg class="w-4 h-4 mr-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
@@ -260,7 +260,7 @@
                                                      <div class="flex justify-end space-x-2">
                                                          <button type="button" 
                                                              onclick="openCategoryModal({{ $transaction->id }}, {{ $transaction->category_id ?? 'null' }}, '{{ $transaction->type }}')"
-                                                             class="text-indigo-600 hover:text-indigo-900 text-xs">
+                                                             class="text-blue-900 hover:text-indigo-900 text-xs">
                                                              Kategorie
                                                          </button>
                                                          @if(!$transaction->category_id)
@@ -282,7 +282,7 @@
                                                                          <tr>
                                          <td colspan="8" class="px-6 py-4 text-center text-sm text-gray-500">
                                             Keine Bankdaten gefunden. 
-                                            <a href="{{ route('bankdata.upload.form') }}" class="text-indigo-600 hover:text-indigo-900 font-medium">
+                                            <a href="{{ route('bankdata.upload.form') }}" class="text-blue-900 hover:text-indigo-900 font-medium">
                                                 Laden Sie eine JSON-Datei hoch
                                             </a>
                                         </td>
@@ -313,7 +313,7 @@
                          <input type="hidden" id="bankDataId" name="bankDataId">
                                                    <div class="mb-4">
                               <label for="categorySelect" class="block text-sm font-medium text-gray-700 mb-2">Kategorie:</label>
-                              <select id="categorySelect" name="category_id" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                              <select id="categorySelect" name="category_id" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700">
                                   <option value="">Keine Kategorie</option>
                                   <!-- Kategorien werden dynamisch basierend auf dem Transaktionstyp geladen -->
                               </select>
@@ -322,7 +322,7 @@
                              <button type="button" onclick="closeCategoryModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
                                  Abbrechen
                              </button>
-                             <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                             <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-800 rounded-md hover:bg-blue-700">
                                  Speichern
                              </button>
                          </div>
@@ -346,7 +346,7 @@
                                         id="partnername" 
                                         name="partnername" 
                                         required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700"
                                         placeholder="z.B. Büroausstattung GmbH">
                              </div>
 
@@ -358,7 +358,7 @@
                                         name="amount" 
                                         step="0.01" 
                                         required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700"
                                         placeholder="0.00">
                                  <p class="text-xs text-gray-500 mt-1">Negative Werte für Ausgaben, positive für Einnahmen</p>
                              </div>
@@ -371,7 +371,7 @@
                                         name="date" 
                                         required
                                         value="{{ date('Y-m-d') }}"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
                              </div>
 
                              <!-- Referenz -->
@@ -380,7 +380,7 @@
                                  <textarea id="reference" 
                                            name="reference" 
                                            rows="3"
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700"
                                            placeholder="z.B. Büromaterial, Miete, etc."></textarea>
                              </div>
 
@@ -389,7 +389,7 @@
                                  <label for="expense_category" class="block text-sm font-medium text-gray-700 mb-1">Kategorie</label>
                                  <select id="expense_category" 
                                          name="category_id"
-                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
                                      <option value="">Keine Kategorie</option>
                                      @foreach($categories as $category)
                                          <option value="{{ $category->id }}" 
@@ -406,7 +406,7 @@
                                  <label for="expense_type" class="block text-sm font-medium text-gray-700 mb-1">Typ</label>
                                  <select id="expense_type" 
                                          name="type"
-                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
                                      <option value="expense">Ausgabe</option>
                                      <option value="income">Einnahme</option>
                                  </select>
@@ -420,7 +420,7 @@
                                  Abbrechen
                              </button>
                              <button type="submit" 
-                                     class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                                     class="px-4 py-2 text-sm font-medium text-white bg-blue-800 rounded-md hover:bg-blue-700">
                                  Ausgabe hinzufügen
                              </button>
                          </div>
@@ -446,7 +446,7 @@
                                         id="edit_partnername" 
                                         name="partnername" 
                                         required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700"
                                         placeholder="z.B. Büroausstattung GmbH">
                              </div>
 
@@ -458,7 +458,7 @@
                                         name="amount" 
                                         step="0.01" 
                                         required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700"
                                         placeholder="0.00">
                                  <p class="text-xs text-gray-500 mt-1">Negative Werte für Ausgaben, positive für Einnahmen</p>
                              </div>
@@ -470,7 +470,7 @@
                                         id="edit_date" 
                                         name="date" 
                                         required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
                              </div>
 
                              <!-- Referenz -->
@@ -479,7 +479,7 @@
                                  <textarea id="edit_reference" 
                                            name="reference" 
                                            rows="3"
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700"
                                            placeholder="z.B. Büromaterial, Miete, etc."></textarea>
                              </div>
 
@@ -488,7 +488,7 @@
                                  <label for="edit_type" class="block text-sm font-medium text-gray-700 mb-1">Typ</label>
                                  <select id="edit_type" 
                                          name="type"
-                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
                                      <option value="expense">Ausgabe</option>
                                      <option value="income">Einnahme</option>
                                  </select>
@@ -499,7 +499,7 @@
                                  <label for="edit_category" class="block text-sm font-medium text-gray-700 mb-1">Kategorie</label>
                                  <select id="edit_category" 
                                          name="category_id"
-                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
                                      <option value="">Keine Kategorie</option>
                                      @foreach($categories as $category)
                                          <option value="{{ $category->id }}" 
@@ -519,7 +519,7 @@
                                  Abbrechen
                              </button>
                              <button type="submit" 
-                                     class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                                     class="px-4 py-2 text-sm font-medium text-white bg-blue-800 rounded-md hover:bg-blue-700">
                                  Speichern
                              </button>
                          </div>
@@ -825,7 +825,7 @@
                         
                         <div class="mb-4">
                             <label for="categorySelect" class="block text-sm font-medium text-gray-700 mb-2">Kategorie auswählen:</label>
-                            <select id="categorySelect" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <select id="categorySelect" class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700">
                                 ${categoryOptions}
                             </select>
                         </div>
@@ -834,7 +834,7 @@
                             <button onclick="this.closest('.fixed').remove()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
                                 Abbrechen
                             </button>
-                            <button onclick="confirmAddKeyword('${keyword.replace(/'/g, "\\'")}')" class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                            <button onclick="confirmAddKeyword('${keyword.replace(/'/g, "\\'")}')" class="px-4 py-2 text-sm font-medium text-white bg-blue-800 rounded-md hover:bg-blue-700">
                                 Hinzufügen
                             </button>
                         </div>
@@ -870,7 +870,7 @@
                              <input type="checkbox" 
                                     id="keyword_${index}" 
                                     value="${keyword}" 
-                                    class="keyword-checkbox h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    class="keyword-checkbox h-4 w-4 text-blue-600 focus:ring-blue-700 border-gray-300 rounded">
                              <label for="keyword_${index}" class="text-sm font-medium text-gray-700">
                                  ${keyword}
                              </label>
@@ -911,7 +911,7 @@
                                  </label>
                                  <textarea id="additionalKeywords" 
                                            rows="3" 
-                                           class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                           class="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700"
                                            placeholder="Weitere Keywords eingeben (kommagetrennt)"></textarea>
                              </div>
                              
@@ -930,7 +930,7 @@
                                          Abbrechen
                                      </button>
                                      <button onclick="confirmAdvancedKeywords('${categoryName}', ${categoryId})" 
-                                             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700">
+                                             class="px-4 py-2 text-sm font-medium text-white bg-blue-800 rounded-md hover:bg-blue-700">
                                          Hinzufügen
                                      </button>
                                  </div>

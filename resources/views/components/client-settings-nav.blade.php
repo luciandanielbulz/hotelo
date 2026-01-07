@@ -124,7 +124,7 @@
         <div class="sm:hidden">
             <label for="client-settings-tab" class="sr-only">Bereich auswählen</label>
             <select id="client-settings-tab" name="client-settings-tab" 
-                    class="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 transition-all duration-200"
+                    class="block w-full rounded-md border-gray-300 focus:border-blue-900 focus:ring-blue-700 transition-all duration-200"
                     onchange="window.location.href = this.value">
                 @foreach($navItems as $item)
                     @php

@@ -54,7 +54,7 @@
                 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
                     <div class="sm:col-span-6">
-                        <x-input name="conditionname" type="text" placeholder="Bedingungsname eingeben" label="Name der Bedingung" value="{{ old('conditionname') }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" required />
+                        <x-input name="conditionname" type="text" placeholder="Bedingungsname eingeben" label="Name der Bedingung" value="{{ old('conditionname') }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-700 transition-all duration-300" required />
                     </div>
                 </div>
             </div>
@@ -70,19 +70,19 @@
                 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
                     <div class="sm:col-span-6">
-                        <x-input name="dunning_reminder_days" type="number" placeholder="0" label="Tage bis Erinnerung" value="{{ old('dunning_reminder_days', 0) }}" min="0" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="dunning_reminder_days" type="number" placeholder="0" label="Tage bis Erinnerung" value="{{ old('dunning_reminder_days', 0) }}" min="0" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-700 transition-all duration-300" />
                         <p class="mt-1 text-sm text-gray-500">Anzahl der Tage nach Fälligkeit bis zur Erinnerung</p>
                     </div>
                     <div class="sm:col-span-6">
-                        <x-input name="dunning_first_stage_days" type="number" placeholder="0" label="Tage bis erste Mahnstufe" value="{{ old('dunning_first_stage_days', 0) }}" min="0" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="dunning_first_stage_days" type="number" placeholder="0" label="Tage bis erste Mahnstufe" value="{{ old('dunning_first_stage_days', 0) }}" min="0" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-700 transition-all duration-300" />
                         <p class="mt-1 text-sm text-gray-500">Anzahl der Tage nach Fälligkeit bis zur ersten Mahnung</p>
                     </div>
                     <div class="sm:col-span-6">
-                        <x-input name="dunning_second_stage_days" type="number" placeholder="0" label="Tage bis zweite Mahnstufe" value="{{ old('dunning_second_stage_days', 0) }}" min="0" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="dunning_second_stage_days" type="number" placeholder="0" label="Tage bis zweite Mahnstufe" value="{{ old('dunning_second_stage_days', 0) }}" min="0" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-700 transition-all duration-300" />
                         <p class="mt-1 text-sm text-gray-500">Anzahl der Tage nach Fälligkeit bis zur zweiten Mahnung</p>
                     </div>
                     <div class="sm:col-span-6">
-                        <x-input name="dunning_third_stage_days" type="number" placeholder="0" label="Tage bis dritte Mahnstufe" value="{{ old('dunning_third_stage_days', 0) }}" min="0" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all duration-300" />
+                        <x-input name="dunning_third_stage_days" type="number" placeholder="0" label="Tage bis dritte Mahnstufe" value="{{ old('dunning_third_stage_days', 0) }}" min="0" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-700 transition-all duration-300" />
                         <p class="mt-1 text-sm text-gray-500">Anzahl der Tage nach Fälligkeit bis zur dritten Mahnung</p>
                     </div>
                 </div>
@@ -98,7 +98,7 @@
                     Abbrechen
                 </a>
                 <button type="submit" 
-                        class="inline-flex items-center justify-center px-8 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                        class="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                     </svg>

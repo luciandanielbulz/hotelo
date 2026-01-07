@@ -51,7 +51,7 @@
         <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
             <div class="mb-6">
                 <h2 class="text-lg font-semibold text-gray-900 flex items-center">
-                    <div class="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold text-xs mr-3">
+                    <div class="w-8 h-8 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-xs mr-3">
                         {{ $invoicepositioncontent->sequence }}
                     </div>
                     Position bearbeiten
@@ -97,13 +97,13 @@
                             </button>
                         @endif
                     </div>
-                    <textarea name="details" id="details" rows="8" class="block w-full rounded-lg bg-white/70 backdrop-blur-sm px-4 py-3 text-base text-gray-900 border border-gray-300 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-md hover:shadow-lg transition-all duration-200" placeholder="Detaillierte Beschreibung der Position...">{{ old('details', $invoicepositioncontent->details) }}</textarea>
+                    <textarea name="details" id="details" rows="8" class="block w-full rounded-lg bg-white/70 backdrop-blur-sm px-4 py-3 text-base text-gray-900 border border-gray-300 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 shadow-md hover:shadow-lg transition-all duration-200" placeholder="Detaillierte Beschreibung der Position...">{{ old('details', $invoicepositioncontent->details) }}</textarea>
                 </div>
 
                 <!-- Speichern Button -->
                 <div class="flex justify-center md:justify-start pt-4">
                     <input type="hidden" name="id" value="{{ $invoicepositioncontent->id }}">
-                    <button type="submit" class="w-full md:w-auto inline-flex items-center justify-center px-8 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <button type="submit" class="w-full md:w-auto inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
@@ -190,12 +190,12 @@
                 
                 <div class="mb-4">
                     <label for="sourceText" class="block text-sm font-medium text-gray-700 mb-2">Text eingeben:</label>
-                    <textarea id="sourceText" rows="6" class="w-full rounded-lg border border-gray-300 px-4 py-3 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Geben Sie den zu übersetzenden Text ein..."></textarea>
+                    <textarea id="sourceText" rows="6" class="w-full rounded-lg border border-gray-300 px-4 py-3 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900" placeholder="Geben Sie den zu übersetzenden Text ein..."></textarea>
                 </div>
 
                 <div class="mb-4">
                     <label for="targetLanguage" class="block text-sm font-medium text-gray-700 mb-2">Zielsprache:</label>
-                    <select id="targetLanguage" class="w-full rounded-lg border border-gray-300 px-4 py-2 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <select id="targetLanguage" class="w-full rounded-lg border border-gray-300 px-4 py-2 text-base text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900">
                         <option value="Deutsch">Deutsch</option>
                         <option value="Englisch">Englisch</option>
                         <option value="Französisch">Französisch</option>
@@ -216,7 +216,7 @@
                 </div>
 
                 <div class="flex gap-3">
-                    <button onclick="translateText()" class="flex-1 px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <button onclick="translateText()" class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl">
                         Übersetzen
                     </button>
                     <button onclick="closeTranslationModal()" class="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors">

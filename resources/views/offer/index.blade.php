@@ -15,7 +15,7 @@
             </div>
             <div>
                 <a href="{{ route('customer.index') }}" 
-                   class="inline-flex items-center px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                   class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                     </svg>
@@ -33,7 +33,7 @@
     <!-- Floating Action Button - nur auf Smartphones -->
     <div class="md:hidden fixed bottom-6 right-6 z-50">
         <a href="{{ route('customer.index') }}" 
-           class="flex items-center justify-center w-14 h-14 bg-blue-500 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110">
+           class="flex items-center justify-center w-14 h-14 bg-blue-900 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
             </svg>

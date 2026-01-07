@@ -71,7 +71,7 @@
                         <div class="sm:col-span-6">
                             <div class="flex items-center">
                                 <input type="checkbox" name="is_default" id="is_default" value="1" {{ old('is_default', $currency->is_default) ? 'checked' : '' }}
-                                       class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                                       class="h-4 w-4 text-blue-900 focus:ring-blue-700 border-gray-300 rounded">
                                 <label for="is_default" class="ml-2 block text-sm text-gray-900">
                                     Als Standard-Währung festlegen
                                 </label>
@@ -83,11 +83,11 @@
 
                 <div class="flex items-center justify-end px-4 py-4 sm:px-6 border-t border-gray-200">
                     <a href="{{ route('currencies.index') }}" 
-                       class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                       class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                         Abbrechen
                     </a>
                     <button type="submit"
-                            class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                         Änderungen speichern
                     </button>
                 </div>

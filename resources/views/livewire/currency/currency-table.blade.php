@@ -9,7 +9,7 @@
                     </svg>
                 </div>
                 <input wire:model.live="search" type="text" placeholder="Währungen suchen..." 
-                       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm bg-white text-gray-900 placeholder-gray-500 sm:text-sm">
+                       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent shadow-sm bg-white text-gray-900 placeholder-gray-500 sm:text-sm">
             </div>
         </div>
     </div>
@@ -84,7 +84,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                             <div class="flex space-x-2">
                                                 <a href="{{ route('currencies.edit', $currency) }}" 
-                                                   class="text-indigo-600 hover:text-indigo-900">Bearbeiten</a>
+                                                   class="text-blue-900 hover:text-indigo-900">Bearbeiten</a>
                                                 <form action="{{ route('currencies.destroy', $currency) }}" method="POST" class="inline">
                                                     @csrf
                                                     @method('DELETE')

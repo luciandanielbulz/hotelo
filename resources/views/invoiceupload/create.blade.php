@@ -64,12 +64,12 @@
                     <div class="flex space-x-6">
                         <label class="flex items-center cursor-pointer">
                             <input type="radio" name="type" value="expense" checked 
-                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                   class="h-4 w-4 text-blue-600 focus:ring-blue-700 border-gray-300">
                             <span class="ml-2 text-sm font-medium text-gray-700 bg-white/60 px-3 py-1 rounded-lg">📤 Ausgabe</span>
                         </label>
                         <label class="flex items-center cursor-pointer">
                             <input type="radio" name="type" value="income" 
-                                   class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                   class="h-4 w-4 text-blue-600 focus:ring-blue-700 border-gray-300">
                             <span class="ml-2 text-sm font-medium text-gray-700 bg-white/60 px-3 py-1 rounded-lg">📥 Einnahme</span>
                         </label>
                     </div>
@@ -92,7 +92,7 @@
                         <label for="invoice_number" class="block text-sm font-medium text-gray-700 mb-2">Belegnummer *</label>
                         <input type="text" name="invoice_number" id="invoice_number" required
                                placeholder="z. B. Rechnungsnummer"
-                               class="w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md">
+                               class="w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md">
                     </div>
 
                     <!-- Lieferant -->
@@ -100,7 +100,7 @@
                         <label for="invoice_vendor" class="block text-sm font-medium text-gray-700 mb-2">Lieferant *</label>
                         <input type="text" name="invoice_vendor" id="invoice_vendor" required
                                placeholder="Lieferant suchen / erstellen"
-                               class="w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md">
+                               class="w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md">
                     </div>
 
                     <!-- Beschreibung -->
@@ -108,14 +108,14 @@
                         <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Beschreibung</label>
                         <textarea name="description" id="description" rows="3"
                                   placeholder="Beschreibung des Belegs"
-                                  class="w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md resize-none"></textarea>
+                                  class="w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md resize-none"></textarea>
                     </div>
 
                     <!-- Kategorie -->
                     <div>
                         <label for="category_id" class="block text-sm font-medium text-gray-700 mb-2">Kategorie</label>
                         <select name="category_id" id="category_id" 
-                                class="w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md">
+                                class="w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md">
                             <option value="">Kategorie wählen (optional)</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}" 
@@ -131,7 +131,7 @@
                     <div>
                         <label for="payment_type" class="block text-sm font-medium text-gray-700 mb-2">Zahlungsart</label>
                         <select name="payment_type" id="payment_type" 
-                                class="w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md">
+                                class="w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md">
                             <option value="elektronisch" selected>💳 elektronisch</option>
                             <option value="nicht elektronisch">💵 nicht elektronisch</option>
                             <option value="Kreditkarte">💎 Kreditkarte</option>

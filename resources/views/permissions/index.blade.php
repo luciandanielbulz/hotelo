@@ -6,7 +6,7 @@
             <p class="mt-2 text-sm text-gray-700">Verwalten Sie alle Berechtigungen Ihres Systems nach Kategorien organisiert.</p>
         </div>
         <div class="mt-4 sm:ml-auto sm:mt-0 sm:flex-none">
-            <a href="{{ route('permissions.create') }}" class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            <a href="{{ route('permissions.create') }}" class="inline-flex items-center rounded-md bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 px-3 py-2 text-white hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                 </svg>
@@ -177,7 +177,7 @@
                                     <tr class="hover:bg-gray-50">
                                         <td class="py-4 pl-6 pr-3 text-sm font-medium text-gray-900">
                                             <div class="flex items-center">
-                                                <div class="h-2 w-2 bg-blue-500 rounded-full mr-3"></div>
+                                                <div class="h-2 w-2 bg-blue-900 rounded-full mr-3"></div>
                                                 {{ $permission->name }}
                                             </div>
                                         </td>
@@ -187,7 +187,7 @@
                                         <td class="px-3 py-4 text-sm text-center">
                                             <div class="flex justify-center space-x-2">
                                                 <a href="{{ route('permissions.edit', $permission->id) }}" 
-                                                   class="inline-flex items-center justify-center rounded-md bg-blue-600 px-2 sm:px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" title="Bearbeiten">
+                                                   class="inline-flex items-center justify-center rounded-md bg-blue-800 px-2 sm:px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600" title="Bearbeiten">
                                                     <svg class="w-4 h-4 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                                     </svg>
@@ -227,7 +227,7 @@
             <p class="mt-1 text-sm text-gray-500">Erstellen Sie Ihre erste Berechtigung.</p>
             <div class="mt-6">
                 <a href="{{ route('permissions.create') }}" 
-                   class="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                   class="inline-flex items-center rounded-md bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 px-3 py-2 text-white hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                     </svg>

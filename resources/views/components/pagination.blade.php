@@ -91,7 +91,7 @@
                     @for ($page = $startPage; $page <= $endPage; $page++)
                         @if ($page == $currentPage)
                             <span aria-current="page">
-                                <span class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-bold text-white bg-blue-600 border border-blue-600 cursor-default leading-5">
+                                <span class="relative inline-flex items-center px-4 py-2 -ml-px text-sm font-bold text-white bg-blue-800 border border-blue-600 cursor-default leading-5">
                                     {{ $page }}
                                 </span>
                             </span>

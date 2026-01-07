@@ -46,7 +46,7 @@
                                id="date" 
                                name="date" 
                                value="{{ old('date', $bankData->date) }}"
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
                     </div>
 
                     <!-- Betrag -->
@@ -57,7 +57,7 @@
                                name="amount" 
                                step="0.01"
                                value="{{ old('amount', $bankData->amount) }}"
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
                     </div>
 
                     <!-- Typ (Einnahmen/Ausgaben) -->
@@ -65,7 +65,7 @@
                         <label for="type" class="block text-sm font-medium text-gray-700">Typ</label>
                         <select id="type" 
                                 name="type"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
                             <option value="expense" {{ old('type', $bankData->type) == 'expense' ? 'selected' : '' }}>Ausgaben</option>
                             <option value="income" {{ old('type', $bankData->type) == 'income' ? 'selected' : '' }}>Einnahmen</option>
                         </select>
@@ -76,7 +76,7 @@
                         <label for="currency" class="block text-sm font-medium text-gray-700">Währung</label>
                         <select id="currency" 
                                 name="currency"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
                             <option value="EUR" {{ old('currency', $bankData->currency) == 'EUR' ? 'selected' : '' }}>EUR</option>
                             <option value="USD" {{ old('currency', $bankData->currency) == 'USD' ? 'selected' : '' }}>USD</option>
                             <option value="CHF" {{ old('currency', $bankData->currency) == 'CHF' ? 'selected' : '' }}>CHF</option>
@@ -88,7 +88,7 @@
                         <label for="category_id" class="block text-sm font-medium text-gray-700">Kategorie</label>
                         <select id="category_id" 
                                 name="category_id"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
                             <option value="">Keine Kategorie</option>
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}" 
@@ -106,7 +106,7 @@
                                id="partnername" 
                                name="partnername" 
                                value="{{ old('partnername', $bankData->partnername) }}"
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
                     </div>
 
                     <!-- Partner IBAN -->
@@ -116,7 +116,7 @@
                                id="partneriban" 
                                name="partneriban" 
                                value="{{ old('partneriban', $bankData->partneriban) }}"
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
                     </div>
 
                     <!-- Partner BIC -->
@@ -126,7 +126,7 @@
                                id="partnerbic" 
                                name="partnerbic" 
                                value="{{ old('partnerbic', $bankData->partnerbic) }}"
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
                     </div>
 
                     <!-- Referenz -->
@@ -136,7 +136,7 @@
                                id="reference" 
                                name="reference" 
                                value="{{ old('reference', $bankData->reference) }}"
-                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm">
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
                     </div>
                 </div>
 
@@ -146,7 +146,7 @@
                         Abbrechen
                     </a>
                     <button type="submit" 
-                            class="rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+                            class="rounded-md bg-blue-800 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
                         Speichern
                     </button>
                 </div>

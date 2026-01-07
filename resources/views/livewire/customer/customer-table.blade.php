@@ -13,14 +13,14 @@
                     <input wire:model.live="search" 
                            type="text" 
                            placeholder="Kunden, Firmen, E-Mail oder Adresse suchen..." 
-                           class="block w-full pl-10 pr-3 py-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-gray-900 placeholder-gray-500">
+                           class="block w-full pl-10 pr-3 py-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-700 shadow-sm text-gray-900 placeholder-gray-500">
                 </div>
             </div>
             
             <!-- Sortierung -->
             <div class="w-full md:w-auto flex-shrink-0">
                 <select wire:model.live="sortBy" 
-                        class="block w-full py-3 px-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm text-gray-900">
+                        class="block w-full py-3 px-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-700 shadow-sm text-gray-900">
                     <option value="newest">Neueste zuerst</option>
                     <option value="oldest">Älteste zuerst</option>
                     <option value="name">Nach Name</option>
@@ -31,14 +31,14 @@
             <!-- View Toggle - nur auf Desktop-Geräten -->
             <div class="hidden md:flex space-x-2 ml-auto">
                 <button wire:click="setViewMode('cards')" 
-                        class="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap flex items-center justify-center {{ $viewMode === 'cards' ? 'bg-blue-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
+                        class="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap flex items-center justify-center {{ $viewMode === 'cards' ? 'bg-blue-900 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                     </svg>
                     Karten
                 </button>
                 <button wire:click="setViewMode('table')" 
-                        class="flex-1 px-8 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap flex items-center justify-center {{ $viewMode === 'table' ? 'bg-blue-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
+                        class="flex-1 px-8 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap flex items-center justify-center {{ $viewMode === 'table' ? 'bg-blue-900 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0V4a1 1 0 011-1h12a1 1 0 011 1v16"/>
                     </svg>
@@ -115,7 +115,7 @@
                     <!-- Action Buttons -->
                     <div class="flex space-x-1 flex-wrap">
                         <a href="{{ url('/customer/' . $customer->id . '/edit') }}" 
-                           class="bg-blue-500 hover:bg-blue-600 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
+                           class="bg-blue-900 hover:bg-blue-800 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
                            title="Bearbeiten">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
@@ -158,7 +158,7 @@
                     <p class="text-gray-600 mb-4">{{ $search ? 'Keine Kunden entsprechen Ihrer Suche.' : 'Sie haben noch keine Kunden angelegt.' }}</p>
                     @if(!$search)
                         <a href="{{ route('customer.create') }}" 
-                           class="inline-flex items-center px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                           class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                             </svg>

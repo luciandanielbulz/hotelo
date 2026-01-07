@@ -51,7 +51,7 @@
             <div class="flex flex-col sm:flex-row gap-3 lg:ml-6">
                 <button 
                     @click="acceptAll()"
-                    class="px-6 py-2.5 bg-blue-900 text-white text-sm font-semibold rounded-lg hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 transition-colors">
+                    class="px-6 py-2.5 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white text-sm font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300">
                     Alle akzeptieren
                 </button>
                 <button 

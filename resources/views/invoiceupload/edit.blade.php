@@ -38,12 +38,12 @@
                         <div class="flex space-x-4">
                             <label class="flex items-center">
                                 <input type="radio" name="type" value="expense" {{ old('type', $invoice->type ?? 'expense') == 'expense' ? 'checked' : '' }}
-                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-700 border-gray-300">
                                 <span class="ml-2 text-sm font-medium text-gray-700">Ausgabe</span>
                             </label>
                             <label class="flex items-center">
                                 <input type="radio" name="type" value="income" {{ old('type', $invoice->type ?? 'expense') == 'income' ? 'checked' : '' }}
-                                       class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                       class="h-4 w-4 text-blue-600 focus:ring-blue-700 border-gray-300">
                                 <span class="ml-2 text-sm font-medium text-gray-700">Einnahme</span>
                             </label>
                         </div>
@@ -58,7 +58,7 @@
                                 <label for="invoice_number" class="block text-sm font-bold text-gray-700 mb-2">Belegnummer *</label>
                                 <input type="text" name="invoice_number" id="invoice_number" value="{{ old('invoice_number', $invoice->invoice_number) }}" required
                                        placeholder="z. B. Rechnungsnummer"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent">
                             </div>
 
                             <!-- Lieferant -->
@@ -66,7 +66,7 @@
                                 <label for="invoice_vendor" class="block text-sm font-bold text-gray-700 mb-2">Lieferant *</label>
                                 <input type="text" name="invoice_vendor" id="invoice_vendor" value="{{ old('invoice_vendor', $invoice->invoice_vendor) }}" required
                                        placeholder="Lieferant suchen / erstellen"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent">
                             </div>
 
                             <!-- Beschreibung -->
@@ -74,14 +74,14 @@
                                 <label for="description" class="block text-sm font-bold text-gray-700 mb-2">Beschreibung</label>
                                 <textarea name="description" id="description" rows="3"
                                           placeholder="Beschreibung des Belegs"
-                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">{{ old('description', $invoice->description) }}</textarea>
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent">{{ old('description', $invoice->description) }}</textarea>
                             </div>
 
                             <!-- Kategorie -->
                             <div>
                                 <label for="category_id" class="block text-sm font-bold text-gray-700 mb-2">Kategorie</label>
                                 <select name="category_id" id="category_id" 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent">
                                     <option value="">Kategorie wählen (optional)</option>
                                     @foreach($categories as $category)
                                         <option value="{{ $category->id }}" 
@@ -104,7 +104,7 @@
                             <div>
                                 <label for="payment_type" class="block text-sm font-bold text-gray-700 mb-2">Zahlungsart</label>
                                 <select name="payment_type" id="payment_type" 
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent">
                                     <option value="elektronisch" {{ old('payment_type', $invoice->payment_type ?? 'elektronisch') == 'elektronisch' ? 'selected' : '' }}>elektronisch</option>
                                     <option value="nicht elektronisch" {{ old('payment_type', $invoice->payment_type ?? 'elektronisch') == 'nicht elektronisch' ? 'selected' : '' }}>nicht elektronisch</option>
                                     <option value="Kreditkarte" {{ old('payment_type', $invoice->payment_type ?? 'elektronisch') == 'Kreditkarte' ? 'selected' : '' }}>Kreditkarte</option>
@@ -119,7 +119,7 @@
                             <div>
                                 <label for="invoice_date" class="block text-sm font-bold text-gray-700 mb-2">Belegdatum *</label>
                                 <input type="date" name="invoice_date" id="invoice_date" value="{{ old('invoice_date', \Carbon\Carbon::parse($invoice->invoice_date)->format('Y-m-d')) }}" required
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent">
                             </div>
 
                             <!-- PDF Upload -->
@@ -151,7 +151,7 @@
                                 @endif
                                 
                                 <input type="file" name="invoice_pdf" id="invoice_pdf" accept=".pdf"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-l-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent file:mr-4 file:py-2 file:px-4 file:rounded-l-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                                 <p class="mt-1 text-xs text-gray-500">{{ $invoice->filepath ? 'Neue Datei wählen, um die aktuelle zu ersetzen (optional)' : 'PDF-Datei auswählen' }}</p>
                             </div>
                         </div>
@@ -164,12 +164,12 @@
                             <div class="flex items-center space-x-8">
                                 <label class="flex items-center">
                                     <input type="radio" name="tax_type" value="gross" {{ old('tax_type', $invoice->tax_type ?? 'gross') == 'gross' ? 'checked' : '' }} onchange="calculateAmounts()"
-                                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                           class="h-4 w-4 text-blue-600 focus:ring-blue-700 border-gray-300">
                                     <span class="ml-2 text-sm font-medium text-gray-700 {{ old('tax_type', $invoice->tax_type ?? 'gross') == 'gross' ? 'bg-blue-100 px-3 py-1 rounded' : '' }}">Brutto</span>
                                 </label>
                                 <label class="flex items-center">
                                     <input type="radio" name="tax_type" value="net" {{ old('tax_type', $invoice->tax_type ?? 'gross') == 'net' ? 'checked' : '' }} onchange="calculateAmounts()"
-                                           class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                           class="h-4 w-4 text-blue-600 focus:ring-blue-700 border-gray-300">
                                     <span class="ml-2 text-sm font-medium text-gray-700 {{ old('tax_type', $invoice->tax_type ?? 'gross') == 'net' ? 'bg-blue-100 px-3 py-1 rounded' : '' }}">Netto</span>
                                 </label>
                             </div>
@@ -181,7 +181,7 @@
                                 <label for="amount" class="block text-sm font-bold text-gray-700 mb-2">Betrag *</label>
                                 <input type="number" name="amount" id="amount" value="{{ old('amount', $invoice->amount) }}" step="0.01" min="0" required
                                        placeholder="0,00"
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                                        onchange="calculateAmounts()">
                             </div>
 
@@ -189,7 +189,7 @@
                             <div>
                                 <label for="currency_id" class="block text-sm font-bold text-gray-700 mb-2">Währung</label>
                                 <select name="currency_id" id="currency_id" onchange="calculateAmounts()"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent">
                                     <option value="">Währung wählen</option>
                                     @foreach($currencies as $currency)
                                         <option value="{{ $currency->id }}" {{ old('currency_id', $invoice->currency_id) == $currency->id || (!old('currency_id') && !$invoice->currency_id && $currency->is_default) ? 'selected' : '' }}>
@@ -204,7 +204,7 @@
                                 <label for="tax_rate" class="block text-sm font-bold text-gray-700 mb-2">Umsatzsteuer in % *</label>
                                 <div class="flex">
                                     <input type="number" name="tax_rate" id="tax_rate" value="{{ old('tax_rate', $invoice->tax_rate ?? 20) }}" step="0.01" min="0" max="100"
-                                           class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                           class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent"
                                            onchange="calculateAmounts()">
                                     <span class="inline-flex items-center px-3 py-2 border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm rounded-r-md">%</span>
                                 </div>
@@ -242,11 +242,11 @@
                     <!-- Action Buttons -->
                     <div class="flex justify-end space-x-4 mt-8 pt-6 border-t border-gray-200">
                         <a href="{{ route('invoiceupload.index') }}"
-                           class="px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                           class="px-6 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                             Abbrechen
                         </a>
                         <button type="submit"
-                                class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-800 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                             Rechnung aktualisieren
                         </button>
                     </div>

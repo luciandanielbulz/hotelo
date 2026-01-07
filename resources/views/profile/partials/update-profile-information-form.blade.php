@@ -38,7 +38,7 @@
                     <p class="text-sm mt-2 text-gray-800">
                         {{ __('Ihre E-Mail Adresse ist nicht verifiziert.') }}
 
-                        <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                             {{ __('Hier klicken um die Bestätigungsmail erneut zu senden.') }}
                         </button>
                     </p>

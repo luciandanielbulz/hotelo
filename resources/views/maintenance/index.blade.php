@@ -84,7 +84,7 @@
                             id="message" 
                             name="message" 
                             rows="3" 
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm"
                             placeholder="Die Anwendung wird gerade gewartet und ist bald wieder verfügbar..."
                         ></textarea>
                         <p class="mt-2 text-xs text-gray-500">Diese Nachricht wird Benutzern auf der Wartungsseite angezeigt.</p>
@@ -99,7 +99,7 @@
                             type="text" 
                             id="allowed_ips" 
                             name="allowed_ips" 
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm"
                             placeholder="192.168.1.1, 10.0.0.1"
                         >
                         <p class="mt-2 text-xs text-gray-500">Kommagetrennte Liste von IPs, die trotz Wartungsmodus zugreifen können.</p>
@@ -116,7 +116,7 @@
                             name="duration" 
                             min="1" 
                             max="1440"
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm"
                             placeholder="60"
                         >
                         <p class="mt-2 text-xs text-gray-500">Maximale Dauer: 24 Stunden (1440 Minuten).</p>
