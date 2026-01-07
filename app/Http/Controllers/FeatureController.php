@@ -53,5 +53,37 @@ class FeatureController extends Controller
     {
         return view('features.analytics');
     }
+
+    /**
+     * Zeigt die "Über Uns" Seite
+     */
+    public function about()
+    {
+        return view('about');
+    }
+
+    /**
+     * Zeigt die Impressum-Seite
+     */
+    public function impressum()
+    {
+        return view('legal.impressum');
+    }
+
+    /**
+     * Zeigt die Datenschutz-Seite
+     */
+    public function privacy()
+    {
+        return view('legal.privacy');
+    }
+
+    /**
+     * Zeigt die Cookie-Richtlinie
+     */
+    public function cookies()
+    {
+        return view('legal.cookies');
+    }
 }
 

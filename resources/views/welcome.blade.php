@@ -42,8 +42,9 @@
         <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex justify-between items-center h-16">
-                    <div class="flex items-center">
+                    <div class="flex items-center space-x-3">
                         <img src="{{ asset('logo/quickBill-Logo-alone.png') }}" alt="quickBill" class="h-10 w-auto">
+                        <h1 class="text-2xl font-bold text-gray-900 hover:text-blue-900 transition-colors">quickBill</h1>
                     </div>
                     <div class="flex items-center space-x-4">
                     @auth
@@ -382,43 +383,9 @@
         </section>
 
         <!-- Footer -->
-        <footer class="bg-gray-900 text-gray-300 py-12 px-4 sm:px-6 lg:px-8">
-            <div class="max-w-7xl mx-auto">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <div>
-                        <img src="{{ asset('logo/quickBill-Logo-alone.png') }}" alt="quickBill" class="h-10 w-auto mb-4 brightness-0 invert">
-                        <p class="text-sm text-gray-400">
-                            Professionelle Rechnungsverwaltung für Ihr Unternehmen.
-                        </p>
-                    </div>
-                    <div>
-                        <h4 class="text-white font-semibold mb-4">Produkt</h4>
-                        <ul class="space-y-2 text-sm">
-                            <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Preise</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Dokumentation</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="text-white font-semibold mb-4">Unternehmen</h4>
-                        <ul class="space-y-2 text-sm">
-                            <li><a href="#" class="hover:text-white transition-colors">Über uns</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Kontakt</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Impressum</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="text-white font-semibold mb-4">Rechtliches</h4>
-                        <ul class="space-y-2 text-sm">
-                            <li><a href="#" class="hover:text-white transition-colors">Datenschutz</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">AGB</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-                    <p>&copy; {{ date('Y') }} {{ config('app.name') }}. Alle Rechte vorbehalten.</p>
-            </div>
-        </div>
-        </footer>
+        <x-public-footer />
+
+        <!-- Cookie Banner -->
+        <x-cookie-banner />
     </body>
 </html>

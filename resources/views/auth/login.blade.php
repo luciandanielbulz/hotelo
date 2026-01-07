@@ -6,13 +6,14 @@
         <div class="max-w-md w-full">
             <!-- Logo -->
             <div class="text-center mb-8">
-                <div class="flex justify-center mb-4">
-                    <div class="bg-white rounded-lg p-4 shadow-md">
-                        <img src="{{ asset('logo/quickBill-Logo-alone.png') }}" alt="quickBill" style="height: 56px; width: auto; object-fit: contain;" />
+                <a href="{{ url('/') }}" class="inline-block">
+                    <div class="flex justify-center mb-4">
+                        <div class="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow cursor-pointer">
+                            <img src="{{ asset('logo/quickBill-Logo-alone.png') }}" alt="quickBill" style="height: 56px; width: auto; object-fit: contain;" />
+                        </div>
                     </div>
-                </div>
-                <h1 class="text-3xl font-bold text-white mb-1">quickBill</h1>
-                
+                    <h1 class="text-3xl font-bold text-white mb-1 hover:text-blue-200 transition-colors">quickBill</h1>
+                </a>
             </div>
 
             <!-- Login Form Card -->

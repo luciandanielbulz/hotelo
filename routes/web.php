@@ -111,6 +111,14 @@ Route::get('/features/pdfs', [FeatureController::class, 'pdfs'])->name('features
 Route::get('/features/versand', [FeatureController::class, 'sending'])->name('features.sending');
 Route::get('/features/analysen', [FeatureController::class, 'analytics'])->name('features.analytics');
 
+// Über Uns Seite (öffentlich)
+Route::get('/ueber-uns', [FeatureController::class, 'about'])->name('about');
+
+// Rechtliche Seiten (öffentlich)
+Route::get('/impressum', [FeatureController::class, 'impressum'])->name('impressum');
+Route::get('/datenschutz', [FeatureController::class, 'privacy'])->name('privacy');
+Route::get('/cookies', [FeatureController::class, 'cookies'])->name('cookies');
+
 // Kontaktformular (öffentlich)
 Route::get('/angebot', [ContactController::class, 'show'])->name('contact.form');
 Route::post('/angebot', [ContactController::class, 'submit'])->name('contact.submit');

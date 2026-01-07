@@ -1,17 +1,16 @@
 <x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
-
     <div class="min-h-screen bg-blue-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div class="max-w-md w-full">
             <!-- Logo -->
             <div class="text-center mb-8">
-                <div class="flex justify-center mb-4">
-                    <div class="bg-white rounded-lg p-4 shadow-md">
-                        <img src="{{ asset('logo/quickBill-Logo-alone.png') }}" alt="quickBill" style="height: 56px; width: auto; object-fit: contain;" />
+                <a href="{{ url('/') }}" class="inline-block">
+                    <div class="flex justify-center mb-4">
+                        <div class="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow cursor-pointer">
+                            <img src="{{ asset('logo/quickBill-Logo-alone.png') }}" alt="quickBill" style="height: 56px; width: auto; object-fit: contain;" />
+                        </div>
                     </div>
-                </div>
-                <h1 class="text-3xl font-bold text-white mb-1">quickBill</h1>
+                    <h1 class="text-3xl font-bold text-white mb-1 hover:text-blue-200 transition-colors">quickBill</h1>
+                </a>
             </div>
 
             <!-- Password Reset Form Card -->
@@ -20,7 +19,23 @@
                     <h2 class="text-xl font-bold text-gray-900">Passwort vergessen?</h2>
                 </div>
 
-                
+                <!-- Success Message -->
+                @if (session('status'))
+                    <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="ml-3 flex-1">
+                                <p class="text-sm font-medium text-green-800">
+                                    {{ __(session('status')) }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
                 <form class="space-y-5" method="POST" action="{{ route('password.email') }}">
                     @csrf

@@ -201,6 +201,8 @@
                 <p class="text-sm text-gray-400">&copy; {{ date('Y') }} {{ config('app.name') }}. Alle Rechte vorbehalten.</p>
             </div>
         </footer>
+        <!-- Cookie Banner -->
+        <x-cookie-banner />
     </body>
 </html>
 
