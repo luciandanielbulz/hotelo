@@ -153,7 +153,7 @@
                     <input type="hidden" name="price" value="{{ $invoicepositioncontent->price }}">
                     <input type="hidden" name="designation" value="{{ $invoicepositioncontent->designation }}">
                     <input type="hidden" name="amount" value="{{ $invoicepositioncontent->amount }}">
-                    <button type="submit" class="w-full md:w-auto inline-flex items-center justify-center px-8 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-all duration-300 hover:shadow-xl">
+                    <button type="submit" class="w-full md:w-auto inline-flex items-center justify-center px-8 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-400 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>

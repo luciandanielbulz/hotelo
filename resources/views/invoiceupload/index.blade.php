@@ -113,7 +113,7 @@
                 <!-- ZIP Download Button -->
                 <button
                     @click="open = true"
-                    class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 via-purple-500 to-purple-600 text-white font-semibold rounded-lg hover:from-purple-500 hover:via-purple-400 hover:to-purple-500 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    class="inline-flex items-center px-4 py-2 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-400 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
@@ -122,7 +122,7 @@
                 
                 <!-- Neu Button -->
                 <a href="{{ route('invoiceupload.upload.create') }}" 
-                   class="inline-flex items-center px-6 py-2 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl">
+                   class="inline-flex items-center px-6 py-2 bg-blue-900 text-white font-semibold rounded-lg hover:bg-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                     </svg>

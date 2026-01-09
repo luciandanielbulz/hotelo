@@ -6,26 +6,26 @@
                 <p class="mt-2 text-sm text-gray-700">Eine Übersicht aller importierten Bankdaten, Einnahmen und Ausgaben.</p>
             </div>
             <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none space-x-2">
-                <button onclick="showAddExpenseModal()" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                <button onclick="showAddExpenseModal()" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-orange-600 hover:bg-orange-500 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
                     Ausgabe hinzufügen
                 </button>
-                <button onclick="autoCategorize()" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <button onclick="autoCategorize()" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-green-600 hover:bg-green-500 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                     </svg>
                     Auto-Kategorisierung
                 </button>
-                <button onclick="showKeywordSuggestions()" class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
+                <button onclick="showKeywordSuggestions()" class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                     </svg>
                     Keyword-Vorschläge
                 </button>
 
-                <a href="{{ route('bankdata.upload.form') }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
+                <a href="{{ route('bankdata.upload.form') }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-900 hover:bg-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                     </svg>
@@ -35,7 +35,7 @@
                     type="button"
                     x-data=""
                     x-on:click="$dispatch('open-modal', 'delete-bankdata-year')"
-                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-500 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                     </svg>
@@ -80,17 +80,20 @@
                 <!-- Typ-Filter -->
                 <div class="flex items-center space-x-2">
                     <label for="type_filter" class="text-sm font-medium text-gray-700">Typ:</label>
-                    <select id="type_filter" name="type" class="rounded-md border-gray-300 text-sm focus:border-blue-900 focus:ring-blue-700">
+                    <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                        <select id="type_filter" name="type" class="rounded-md border-gray-300 text-sm focus:border-blue-900 focus:ring-blue-700">
                         <option value="all" {{ request('type') == 'all' ? 'selected' : '' }}>Alle</option>
                         <option value="income" {{ request('type') == 'income' ? 'selected' : '' }}>Einnahmen</option>
                         <option value="expense" {{ request('type') == 'expense' ? 'selected' : '' }}>Ausgaben</option>
-                    </select>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Kategorie-Filter -->
                 <div class="flex items-center space-x-2">
                     <label for="category_filter" class="text-sm font-medium text-gray-700">Kategorie:</label>
-                    <select id="category_filter" name="category" class="rounded-md border-gray-300 text-sm focus:border-blue-900 focus:ring-blue-700">
+                    <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                        <select id="category_filter" name="category" class="rounded-md border-gray-300 text-sm focus:border-blue-900 focus:ring-blue-700">
                         <option value="all" {{ request('category') == 'all' ? 'selected' : '' }}>Alle Kategorien</option>
                         <option value="none" {{ request('category') == 'none' ? 'selected' : '' }}>Ohne Kategorie</option>
                         @foreach($filteredCategories as $category)
@@ -98,31 +101,36 @@
                                 {{ $category->name }} ({{ $category->type === 'income' ? 'Einnahmen' : 'Ausgaben' }})
                             </option>
                         @endforeach
-                    </select>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Jahresfilter -->
                 <div class="flex items-center space-x-2">
                     <label for="year_filter" class="text-sm font-medium text-gray-700">Jahr:</label>
-                    <select id="year_filter" name="year" class="rounded-md border-gray-300 text-sm focus:border-blue-900 focus:ring-blue-700">
+                    <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                        <select id="year_filter" name="year" class="rounded-md border-gray-300 text-sm focus:border-blue-900 focus:ring-blue-700">
                         <option value="all">Alle Jahre</option>
                         @foreach($availableYears as $year)
                             <option value="{{ $year }}" {{ $searchValues['year'] == $year ? 'selected' : '' }}>{{ $year }}</option>
                         @endforeach
-                    </select>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Elemente pro Seite -->
                 <div class="flex items-center space-x-2">
                     <label for="per_page_filter" class="text-sm font-medium text-gray-700">Anzeigen:</label>
-                    <select id="per_page_filter" name="per_page" class="rounded-md border-gray-300 text-sm focus:border-blue-900 focus:ring-blue-700">
+                    <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                        <select id="per_page_filter" name="per_page" class="rounded-md border-gray-300 text-sm focus:border-blue-900 focus:ring-blue-700">
                         <option value="10" {{ $searchValues['per_page'] == 10 ? 'selected' : '' }}>10</option>
                         <option value="15" {{ $searchValues['per_page'] == 15 ? 'selected' : '' }}>15</option>
                         <option value="25" {{ $searchValues['per_page'] == 25 ? 'selected' : '' }}>25</option>
                         <option value="50" {{ $searchValues['per_page'] == 50 ? 'selected' : '' }}>50</option>
                         <option value="100" {{ $searchValues['per_page'] == 100 ? 'selected' : '' }}>100</option>
                         <option value="all" {{ $searchValues['per_page'] == 'all' ? 'selected' : '' }}>Alle anzeigen</option>
-                    </select>
+                        </select>
+                    </div>
                 </div>
             </div>
 
@@ -138,44 +146,50 @@
                 <!-- Partner-Suche -->
                 <div>
                     <label for="searchPartner" class="block text-sm font-medium text-gray-700 mb-1">Partner suchen</label>
-                    <input type="text" 
-                           id="searchPartner" 
-                           value="{{ $searchValues['partner'] ?? '' }}"
-                           placeholder="Partner-Name eingeben..."
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
+                    <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                        <input type="text" 
+                               id="searchPartner" 
+                               value="{{ $searchValues['partner'] ?? '' }}"
+                               placeholder="Partner-Name eingeben..."
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
+                    </div>
                 </div>
 
                 <!-- Betrag-Suche -->
                 <div>
                     <label for="searchAmount" class="block text-sm font-medium text-gray-700 mb-1">Betrag suchen</label>
-                    <input type="number" 
-                           id="searchAmount" 
-                           value="{{ $searchValues['amount'] ?? '' }}"
-                           step="0.01"
-                           placeholder="Betrag eingeben..."
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
+                    <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                        <input type="number" 
+                               id="searchAmount" 
+                               value="{{ $searchValues['amount'] ?? '' }}"
+                               step="0.01"
+                               placeholder="Betrag eingeben..."
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
+                    </div>
                 </div>
 
                 <!-- Datum-Suche -->
                 <div>
                     <label for="searchDate" class="block text-sm font-medium text-gray-700 mb-1">Datum suchen</label>
-                    <input type="date" 
-                           id="searchDate" 
-                           value="{{ $searchValues['date'] ?? '' }}"
-                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
+                    <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                        <input type="date" 
+                               id="searchDate" 
+                               value="{{ $searchValues['date'] ?? '' }}"
+                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
+                    </div>
                 </div>
 
                 <!-- Such-Buttons -->
                 <div class="flex items-end space-x-2">
                     <button onclick="performSearch()" 
-                            class="px-4 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700">
+                            class="px-4 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-700 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-700">
                         <svg class="w-4 h-4 mr-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                         Suchen
                     </button>
                     <button onclick="clearSearch()" 
-                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500">
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gray-500">
                         <svg class="w-4 h-4 mr-1 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
@@ -260,11 +274,11 @@
                                                      <div class="flex justify-end space-x-2">
                                                          <button type="button" 
                                                              onclick="openCategoryModal({{ $transaction->id }}, {{ $transaction->category_id ?? 'null' }}, '{{ $transaction->type }}')"
-                                                             class="text-blue-900 hover:text-indigo-900 text-xs">
+                                                             class="text-blue-900 hover:text-indigo-900 hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 text-xs">
                                                              Kategorie
                                                          </button>
                                                          @if(!$transaction->category_id)
-                                                             <button onclick="testCategorization({{ $transaction->id }})" class="text-blue-600 hover:text-blue-800 text-xs" title="Kategorisierung testen">
+                                                             <button onclick="testCategorization({{ $transaction->id }})" class="text-blue-600 hover:text-blue-800 hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 text-xs" title="Kategorisierung testen">
                                                                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                                                                  </svg>
@@ -272,7 +286,7 @@
                                                          @endif
                                                          <button type="button" 
                                                              onclick="openEditModal({{ $transaction->id }}, '{{ $transaction->partnername }}', '{{ $transaction->amount }}', '{{ $transaction->date }}', '{{ $transaction->reference }}', '{{ $transaction->type }}', {{ $transaction->category_id ?? 'null' }})"
-                                                             class="text-green-600 hover:text-green-900 text-xs">
+                                                             class="text-green-600 hover:text-green-900 hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300 text-xs">
                                                              Bearbeiten
                                                          </button>
                                                      </div>
@@ -319,10 +333,10 @@
                               </select>
                           </div>
                          <div class="flex justify-end space-x-3">
-                             <button type="button" onclick="closeCategoryModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                             <button type="button" onclick="closeCategoryModal()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
                                  Abbrechen
                              </button>
-                             <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-800 rounded-md hover:bg-blue-700">
+                             <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-blue-800 rounded-md hover:bg-blue-700 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
                                  Speichern
                              </button>
                          </div>
@@ -342,81 +356,93 @@
                              <!-- Partner Name -->
                              <div>
                                  <label for="partnername" class="block text-sm font-medium text-gray-700 mb-1">Partner/Unternehmen *</label>
-                                 <input type="text" 
-                                        id="partnername" 
-                                        name="partnername" 
-                                        required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700"
-                                        placeholder="z.B. Büroausstattung GmbH">
+                                 <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                                     <input type="text" 
+                                            id="partnername" 
+                                            name="partnername" 
+                                            required
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700"
+                                            placeholder="z.B. Büroausstattung GmbH">
+                                 </div>
                              </div>
 
                              <!-- Betrag -->
                              <div>
                                  <label for="amount" class="block text-sm font-medium text-gray-700 mb-1">Betrag (€) *</label>
-                                 <input type="number" 
-                                        id="amount" 
-                                        name="amount" 
-                                        step="0.01" 
-                                        required
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700"
-                                        placeholder="0.00">
+                                 <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                                     <input type="number" 
+                                            id="amount" 
+                                            name="amount" 
+                                            step="0.01" 
+                                            required
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700"
+                                            placeholder="0.00">
+                                 </div>
                                  <p class="text-xs text-gray-500 mt-1">Negative Werte für Ausgaben, positive für Einnahmen</p>
                              </div>
 
                              <!-- Datum -->
                              <div>
                                  <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Datum *</label>
-                                 <input type="date" 
-                                        id="date" 
-                                        name="date" 
-                                        required
-                                        value="{{ date('Y-m-d') }}"
-                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
+                                 <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                                     <input type="date" 
+                                            id="date" 
+                                            name="date" 
+                                            required
+                                            value="{{ date('Y-m-d') }}"
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
+                                 </div>
                              </div>
 
                              <!-- Referenz -->
                              <div>
                                  <label for="reference" class="block text-sm font-medium text-gray-700 mb-1">Referenz/Beschreibung</label>
-                                 <textarea id="reference" 
-                                           name="reference" 
-                                           rows="3"
-                                           class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700"
-                                           placeholder="z.B. Büromaterial, Miete, etc."></textarea>
+                                 <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                                     <textarea id="reference" 
+                                               name="reference" 
+                                               rows="3"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700"
+                                               placeholder="z.B. Büromaterial, Miete, etc."></textarea>
+                                 </div>
                              </div>
 
                              <!-- Kategorie -->
                              <div>
                                  <label for="expense_category" class="block text-sm font-medium text-gray-700 mb-1">Kategorie</label>
-                                 <select id="expense_category" 
-                                         name="category_id"
-                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
-                                     <option value="">Keine Kategorie</option>
-                                     @foreach($categories as $category)
-                                         <option value="{{ $category->id }}" 
-                                                 data-type="{{ $category->type }}"
-                                                 style="color: {{ $category->color }}">
-                                             {{ $category->name }} ({{ $category->type === 'income' ? 'Einnahmen' : 'Ausgaben' }})
-                                         </option>
-                                     @endforeach
-                                 </select>
+                                 <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                                     <select id="expense_category" 
+                                             name="category_id"
+                                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
+                                         <option value="">Keine Kategorie</option>
+                                         @foreach($categories as $category)
+                                             <option value="{{ $category->id }}" 
+                                                     data-type="{{ $category->type }}"
+                                                     style="color: {{ $category->color }}">
+                                                 {{ $category->name }} ({{ $category->type === 'income' ? 'Einnahmen' : 'Ausgaben' }})
+                                             </option>
+                                         @endforeach
+                                     </select>
+                                 </div>
                              </div>
 
                              <!-- Typ -->
                              <div>
                                  <label for="expense_type" class="block text-sm font-medium text-gray-700 mb-1">Typ</label>
-                                 <select id="expense_type" 
-                                         name="type"
-                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
-                                     <option value="expense">Ausgabe</option>
-                                     <option value="income">Einnahme</option>
-                                 </select>
+                                 <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                                     <select id="expense_type" 
+                                             name="type"
+                                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-700">
+                                         <option value="expense">Ausgabe</option>
+                                         <option value="income">Einnahme</option>
+                                     </select>
+                                 </div>
                              </div>
                          </div>
 
                          <div class="flex justify-end space-x-3 mt-6">
                              <button type="button" 
                                      onclick="closeAddExpenseModal()" 
-                                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
                                  Abbrechen
                              </button>
                              <button type="submit" 
@@ -515,11 +541,11 @@
                          <div class="flex justify-end space-x-3 mt-6">
                              <button type="button" 
                                      onclick="closeEditModal()" 
-                                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                                     class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
                                  Abbrechen
                              </button>
                              <button type="submit" 
-                                     class="px-4 py-2 text-sm font-medium text-white bg-blue-800 rounded-md hover:bg-blue-700">
+                                     class="px-4 py-2 text-sm font-medium text-white bg-blue-800 rounded-md hover:bg-blue-700 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
                                  Speichern
                              </button>
                          </div>
@@ -831,10 +857,10 @@
                         </div>
                         
                         <div class="flex justify-end space-x-3">
-                            <button onclick="this.closest('.fixed').remove()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                            <button onclick="this.closest('.fixed').remove()" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
                                 Abbrechen
                             </button>
-                            <button onclick="confirmAddKeyword('${keyword.replace(/'/g, "\\'")}')" class="px-4 py-2 text-sm font-medium text-white bg-blue-800 rounded-md hover:bg-blue-700">
+                            <button onclick="confirmAddKeyword('${keyword.replace(/'/g, "\\'")}')" class="px-4 py-2 text-sm font-medium text-white bg-blue-800 rounded-md hover:bg-blue-700 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
                                 Hinzufügen
                             </button>
                         </div>
@@ -917,20 +943,20 @@
                              
                              <div class="flex justify-between items-center">
                                  <div class="flex space-x-2">
-                                     <button onclick="selectAllKeywords()" class="text-sm text-blue-600 hover:text-blue-800">
+                                     <button onclick="selectAllKeywords()" class="text-sm text-blue-600 hover:text-blue-800 hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300">
                                          Alle auswählen
                                      </button>
-                                     <button onclick="deselectAllKeywords()" class="text-sm text-blue-600 hover:text-blue-800">
+                                     <button onclick="deselectAllKeywords()" class="text-sm text-blue-600 hover:text-blue-800 hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-300">
                                          Alle abwählen
                                      </button>
                                  </div>
                                  <div class="flex space-x-3">
                                      <button onclick="this.closest('.fixed').remove(); window.location.reload();" 
-                                             class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">
+                                             class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
                                          Abbrechen
                                      </button>
                                      <button onclick="confirmAdvancedKeywords('${categoryName}', ${categoryId})" 
-                                             class="px-4 py-2 text-sm font-medium text-white bg-blue-800 rounded-md hover:bg-blue-700">
+                                             class="px-4 py-2 text-sm font-medium text-white bg-blue-800 rounded-md hover:bg-blue-700 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
                                          Hinzufügen
                                      </button>
                                  </div>
