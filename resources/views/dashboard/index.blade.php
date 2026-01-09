@@ -14,7 +14,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @foreach($tiles as $index => $tile)
                 <a href="{{ $tile['targetFile'] }}" 
-                   class="group bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
+                   class="group bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 border border-stone-200 hover:shadow-xl transition-all duration-300 hover:scale-105">
                     
                     <div class="flex items-center space-x-4">
                         <div class="w-12 h-12 {{ $index % 4 == 0 ? 'bg-blue-900' : ($index % 4 == 1 ? 'bg-green-500' : ($index % 4 == 2 ? 'bg-purple-500' : 'bg-orange-500')) }} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
