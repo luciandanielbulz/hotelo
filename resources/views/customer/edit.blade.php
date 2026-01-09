@@ -6,25 +6,13 @@
             <p class="text-gray-600">{{ $customer->customername ?: $customer->companyname }} - Kundennummer: {{ $customer->customer_number ?: $customer->id }}</p>
         </div>
         <div class="mt-4 md:mt-0 flex space-x-3">
-            <a href="{{ route('customer.index') }}" 
-               class="inline-flex items-center px-4 py-2 bg-white/60 backdrop-blur-lg border border-white/20 text-gray-700 font-medium rounded-lg hover:bg-white/80 transition-all duration-300 shadow-lg">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
-                Zurück zur Übersicht
-            </a>
-            <button type="submit" form="customer-edit-form"
-                    class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                </svg>
-                Änderungen speichern
-            </button>
+            <x-button-back-white href="{{ route('customer.index') }}" name="Zurück zur Übersicht" />
+            <x-button-blue form="customer-edit-form" name="Änderungen speichern" />
         </div>
     </div>
 
     <!-- Modernisiertes Formular -->
-    <div class="bg-white/60 backdrop-blur-lg rounded-2xl border border-white/20 shadow-xl">
+    <div class="bg-white/60 backdrop-blur-lg rounded-2xl border border-stone-200">
         <form id="customer-edit-form" action="{{ route('customer.update', $customer->id) }}" method="POST" class="p-8">
             @csrf
             @method('PUT')
@@ -40,17 +28,17 @@
                 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
                     <div class="sm:col-span-3">
-                        <x-dropdown_body name="salutation_id" id="salutation_id" value="" :options="$salutations->pluck('name', 'id')" :selected="old('salutation_id', $customer->salutation_id)" label="Anrede" placeholder="Bitte auswählen" class="w-full appearance-none rounded-lg bg-white/70 backdrop-blur-sm py-3 pl-3 pr-8 text-base text-gray-900 border-0 shadow-sm focus:ring-2 focus:ring-blue-700 transition-all duration-300" />
+                        <x-dropdown_body name="salutation_id" id="salutation_id" value="" :options="$salutations->pluck('name', 'id')" :selected="old('salutation_id', $customer->salutation_id)" label="Anrede" placeholder="Bitte auswählen" />
                     </div>
                     <div class="sm:col-span-2">
-                        <x-input name="title" type="text" placeholder="Titel" label="Titel" value="{{ $customer->title }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-700 transition-all duration-300"/>
+                        <x-input name="title" type="text" placeholder="Titel" label="Titel" value="{{ $customer->title }}"/>
                     </div>
                     <div class="sm:col-span-4">
-                        <x-input name="customername" type="text" placeholder="Kundenname" label="Kundenname" value="{{ $customer->customername }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-700 transition-all duration-300" />
+                        <x-input name="customername" type="text" placeholder="Kundenname" label="Kundenname" value="{{ $customer->customername }}"/>
                         <input type="hidden" name="customerid" value="{{ $customer->id }}">
                     </div>
                     <div class="sm:col-span-3">
-                        <x-input name="customer_number" type="text" placeholder="Kundennummer" label="Kundennummer" value="{{ $customer->customer_number }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-700 transition-all duration-300" />
+                        <x-input name="customer_number" type="text" placeholder="Kundennummer" label="Kundennummer" value="{{ $customer->customer_number }}" />
                     </div>
                 </div>
             </div>
@@ -66,13 +54,13 @@
                 
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-12">
                     <div class="sm:col-span-6">
-                        <x-input name="companyname" type="text" placeholder="Firmenname" label="Firmenname" value="{{ $customer->companyname }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-700 transition-all duration-300" />
+                        <x-input name="companyname" type="text" placeholder="Firmenname" label="Firmenname" value="{{ $customer->companyname }}" />
                     </div>
                     <div class="sm:col-span-3">
-                        <x-input name="vat_number" type="text" placeholder="UID" label="UID" value="{{ $customer->vat_number }}" class="rounded-lg bg-white/70 backdrop-blur-sm border-0 shadow-sm focus:ring-2 focus:ring-blue-700 transition-all duration-300" />
+                        <x-input name="vat_number" type="text" placeholder="UID" label="UID" value="{{ $customer->vat_number }}" />
                     </div>
                     <div class="sm:col-span-3">
-                        <x-dropdown_body name="tax_id" id="tax_id" value="" :options="$taxrates->pluck('taxrate', 'id')" :selected="old('taxrate', $customer->tax_id)" label="Umsatzsteuer in %" placeholder="Bitte auswählen" class="w-full appearance-none rounded-lg bg-white/70 backdrop-blur-sm py-3 pl-3 pr-8 text-base text-gray-900 border-0 shadow-sm focus:ring-2 focus:ring-blue-700 transition-all duration-300" />
+                        <x-dropdown_body name="tax_id" id="tax_id" value="" :options="$taxrates->pluck('taxrate', 'id')" :selected="old('taxrate', $customer->tax_id)" label="Umsatzsteuer in %" placeholder="Bitte auswählen" />
                     </div>
                 </div>
             </div>
@@ -181,20 +169,8 @@
 
             <!-- Action Buttons -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-4 pt-6 border-t border-gray-200">
-                <a href="{{ route('customer.index') }}" 
-                   class="inline-flex items-center justify-center px-6 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-white/90 transition-all duration-300 shadow-sm">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                    Abbrechen
-                </a>
-                <button type="submit" 
-                        class="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    Änderungen speichern
-                </button>
+                <x-button-back-white href="{{ route('customer.index') }}" name="Abbrechen" :showIcon="false" />
+                <x-button-blue name="Änderungen speichern" />
             </div>
         </form>
     </div>

@@ -20,7 +20,7 @@
                 required
             @endif
             style="-webkit-appearance: none; -moz-appearance: none; appearance: none; background-image: none;"
-            class="block w-full rounded-md bg-white px-3 py-2.5 pr-10 text-base font-medium text-gray-900 border border-gray-300 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 shadow-md hover:shadow-lg transition-all duration-200 sm:text-sm/6 @error($name) border-red-500 ring-red-500 @enderror">
+            class="block w-full rounded-md bg-white px-3 py-2.5 pr-10 text-base font-medium text-gray-900 border border-stone-200 placeholder:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 focus:ring-blue-700 hover:shadow-lg transition-all duration-200 sm:text-sm/6 @error($name) border-red-500 ring-red-500 @enderror">
 
             @if($placeholder)
                 <option value="">{{ $placeholder }}</option>

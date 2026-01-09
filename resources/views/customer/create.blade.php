@@ -6,13 +6,7 @@
             <p class="text-gray-600">Füllen Sie die folgenden Informationen aus, um einen neuen Kunden zu erstellen</p>
         </div>
         <div class="mt-4 md:mt-0">
-            <a href="{{ route('customer.index') }}" 
-               class="inline-flex items-center px-4 py-2 bg-white/60 backdrop-blur-lg border border-white/20 text-gray-700 font-medium rounded-lg hover:bg-white/80 transition-all duration-300 shadow-lg">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                </svg>
-                Zurück zur Übersicht
-            </a>
+            <x-button-back-white href="{{ route('customer.index') }}" name="Zurück zur Übersicht" />
         </div>
     </div>
 
@@ -175,20 +169,8 @@
 
             <!-- Action Buttons -->
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-end gap-4 pt-6 border-t border-gray-200">
-                <a href="{{ route('customer.index') }}" 
-                   class="inline-flex items-center justify-center px-6 py-3 bg-white/70 backdrop-blur-sm border border-gray-200 text-gray-700 font-medium rounded-lg hover:bg-white/90 transition-all duration-300 shadow-sm">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                    Abbrechen
-                </a>
-                <button type="submit" 
-                        class="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                    </svg>
-                    Kunde speichern
-                </button>
+                <x-button-white href="{{ route('customer.index') }}" name="Abbrechen"/>
+                <x-button-save-blue name="Kunde speichern" />
             </div>
         </form>
     </div>
