@@ -23,7 +23,7 @@
     </script>
 
     <!-- Moderne Filter- und Suchbereich -->
-    <div class="mb-6 bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+    <div class="mb-6 bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-stone-200">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- Suchfeld -->
             <div class="lg:col-span-2">
@@ -35,7 +35,7 @@
                         </svg>
                     </div>
                     <input wire:model.live="search" type="text" placeholder="Lieferant, Belegnummer, Beschreibung..." 
-                           class="block w-full pl-10 pr-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md text-sm">
+                           class="block w-full pl-10 pr-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 hover:shadow-md text-sm">
                 </div>
             </div>
             
@@ -48,7 +48,7 @@
                     Von Datum
                 </label>
                 <input wire:model.live="dateFrom" type="date" id="dateFrom" 
-                       class="block w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md text-sm">
+                       class="block w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-transparent transition-all duration-200 hover:shadow-md text-sm">
             </div>
             
             <!-- Bis Datum -->
@@ -60,7 +60,7 @@
                     Bis Datum
                 </label>
                 <input wire:model.live="dateTo" type="date" id="dateTo" 
-                       class="block w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 shadow-sm hover:shadow-md text-sm">
+                       class="block w-full px-4 py-3 bg-white/60 backdrop-blur-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 hover:shadow-md text-sm">
             </div>
         </div>
         
@@ -84,7 +84,7 @@
                     @endif
                 </div>
                 <button wire:click="clearDateFilter" 
-                        class="inline-flex items-center px-3 py-1 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg text-xs">
+                        class="inline-flex items-center px-3 py-1 bg-gradient-to-r from-red-600 via-red-500 to-red-600 text-white font-medium rounded-lg hover:from-red-500 hover:via-red-400 hover:to-red-500 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl text-xs">
                     <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
@@ -99,7 +99,7 @@
     <div class="mt-8 flow-root w-full">
         <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
             <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
+                <div class="overflow-hidden ring-1 ring-black/5 sm:rounded-lg">
                     @if($invoiceuploads->isEmpty())
                         <p class="text-gray-600 p-4">Keine Rechnungen gefunden.</p>
                     @else
@@ -288,14 +288,14 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                             <div class="flex items-center justify-end space-x-2">
                                                 <a href="{{ route('invoiceupload.edit', $invoice->id) }}" 
-                                                   class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-medium rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 shadow-md hover:shadow-lg text-xs">
+                                                   class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-medium rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl text-xs">
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                                     </svg>
                                                     Bearbeiten
                                                 </a>
                                                 <a href="{{ route('invoiceupload.show_invoice', $invoice->id) }}" 
-                                                   class="inline-flex items-center px-3 py-2 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-all duration-200 shadow-md hover:shadow-lg text-xs">
+                                                   class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-green-600 via-green-500 to-green-600 text-white font-medium rounded-lg hover:from-green-500 hover:via-green-400 hover:to-green-500 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl text-xs">
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -303,7 +303,7 @@
                                                     Anzeigen
                                                 </a>
                                                 <button wire:click="confirmDelete({{ $invoice->id }})" 
-                                                        class="inline-flex items-center px-3 py-2 bg-red-500 text-white font-medium rounded-lg hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg text-xs">
+                                                        class="inline-flex items-center px-3 py-2 bg-gradient-to-r from-red-600 via-red-500 to-red-600 text-white font-medium rounded-lg hover:from-red-500 hover:via-red-400 hover:to-red-500 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl text-xs">
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
                                                     </svg>
@@ -335,7 +335,7 @@
 
                 <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-                <div class="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                <div class="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
                     <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                         <div class="sm:flex sm:items-start">
                             <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -357,11 +357,11 @@
                     </div>
                     <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                         <button wire:click="deleteInvoice" type="button" 
-                                class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                class="w-full inline-flex justify-center rounded-md border border-transparent px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
                             Löschen
                         </button>
                         <button wire:click="cancelDelete" type="button" 
-                                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                             Abbrechen
                         </button>
                     </div>
