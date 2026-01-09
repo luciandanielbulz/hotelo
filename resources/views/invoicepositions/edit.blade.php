@@ -37,7 +37,7 @@
             </div>
             <div>
                 <a href="{{ route('invoice.edit', ['invoice' => $invoicepositioncontent->invoice_id]) }}" 
-                   class="inline-flex items-center px-4 py-2 bg-white/70 backdrop-blur-sm text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-white/90 transition-all duration-300 shadow-sm hover:shadow-md">
+                   class="inline-flex items-center px-4 py-2 bg-white/70 backdrop-blur-sm text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-white/90 transition-all duration-300 hover:shadow-md">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m0 7h18"/>
                     </svg>
@@ -48,7 +48,7 @@
     </div>
     <!-- Moderne Form-Karte für normale Position -->
     @if ($invoicepositioncontent->positiontext == 0)
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-stone-200">
             <div class="mb-6">
                 <h2 class="text-lg font-semibold text-gray-900 flex items-center">
                     <div class="w-8 h-8 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-xs mr-3">
@@ -97,13 +97,13 @@
                             </button>
                         @endif
                     </div>
-                    <textarea name="details" id="details" rows="8" class="block w-full rounded-lg bg-white/70 backdrop-blur-sm px-4 py-3 text-base text-gray-900 border border-gray-300 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 shadow-md hover:shadow-lg transition-all duration-200" placeholder="Detaillierte Beschreibung der Position...">{{ old('details', $invoicepositioncontent->details) }}</textarea>
+                    <textarea name="details" id="details" rows="8" class="block w-full rounded-lg bg-white/70 backdrop-blur-sm px-4 py-3 text-base text-gray-900 border border-gray-300 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 hover:shadow-lg transition-all duration-200" placeholder="Detaillierte Beschreibung der Position...">{{ old('details', $invoicepositioncontent->details) }}</textarea>
                 </div>
 
                 <!-- Speichern Button -->
                 <div class="flex justify-center md:justify-start pt-4">
                     <input type="hidden" name="id" value="{{ $invoicepositioncontent->id }}">
-                    <button type="submit" class="w-full md:w-auto inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <button type="submit" class="w-full md:w-auto inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-xl">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
@@ -114,7 +114,7 @@
         </div>
     @else
         <!-- Moderne Form-Karte für Textposition -->
-        <div class="bg-green-50/60 backdrop-blur-lg rounded-xl p-6 border border-green-200 shadow-lg">
+        <div class="bg-green-50/60 backdrop-blur-lg rounded-xl p-6 border border-green-200">
             <div class="mb-6">
                 <h2 class="text-lg font-semibold text-green-700 flex items-center">
                     <div class="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white mr-3">
@@ -143,7 +143,7 @@
                             </button>
                         @endif
                     </div>
-                    <textarea name="details" id="details" rows="10" class="block w-full rounded-lg bg-white/70 backdrop-blur-sm px-4 py-3 text-base text-gray-900 border border-green-300 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 shadow-md hover:shadow-lg transition-all duration-200" placeholder="Geben Sie den Beschreibungstext ein..." required>{{ $invoicepositioncontent->details }}</textarea>
+                    <textarea name="details" id="details" rows="10" class="block w-full rounded-lg bg-white/70 backdrop-blur-sm px-4 py-3 text-base text-gray-900 border border-green-300 placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 hover:shadow-lg transition-all duration-200" placeholder="Geben Sie den Beschreibungstext ein..." required>{{ $invoicepositioncontent->details }}</textarea>
                 </div>
 
                 <!-- Speichern Button -->
@@ -153,7 +153,7 @@
                     <input type="hidden" name="price" value="{{ $invoicepositioncontent->price }}">
                     <input type="hidden" name="designation" value="{{ $invoicepositioncontent->designation }}">
                     <input type="hidden" name="amount" value="{{ $invoicepositioncontent->amount }}">
-                    <button type="submit" class="w-full md:w-auto inline-flex items-center justify-center px-8 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <button type="submit" class="w-full md:w-auto inline-flex items-center justify-center px-8 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition-all duration-300 hover:shadow-xl">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
@@ -167,7 +167,7 @@
     <!-- Floating Action Button - nur auf Smartphones -->
     <div class="md:hidden fixed bottom-6 right-6 z-50">
         <a href="{{ route('invoice.edit', ['invoice' => $invoicepositioncontent->invoice_id]) }}" 
-           class="flex items-center justify-center w-14 h-14 bg-white/70 backdrop-blur-sm text-gray-700 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 border border-gray-300"
+           class="flex items-center justify-center w-14 h-14 bg-white/70 backdrop-blur-sm text-gray-700 rounded-full hover:shadow-2xl transition-all duration-300 hover:scale-110 border border-gray-300"
            title="Zurück zur Rechnung">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m0 7h18"/>
@@ -177,7 +177,7 @@
 
     <!-- Übersetzungs-Modal -->
     <div id="translationModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div class="p-6">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-xl font-bold text-gray-900">Text übersetzen</h3>
@@ -216,7 +216,7 @@
                 </div>
 
                 <div class="flex gap-3">
-                    <button onclick="translateText()" class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl">
+                    <button onclick="translateText()" class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-xl">
                         Übersetzen
                     </button>
                     <button onclick="closeTranslationModal()" class="px-6 py-3 bg-gray-200 text-gray-700 font-semibold rounded-lg hover:bg-gray-300 transition-colors">
