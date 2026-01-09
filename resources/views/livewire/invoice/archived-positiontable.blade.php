@@ -1,26 +1,18 @@
 <div>
     <!-- Erweiterte Such- und Filter-Sektion -->
-    <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 mb-6 border border-white/20 shadow-lg">
+    <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 mb-6 border border-stone-200">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <!-- Suchfeld -->
             <div class="md:col-span-2">
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                    </div>
-                    <input wire:model.live="search" 
-                           type="text" 
-                           placeholder="Archivierte Rechnungen, Kunden oder Nummer suchen..." 
-                           class="block w-full pl-10 pr-3 py-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-red-500 shadow-sm text-gray-900 placeholder-gray-500">
+                <div class="hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-md hover:rounded-xl">
+                    <x-search placeholder="Archivierte Rechnungen, Kunden oder Nummer suchen..." />
                 </div>
             </div>
             
             <!-- Sortierung -->
-            <div>
+            <div class="w-full md:w-auto flex-shrink-0 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-md hover:rounded-xl">
                 <select wire:model.live="sortBy" 
-                        class="block w-full py-3 px-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-red-500 shadow-sm text-gray-900">
+                        class="block w-full py-3 px-3 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-900 border border-stone-200">
                     <option value="newest">Zuletzt archiviert</option>
                     <option value="oldest">Zuerst archiviert</option>
                     <option value="number">Nach Nummer</option>
@@ -29,17 +21,17 @@
             </div>
             
             <!-- View Toggle - nur auf Desktop-Geräten -->
-            <div class="hidden md:flex space-x-2">
+            <div class="hidden md:flex space-x-2 ml-auto">
                 <button wire:click="setViewMode('cards')" 
-                        class="flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-300 {{ $viewMode === 'cards' ? 'bg-red-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
-                    <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap flex items-center justify-center hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-md hover:rounded-xl {{ $viewMode === 'cards' ? 'bg-red-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }} border border-stone-200">
+                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                     </svg>
                     Karten
                 </button>
                 <button wire:click="setViewMode('table')" 
-                        class="flex-1 px-4 py-3 rounded-lg font-medium transition-all duration-300 {{ $viewMode === 'table' ? 'bg-red-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
-                    <svg class="w-4 h-4 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="flex-1 px-8 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap flex items-center justify-center hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-md hover:rounded-xl {{ $viewMode === 'table' ? 'bg-red-500 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
+                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0V4a1 1 0 011-1h12a1 1 0 011 1v16"/>
                     </svg>
                     Tabelle
@@ -52,7 +44,7 @@
         <!-- Karten-Layout -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($invoices as $invoice)
-                <div class="bg-white/60 backdrop-blur-lg rounded-xl p-4 border border-red-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group">
+                <div class="bg-white/60 backdrop-blur-lg rounded-xl p-4 border border-red-200 hover:shadow-xl transition-all duration-300 hover:scale-105 group">
                     
                     <!-- Rechnung Header -->
                     <div class="flex items-start justify-between mb-3">
@@ -121,41 +113,41 @@
                     </div>
                     
                     <!-- Action Buttons -->
-                    <div class="flex space-x-1 flex-wrap">
+                    <div class="flex space-x-3 flex-wrap gap-y-2">
                         <a href="{{ route('invoice.edit', $invoice->invoice_id) }}" 
-                           class="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-xl hover:scale-105 active:scale-95"
+                           class="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-xl hover:scale-105 active:scale-95"
                            title="Bearbeiten">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                             </svg>
                         </a>
                         <a href="{{ route('createinvoice.pdf', ['invoice_id' => $invoice->invoice_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}" 
-                           class="bg-gray-500 hover:bg-gray-600 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
+                           class="bg-gray-500 hover:bg-gray-600 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
                            title="Vorschau">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                             </svg>
                         </a>
                         <a href="{{ route('createinvoice.pdf', ['invoice_id' => $invoice->invoice_id, 'objecttype' => 'invoice', 'prev' => 'D']) }}" 
-                           class="bg-red-500 hover:bg-red-600 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
+                           class="bg-red-500 hover:bg-red-600 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
                            title="PDF herunterladen">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                         </a>
                         <a href="{{ route('invoice.copy', $invoice->invoice_id) }}" 
-                           class="bg-green-500 hover:bg-green-600 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
+                           class="bg-green-500 hover:bg-green-600 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
                            title="Rechnung kopieren">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                             </svg>
                         </a>
                         
                         <button wire:click="unarchiveInvoice({{ $invoice->invoice_id }})"
-                                class="bg-red-500 hover:bg-red-600 text-white text-xs py-1.5 px-2 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
+                                class="bg-red-500 hover:bg-red-600 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
                                 title="Wiederherstellen">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"/>
                             </svg>
                         </button>
@@ -173,7 +165,7 @@
         </div>
     @else
         <!-- Tabellen-Layout -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg overflow-hidden">
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl border border-stone-200 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50/50">
