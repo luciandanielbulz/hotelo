@@ -8,16 +8,40 @@
             $seoData = [
                 'title' => 'quickBill - Rechnungsverwaltung einfach gemacht',
                 'description' => 'quickBill ist eine benutzerfreundliche Lösung zur mühelosen Verwaltung Ihrer Rechnungen. Erstellen, verfolgen und versenden Sie Rechnungen schnell und einfach - alles an einem Ort.',
-                'keywords' => 'Rechnungsverwaltung, Rechnung erstellen, Rechnung verwalten, Rechnungssoftware, quickBill, KMU-Office, Venditio',
+                'keywords' => 'Rechnungsverwaltung, Rechnung erstellen, Rechnung verwalten, Rechnungssoftware, quickBill, KMU-Office, Venditio, Online Rechnungssoftware, Rechnungsprogramm, Rechnung online erstellen',
                 'image' => asset('logo/quickBill-Logo-alone.png'),
             ];
             
             $structuredData = [
                 \App\Helpers\SeoHelper::organizationStructuredData(),
-                \App\Helpers\SeoHelper::structuredData([
+                \App\Helpers\SeoHelper::websiteStructuredData(),
+                \App\Helpers\SeoHelper::softwareApplicationStructuredData([
                     'name' => 'quickBill',
                     'description' => $seoData['description'],
                     'url' => config('app.url'),
+                    'screenshot' => asset('logo/quickBill-Logo-alone.png'),
+                    'featureList' => [
+                        'Rechnungen erstellen und verwalten',
+                        'Angebote erstellen',
+                        'Kundenverwaltung',
+                        'PDF-Export',
+                        'E-Mail-Versand',
+                        'Dashboard und Analysen',
+                    ],
+                ]),
+                \App\Helpers\SeoHelper::faqStructuredData([
+                    [
+                        'question' => 'Was ist quickBill?',
+                        'answer' => 'quickBill ist eine benutzerfreundliche Rechnungsverwaltungssoftware, die es Unternehmen ermöglicht, Rechnungen und Angebote einfach zu erstellen, zu verwalten und zu versenden.',
+                    ],
+                    [
+                        'question' => 'Wie erstelle ich eine Rechnung mit quickBill?',
+                        'answer' => 'Mit quickBill können Sie schnell und einfach Rechnungen erstellen. Wählen Sie einen Kunden aus, fügen Sie Positionen hinzu und versenden Sie die Rechnung direkt per E-Mail.',
+                    ],
+                    [
+                        'question' => 'Kann ich quickBill kostenlos testen?',
+                        'answer' => 'Ja, kontaktieren Sie uns für eine kostenlose Testversion und ein individuelles Angebot.',
+                    ],
                 ]),
             ];
         @endphp

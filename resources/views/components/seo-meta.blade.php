@@ -9,7 +9,10 @@
 <meta name="keywords" content="{{ $seo['keywords'] }}">
 @endif
 <meta name="author" content="{{ config('seo.default_author', config('app.name')) }}">
-<meta name="robots" content="{{ config('seo.robots_allow', true) ? 'index, follow' : 'noindex, nofollow' }}">
+<meta name="robots" content="{{ config('seo.robots_allow', true) ? 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1' : 'noindex, nofollow' }}">
+<meta name="googlebot" content="{{ config('seo.robots_allow', true) ? 'index, follow' : 'noindex, nofollow' }}">
+<meta name="language" content="{{ $seo['locale'] }}">
+<meta name="revisit-after" content="7 days">
 
 {{-- Canonical URL --}}
 @if(config('seo.canonical_enabled', true))

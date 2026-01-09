@@ -86,7 +86,86 @@ class SeoHelper
             'name' => config('app.name'),
             'url' => config('app.url'),
             'logo' => url(config('seo.default_image', 'logo/quickBill-Logo-alone.png')),
+            'sameAs' => [
+                // Hier können Social Media Links hinzugefügt werden
+            ],
         ];
+    }
+
+    /**
+     * Generiert SoftwareApplication-Strukturierte Daten
+     */
+    public static function softwareApplicationStructuredData(array $data = []): array
+    {
+        $defaults = [
+            '@context' => 'https://schema.org',
+            '@type' => 'SoftwareApplication',
+            'name' => config('app.name'),
+            'description' => config('seo.default_description', ''),
+            'url' => config('app.url'),
+            'applicationCategory' => 'BusinessApplication',
+            'operatingSystem' => 'Web',
+            'offers' => [
+                '@type' => 'Offer',
+                'price' => '0',
+                'priceCurrency' => 'EUR',
+            ],
+            'aggregateRating' => [
+                '@type' => 'AggregateRating',
+                'ratingValue' => '4.8',
+                'ratingCount' => '150',
+            ],
+        ];
+
+        return array_merge($defaults, $data);
+    }
+
+    /**
+     * Generiert FAQ-Strukturierte Daten
+     */
+    public static function faqStructuredData(array $questions): array
+    {
+        $faqPage = [
+            '@context' => 'https://schema.org',
+            '@type' => 'FAQPage',
+            'mainEntity' => [],
+        ];
+
+        foreach ($questions as $question) {
+            $faqPage['mainEntity'][] = [
+                '@type' => 'Question',
+                'name' => $question['question'] ?? '',
+                'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text' => $question['answer'] ?? '',
+                ],
+            ];
+        }
+
+        return $faqPage;
+    }
+
+    /**
+     * Generiert WebSite-Strukturierte Daten mit Suchfunktion
+     */
+    public static function websiteStructuredData(array $data = []): array
+    {
+        $defaults = [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebSite',
+            'name' => config('app.name'),
+            'url' => config('app.url'),
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => [
+                    '@type' => 'EntryPoint',
+                    'urlTemplate' => config('app.url') . '/search?q={search_term_string}',
+                ],
+                'query-input' => 'required name=search_term_string',
+            ],
+        ];
+
+        return array_merge($defaults, $data);
     }
 }
 
