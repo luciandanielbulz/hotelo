@@ -1,6 +1,6 @@
 <div>
     <!-- Erweiterte Such- und Filter-Sektion -->
-    <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 mb-6 border border-white/20 shadow-lg">
+    <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 mb-6 border border-stone-200">
         <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
             <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
@@ -10,23 +10,25 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <!-- Suchfeld -->
             <div class="md:col-span-2">
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
+                <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input wire:model.live="search" 
+                               type="text" 
+                               placeholder="E-Mails, Kunden, Nummer oder E-Mail-Adresse suchen..." 
+                               class="block w-full pl-10 pr-3 py-3 rounded-lg bg-white/50 border border-stone-200 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-700 text-gray-900 placeholder-gray-500">
                     </div>
-                    <input wire:model.live="search" 
-                           type="text" 
-                           placeholder="E-Mails, Kunden, Nummer oder E-Mail-Adresse suchen..." 
-                           class="block w-full pl-10 pr-3 py-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-700 shadow-sm text-gray-900 placeholder-gray-500">
                 </div>
             </div>
             
             <!-- Typ-Filter -->
-            <div>
+            <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
                 <select wire:model.live="typeFilter" 
-                        class="block w-full py-3 px-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-700 shadow-sm text-gray-900">
+                        class="block w-full py-3 px-3 border border-stone-200 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-700 text-gray-900">
                     <option value="all">Alle Typen</option>
                     <option value="invoice">Nur Rechnungen</option>
                     <option value="offer">Nur Angebote</option>
@@ -34,9 +36,9 @@
             </div>
             
             <!-- Sortierung -->
-            <div>
+            <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
                 <select wire:model.live="sortBy" 
-                        class="block w-full py-3 px-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-700 shadow-sm text-gray-900">
+                        class="block w-full py-3 px-3 border border-stone-200 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-700 text-gray-900">
                     <option value="newest">Neueste zuerst</option>
                     <option value="oldest">Älteste zuerst</option>
                     <option value="customer">Nach Kunde</option>
@@ -47,7 +49,7 @@
     </div>
 
     <!-- Tabellenansicht -->
-    <div class="bg-white/80 backdrop-blur-lg rounded-xl shadow-lg border border-white/20 overflow-hidden">
+    <div class="bg-white/80 backdrop-blur-lg rounded-xl border border-stone-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-100">
@@ -117,8 +119,8 @@
                             $typeClass = $row->type == 1 ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800';
                             // Farben für Nummer: Blau für Rechnungen, Grün für Angebote
                             $numberColorClass = $row->type == 1 
-                                ? 'bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300' 
-                                : 'bg-green-500 hover:bg-green-600';
+                                ? 'bg-blue-900 hover:bg-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300' 
+                                : 'bg-green-500 hover:bg-green-400 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300';
                             $fileLink = $row->filename;
                             $customerName = $row->customername ?: $row->companyname;
                             $attachmentIcon = $row->withattachment ? 'fa-check' : 'fa-x';
@@ -147,7 +149,7 @@
                             <td class="whitespace-nowrap px-3 py-4 text-sm">
                                 <a href="{{ route('download.file', ['filename' => $fileLink]) }}" 
                                    target="_blank"
-                                   class="inline-flex items-center px-3 py-1.5 {{ $numberColorClass }} text-white text-xs font-semibold rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
+                                   class="inline-flex items-center px-3 py-1.5 {{ $numberColorClass }} text-white text-xs font-semibold rounded-lg">
                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
