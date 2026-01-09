@@ -15,7 +15,7 @@
             </div>
             <div class="flex space-x-3">
                 <a href="{{ route('invoice.index') }}" 
-                   class="inline-flex items-center px-4 py-2 bg-white/70 backdrop-blur-sm text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-white/90 transition-all duration-300 shadow-sm hover:shadow-md">
+                   class="inline-flex items-center px-4 py-2 bg-white/70 backdrop-blur-sm text-gray-700 font-medium rounded-lg border border-gray-300 hover:bg-white/90 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m0 7h18"/>
                     </svg>
@@ -28,7 +28,7 @@
                         <input type="hidden" name="objectid" value="{{ $invoice->id }}">
                         <input type="hidden" name="objecttype" value="invoice">
                         <button type="submit"
-                                class="inline-flex items-center px-6 py-2 bg-purple-500 text-white font-semibold rounded-lg hover:bg-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                                class="inline-flex items-center px-6 py-2 bg-gradient-to-r from-purple-600 via-purple-500 to-purple-600 text-white font-semibold rounded-lg hover:from-purple-500 hover:via-purple-400 hover:to-purple-500 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                             </svg>
@@ -66,7 +66,7 @@
                 </h2>
                 <div class="mt-3 text-center">
                     <button @click="openCustomerModal = true"
-                            class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-medium rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-xl hover:scale-105 active:scale-95">
+                            class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-medium rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95">
                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
                         </svg>
@@ -141,7 +141,7 @@
                     <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
                         <div class="flex justify-end">
                             <button @click="openCustomerModal = false" 
-                                    class="px-6 py-2 bg-gray-500 text-white font-medium rounded-lg hover:bg-gray-600 transition-colors duration-200 shadow-sm hover:shadow-md">
+                                    class="px-6 py-2 bg-gradient-to-r from-gray-600 via-gray-500 to-gray-600 text-white font-medium rounded-lg hover:from-gray-500 hover:via-gray-400 hover:to-gray-500 transition-all duration-300 shadow-lg hover:shadow-2xl hover:scale-105 active:scale-95">
                                 <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
@@ -271,7 +271,7 @@
             <input type="hidden" name="objectid" value="{{ $invoice->id }}">
             <input type="hidden" name="objecttype" value="invoice">
             <button type="submit"
-                    class="flex items-center justify-center w-14 h-14 bg-purple-500 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110"
+                    class="flex items-center justify-center w-14 h-14 bg-gradient-to-r from-purple-600 via-purple-500 to-purple-600 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95"
                     title="Senden">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -281,7 +281,7 @@
         @endif
         <!-- Vorschau -->
         <button onclick="window.open('{{ route('createinvoice.pdf', ['invoice_id' => $invoice->id]) }}', '_blank')"
-                class="flex items-center justify-center w-14 h-14 bg-blue-900 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 hover:bg-blue-800"
+                class="flex items-center justify-center w-14 h-14 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 hover:from-blue-800 hover:via-blue-700 hover:to-blue-800"
                 title="Vorschau">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -291,7 +291,7 @@
         
         <!-- Zurück -->
         <a href="{{ route('invoice.index') }}" 
-           class="flex items-center justify-center w-12 h-12 bg-white/70 backdrop-blur-sm text-gray-700 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 border border-gray-300"
+           class="flex items-center justify-center w-12 h-12 bg-white/70 backdrop-blur-sm text-gray-700 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 border border-gray-300"
            title="Zurück zur Übersicht">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m0 7h18"/>
