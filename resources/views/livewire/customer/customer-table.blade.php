@@ -1,10 +1,10 @@
 <div>
     <!-- Erweiterte Such- und Filter-Sektion -->
-    <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 mb-6 border border-white/20 shadow-lg">
+    <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 mb-6 border border-stone-200">
         <div class="flex flex-col md:flex-row gap-4 items-start md:items-center">
             <!-- Suchfeld -->
             <div class="w-full md:w-[35%] flex-shrink-0">
-                <div class="relative">
+                <div class="relative hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-md hover:rounded-xl">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -18,7 +18,7 @@
             </div>
             
             <!-- Sortierung -->
-            <div class="w-full md:w-auto flex-shrink-0">
+            <div class="w-full md:w-auto flex-shrink-0 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-md hover:rounded-xl">
                 <select wire:model.live="sortBy" 
                         class="block w-full py-3 px-3 border-0 rounded-lg bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-blue-700 shadow-sm text-gray-900">
                     <option value="newest">Neueste zuerst</option>
@@ -31,14 +31,14 @@
             <!-- View Toggle - nur auf Desktop-Geräten -->
             <div class="hidden md:flex space-x-2 ml-auto">
                 <button wire:click="setViewMode('cards')" 
-                        class="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap flex items-center justify-center {{ $viewMode === 'cards' ? 'bg-blue-900 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
+                        class="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap flex items-center justify-center hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-md hover:rounded-xl{{ $viewMode === 'cards' ? 'bg-blue-900 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }} border border-stone-200">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                     </svg>
                     Karten
                 </button>
                 <button wire:click="setViewMode('table')" 
-                        class="flex-1 px-8 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap flex items-center justify-center {{ $viewMode === 'table' ? 'bg-blue-900 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
+                        class="flex-1 px-8 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap flex items-center justify-center hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-md hover:rounded-xl {{ $viewMode === 'table' ? 'bg-blue-900 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }}">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M3 14h18m-9-4v8m-7 0V4a1 1 0 011-1h12a1 1 0 011 1v16"/>
                     </svg>
@@ -52,7 +52,7 @@
         <!-- Karten-Layout -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($customers as $customer)
-                <div class="bg-white/60 backdrop-blur-lg rounded-xl p-4 border border-white/20 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 group">
+                <div class="bg-white/60 backdrop-blur-lg rounded-xl p-4 border border-stone-200 hover:shadow-xl transition-all duration-300 hover:scale-105 group">
                     
                     <!-- Kunde Header -->
                     <div class="flex items-start justify-between mb-3 gap-2">
@@ -150,7 +150,7 @@
                     </div>
                 </div>
             @empty
-                <div class="col-span-full bg-white/60 backdrop-blur-lg rounded-xl p-12 border border-white/20 shadow-lg text-center">
+                <div class="col-span-full bg-white/60 backdrop-blur-lg rounded-xl p-12 border border-stone-200 text-center">
                     <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
                     </svg>
@@ -170,7 +170,7 @@
         </div>
     @else
         <!-- Tabellen-Layout -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl border border-white/20 shadow-lg overflow-hidden">
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl border border-stone-200 overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50/50">
