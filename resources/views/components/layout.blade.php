@@ -115,6 +115,9 @@
         </template>
     </div>
 
+    <!-- Cookie Banner -->
+    <x-cookie-banner />
+
     @livewireScripts
     @stack('scripts')
 </body>

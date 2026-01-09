@@ -108,11 +108,189 @@
             </div>
         </section>
 
+        <!-- Cookie-Einstellungen -->
+        <section class="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 sm:p-8 border border-stone-200">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Cookie-Einstellungen</h2>
+                    <p class="text-sm text-gray-600 mb-6">
+                        Sie können auswählen, welche Cookies Sie zulassen möchten. Notwendige Cookies können nicht deaktiviert werden, da sie für die Grundfunktionen der Website erforderlich sind.
+                    </p>
+                    
+                    <div x-data="cookieSettings()" x-init="loadPreferences()">
+                        <!-- Cookie-Optionen -->
+                        <div class="space-y-4 mb-6">
+                            <!-- Notwendige Cookies -->
+                            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1">
+                                        <label class="text-sm font-semibold text-gray-900 block mb-1">Notwendige Cookies</label>
+                                        <p class="text-xs text-gray-500">Erforderlich für die Grundfunktionen der Website</p>
+                                    </div>
+                                    <div class="ml-4">
+                                        <input type="checkbox" checked disabled class="h-5 w-5 text-blue-900 focus:ring-blue-800 border-gray-300 rounded cursor-not-allowed">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Funktionale Cookies -->
+                            <div class="bg-white rounded-lg p-4 border border-stone-200 hover:shadow-md transition-all duration-300">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1">
+                                        <label class="text-sm font-semibold text-gray-900 block mb-1">Funktionale Cookies</label>
+                                        <p class="text-xs text-gray-500">Ermöglichen erweiterte Funktionalität und Personalisierung</p>
+                                    </div>
+                                    <div class="ml-4">
+                                        <input type="checkbox" id="cookie-functional" x-model="cookies.functional" class="h-5 w-5 text-blue-900 focus:ring-blue-800 border-gray-300 rounded cursor-pointer">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Analytische Cookies -->
+                            <div class="bg-white rounded-lg p-4 border border-stone-200 hover:shadow-md transition-all duration-300">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex-1">
+                                        <label class="text-sm font-semibold text-gray-900 block mb-1">Analytische Cookies</label>
+                                        <p class="text-xs text-gray-500">Helfen uns, die Website zu verbessern</p>
+                                    </div>
+                                    <div class="ml-4">
+                                        <input type="checkbox" id="cookie-analytical" x-model="cookies.analytical" class="h-5 w-5 text-blue-900 focus:ring-blue-800 border-gray-300 rounded cursor-pointer">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Buttons -->
+                        <div class="flex flex-col sm:flex-row gap-3 justify-end">
+                            <button 
+                                @click="rejectAll()"
+                                onclick="if(typeof Alpine === 'undefined') { handleRejectAllSettings(); }"
+                                class="px-6 py-2.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
+                                Nur notwendige
+                            </button>
+                            <button 
+                                @click="acceptAll()"
+                                onclick="if(typeof Alpine === 'undefined') { handleAcceptAllSettings(); }"
+                                class="px-6 py-2.5 bg-white text-blue-900 text-sm font-medium rounded-lg border-2 border-blue-900 hover:bg-blue-50 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
+                                Alle akzeptieren
+                            </button>
+                            <button 
+                                @click="savePreferences(); window.location.href = '{{ url("/") }}'"
+                                onclick="if(typeof Alpine === 'undefined') { handleSavePreferences(); }"
+                                class="px-6 py-2.5 bg-blue-900 text-white text-sm font-medium rounded-lg hover:bg-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
+                                Auswahl speichern
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Footer -->
         <x-public-footer />
 
-        <!-- Cookie Banner -->
-        <x-cookie-banner />
+        <script>
+        // Fallback-Funktionen für den Fall, dass Alpine.js nicht geladen ist
+        function handleSavePreferences() {
+            const functionalCheckbox = document.getElementById('cookie-functional');
+            const analyticalCheckbox = document.getElementById('cookie-analytical');
+            
+            const cookies = {
+                necessary: true,
+                functional: functionalCheckbox ? functionalCheckbox.checked : false,
+                analytical: analyticalCheckbox ? analyticalCheckbox.checked : false
+            };
+            
+            localStorage.setItem('cookiePreferences', JSON.stringify(cookies));
+            localStorage.setItem('cookiePreferencesDate', new Date().toISOString());
+            
+            window.dispatchEvent(new CustomEvent('cookiePreferencesUpdated', {
+                detail: cookies
+            }));
+            
+            window.location.href = '{{ url("/") }}';
+        }
+        
+        function handleAcceptAllSettings() {
+            const functionalCheckbox = document.getElementById('cookie-functional');
+            const analyticalCheckbox = document.getElementById('cookie-analytical');
+            
+            if (functionalCheckbox) functionalCheckbox.checked = true;
+            if (analyticalCheckbox) analyticalCheckbox.checked = true;
+            
+            const cookies = {
+                necessary: true,
+                functional: true,
+                analytical: true
+            };
+            localStorage.setItem('cookiePreferences', JSON.stringify(cookies));
+            localStorage.setItem('cookiePreferencesDate', new Date().toISOString());
+            
+            window.dispatchEvent(new CustomEvent('cookiePreferencesUpdated', {
+                detail: cookies
+            }));
+        }
+        
+        function handleRejectAllSettings() {
+            const functionalCheckbox = document.getElementById('cookie-functional');
+            const analyticalCheckbox = document.getElementById('cookie-analytical');
+            
+            if (functionalCheckbox) functionalCheckbox.checked = false;
+            if (analyticalCheckbox) analyticalCheckbox.checked = false;
+            
+            const cookies = {
+                necessary: true,
+                functional: false,
+                analytical: false
+            };
+            localStorage.setItem('cookiePreferences', JSON.stringify(cookies));
+            localStorage.setItem('cookiePreferencesDate', new Date().toISOString());
+            
+            window.dispatchEvent(new CustomEvent('cookiePreferencesUpdated', {
+                detail: cookies
+            }));
+        }
+        
+        function cookieSettings() {
+            return {
+                cookies: {
+                    necessary: true,
+                    functional: false,
+                    analytical: false
+                },
+                
+                loadPreferences() {
+                    const saved = localStorage.getItem('cookiePreferences');
+                    if (saved) {
+                        const preferences = JSON.parse(saved);
+                        this.cookies = { ...this.cookies, ...preferences };
+                    }
+                },
+                
+                acceptAll() {
+                    this.cookies.functional = true;
+                    this.cookies.analytical = true;
+                    this.savePreferences();
+                },
+                
+                rejectAll() {
+                    this.cookies.functional = false;
+                    this.cookies.analytical = false;
+                    this.savePreferences();
+                },
+                
+                savePreferences() {
+                    localStorage.setItem('cookiePreferences', JSON.stringify(this.cookies));
+                    localStorage.setItem('cookiePreferencesDate', new Date().toISOString());
+                    
+                    // Event für andere Scripts
+                    window.dispatchEvent(new CustomEvent('cookiePreferencesUpdated', {
+                        detail: this.cookies
+                    }));
+                }
+            }
+        }
+        </script>
     </body>
 </html>
 

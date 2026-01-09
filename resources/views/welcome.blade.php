@@ -89,10 +89,10 @@
                             $imageExists = file_exists(public_path($imagePath)) || file_exists(public_path('images/features/rechnungen.png'));
                         @endphp
                         @if($imageExists)
-                            <div class="mb-6 overflow-hidden">
+                            <div class="mb-6 overflow-hidden h-64">
                                 <img src="{{ asset(file_exists(public_path('images/features/rechnungen.jpg')) ? 'images/features/rechnungen.jpg' : 'images/features/rechnungen.png') }}" 
                                      alt="Rechnungen verwalten" 
-                                     class="w-full h-auto object-cover">
+                                     class="w-full h-full object-cover">
                             </div>
                         @else
                             <div class="h-64 bg-blue-50 flex items-center justify-center mb-6">
@@ -122,10 +122,10 @@
                             $imageExists = file_exists(public_path($imagePath)) || file_exists(public_path('images/features/angebote.png'));
                         @endphp
                         @if($imageExists)
-                            <div class="mb-6 overflow-hidden">
+                            <div class="mb-6 overflow-hidden h-64">
                                 <img src="{{ asset(file_exists(public_path('images/features/angebote.jpg')) ? 'images/features/angebote.jpg' : 'images/features/angebote.png') }}" 
                                      alt="Angebote erstellen" 
-                                     class="w-full h-auto object-cover">
+                                     class="w-full h-full object-cover">
                             </div>
                         @else
                             <div class="h-64 bg-blue-50 flex items-center justify-center mb-6">
@@ -155,10 +155,10 @@
                             $imageExists = file_exists(public_path($imagePath)) || file_exists(public_path('images/features/kundenverwaltung.png'));
                         @endphp
                         @if($imageExists)
-                            <div class="mb-6 overflow-hidden">
+                            <div class="mb-6 overflow-hidden h-64">
                                 <img src="{{ asset(file_exists(public_path('images/features/kundenverwaltung.jpg')) ? 'images/features/kundenverwaltung.jpg' : 'images/features/kundenverwaltung.png') }}" 
                                      alt="Kundenverwaltung" 
-                                     class="w-full h-auto object-cover">
+                                     class="w-full h-full object-cover">
                             </div>
                         @else
                             <div class="h-64 bg-blue-50 flex items-center justify-center mb-6">
@@ -188,10 +188,10 @@
                             $imageExists = file_exists(public_path($imagePath)) || file_exists(public_path('images/features/pdfs.png'));
                         @endphp
                         @if($imageExists)
-                            <div class="mb-6 overflow-hidden">
+                            <div class="mb-6 overflow-hidden h-64">
                                 <img src="{{ asset(file_exists(public_path('images/features/pdfs.jpg')) ? 'images/features/pdfs.jpg' : 'images/features/pdfs.png') }}" 
                                      alt="Professionelle PDFs" 
-                                     class="w-full h-auto object-cover">
+                                     class="w-full h-full object-cover">
                             </div>
                         @else
                             <div class="h-64 bg-blue-50 flex items-center justify-center mb-6">
@@ -221,10 +221,10 @@
                             $imageExists = file_exists(public_path($imagePath)) || file_exists(public_path('images/features/versand.png'));
                         @endphp
                         @if($imageExists)
-                            <div class="mb-6 overflow-hidden">
+                            <div class="mb-6 overflow-hidden h-64">
                                 <img src="{{ asset(file_exists(public_path('images/features/versand.jpg')) ? 'images/features/versand.jpg' : 'images/features/versand.png') }}" 
                                      alt="Direkter Versand" 
-                                     class="w-full h-auto object-cover">
+                                     class="w-full h-full object-cover">
                             </div>
                         @else
                             <div class="h-64 bg-blue-50 flex items-center justify-center mb-6">
@@ -254,10 +254,10 @@
                             $imageExists = file_exists(public_path($imagePath)) || file_exists(public_path('images/features/analysen.png'));
                         @endphp
                         @if($imageExists)
-                            <div class="mb-6 overflow-hidden">
+                            <div class="mb-6 overflow-hidden h-64">
                                 <img src="{{ asset(file_exists(public_path('images/features/analysen.jpg')) ? 'images/features/analysen.jpg' : 'images/features/analysen.png') }}" 
                                      alt="Übersicht & Analyse" 
-                                     class="w-full h-auto object-cover">
+                                     class="w-full h-full object-cover">
                             </div>
                         @else
                             <div class="h-64 bg-blue-50 flex items-center justify-center mb-6">

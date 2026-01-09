@@ -1,68 +1,45 @@
-<div id="cookie-banner" class="hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-2xl" x-data="cookieBanner()" x-init="init()">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
+<!-- Cookie Banner (unten) -->
+<div id="cookie-dialog-overlay" 
+     class="fixed bottom-0 left-0 right-0 z-[9999] bg-white border-t border-gray-200 shadow-lg"
+     style="display: none;"
+     x-data="cookieBanner()" 
+     x-init="init()"
+     x-show="showDialog"
+     x-transition:enter="ease-out duration-300"
+     x-transition:enter-start="translate-y-full"
+     x-transition:enter-end="translate-y-0"
+     x-transition:leave="ease-in duration-200"
+     x-transition:leave-start="translate-y-0"
+     x-transition:leave-end="translate-y-full">
+    
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
             <!-- Text -->
-            <div class="flex-1">
-                <h3 class="text-lg font-bold text-gray-900 mb-2">Cookie-Einstellungen</h3>
-                <p class="text-sm text-gray-600 mb-4">
-                    Wir verwenden Cookies, um Ihnen die bestmögliche Erfahrung auf unserer Website zu bieten. 
-                    Sie können auswählen, welche Cookies Sie zulassen möchten. 
+            <div class="flex-1 text-sm text-gray-600">
+                <p>
+                    Wir verwenden Cookies, um Ihnen die bestmögliche Erfahrung zu bieten. 
                     <a href="{{ route('cookies') }}" class="text-blue-900 hover:text-blue-800 underline">Mehr erfahren</a>
                 </p>
-                
-                <!-- Cookie-Optionen -->
-                <div class="space-y-3 mt-4">
-                    <!-- Notwendige Cookies (immer aktiv) -->
-                    <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <label class="text-sm font-medium text-gray-900">Notwendige Cookies</label>
-                            <p class="text-xs text-gray-500">Erforderlich für die Grundfunktionen der Website</p>
-                        </div>
-                        <div class="ml-4">
-                            <input type="checkbox" checked disabled class="h-4 w-4 text-blue-900 focus:ring-blue-800 border-gray-300 rounded cursor-not-allowed">
-                        </div>
-                    </div>
-                    
-                    <!-- Funktionale Cookies -->
-                    <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <label class="text-sm font-medium text-gray-900">Funktionale Cookies</label>
-                            <p class="text-xs text-gray-500">Ermöglichen erweiterte Funktionalität und Personalisierung</p>
-                        </div>
-                        <div class="ml-4">
-                            <input type="checkbox" x-model="cookies.functional" class="h-4 w-4 text-blue-900 focus:ring-blue-800 border-gray-300 rounded cursor-pointer">
-                        </div>
-                    </div>
-                    
-                    <!-- Analytische Cookies -->
-                    <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <label class="text-sm font-medium text-gray-900">Analytische Cookies</label>
-                            <p class="text-xs text-gray-500">Helfen uns, die Website zu verbessern</p>
-                        </div>
-                        <div class="ml-4">
-                            <input type="checkbox" x-model="cookies.analytical" class="h-4 w-4 text-blue-900 focus:ring-blue-800 border-gray-300 rounded cursor-pointer">
-                        </div>
-                    </div>
-                </div>
             </div>
             
             <!-- Buttons -->
-            <div class="flex flex-col sm:flex-row gap-3 lg:ml-6">
-                <button 
-                    @click="acceptAll()"
-                    class="px-6 py-2.5 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white text-sm font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300">
-                    Alle akzeptieren
-                </button>
-                <button 
-                    @click="acceptSelected()"
-                    class="px-6 py-2.5 bg-white text-blue-900 text-sm font-semibold rounded-lg border-2 border-blue-900 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700 transition-colors">
-                    Auswahl speichern
-                </button>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('cookies') }}"
+                   @click="hideDialog()"
+                   class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                    Cookies anpassen
+                </a>
                 <button 
                     @click="rejectAll()"
-                    class="px-6 py-2.5 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors">
-                    Nur notwendige
+                    onclick="if(typeof Alpine === 'undefined') { handleRejectAll(); }"
+                    class="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900 transition-colors">
+                    Ablehnen
+                </button>
+                <button 
+                    @click="acceptAll()"
+                    onclick="if(typeof Alpine === 'undefined') { handleAcceptAll(); }"
+                    class="px-5 py-2 bg-blue-900 text-white text-sm font-medium rounded-lg hover:bg-blue-800 transition-colors">
+                    Akzeptieren
                 </button>
             </div>
         </div>
@@ -70,8 +47,86 @@
 </div>
 
 <script>
+// Fallback-Funktionen für den Fall, dass Alpine.js nicht geladen ist
+function handleAcceptAll() {
+    const cookies = {
+        necessary: true,
+        functional: true,
+        analytical: true
+    };
+    localStorage.setItem('cookiePreferences', JSON.stringify(cookies));
+    localStorage.setItem('cookiePreferencesDate', new Date().toISOString());
+    showToastMessage('Alle Cookies wurden akzeptiert.');
+    hideCookieBanner();
+}
+
+function handleRejectAll() {
+    const cookies = {
+        necessary: true,
+        functional: false,
+        analytical: false
+    };
+    localStorage.setItem('cookiePreferences', JSON.stringify(cookies));
+    localStorage.setItem('cookiePreferencesDate', new Date().toISOString());
+    hideCookieBanner();
+}
+
+function showToastMessage(message) {
+    const toast = document.createElement('div');
+    toast.className = 'fixed bottom-4 right-4 z-[10000] bg-green-50 border border-green-200 text-green-900 px-4 py-3 rounded-lg shadow-lg text-sm font-medium';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.transition = 'opacity 0.3s ease-out';
+        toast.style.opacity = '0';
+        setTimeout(() => {
+            if (document.body.contains(toast)) {
+                document.body.removeChild(toast);
+            }
+        }, 300);
+    }, 3000);
+}
+
+function hideCookieBanner() {
+    const overlay = document.getElementById('cookie-dialog-overlay');
+    if (overlay) {
+        overlay.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
+        overlay.style.transform = 'translateY(100%)';
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 300);
+    }
+}
+
+// Fallback für den Fall, dass Alpine.js nicht geladen ist
+document.addEventListener('DOMContentLoaded', function() {
+    // Prüfe ob Cookie-Einstellungen bereits gespeichert wurden
+    const saved = localStorage.getItem('cookiePreferences');
+    if (saved) {
+        const overlay = document.getElementById('cookie-dialog-overlay');
+        if (overlay) {
+            overlay.style.display = 'none';
+        }
+        return;
+    }
+    
+    // Prüfe ob Alpine.js verfügbar ist
+    if (typeof Alpine === 'undefined') {
+        // Fallback: Einfache Cookie-Dialog-Implementierung ohne Alpine.js
+        setTimeout(() => {
+            const overlay = document.getElementById('cookie-dialog-overlay');
+            if (overlay) {
+                overlay.style.display = 'block';
+            }
+        }, 1000);
+    }
+});
+
 function cookieBanner() {
     return {
+        showDialog: false,
         cookies: {
             necessary: true, // Immer aktiv
             functional: false,
@@ -85,14 +140,19 @@ function cookieBanner() {
                 const preferences = JSON.parse(saved);
                 this.cookies = { ...this.cookies, ...preferences };
                 // Banner nicht anzeigen, wenn bereits Einstellungen gespeichert wurden
+                const overlay = document.getElementById('cookie-dialog-overlay');
+                if (overlay) {
+                    overlay.style.display = 'none';
+                }
                 return;
             }
             
             // Banner nach kurzer Verzögerung anzeigen
             setTimeout(() => {
-                const banner = document.getElementById('cookie-banner');
-                if (banner) {
-                    banner.classList.remove('hidden');
+                const overlay = document.getElementById('cookie-dialog-overlay');
+                if (overlay) {
+                    overlay.style.display = 'block';
+                    this.showDialog = true;
                 }
             }, 1000);
         },
@@ -101,19 +161,32 @@ function cookieBanner() {
             this.cookies.functional = true;
             this.cookies.analytical = true;
             this.savePreferences();
-            this.hideBanner();
-        },
-        
-        acceptSelected() {
-            this.savePreferences();
-            this.hideBanner();
+            this.showSuccessMessage('Alle Cookies wurden akzeptiert.');
+            this.hideDialog();
         },
         
         rejectAll() {
             this.cookies.functional = false;
             this.cookies.analytical = false;
             this.savePreferences();
-            this.hideBanner();
+            this.hideDialog();
+        },
+        
+        showSuccessMessage(message) {
+            // Erstelle eine Toast-Nachricht
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 z-[10000] bg-green-50 border border-green-200 text-green-900 px-4 py-3 rounded-lg shadow-lg text-sm font-medium';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // Entferne die Nachricht nach 3 Sekunden
+            setTimeout(() => {
+                toast.style.transition = 'opacity 0.3s ease-out';
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
         },
         
         savePreferences() {
@@ -126,16 +199,14 @@ function cookieBanner() {
             }));
         },
         
-        hideBanner() {
-            const banner = document.getElementById('cookie-banner');
-            if (banner) {
-                banner.style.transition = 'transform 0.3s ease-out, opacity 0.3s ease-out';
-                banner.style.transform = 'translateY(100%)';
-                banner.style.opacity = '0';
-                setTimeout(() => {
-                    banner.classList.add('hidden');
-                }, 300);
-            }
+        hideDialog() {
+            this.showDialog = false;
+            setTimeout(() => {
+                const overlay = document.getElementById('cookie-dialog-overlay');
+                if (overlay) {
+                    overlay.style.display = 'none';
+                }
+            }, 300);
         }
     }
 }
