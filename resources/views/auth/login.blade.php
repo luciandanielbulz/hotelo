@@ -2,24 +2,32 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <div class="min-h-screen bg-blue-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-md w-full">
-            <!-- Logo -->
-            <div class="text-center mb-8">
-                <a href="{{ url('/') }}" class="inline-block">
-                    <div class="flex justify-center mb-4">
-                        <div class="bg-white rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow cursor-pointer">
-                            <img src="{{ asset('logo/quickBill HauptLogo2.png') }}" alt="quickBill" style="height: 50px; width: auto; object-fit: contain;" />
-                        </div>
-                    </div>
-                    
-                </a>
+    <div class="min-h-screen bg-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-8 max-w-6xl w-full">
+            <!-- Bild links -->
+            <div class="hidden lg:block flex-shrink-0 pr-8">
+                <img src="{{ asset('images/features/mann_in_cafe.png') }}" alt="Mann im Café" class="max-w-md w-full h-auto rounded-3xl" />
             </div>
 
-            <!-- Login Form Card -->
-            <div class="bg-white rounded-xl shadow-xl p-8">
+            <!-- Login Container -->
+            <div class="flex-1 max-w-md w-full">
+                <!-- Logo -->
+                <div class="text-center mb-2">
+                    <a href="{{ url('/') }}" class="inline-block">
+                        <div class="flex justify-center mb-4">
+                            <div class="bg-white rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer">
+                                <img src="{{ asset('logo/quickBill HauptLogo2.png') }}" alt="quickBill" style="height: 50px; width: auto; object-fit: contain;" />
+                            </div>
+                        </div>
+                        
+                    </a>
+                </div>
+
+                <!-- Login Form Card -->
+                <div class="bg-white rounded-xl p-2">
                         <div class="text-center mb-6">
-                            <h2 class="text-xl font-bold text-gray-900">Anmelden</h2>
+                            <h2 class="text-xl font-bold text-gray-900">Willkommen</h2>
+                            <p class="text-sm text-gray-500">Melden Sie sich mit Ihren Daten an.</p>
                         </div>
 
                         <form class="space-y-5" method="POST" action="{{ route('login') }}">
@@ -112,6 +120,7 @@
                             </div>
                         </form>
 
+                </div>
             </div>
         </div>
     </div>
