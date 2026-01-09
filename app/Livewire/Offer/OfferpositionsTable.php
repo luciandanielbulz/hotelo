@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Offer;
 
 use Livewire\Component;
 use App\Models\Offerpositions;
@@ -156,6 +156,6 @@ class OfferpositionsTable extends Component
 
     public function render()
     {
-        return view('livewire.offerpositions-table');
+        return view('livewire.offer.offerpositions-table');
     }
 }

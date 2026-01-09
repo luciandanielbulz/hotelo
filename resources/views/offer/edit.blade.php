@@ -166,7 +166,7 @@
                 </svg>
                 Positionen
             </h2>
-            <livewire:offerpositions-table :offerId="$offerWithDetails->offer_id" />
+            <livewire:offer.offerpositions-table :offerId="$offerWithDetails->offer_id" />
         </div>
 
         <!-- Gesamtsumme Karte -->

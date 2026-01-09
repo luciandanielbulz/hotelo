@@ -23,7 +23,7 @@
             <!-- View Toggle - nur auf Desktop-Geräten -->
             <div class="hidden md:flex space-x-2 ml-auto">
                 <button wire:click="setViewMode('cards')" 
-                        class="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap flex items-center justify-center hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 hover:shadow-md hover:rounded-xl {{ $viewMode === 'cards' ? 'bg-blue-900 text-white shadow-lg' : 'bg-white/50 text-gray-700 hover:bg-white/70' }} border border-stone-200">
+                        class="flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-300 whitespace-nowrap flex items-center justify-center hover:shadow-2xl hover:scale-105 active:scale-95 {{ $viewMode === 'cards' ? 'bg-blue-900 text-white' : 'bg-white/50 text-gray-700 hover:bg-white/70' }} border border-stone-200">
                     <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                     </svg>
@@ -110,14 +110,14 @@
                     <!-- Action Buttons -->
                     <div class="flex space-x-3 flex-wrap gap-y-2">
                         <a href="{{ route('offer.edit', $offer->offer_id) }}" 
-                           class="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-xl hover:scale-105 active:scale-95"
+                           class="bg-blue-900 hover:bg-blue-800 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium hover:shadow-2xl hover:scale-105 active:scale-95"
                            title="Bearbeiten">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                             </svg>
                         </a>
                         <a href="{{ route('createoffer.pdf', ['offer_id' => $offer->offer_id, 'objecttype' => 'invoice', 'prev' => 'I']) }}" 
-                           class="bg-gray-500 hover:bg-gray-600 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
+                           class="bg-gray-500 hover:bg-gray-600 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium hover:shadow-2xl hover:scale-105 active:scale-95"
                            title="Vorschau">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -125,14 +125,14 @@
                             </svg>
                         </a>
                         <a href="{{ route('createoffer.pdf', ['offer_id' => $offer->offer_id, 'objecttype' => 'invoice', 'prev' => 'D']) }}" 
-                           class="bg-red-500 hover:bg-red-600 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
+                           class="bg-red-500 hover:bg-red-600 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium hover:shadow-2xl hover:scale-105 active:scale-95"
                            title="PDF herunterladen">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                             </svg>
                         </a>
                         <a href="{{ route('invoice.createinvoicefromoffer', ['offerid' => $offer->offer_id]) }}" 
-                           class="bg-green-500 hover:bg-green-600 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
+                           class="bg-green-500 hover:bg-green-600 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium hover:shadow-2xl hover:scale-105 active:scale-95"
                            title="Rechnung erstellen">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -145,7 +145,7 @@
                                 <input type="hidden" name="objectid" value="{{ $offer->offer_id }}">
                                 <input type="hidden" name="objecttype" value="offer">
                                 <button type="submit"
-                                        class="bg-purple-500 hover:bg-purple-600 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
+                                        class="bg-purple-500 hover:bg-purple-600 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium hover:shadow-2xl hover:scale-105 active:scale-95"
                                         title="E-Mail senden">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
@@ -155,7 +155,7 @@
                         @endif
                         
                         <button wire:click="archiveOffer({{ $offer->offer_id }})"
-                                class="bg-orange-500 hover:bg-orange-600 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium shadow-sm hover:shadow-md"
+                                class="bg-orange-500 hover:bg-orange-600 text-white text-sm py-2.5 px-3 rounded-md transition-all duration-300 font-medium hover:shadow-2xl hover:scale-105 active:scale-95"
                                 title="Archivieren">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l6 6m0 0l6-6m-6 6V3"/>
@@ -172,7 +172,7 @@
                     <p class="text-gray-600 mb-4">{{ $search ? 'Keine Angebote entsprechen Ihrer Suche.' : 'Sie haben noch keine Angebote erstellt.' }}</p>
                     @if(!$search)
                         <a href="{{ route('customer.index') }}" 
-                           class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white font-semibold rounded-lg hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl">
+                           class="inline-flex items-center px-6 py-3 bg-blue-900 text-white font-semibold rounded-lg hover:bg-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                             </svg>
