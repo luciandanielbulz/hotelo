@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Invoice;
 
 use Livewire\Component;
 use App\Models\Invoicepositions;
@@ -82,7 +82,7 @@ class InvoicepositionsTable extends Component
 
     public function render()
     {
-        return view('livewire.invoicepositions-table');
+        return view('livewire.invoice.invoicepositions-table');
     }
 
     public function deletePosition($positionId)

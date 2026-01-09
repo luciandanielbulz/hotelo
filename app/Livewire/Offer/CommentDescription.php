@@ -41,8 +41,7 @@ class CommentDescription extends Component
             $offer->save();
 
             $this->message = 'Zusatzinformationen erfolgreich aktualisiert.';
-
-            // Event-Dispatch entfernt - Erfolgsmeldung wird jetzt nur noch in der Komponente angezeigt
+            $this->dispatch('notify', message: $this->message, type: 'success');
 
             // Debugging hinzufügen
             \Log::info('Daten aktualisiert:', [
@@ -60,6 +59,12 @@ class CommentDescription extends Component
             
             $this->message = 'Fehler beim Speichern: ' . $e->getMessage();
         }
+    }
+
+    // Auto-Save beim Aktualisieren des Feldes (wire:model.lazy)
+    public function updatedDescription()
+    {
+        $this->updateCommentDescription();
     }
 
     public function render()

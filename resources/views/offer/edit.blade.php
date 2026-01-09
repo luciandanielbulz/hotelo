@@ -35,7 +35,7 @@
 
     <div class="space-y-6">
         <!-- Kundendaten + Beschreibung (2 Spalten wie Rechnung) -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-stone-200">
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
                 <!-- Kundendaten (links 1/2) -->
                 <div x-data="{ openCustomerModal: false }">
@@ -146,7 +146,7 @@
         </div>
 
         <!-- Angebotsdetails Karte -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg mb-6">
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-stone-200 mb-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
@@ -159,7 +159,7 @@
         
 
         <!-- Positionen Karte -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg mb-6 mt-6">
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-stone-200 mb-6 mt-6">
             <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <svg class="w-5 h-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
@@ -170,7 +170,7 @@
         </div>
 
         <!-- Gesamtsumme Karte -->
-        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+        <div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-stone-200">
             <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                 <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/>
@@ -179,7 +179,7 @@
             </h2>
             
             <div class="flex justify-end">
-                <div class="w-full md:w-1/2 lg:w-1/2 xl:w-1/2 bg-gradient-to-r from-gray-50 to-slate-50 rounded-lg p-4 border border-gray-200 shadow-sm">
+                <div class="w-full md:w-1/2 lg:w-1/2 xl:w-1/2 bg-gradient-to-r from-gray-50 to-slate-50 rounded-lg p-4 border border-gray-200">
                     <!-- Header -->
                     <div class="flex items-center mb-3">
                         <svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -216,7 +216,7 @@
                         </div>
 
                         <!-- Gesamtsumme -->
-                        <div class="bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg p-4 border-2 border-purple-300 shadow-md">
+                        <div class="bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg p-4 border border-purple-300">
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center">
                                     <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

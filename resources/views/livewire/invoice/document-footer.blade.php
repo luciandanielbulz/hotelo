@@ -1,4 +1,4 @@
-<div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-white/20 shadow-lg">
+<div class="bg-white/60 backdrop-blur-lg rounded-xl p-6 border border-stone-200">
     <!-- Dokument-Fußzeile (Angebote & Rechnungen) -->
     <div class="border-b border-gray-900/10 pb-6">
         <h3 class="text-base font-semibold leading-7 text-gray-900 mb-4">Dokument-Fußzeile</h3>

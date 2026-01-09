@@ -1,14 +1,14 @@
 <form wire:submit.prevent='updateInvoiceDetails'>
 
     
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 items-stretch">
         <!-- Spalte 1 -->
         <div>
             <!-- Steuersatz -->
             <label for="taxrateid" class="block text-sm font-bold text-gray-800 mb-1">Steuersatz</label>
             <div class="relative">
                 <select id="taxrateid" name="taxrateid" wire:model.live="taxrateid" wire:change="updateInvoiceDetails"
-                        class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium appearance-none">
+                        class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-stone-200 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 hover:shadow-lg transition-all duration-200 text-gray-900 font-medium appearance-none">
                     @foreach ([1 => '0 %', 2 => '20 %'] as $optionValue => $optionLabel)
                         <option value="{{ $optionValue }}">{{ $optionLabel }}</option>
                     @endforeach
@@ -21,37 +21,37 @@
             <div class="mt-4">
                 <label for="periodfrom" class="block text-sm font-bold text-gray-800 mb-1">Leistungszeitraum von</label>
                 <input type="date" name="periodfrom" id="periodfrom" wire:model.live="periodfrom" 
-                       class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium"/>
+                       class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-stone-200 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 hover:shadow-lg transition-all duration-200 text-gray-900 font-medium"/>
             </div>
         </div>
 
         <!-- Spalte 2 -->
-        <div class="md:border-l md:border-gray-200/60 md:pl-6">
+        <div class="md:border-l md:border-gray-200/60 md:pl-6 flex flex-col justify-center">
             <!-- Rechnungsdatum -->
             <label for="invoiceDate" class="block text-sm font-bold text-gray-800 mb-1">Rechnungsdatum</label>
             <input type="date" name="invoiceDate" id="invoiceDate" wire:model.live="invoiceDate" 
-                   class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium"/>
+                   class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-stone-200 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 hover:shadow-lg transition-all duration-200 text-gray-900 font-medium"/>
             <!-- Leistungszeitraum bis -->
             <div class="mt-4">
                 <label for="periodto" class="block text-sm font-bold text-gray-800 mb-1">Leistungszeitraum bis</label>
                 <input type="date" name="periodto" id="periodto" wire:model.live="periodto" 
-                       class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium"/>
+                       class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-stone-200 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 hover:shadow-lg transition-all duration-200 text-gray-900 font-medium"/>
             </div>
         </div>
 
         <!-- Spalte 3 -->
-        <div class="md:border-l md:border-gray-200/60 md:pl-6">
+        <div class="md:border-l md:border-gray-200/60 md:pl-6 flex flex-col justify-center">
             <!-- Nummer -->
             <label for="invoiceNumber" class="block text-sm font-bold text-gray-800 mb-1">Nummer</label>
             <input type="text" name="invoiceNumber" id="invoiceNumber" wire:model.debounce.600ms="invoiceNumber" wire:blur="updateInvoiceDetails" wire:keydown.enter.prevent="updateInvoiceDetails"  
-                   class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium placeholder-gray-600"
+                   class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-stone-200 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 hover:shadow-lg transition-all duration-200 text-gray-900 font-medium placeholder-gray-600"
                    placeholder="Rechnungsnummer"/>
             <!-- Konditionen -->
             <div class="mt-4">
                 <label for="condition_id" class="block text-sm font-bold text-gray-800 mb-1">Konditionen</label>
                 <div class="relative">
                     <select id="condition_id" name="condition_id" wire:model.live="condition_id" wire:change="updateInvoiceDetails" 
-                            class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 shadow-md hover:shadow-lg transition-all duration-200 text-gray-900 font-medium appearance-none">
+                            class="block w-full h-11 py-2.5 px-3 rounded-lg bg-white border border-stone-200 focus:outline-none focus:ring-2 focus:ring-blue-700 focus:border-blue-900 hover:shadow-lg transition-all duration-200 text-gray-900 font-medium appearance-none">
                         <option value="">-- Bedingung wählen --</option>
                         @foreach ($conditions as $condition)
                             <option value="{{ $condition->id }}" {{ $condition_id == $condition->id ? 'selected' : '' }}>

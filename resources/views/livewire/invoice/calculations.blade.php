@@ -1,6 +1,6 @@
 <div>
     <div class="flex justify-end">
-        <div class="w-full md:w-4/5 lg:w-1/2 xl:w-1/2 bg-gray-50 rounded-lg p-4 border border-gray-200 shadow-sm">
+        <div class="w-full md:w-4/5 lg:w-1/2 xl:w-1/2 bg-gray-50 rounded-lg p-4 border border-stone-200">
         <!-- Header -->
         <div class="flex items-center mb-3">
             <svg class="w-4 h-4 mr-2 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,7 +41,7 @@
             </div>
 
             <!-- Gesamtsumme -->
-            <div class="bg-purple-50 rounded-lg p-4 border-2 border-purple-300 shadow-md">
+            <div class="bg-purple-50 rounded-lg p-4 border border-purple-300">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
