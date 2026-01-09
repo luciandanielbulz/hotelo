@@ -1,9 +1,9 @@
 <x-layout>
     <!-- Einfache Hero Section -->
     <div class="mb-8">
-        <div class="bg-blue-800 rounded-2xl p-8 text-white">
-            <h1 class="text-3xl font-bold mb-2">Willkommen zurück, {{ auth()->user()->name }}! 👋</h1>
-            <p class="text-blue-100">Ihre Geschäftsübersicht</p>
+        <div class="bg-white border border-blue-800 rounded-2xl p-8 text-white">
+            <h1 class="text-3xl font-bold mb-2 text-blue-800">Willkommen zurück, {{ auth()->user()->name }}! 👋</h1>
+            <p class="text-blue-800">Ihre Geschäftsübersicht</p>
         </div>
     </div>
 
