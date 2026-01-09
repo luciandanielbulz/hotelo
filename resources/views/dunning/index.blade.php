@@ -63,7 +63,7 @@
 
     <!-- Statistiken -->
     <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="bg-white overflow-hidden border border-stone-200 rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -81,7 +81,7 @@
             </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="bg-white overflow-hidden border border-stone-200 rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -99,7 +99,7 @@
             </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="bg-white overflow-hidden border border-stone-200 rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -117,7 +117,7 @@
             </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="bg-white overflow-hidden border border-stone-200 rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -135,7 +135,7 @@
             </div>
         </div>
 
-        <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="bg-white overflow-hidden border border-stone-200 rounded-lg">
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -155,37 +155,41 @@
     </div>
 
     <!-- Filter und Suche -->
-    <div class="mt-8 bg-white shadow rounded-lg p-6">
+    <div class="mt-8 bg-white border border-stone-200 rounded-lg p-6">
         <form method="GET" action="{{ route('dunning.index') }}" class="flex flex-col sm:flex-row gap-4">
             <div class="flex-1">
                 <label for="search" class="block text-sm font-medium text-gray-700 mb-2">Suche</label>
-                <input type="text" 
-                       name="search" 
-                       id="search" 
-                       value="{{ $search }}" 
-                       placeholder="Rechnungsnummer oder Kunde..."
-                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
+                <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                    <input type="text" 
+                           name="search" 
+                           id="search" 
+                           value="{{ $search }}" 
+                           placeholder="Rechnungsnummer oder Kunde..."
+                           class="block w-full rounded-md border-gray-300 focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
+                </div>
             </div>
             <div class="sm:w-48">
                 <label for="stage" class="block text-sm font-medium text-gray-700 mb-2">Mahnstufe</label>
-                <select name="stage" 
-                        id="stage" 
-                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
+                <div class="hover:shadow-md hover:scale-[1.02] transition-all duration-300">
+                    <select name="stage" 
+                            id="stage" 
+                            class="block w-full rounded-md border-gray-300 focus:border-blue-900 focus:ring-blue-700 sm:text-sm">
                     <option value="all" {{ $stage === 'all' ? 'selected' : '' }}>Alle</option>
                     <option value="1" {{ $stage === '1' ? 'selected' : '' }}>Erinnerung</option>
                     <option value="2" {{ $stage === '2' ? 'selected' : '' }}>1. Mahnung</option>
                     <option value="3" {{ $stage === '3' ? 'selected' : '' }}>2. Mahnung</option>
                     <option value="4" {{ $stage === '4' ? 'selected' : '' }}>3. Mahnung</option>
-                </select>
+                    </select>
+                </div>
             </div>
             <div class="flex items-end">
                 <button type="submit" 
-                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
+                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-900 hover:bg-blue-800 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                     Filtern
                 </button>
                 @if($search || $stage !== 'all')
                     <a href="{{ route('dunning.index') }}" 
-                       class="ml-2 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
+                       class="ml-2 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-700">
                         Zurücksetzen
                     </a>
                 @endif
@@ -198,7 +202,7 @@
         @if($invoices->count() > 0)
             <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                    <div class="overflow-hidden shadow ring-1 ring-black/5 sm:rounded-lg">
+                    <div class="overflow-hidden border border-stone-200 rounded-lg">
                         <table class="min-w-full divide-y divide-gray-300">
                             <thead class="bg-gray-50">
                                 <tr>
@@ -276,7 +280,7 @@
                 {{ $invoices->links() }}
             </div>
         @else
-            <div class="bg-white shadow rounded-lg p-6 text-center">
+            <div class="bg-white border border-stone-200 rounded-lg p-6 text-center">
                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
