@@ -27,6 +27,9 @@
                         'PDF-Export',
                         'E-Mail-Versand',
                         'Dashboard und Analysen',
+                        'Reverse Charge für Österreich und Deutschland',
+                        'Kleinunternehmergerecht',
+                        'Automatische Updates',
                     ],
                 ]),
                 \App\Helpers\SeoHelper::faqStructuredData([
@@ -74,7 +77,8 @@
                             <a href="{{ url('/dashboard') }}" class="text-gray-700 hover:text-gray-900 font-medium">Dashboard</a>
                     @else
                             <a href="{{ route('login') }}" class="text-gray-700 hover:text-gray-900 font-medium">Anmelden</a>
-                            <a href="{{ route('contact.form') }}" class="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300">Angebot einholen</a>
+                            <a href="{{ route('pricing') }}" class="text-gray-700 hover:text-gray-900 font-medium">Preise</a>
+                            <a href="{{ route('pricing') }}" class="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300">Jetzt Starten</a>
                     @endauth
                     </div>
                 </div>
@@ -303,6 +307,87 @@
                             </a>
                         </div>
                     </div>
+
+                    <!-- Feature 7: Reverse Charge -->
+                    <div class="bg-white overflow-hidden">
+                        @php
+                            $imagePath = 'images/features/reverse-charge.jpg';
+                            $imageExists = file_exists(public_path($imagePath)) || file_exists(public_path('images/features/reverse-charge.png'));
+                        @endphp
+                        @if($imageExists)
+                            <div class="mb-6 overflow-hidden h-64">
+                                <img src="{{ asset(file_exists(public_path('images/features/reverse-charge.jpg')) ? 'images/features/reverse-charge.jpg' : 'images/features/reverse-charge.png') }}" 
+                                     alt="Reverse Charge" 
+                                     class="w-full h-full object-cover">
+                            </div>
+                        @else
+                            <div class="h-64 bg-blue-50 flex items-center justify-center mb-6">
+                                <svg class="w-16 h-16 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3"></path>
+                                </svg>
+                            </div>
+                        @endif
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-3">Reverse Charge für EU-Ausland</h3>
+                            <p class="text-gray-600 leading-relaxed mb-4">
+                                Erstellen Sie rechtssichere Auslandsrechnungen mit automatischer Reverse-Charge-Berücksichtigung. Speziell optimiert für Geschäfte mit Österreich und Deutschland – einfach per Klick aktivieren, der Rest wird automatisch berechnet.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 8: Kleinunternehmergerecht -->
+                    <div class="bg-white overflow-hidden">
+                        @php
+                            $imagePath = 'images/features/kleinunternehmer.jpg';
+                            $imageExists = file_exists(public_path($imagePath)) || file_exists(public_path('images/features/kleinunternehmer.png'));
+                        @endphp
+                        @if($imageExists)
+                            <div class="mb-6 overflow-hidden h-64">
+                                <img src="{{ asset(file_exists(public_path('images/features/kleinunternehmer.jpg')) ? 'images/features/kleinunternehmer.jpg' : 'images/features/kleinunternehmer.png') }}" 
+                                     alt="Kleinunternehmergerecht" 
+                                     class="w-full h-full object-cover">
+                            </div>
+                        @else
+                            <div class="h-64 bg-blue-50 flex items-center justify-center mb-6">
+                                <svg class="w-16 h-16 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                </svg>
+                            </div>
+                        @endif
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-3">§19 UStG – Kleinunternehmerregelung</h3>
+                            <p class="text-gray-600 leading-relaxed mb-4">
+                                Ideal für Kleinunternehmer: Aktivieren Sie die Kleinunternehmerregelung in den Einstellungen und erhalten Sie automatisch qualifizierte Rechnungen gemäß §19 UStG. Keine Umsatzsteuer, keine komplizierten Berechnungen.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Feature 9: Automatische Updates -->
+                    <div class="bg-white overflow-hidden">
+                        @php
+                            $imagePath = 'images/features/updates.jpg';
+                            $imageExists = file_exists(public_path($imagePath)) || file_exists(public_path('images/features/updates.png'));
+                        @endphp
+                        @if($imageExists)
+                            <div class="mb-6 overflow-hidden h-64">
+                                <img src="{{ asset(file_exists(public_path('images/features/updates.jpg')) ? 'images/features/updates.jpg' : 'images/features/updates.png') }}" 
+                                     alt="Automatische Updates" 
+                                     class="w-full h-full object-cover">
+                            </div>
+                        @else
+                            <div class="h-64 bg-blue-50 flex items-center justify-center mb-6">
+                                <svg class="w-16 h-16 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                            </div>
+                        @endif
+                        <div>
+                            <h3 class="text-xl font-semibold text-gray-900 mb-3">Automatische Updates</h3>
+                            <p class="text-gray-600 leading-relaxed mb-4">
+                                Bleiben Sie immer auf dem neuesten Stand: Updates werden automatisch durchgeführt. Neue Features, Sicherheitsupdates und Verbesserungen – ohne manuellen Aufwand.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -378,6 +463,24 @@
                             </svg>
                                 <span class="text-gray-700">Übersichtliche Dashboards</span>
                             </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-blue-900 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Reverse Charge für Österreich und Deutschland</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-blue-900 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Kleinunternehmergerecht</span>
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-6 h-6 text-blue-900 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                                <span class="text-gray-700">Automatische Updates</span>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -398,8 +501,8 @@
                         Zum Dashboard
                     </a>
                 @else
-                    <a href="{{ route('contact.form') }}" class="inline-block bg-white text-blue-900 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-50 transition-all shadow-lg">
-                        Angebot einholen
+                    <a href="{{ route('pricing') }}" class="inline-block bg-white text-blue-900 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-50 transition-all shadow-lg">
+                        Jetzt Starten
                     </a>
                 @endauth
             </div>

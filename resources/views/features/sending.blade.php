@@ -31,7 +31,7 @@
                         @auth
                             <a href="{{ url('/dashboard') }}" class="text-gray-700 hover:text-gray-900 font-medium">Dashboard</a>
                         @else
-                            <a href="{{ route('contact.form') }}" class="bg-blue-900 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-800 transition-colors">Angebot einholen</a>
+                            <a href="{{ route('contact.form') }}" class="bg-blue-900 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-800 transition-colors">Jetzt Starten</a>
                         @endauth
                     </div>
                 </div>
@@ -175,7 +175,7 @@
                         </a>
                     @else
                         <a href="{{ route('contact.form') }}" class="inline-block bg-white text-blue-900 px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-50 transition-all shadow-lg">
-                            Angebot einholen
+                            Jetzt Starten
                         </a>
                     @endauth
                 </div>

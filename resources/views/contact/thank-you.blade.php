@@ -5,8 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         @php
             $seoData = [
-                'title' => 'Vielen Dank - quickBill',
-                'description' => 'Vielen Dank für Ihre Anfrage. Wir werden uns in Kürze bei Ihnen melden.',
+                'title' => 'Vielen Dank für Ihre Bestellung - quickBill',
+                'description' => 'Vielen Dank für Ihre Bestellung. Wir werden uns in Kürze bei Ihnen melden.',
                 'image' => asset('logo/quickBill-Logo-alone.png'),
             ];
             $structuredData = [\App\Helpers\SeoHelper::organizationStructuredData()];
@@ -42,26 +42,26 @@
                     </svg>
                 </div>
                 <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
-                    Vielen Dank für Ihre Anfrage!
+                    Vielen Dank für Ihre Bestellung!
                 </h1>
                 <p class="text-xl text-gray-600 mb-8 leading-relaxed">
-                    Wir haben Ihre Anfrage erhalten und werden uns in Kürze bei Ihnen melden, um Ihnen ein individuelles Angebot zu erstellen.
+                    Wir haben Ihre Bestellung erhalten und werden uns in Kürze bei Ihnen melden, um alles Weitere zu besprechen.
                 </p>
                 <div class="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mb-8">
                     <h2 class="text-lg font-semibold text-gray-900 mb-4">Was passiert als Nächstes?</h2>
                     <div class="space-y-4 text-left">
                         <div class="flex items-start">
                             <div class="flex-shrink-0">
-                                <div class="flex items-center justify-center h-8 w-8 rounded-full bg-red-100 text-red-600 font-semibold">1</div>
+                                <div class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-600 font-semibold">1</div>
                             </div>
                             <div class="ml-4">
-                                <h3 class="text-base font-medium text-gray-900">Anfrage erhalten</h3>
-                                <p class="text-sm text-gray-600">Wir haben Ihre Anfrage erhalten und werden sie schnellstmöglich bearbeiten.</p>
+                                <h3 class="text-base font-medium text-gray-900">Bestellung erhalten</h3>
+                                <p class="text-sm text-gray-600">Wir haben Ihre Bestellung erhalten und werden sie schnellstmöglich bearbeiten.</p>
                             </div>
                         </div>
                         <div class="flex items-start">
                             <div class="flex-shrink-0">
-                                <div class="flex items-center justify-center h-8 w-8 rounded-full bg-red-100 text-red-600 font-semibold">2</div>
+                                <div class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-600 font-semibold">2</div>
                             </div>
                             <div class="ml-4">
                                 <h3 class="text-base font-medium text-gray-900">Kontaktaufnahme</h3>
@@ -70,21 +70,18 @@
                         </div>
                         <div class="flex items-start">
                             <div class="flex-shrink-0">
-                                <div class="flex items-center justify-center h-8 w-8 rounded-full bg-red-100 text-red-600 font-semibold">3</div>
+                                <div class="flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-600 font-semibold">3</div>
                             </div>
                             <div class="ml-4">
-                                <h3 class="text-base font-medium text-gray-900">Individuelles Angebot</h3>
-                                <p class="text-sm text-gray-600">Wir erstellen Ihnen ein maßgeschneidertes Angebot basierend auf Ihren Anforderungen.</p>
+                                <h3 class="text-base font-medium text-gray-900">Aktivierung</h3>
+                                <p class="text-sm text-gray-600">Wir richten Ihr quickBill-Konto ein und Sie können direkt loslegen.</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="{{ url('/') }}" class="inline-block bg-red-600 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-red-700 transition-all shadow-lg">
+                    <a href="{{ url('/') }}" class="inline-block bg-blue-900 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-800 transition-all shadow-lg">
                         Zurück zur Startseite
-                    </a>
-                    <a href="{{ route('contact.form') }}" class="inline-block bg-white text-gray-900 px-8 py-4 rounded-lg font-semibold text-lg border-2 border-gray-300 hover:border-gray-400 transition-all">
-                        Weitere Anfrage stellen
                     </a>
                 </div>
             </div>

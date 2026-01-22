@@ -5,9 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         @php
             $seoData = [
-                'title' => 'Angebot einholen - quickBill',
-                'description' => 'Holen Sie sich ein individuelles Angebot für quickBill. Wir beraten Sie gerne zu unseren Lösungen für Ihre Rechnungsverwaltung.',
-                'keywords' => 'Angebot, Kontakt, Beratung, quickBill',
+                'title' => 'Verbindlich bestellen - quickBill',
+                'description' => 'Bestellen Sie jetzt quickBill und starten Sie mit Ihrer professionellen Rechnungsverwaltung.',
+                'keywords' => 'Bestellung, Bestellen, quickBill, Rechnungsverwaltung',
                 'image' => asset('logo/quickBill-Logo-alone.png'),
             ];
             $structuredData = [\App\Helpers\SeoHelper::organizationStructuredData()];
@@ -18,6 +18,11 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        
+        <!-- Google reCAPTCHA v3 -->
+        @if(config('services.recaptcha.site_key'))
+            <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
+        @endif
     </head>
     <body class="antialiased bg-white">
         <!-- Navigation -->
@@ -45,11 +50,11 @@
         <section class="pt-32 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-white">
             <div class="max-w-4xl mx-auto text-center">
                 <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
-                    Angebot<br>
-                    <span class="text-blue-900">einholen</span>
+                    Verbindlich<br>
+                    <span class="text-blue-900">bestellen</span>
                 </h1>
                 <p class="text-xl text-gray-600 max-w-2xl mx-auto mb-8 leading-relaxed">
-                    Lassen Sie sich von uns beraten und erhalten Sie ein individuelles Angebot für quickBill. Wir finden die perfekte Lösung für Ihre Anforderungen.
+                    Bestellen Sie jetzt quickBill und starten Sie mit Ihrer professionellen Rechnungsverwaltung. Wir finden die perfekte Lösung für Ihre Anforderungen.
                 </p>
             </div>
         </section>
@@ -137,17 +142,119 @@
                             </div>
                         </div>
 
-                        <div>
+                        <!-- Adressfelder -->
+                        <div class="border-t border-gray-200 pt-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Adresse</h3>
+                            
+                            <div class="mb-6">
+                                <label for="street" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Straße und Hausnummer <span class="text-blue-900">*</span>
+                                </label>
+                                <input type="text" 
+                                       name="street" 
+                                       id="street" 
+                                       required
+                                       value="{{ old('street') }}"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-blue-900 transition-colors"
+                                       placeholder="Musterstraße 123">
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <label for="postal_code" class="block text-sm font-medium text-gray-700 mb-2">
+                                        PLZ <span class="text-blue-900">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           name="postal_code" 
+                                           id="postal_code" 
+                                           required
+                                           value="{{ old('postal_code') }}"
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-blue-900 transition-colors"
+                                           placeholder="12345">
+                                </div>
+
+                                <div>
+                                    <label for="city" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Ort <span class="text-blue-900">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           name="city" 
+                                           id="city" 
+                                           required
+                                           value="{{ old('city') }}"
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-blue-900 transition-colors"
+                                           placeholder="Wien">
+                                </div>
+
+                                <div>
+                                    <label for="country" class="block text-sm font-medium text-gray-700 mb-2">
+                                        Land
+                                    </label>
+                                    <input type="text" 
+                                           name="country_display" 
+                                           id="country_display" 
+                                           value="Österreich"
+                                           readonly
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50 text-gray-700 cursor-not-allowed">
+                                    <input type="hidden" name="country" value="AT">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Weitere Informationen -->
+                        <div class="border-t border-gray-200 pt-6">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4">Weitere Informationen</h3>
+                            
+                            <div class="mb-6">
+                                <label for="uid_number" class="block text-sm font-medium text-gray-700 mb-2">
+                                    UID-Nummer / Steuernummer
+                                </label>
+                                <input type="text" 
+                                       name="uid_number" 
+                                       id="uid_number"
+                                       value="{{ old('uid_number') }}"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-blue-900 transition-colors"
+                                       placeholder="ATU12345678">
+                            </div>
+
+                            @if(isset($selectedPlan) && $selectedPlan)
+                                <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Gewählter Plan
+                                    </label>
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <span class="text-lg font-semibold text-blue-900">{{ $planName }}</span>
+                                            <span class="text-sm text-gray-600 ml-2">({{ $planPrice }})</span>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="plan" value="{{ $selectedPlan }}">
+                                </div>
+                            @endif
+
+                            <div class="flex items-start mb-6">
+                                <input type="checkbox" 
+                                       name="is_kleinunternehmer" 
+                                       id="is_kleinunternehmer"
+                                       value="1"
+                                       {{ old('is_kleinunternehmer') ? 'checked' : '' }}
+                                       class="mt-1 h-4 w-4 text-blue-900 focus:ring-blue-700 border-gray-300 rounded">
+                                <label for="is_kleinunternehmer" class="ml-3 text-sm text-gray-600">
+                                    Ich bin Kleinunternehmer gemäß §19 UStG
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-gray-200 pt-6">
                             <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
-                                Ihre Nachricht <span class="text-blue-900">*</span>
+                                Ihre Nachricht / Anmerkungen
                             </label>
                             <textarea name="message" 
                                       id="message" 
-                                      rows="6" 
-                                      required
+                                      rows="4" 
                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-700 focus:border-blue-900 transition-colors resize-none"
-                                      placeholder="Beschreiben Sie Ihre Anforderungen oder stellen Sie uns Fragen...">{{ old('message') }}</textarea>
-                            <p class="mt-2 text-sm text-gray-500">Bitte beschreiben Sie Ihre Anforderungen, damit wir Ihnen das beste Angebot erstellen können.</p>
+                                      placeholder="Zusätzliche Informationen oder Fragen...">{{ old('message') }}</textarea>
+                            <p class="mt-2 text-sm text-gray-500">Optional: Geben Sie hier zusätzliche Informationen oder Fragen an.</p>
                         </div>
 
                         <div class="flex items-start">
@@ -157,17 +264,53 @@
                                    required
                                    class="mt-1 h-4 w-4 text-blue-900 focus:ring-blue-700 border-gray-300 rounded">
                             <label for="privacy" class="ml-3 text-sm text-gray-600">
-                                Ich habe die <a href="#" class="text-blue-900 hover:text-blue-800 underline">Datenschutzerklärung</a> gelesen und stimme zu. <span class="text-blue-900">*</span>
+                                Ich habe die <a href="{{ route('privacy') }}" class="text-blue-900 hover:text-blue-800 underline">Datenschutzerklärung</a> gelesen und stimme zu. <span class="text-blue-900">*</span>
                             </label>
                         </div>
 
+                        <div class="flex items-start">
+                            <input type="checkbox" 
+                                   name="binding_order" 
+                                   id="binding_order" 
+                                   required
+                                   class="mt-1 h-4 w-4 text-blue-900 focus:ring-blue-700 border-gray-300 rounded">
+                            <label for="binding_order" class="ml-3 text-sm text-gray-600">
+                                Ich bestelle verbindlich. <span class="text-blue-900">*</span>
+                            </label>
+                        </div>
+
+                        @if(config('services.recaptcha.site_key'))
+                            <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+                        @endif
+
                         <div>
                             <button type="submit" 
+                                    id="submit-button"
                                     class="w-full bg-blue-900 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:bg-blue-800 transition-all shadow-lg hover:shadow-xl">
-                                Angebot anfordern
+                                Verbindlich bestellen
                             </button>
                         </div>
                     </form>
+                    
+                    @if(config('services.recaptcha.site_key'))
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const form = document.querySelector('form');
+                                const submitButton = document.getElementById('submit-button');
+                                
+                                form.addEventListener('submit', function(e) {
+                                    e.preventDefault();
+                                    
+                                    grecaptcha.ready(function() {
+                                        grecaptcha.execute('{{ config('services.recaptcha.site_key') }}', {action: 'submit'}).then(function(token) {
+                                            document.getElementById('g-recaptcha-response').value = token;
+                                            form.submit();
+                                        });
+                                    });
+                                });
+                            });
+                        </script>
+                    @endif
                 </div>
 
                 <!-- Additional Info -->

@@ -114,15 +114,18 @@ Route::get('/features/analysen', [FeatureController::class, 'analytics'])->name(
 // Über Uns Seite (öffentlich)
 Route::get('/ueber-uns', [FeatureController::class, 'about'])->name('about');
 
+// Preise-Seite (öffentlich)
+Route::get('/preise', [FeatureController::class, 'pricing'])->name('pricing');
+
 // Rechtliche Seiten (öffentlich)
 Route::get('/impressum', [FeatureController::class, 'impressum'])->name('impressum');
 Route::get('/datenschutz', [FeatureController::class, 'privacy'])->name('privacy');
 Route::get('/cookies', [FeatureController::class, 'cookies'])->name('cookies');
 
-// Kontaktformular (öffentlich)
-Route::get('/angebot', [ContactController::class, 'show'])->name('contact.form');
-Route::post('/angebot', [ContactController::class, 'submit'])->name('contact.submit');
-Route::get('/angebot/danke', [ContactController::class, 'thankYou'])->name('contact.thank-you');
+// Bestellformular (öffentlich)
+Route::get('/bestellung', [ContactController::class, 'show'])->name('contact.form');
+Route::post('/bestellung', [ContactController::class, 'submit'])->name('contact.submit');
+Route::get('/bestellung/danke', [ContactController::class, 'thankYou'])->name('contact.thank-you');
 
 /*
 |==========================================================================

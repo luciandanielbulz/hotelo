@@ -47,7 +47,8 @@
                             <a href="{{ url('/dashboard') }}" class="text-gray-700 hover:text-gray-900 font-medium">Dashboard</a>
                         @else
                             <a href="{{ route('login') }}" class="text-gray-700 hover:text-gray-900 font-medium">Anmelden</a>
-                            <a href="{{ route('contact.form') }}" class="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300">Angebot einholen</a>
+                            <a href="{{ route('pricing') }}" class="text-gray-700 hover:text-gray-900 font-medium">Preise</a>
+                            <a href="{{ route('contact.form') }}" class="bg-gradient-to-r from-blue-900 via-blue-800 to-blue-900 text-white px-4 py-2 rounded-lg font-medium hover:from-blue-800 hover:via-blue-700 hover:to-blue-800 hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300">Jetzt Starten</a>
                         @endauth
                     </div>
                 </div>

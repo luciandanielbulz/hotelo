@@ -85,5 +85,13 @@ class FeatureController extends Controller
     {
         return view('legal.cookies');
     }
+
+    /**
+     * Zeigt die Preise-Seite
+     */
+    public function pricing()
+    {
+        return view('pricing');
+    }
 }
 
