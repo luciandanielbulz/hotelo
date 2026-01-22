@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
+use App\Models\Order;
 
 class ContactController extends Controller
 {
@@ -65,28 +66,51 @@ class ContactController extends Controller
         }
         
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'company' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:255',
-            'street' => 'required|string|max:255',
-            'postal_code' => 'required|string|max:20',
-            'city' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'uid_number' => 'nullable|string|max:255',
-            'plan' => 'nullable|string|in:starter,enterprise',
-            'is_kleinunternehmer' => 'nullable|boolean',
-            'message' => 'nullable|string|max:2000',
-            'privacy' => 'required|accepted',
-            'binding_order' => 'required|accepted',
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
+            'company' => ['nullable', 'string', 'max:255'],
+            'phone' => ['nullable', 'string', 'max:255'],
+            'street' => ['required', 'string', 'max:255'],
+            'postal_code' => ['required', 'string', 'max:20'],
+            'city' => ['required', 'string', 'max:255'],
+            'country' => ['required', 'string', 'size:2', 'in:AT'],
+            'uid_number' => ['nullable', 'string', 'max:255'],
+            'plan' => ['nullable', 'string', 'in:starter,enterprise'],
+            'is_kleinunternehmer' => ['nullable', 'boolean'],
+            'message' => ['nullable', 'string', 'max:2000'],
+            'privacy' => ['required', 'accepted'],
+            'binding_order' => ['required', 'accepted'],
         ]);
 
         try {
-            // Hier könnte eine E-Mail versendet werden
-            // Mail::to(config('mail.from.address'))->send(new ContactFormMail($validated));
+            // Input Sanitization - HTML-Tags entfernen und trimmen
+            $sanitized = [
+                'name' => strip_tags(trim($validated['name'])),
+                'email' => filter_var(trim($validated['email']), FILTER_SANITIZE_EMAIL),
+                'company' => $validated['company'] ? strip_tags(trim($validated['company'])) : null,
+                'phone' => $validated['phone'] ? strip_tags(trim($validated['phone'])) : null,
+                'street' => strip_tags(trim($validated['street'])),
+                'postal_code' => strip_tags(trim($validated['postal_code'])),
+                'city' => strip_tags(trim($validated['city'])),
+                'country' => $validated['country'],
+                'uid_number' => $validated['uid_number'] ? strtoupper(strip_tags(trim($validated['uid_number']))) : null,
+                'plan' => $validated['plan'] ?? null,
+                'is_kleinunternehmer' => $validated['is_kleinunternehmer'] ?? false,
+                'message' => $validated['message'] ? strip_tags(trim($validated['message'])) : null,
+                'recaptcha_token' => substr($request->input('g-recaptcha-response', ''), 0, 1000), // Begrenzen
+                'ip_address' => $request->ip(),
+                'status' => 'pending',
+            ];
+            
+            // Bestellung in Datenbank speichern
+            $order = Order::create($sanitized);
             
             // Logging für Debugging
-            Log::info('Kontaktanfrage erhalten', $validated);
+            Log::info('Bestellung erhalten', ['order_id' => $order->id, 'email' => $order->email]);
+            
+            // Hier könnte eine E-Mail versendet werden
+            // Mail::to(config('mail.from.address'))->send(new OrderNotificationMail($order));
+            // Mail::to($order->email)->send(new OrderConfirmationMail($order));
 
             return redirect()->route('contact.thank-you')
                            ->with('success', 'Vielen Dank für Ihre Bestellung! Wir werden uns in Kürze bei Ihnen melden.');

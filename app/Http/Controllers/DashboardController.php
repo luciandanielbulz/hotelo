@@ -25,6 +25,7 @@ class DashboardController extends Controller
         $tiles = [];
 
         $this->addTileIfPermitted($tiles, $permissions, "view_customers", "/customer", "fa-solid fa-people-group", "Kunden", "#e0ebfc", "Kundenliste", 1);
+        $this->addTile($tiles, "/orders", "fa-solid fa-shopping-cart", "Bestellungen", "#fff4e6", "Eingehende Bestellungen verwalten", 2);
         $this->addTileIfPermitted($tiles, $permissions, "view_offers", "/offer", "fa-regular fa-envelope", "Meine Angebote", "#e1ebfc", "Angeboteliste...", 3);
         $this->addTileIfPermitted($tiles, $permissions, "view_invoices", "/invoice", "fa-solid fa-file-invoice", "Meine Rechnungen", "#fce8e8", "Liste der Zeitnachweise...", 4);
         $this->addTileIfPermitted($tiles, $permissions, "view_invoice_uploads", "/invoiceupload/index", "fa-solid fa-file-arrow-up", "Rechnungs-Upload", "#e8f4fd", "Rechnungen hochladen und verwalten", 5);

@@ -33,6 +33,7 @@ use App\Http\Controllers\SeoController;
 use App\Http\Controllers\FeatureController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DunningController;
+use App\Http\Controllers\OrderController;
 
 
 
@@ -122,9 +123,11 @@ Route::get('/impressum', [FeatureController::class, 'impressum'])->name('impress
 Route::get('/datenschutz', [FeatureController::class, 'privacy'])->name('privacy');
 Route::get('/cookies', [FeatureController::class, 'cookies'])->name('cookies');
 
-// Bestellformular (öffentlich)
+// Bestellformular (öffentlich) - mit Rate Limiting
 Route::get('/bestellung', [ContactController::class, 'show'])->name('contact.form');
-Route::post('/bestellung', [ContactController::class, 'submit'])->name('contact.submit');
+Route::post('/bestellung', [ContactController::class, 'submit'])
+    ->middleware('throttle:5,15')
+    ->name('contact.submit');
 Route::get('/bestellung/danke', [ContactController::class, 'thankYou'])->name('contact.thank-you');
 
 /*
@@ -203,6 +206,21 @@ Route::middleware(['auth','verified'])->group(function(){
     */
     Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('dashboard');
+
+    /*
+    |--------------------------------------------------------------------------
+    | BESTELLUNGEN
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/orders', [OrderController::class, 'index'])
+        ->name('orders.index')
+        ->middleware('permission:view_orders');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])
+        ->name('orders.show')
+        ->middleware('permission:view_orders');
+    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])
+        ->name('orders.update-status')
+        ->middleware('permission:view_orders');
 
     /*
     |--------------------------------------------------------------------------
