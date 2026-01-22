@@ -21,7 +21,20 @@
         
         <!-- Google reCAPTCHA v3 -->
         @if(config('services.recaptcha.site_key'))
-            <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
+            <script>
+                // Lade reCAPTCHA Script dynamisch
+                (function() {
+                    var script = document.createElement('script');
+                    script.src = 'https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}';
+                    script.async = true;
+                    script.defer = true;
+                    script.onload = function() {
+                        // reCAPTCHA ist geladen
+                        window.recaptchaLoaded = true;
+                    };
+                    document.head.appendChild(script);
+                })();
+            </script>
         @endif
     </head>
     <body class="antialiased bg-white">
@@ -297,16 +310,64 @@
                             document.addEventListener('DOMContentLoaded', function() {
                                 const form = document.querySelector('form');
                                 const submitButton = document.getElementById('submit-button');
+                                const siteKey = '{{ config('services.recaptcha.site_key') }}';
+                                let recaptchaReady = false;
+                                
+                                // Warte bis reCAPTCHA geladen ist
+                                function waitForRecaptcha(callback, maxAttempts = 50) {
+                                    let attempts = 0;
+                                    
+                                    function check() {
+                                        attempts++;
+                                        if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.ready === 'function') {
+                                            recaptchaReady = true;
+                                            callback();
+                                        } else if (attempts < maxAttempts) {
+                                            setTimeout(check, 100);
+                                        } else {
+                                            console.warn('reCAPTCHA konnte nicht geladen werden nach ' + (maxAttempts * 100) + 'ms');
+                                            // Fallback: Formular ohne Token absenden
+                                            form.submit();
+                                        }
+                                    }
+                                    
+                                    check();
+                                }
                                 
                                 form.addEventListener('submit', function(e) {
                                     e.preventDefault();
                                     
-                                    grecaptcha.ready(function() {
-                                        grecaptcha.execute('{{ config('services.recaptcha.site_key') }}', {action: 'submit'}).then(function(token) {
-                                            document.getElementById('g-recaptcha-response').value = token;
-                                            form.submit();
+                                    // Wenn reCAPTCHA bereits bereit ist, verwende es direkt
+                                    if (recaptchaReady && typeof grecaptcha !== 'undefined') {
+                                        grecaptcha.ready(function() {
+                                            grecaptcha.execute(siteKey, {action: 'submit'}).then(function(token) {
+                                                const tokenInput = document.getElementById('g-recaptcha-response');
+                                                if (tokenInput) {
+                                                    tokenInput.value = token;
+                                                }
+                                                form.submit();
+                                            }).catch(function(error) {
+                                                console.error('reCAPTCHA Fehler:', error);
+                                                form.submit();
+                                            });
                                         });
-                                    });
+                                    } else {
+                                        // Warte auf reCAPTCHA
+                                        waitForRecaptcha(function() {
+                                            grecaptcha.ready(function() {
+                                                grecaptcha.execute(siteKey, {action: 'submit'}).then(function(token) {
+                                                    const tokenInput = document.getElementById('g-recaptcha-response');
+                                                    if (tokenInput) {
+                                                        tokenInput.value = token;
+                                                    }
+                                                    form.submit();
+                                                }).catch(function(error) {
+                                                    console.error('reCAPTCHA Fehler:', error);
+                                                    form.submit();
+                                                });
+                                            });
+                                        });
+                                    }
                                 });
                             });
                         </script>
