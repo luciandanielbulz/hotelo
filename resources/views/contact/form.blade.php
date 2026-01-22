@@ -31,6 +31,11 @@
                     script.onload = function() {
                         // reCAPTCHA ist geladen
                         window.recaptchaLoaded = true;
+                        console.log('reCAPTCHA Script erfolgreich geladen');
+                    };
+                    script.onerror = function() {
+                        console.error('Fehler beim Laden des reCAPTCHA Scripts - möglicherweise CSP-Problem');
+                        window.recaptchaLoadError = true;
                     };
                     document.head.appendChild(script);
                 })();
@@ -294,6 +299,12 @@
 
                         @if(config('services.recaptcha.site_key'))
                             <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+                            
+                            @error('recaptcha')
+                                <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                                    <p class="text-sm text-red-800">{{ $message }}</p>
+                                </div>
+                            @enderror
                         @endif
 
                         <div>

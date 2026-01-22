@@ -43,22 +43,64 @@ class ContactController extends Controller
         if (config('services.recaptcha.secret_key')) {
             $recaptchaResponse = $request->input('g-recaptcha-response');
             
-            if (!$recaptchaResponse) {
+            // Debug-Logging (nur in Development)
+            if (config('app.debug')) {
+                \Log::info('reCAPTCHA Debug', [
+                    'token_present' => !empty($recaptchaResponse),
+                    'token_length' => $recaptchaResponse ? strlen($recaptchaResponse) : 0,
+                    'site_key_set' => !empty(config('services.recaptcha.site_key')),
+                    'secret_key_set' => !empty(config('services.recaptcha.secret_key')),
+                ]);
+            }
+            
+            if (!$recaptchaResponse || empty($recaptchaResponse)) {
+                \Log::warning('reCAPTCHA Token fehlt', [
+                    'ip' => $request->ip(),
+                    'user_agent' => $request->userAgent(),
+                ]);
                 return back()
                     ->withInput()
-                    ->withErrors(['recaptcha' => 'Bitte bestätigen Sie, dass Sie kein Roboter sind.']);
+                    ->withErrors(['recaptcha' => 'Bitte bestätigen Sie, dass Sie kein Roboter sind. Das reCAPTCHA konnte nicht geladen werden. Bitte laden Sie die Seite neu und versuchen Sie es erneut.']);
             }
             
             $recaptchaResult = $this->verifyRecaptcha($recaptchaResponse, $request->ip());
             
+            // Debug-Logging der Antwort
+            if (config('app.debug')) {
+                \Log::info('reCAPTCHA Verification Result', [
+                    'success' => $recaptchaResult['success'] ?? false,
+                    'score' => $recaptchaResult['score'] ?? null,
+                    'error_codes' => $recaptchaResult['error-codes'] ?? [],
+                ]);
+            }
+            
             if (!$recaptchaResult['success']) {
+                $errorCodes = $recaptchaResult['error-codes'] ?? [];
+                \Log::warning('reCAPTCHA Validierung fehlgeschlagen', [
+                    'ip' => $request->ip(),
+                    'error_codes' => $errorCodes,
+                ]);
+                
+                $errorMessage = 'reCAPTCHA-Validierung fehlgeschlagen. ';
+                if (in_array('invalid-input-secret', $errorCodes)) {
+                    $errorMessage .= 'Ungültiger Secret Key. Bitte kontaktieren Sie den Administrator.';
+                } elseif (in_array('timeout-or-duplicate', $errorCodes)) {
+                    $errorMessage .= 'Der Token ist abgelaufen. Bitte laden Sie die Seite neu und versuchen Sie es erneut.';
+                } else {
+                    $errorMessage .= 'Bitte versuchen Sie es erneut.';
+                }
+                
                 return back()
                     ->withInput()
-                    ->withErrors(['recaptcha' => 'reCAPTCHA-Validierung fehlgeschlagen. Bitte versuchen Sie es erneut.']);
+                    ->withErrors(['recaptcha' => $errorMessage]);
             }
             
             // Optional: Score-Prüfung (reCAPTCHA v3 gibt einen Score von 0.0 bis 1.0 zurück)
             if (isset($recaptchaResult['score']) && $recaptchaResult['score'] < 0.5) {
+                \Log::warning('reCAPTCHA Score zu niedrig', [
+                    'ip' => $request->ip(),
+                    'score' => $recaptchaResult['score'],
+                ]);
                 return back()
                     ->withInput()
                     ->withErrors(['recaptcha' => 'Ihre Anfrage wurde als verdächtig eingestuft. Bitte versuchen Sie es erneut.']);
