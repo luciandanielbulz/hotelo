@@ -21,19 +21,25 @@
         
         <!-- Google reCAPTCHA v3 -->
         @if(config('services.recaptcha.site_key'))
-            <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}" async defer></script>
             <script>
-                // Warte auf reCAPTCHA-Laden
-                window.recaptchaLoaded = false;
-                window.addEventListener('load', function() {
-                    if (typeof grecaptcha !== 'undefined') {
-                        window.recaptchaLoaded = true;
-                        console.log('reCAPTCHA Script erfolgreich geladen');
-                    } else {
-                        console.error('reCAPTCHA konnte nicht geladen werden');
+                // Callback-Funktion für reCAPTCHA
+                window.onRecaptchaLoad = function() {
+                    window.recaptchaLoaded = true;
+                    console.log('reCAPTCHA Script erfolgreich geladen');
+                };
+                
+                // Lade reCAPTCHA Script mit Callback
+                (function() {
+                    var script = document.createElement('script');
+                    script.src = 'https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}&onload=onRecaptchaLoad';
+                    script.async = true;
+                    script.defer = true;
+                    script.onerror = function() {
+                        console.error('Fehler beim Laden des reCAPTCHA Scripts');
                         window.recaptchaLoadError = true;
-                    }
-                });
+                    };
+                    document.head.appendChild(script);
+                })();
             </script>
         @endif
     </head>
@@ -322,7 +328,7 @@
                                 let submitHandler = null;
                                 
                                 // Warte bis reCAPTCHA geladen ist
-                                function waitForRecaptcha(callback, maxAttempts = 50) {
+                                function waitForRecaptcha(callback, maxAttempts = 100) {
                                     let attempts = 0;
                                     
                                     function check() {
@@ -330,10 +336,18 @@
                                         if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.ready === 'function') {
                                             recaptchaReady = true;
                                             callback();
+                                        } else if (window.recaptchaLoadError) {
+                                            // Script-Loading ist fehlgeschlagen
+                                            console.warn('reCAPTCHA Script konnte nicht geladen werden - sende Formular ohne Token');
+                                            if (!isSubmitting && submitHandler) {
+                                                isSubmitting = true;
+                                                form.removeEventListener('submit', submitHandler);
+                                                form.submit();
+                                            }
                                         } else if (attempts < maxAttempts) {
                                             setTimeout(check, 100);
                                         } else {
-                                            console.warn('reCAPTCHA konnte nicht geladen werden nach ' + (maxAttempts * 100) + 'ms');
+                                            console.warn('reCAPTCHA konnte nicht geladen werden nach ' + (maxAttempts * 100) + 'ms - sende Formular ohne Token');
                                             // Fallback: Formular ohne Token absenden
                                             if (!isSubmitting && submitHandler) {
                                                 isSubmitting = true;

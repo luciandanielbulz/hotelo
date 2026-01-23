@@ -17,6 +17,11 @@ class AddContentSecurityPolicy
     {
         $response = $next($request);
 
+        // Entferne alle vorhandenen CSP-Header (vom Server gesetzt)
+        $response->headers->remove('Content-Security-Policy');
+        $response->headers->remove('Content-Security-Policy-Report-Only');
+        $response->headers->remove('X-Content-Security-Policy');
+
         // CSP-Header mit Google reCAPTCHA-Unterstützung
         // Immer setzen, um sicherzustellen, dass alle benötigten Domains erlaubt sind
         // Erlaube localhost für Development (nur in Development)
@@ -26,9 +31,9 @@ class AddContentSecurityPolicy
         $csp = [
             "default-src 'self'" . ($localhostSources ? " " . $localhostSources : ""),
             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com" . ($localhostSources ? " " . $localhostSources : ""),
-            "script-src-elem 'self' 'unsafe-inline' https://www.google.com https://www.gstatic.com" . ($localhostSources ? " " . $localhostSources : ""),
+            "script-src-elem 'self' https://www.google.com https://www.gstatic.com" . ($localhostSources ? " " . $localhostSources : ""),
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://fonts.bunny.net" . ($localhostSources ? " " . $localhostSources : ""),
-            "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://fonts.bunny.net" . ($localhostSources ? " " . $localhostSources : ""),
+            "style-src-elem 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://fonts.bunny.net" . ($localhostSources ? " " . $localhostSources : ""),
             "font-src 'self' https://fonts.gstatic.com https://fonts.bunny.net https://cdnjs.cloudflare.com data:" . ($localhostSources ? " " . $localhostSources : ""),
             "img-src 'self' data: https: blob: http:" . ($localhostSources ? " " . $localhostSources : ""),
             "connect-src 'self' https://www.google.com https://www.gstatic.com" . ($localhostSources ? " " . $localhostSources : ""),
@@ -40,7 +45,7 @@ class AddContentSecurityPolicy
         ];
 
         // CSP immer setzen (überschreibt eventuelle Server-CSP)
-        $response->headers->set('Content-Security-Policy', implode('; ', $csp));
+        $response->headers->set('Content-Security-Policy', implode('; ', $csp), true);
 
         return $response;
     }
