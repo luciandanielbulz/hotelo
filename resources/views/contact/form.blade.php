@@ -21,29 +21,13 @@
         
         <!-- Google reCAPTCHA v3 -->
         @if(config('services.recaptcha.site_key'))
-            <script>
-                // Callback-Funktion für reCAPTCHA
-                window.onRecaptchaLoad = function() {
-                    window.recaptchaLoaded = true;
-                    console.log('reCAPTCHA Script erfolgreich geladen');
-                };
-                
-                // Lade reCAPTCHA Script mit Callback
-                (function() {
-                    var script = document.createElement('script');
-                    script.src = 'https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}&onload=onRecaptchaLoad';
-                    script.async = true;
-                    script.defer = true;
-                    script.onerror = function() {
-                        console.error('Fehler beim Laden des reCAPTCHA Scripts');
-                        window.recaptchaLoadError = true;
-                    };
-                    document.head.appendChild(script);
-                })();
-            </script>
+            @vite(['resources/js/recaptcha.js'])
         @endif
     </head>
     <body class="antialiased bg-white">
+        @if(config('services.recaptcha.site_key'))
+            <div data-recaptcha-site-key="{{ config('services.recaptcha.site_key') }}" style="display: none;"></div>
+        @endif
         <!-- Navigation -->
         <nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -316,109 +300,6 @@
                             </button>
                         </div>
                     </form>
-                    
-                    @if(config('services.recaptcha.site_key'))
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                const form = document.querySelector('form');
-                                const submitButton = document.getElementById('submit-button');
-                                const siteKey = '{{ config('services.recaptcha.site_key') }}';
-                                let recaptchaReady = false;
-                                let isSubmitting = false;
-                                let submitHandler = null;
-                                
-                                // Warte bis reCAPTCHA geladen ist
-                                function waitForRecaptcha(callback, maxAttempts = 100) {
-                                    let attempts = 0;
-                                    
-                                    function check() {
-                                        attempts++;
-                                        if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.ready === 'function') {
-                                            recaptchaReady = true;
-                                            callback();
-                                        } else if (window.recaptchaLoadError) {
-                                            // Script-Loading ist fehlgeschlagen
-                                            console.warn('reCAPTCHA Script konnte nicht geladen werden - sende Formular ohne Token');
-                                            if (!isSubmitting && submitHandler) {
-                                                isSubmitting = true;
-                                                form.removeEventListener('submit', submitHandler);
-                                                form.submit();
-                                            }
-                                        } else if (attempts < maxAttempts) {
-                                            setTimeout(check, 100);
-                                        } else {
-                                            console.warn('reCAPTCHA konnte nicht geladen werden nach ' + (maxAttempts * 100) + 'ms - sende Formular ohne Token');
-                                            // Fallback: Formular ohne Token absenden
-                                            if (!isSubmitting && submitHandler) {
-                                                isSubmitting = true;
-                                                form.removeEventListener('submit', submitHandler);
-                                                form.submit();
-                                            }
-                                        }
-                                    }
-                                    
-                                    check();
-                                }
-                                
-                                // Submit-Handler
-                                submitHandler = function(e) {
-                                    if (isSubmitting) {
-                                        e.preventDefault();
-                                        return; // Verhindere doppelte Submits
-                                    }
-                                    
-                                    e.preventDefault();
-                                    isSubmitting = true;
-                                    if (submitButton) {
-                                        submitButton.disabled = true;
-                                        submitButton.textContent = 'Wird gesendet...';
-                                    }
-                                    
-                                    // Wenn reCAPTCHA bereits bereit ist, verwende es direkt
-                                    if (recaptchaReady && typeof grecaptcha !== 'undefined') {
-                                        grecaptcha.ready(function() {
-                                            grecaptcha.execute(siteKey, {action: 'submit'}).then(function(token) {
-                                                const tokenInput = document.getElementById('g-recaptcha-response');
-                                                if (tokenInput) {
-                                                    tokenInput.value = token;
-                                                }
-                                                // Entferne Event-Listener und sende Formular
-                                                form.removeEventListener('submit', submitHandler);
-                                                form.submit();
-                                            }).catch(function(error) {
-                                                console.error('reCAPTCHA Fehler:', error);
-                                                // Entferne Event-Listener und sende Formular ohne Token
-                                                form.removeEventListener('submit', submitHandler);
-                                                form.submit();
-                                            });
-                                        });
-                                    } else {
-                                        // Warte auf reCAPTCHA
-                                        waitForRecaptcha(function() {
-                                            grecaptcha.ready(function() {
-                                                grecaptcha.execute(siteKey, {action: 'submit'}).then(function(token) {
-                                                    const tokenInput = document.getElementById('g-recaptcha-response');
-                                                    if (tokenInput) {
-                                                        tokenInput.value = token;
-                                                    }
-                                                    // Entferne Event-Listener und sende Formular
-                                                    form.removeEventListener('submit', submitHandler);
-                                                    form.submit();
-                                                }).catch(function(error) {
-                                                    console.error('reCAPTCHA Fehler:', error);
-                                                    // Entferne Event-Listener und sende Formular ohne Token
-                                                    form.removeEventListener('submit', submitHandler);
-                                                    form.submit();
-                                                });
-                                            });
-                                        });
-                                    }
-                                };
-                                
-                                form.addEventListener('submit', submitHandler);
-                            });
-                        </script>
-                    @endif
                 </div>
 
                 <!-- Additional Info -->
