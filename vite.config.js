@@ -11,6 +11,10 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    server: {
+        host: '127.0.0.1', // IPv4 verwenden statt IPv6
+        port: 5173,
+    },
     optimizeDeps: {
         include: ['alpinejs', 'andere-commonjs-bibliothek'] // Füge hier problematische Module hinzu
     }

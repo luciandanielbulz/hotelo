@@ -323,6 +323,8 @@
                                 const submitButton = document.getElementById('submit-button');
                                 const siteKey = '{{ config('services.recaptcha.site_key') }}';
                                 let recaptchaReady = false;
+                                let isSubmitting = false;
+                                let submitHandler = null;
                                 
                                 // Warte bis reCAPTCHA geladen ist
                                 function waitForRecaptcha(callback, maxAttempts = 50) {
@@ -338,15 +340,30 @@
                                         } else {
                                             console.warn('reCAPTCHA konnte nicht geladen werden nach ' + (maxAttempts * 100) + 'ms');
                                             // Fallback: Formular ohne Token absenden
-                                            form.submit();
+                                            if (!isSubmitting && submitHandler) {
+                                                isSubmitting = true;
+                                                form.removeEventListener('submit', submitHandler);
+                                                form.submit();
+                                            }
                                         }
                                     }
                                     
                                     check();
                                 }
                                 
-                                form.addEventListener('submit', function(e) {
+                                // Submit-Handler
+                                submitHandler = function(e) {
+                                    if (isSubmitting) {
+                                        e.preventDefault();
+                                        return; // Verhindere doppelte Submits
+                                    }
+                                    
                                     e.preventDefault();
+                                    isSubmitting = true;
+                                    if (submitButton) {
+                                        submitButton.disabled = true;
+                                        submitButton.textContent = 'Wird gesendet...';
+                                    }
                                     
                                     // Wenn reCAPTCHA bereits bereit ist, verwende es direkt
                                     if (recaptchaReady && typeof grecaptcha !== 'undefined') {
@@ -356,9 +373,13 @@
                                                 if (tokenInput) {
                                                     tokenInput.value = token;
                                                 }
+                                                // Entferne Event-Listener und sende Formular
+                                                form.removeEventListener('submit', submitHandler);
                                                 form.submit();
                                             }).catch(function(error) {
                                                 console.error('reCAPTCHA Fehler:', error);
+                                                // Entferne Event-Listener und sende Formular ohne Token
+                                                form.removeEventListener('submit', submitHandler);
                                                 form.submit();
                                             });
                                         });
@@ -371,15 +392,21 @@
                                                     if (tokenInput) {
                                                         tokenInput.value = token;
                                                     }
+                                                    // Entferne Event-Listener und sende Formular
+                                                    form.removeEventListener('submit', submitHandler);
                                                     form.submit();
                                                 }).catch(function(error) {
                                                     console.error('reCAPTCHA Fehler:', error);
+                                                    // Entferne Event-Listener und sende Formular ohne Token
+                                                    form.removeEventListener('submit', submitHandler);
                                                     form.submit();
                                                 });
                                             });
                                         });
                                     }
-                                });
+                                };
+                                
+                                form.addEventListener('submit', submitHandler);
                             });
                         </script>
                     @endif
