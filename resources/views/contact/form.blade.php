@@ -21,24 +21,19 @@
         
         <!-- Google reCAPTCHA v3 -->
         @if(config('services.recaptcha.site_key'))
+            <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}" async defer></script>
             <script>
-                // Lade reCAPTCHA Script dynamisch
-                (function() {
-                    var script = document.createElement('script');
-                    script.src = 'https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}';
-                    script.async = true;
-                    script.defer = true;
-                    script.onload = function() {
-                        // reCAPTCHA ist geladen
+                // Warte auf reCAPTCHA-Laden
+                window.recaptchaLoaded = false;
+                window.addEventListener('load', function() {
+                    if (typeof grecaptcha !== 'undefined') {
                         window.recaptchaLoaded = true;
                         console.log('reCAPTCHA Script erfolgreich geladen');
-                    };
-                    script.onerror = function() {
-                        console.error('Fehler beim Laden des reCAPTCHA Scripts - möglicherweise CSP-Problem');
+                    } else {
+                        console.error('reCAPTCHA konnte nicht geladen werden');
                         window.recaptchaLoadError = true;
-                    };
-                    document.head.appendChild(script);
-                })();
+                    }
+                });
             </script>
         @endif
     </head>
