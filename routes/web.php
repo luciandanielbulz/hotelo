@@ -212,14 +212,17 @@ Route::middleware(['auth','verified'])->group(function(){
     | BESTELLUNGEN
     |--------------------------------------------------------------------------
     */
-    Route::get('/orders', [OrderController::class, 'index'])
+    Route::get('/clients/{client}/orders', [OrderController::class, 'index'])
         ->name('orders.index')
         ->middleware('permission:view_orders');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])
+    Route::get('/clients/{client}/orders/{order}', [OrderController::class, 'show'])
         ->name('orders.show')
         ->middleware('permission:view_orders');
-    Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])
+    Route::patch('/clients/{client}/orders/{order}/status', [OrderController::class, 'updateStatus'])
         ->name('orders.update-status')
+        ->middleware('permission:view_orders');
+    Route::post('/clients/{client}/orders/{order}/create-client', [OrderController::class, 'createClientFromOrder'])
+        ->name('orders.create-client')
         ->middleware('permission:view_orders');
 
     /*

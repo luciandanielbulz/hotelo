@@ -38,7 +38,7 @@
 
     <!-- Filter und Suche -->
     <div class="bg-white rounded-lg p-4 mb-6 border border-gray-200">
-        <form method="GET" action="{{ route('orders.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <form method="GET" action="{{ route('orders.index', $client) }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                 <select name="status" class="w-full rounded-lg border-gray-300">
@@ -125,7 +125,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                <a href="{{ route('orders.show', $order) }}" 
+                                <a href="{{ route('orders.show', [$client, $order]) }}" 
                                    class="text-blue-900 hover:text-blue-800 mr-3">
                                     Details
                                 </a>

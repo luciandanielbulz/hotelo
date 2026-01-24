@@ -171,9 +171,14 @@
                             <!-- Dropdown Menü -->
                             <div x-show="adminSubmenu" @click.away="adminSubmenu = false" class="mt-2 space-y-1 pl-5" @if(!(request()->routeIs('roles.*') || request()->routeIs('permissions.*') || request()->routeIs('clients.*') || request()->routeIs('users.*') || request()->routeIs('logos.*') || request()->routeIs('clients.my-settings') || request()->routeIs('orders.*'))) x-cloak @endif>
                                 @if($user->hasPermission('view_orders'))
-                                    <a href="{{ route('orders.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('orders.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
-                                        Bestellungen
-                                    </a>
+                                    @php
+                                        $client = $user->client ?? \App\Models\Clients::find($user->client_id);
+                                    @endphp
+                                    @if($client)
+                                        <a href="{{ route('orders.index', $client) }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('orders.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                            Bestellungen
+                                        </a>
+                                    @endif
                                 @endif
                                 @if($user->hasPermission('manage_roles'))
                                     <a href="{{ route('roles.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('roles.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">

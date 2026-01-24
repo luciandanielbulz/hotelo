@@ -204,7 +204,7 @@
                     <div class="sm:col-span-1">
                         @php
                             $logoExists = $clients->logo && \Storage::disk('public')->exists('logos/' . $clients->logo);
-                            $logoUrl = $clients->logo ? asset('storage/logos/' . rawurlencode($clients->logo)) : null;
+                            $logoUrl = $clients->logo && $logoExists ? url('/storage/logos/' . rawurlencode($clients->logo)) : null;
                         @endphp
                         @if($logoExists && $logoUrl)
                             <div class="mt-1">

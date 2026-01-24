@@ -8,6 +8,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/recaptcha.js',
+                'resources/js/order-status.js',
             ],
             refresh: true,
         }),

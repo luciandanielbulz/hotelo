@@ -45,7 +45,9 @@
                                                 }
                                                 
                                                 if ($logoExists) {
-                                                    $logoUrl = asset('storage/logos/' . rawurlencode($logoName));
+                                                    // Verwende url() statt route() um die aktuelle Request-URL zu verwenden
+                                                    // Das funktioniert sowohl in Dev (mit Port) als auch in Production
+                                                    $logoUrl = url('/storage/logos/' . rawurlencode($logoName));
                                                 }
                                             }
                                         @endphp

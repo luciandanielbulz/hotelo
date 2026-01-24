@@ -1,6 +1,6 @@
 <x-layout>
     <div class="mb-6">
-        <a href="{{ route('orders.index') }}" class="text-blue-900 hover:text-blue-800 mb-4 inline-flex items-center">
+        <a href="{{ route('orders.index', $client) }}" class="text-blue-900 hover:text-blue-800 mb-4 inline-flex items-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
             </svg>
@@ -99,10 +99,10 @@
             <!-- Status -->
             <div class="bg-white rounded-lg border border-gray-200 p-6">
                 <h2 class="text-lg font-semibold text-gray-900 mb-4">Status</h2>
-                <form method="POST" action="{{ route('orders.update-status', $order) }}">
+                <form method="POST" action="{{ route('orders.update-status', [$client, $order]) }}" id="status-form">
                     @csrf
                     @method('PATCH')
-                    <select name="status" onchange="this.form.submit()" 
+                    <select name="status" id="status-select" 
                             class="w-full rounded-lg border-gray-300 mb-4">
                         <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>Ausstehend</option>
                         <option value="processed" {{ $order->status == 'processed' ? 'selected' : '' }}>In Bearbeitung</option>
@@ -114,6 +114,22 @@
                     Erstellt: {{ $order->created_at->format('d.m.Y H:i') }}<br>
                     Aktualisiert: {{ $order->updated_at->format('d.m.Y H:i') }}
                 </div>
+            </div>
+
+            <!-- Client erstellen -->
+            <div class="bg-white rounded-lg border border-gray-200 p-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Aktionen</h2>
+                <form method="POST" action="{{ route('orders.create-client', [$client, $order]) }}" 
+                      id="create-client-form">
+                    @csrf
+                    <button type="submit" 
+                            class="w-full bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                        Client aus Bestellung erstellen
+                    </button>
+                </form>
+                <p class="text-xs text-gray-500 mt-2">
+                    Erstellt einen neuen Client mit den Daten aus dieser Bestellung.
+                </p>
             </div>
 
             <!-- Technische Informationen -->
@@ -132,4 +148,5 @@
             </div>
         </div>
     </div>
+    @vite('resources/js/order-status.js')
 </x-layout>

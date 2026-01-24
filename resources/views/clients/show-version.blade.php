@@ -303,7 +303,7 @@
                             <label class="block text-sm font-medium text-gray-700">Logo</label>
                             @php
                                 $logoExists = $specificVersion->logo && \Storage::disk('public')->exists('logos/' . $specificVersion->logo);
-                                $logoUrl = $specificVersion->logo ? asset('storage/logos/' . rawurlencode($specificVersion->logo)) : null;
+                                $logoUrl = $specificVersion->logo && $logoExists ? url('/storage/logos/' . rawurlencode($specificVersion->logo)) : null;
                             @endphp
                             @if($logoExists && $logoUrl)
                                 <div class="mt-2 p-3 bg-gray-50 rounded-lg border">
