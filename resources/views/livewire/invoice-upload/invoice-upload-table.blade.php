@@ -83,7 +83,7 @@
                         <span class="ml-2 bg-white/60 px-2 py-1 rounded text-xs">Bis {{ \Carbon\Carbon::parse($dateTo)->format('d.m.Y') }}</span>
                     @endif
                 </div>
-                <button wire:click="clearDateFilter" 
+                <button wire:click="resetFilters" 
                         class="inline-flex items-center px-3 py-1 bg-gradient-to-r from-red-600 via-red-500 to-red-600 text-white font-medium rounded-lg hover:from-red-500 hover:via-red-400 hover:to-red-500 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl text-xs">
                     <svg class="h-3 w-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>

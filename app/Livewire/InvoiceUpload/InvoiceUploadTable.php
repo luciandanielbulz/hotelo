@@ -54,10 +54,11 @@ class InvoiceUploadTable extends Component
         $this->resetPage();
     }
 
-    public function clearDateFilter()
+    public function resetFilters()
     {
-        $this->dateFrom = '';
-        $this->dateTo = '';
+        $this->search = '';
+        $this->dateFrom = now()->startOfYear()->format('Y-m-d');
+        $this->dateTo = now()->format('Y-m-d');
         $this->resetPage();
     }
 
