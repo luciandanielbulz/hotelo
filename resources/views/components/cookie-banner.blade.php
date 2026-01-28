@@ -133,7 +133,7 @@ function cookieBanner() {
             analytical: false
         },
         
-        init() {
+        init: function() {
             // Prüfe ob Cookie-Einstellungen bereits gespeichert wurden
             const saved = localStorage.getItem('cookiePreferences');
             if (saved) {
@@ -210,5 +210,7 @@ function cookieBanner() {
         }
     }
 }
+// Global verfügbar für Alpine/Livewire (z. B. bei dynamisch geladenem DOM)
+window.cookieBanner = cookieBanner;
 </script>
 

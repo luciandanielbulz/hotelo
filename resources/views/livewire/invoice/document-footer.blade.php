@@ -32,18 +32,6 @@
         <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
         <script>
             $(document).ready(function() {
-                $('#signature').summernote({
-                    height: 300, // Höhe des Editors
-                    toolbar: [
-                        ['style', ['bold', 'italic', 'underline', 'clear']],
-                        ['font', ['strikethrough', 'superscript', 'subscript']],
-                        ['para', ['ul', 'ol', 'paragraph']],
-                        ['insert', ['link']],
-                        ['view', ['fullscreen', 'codeview', 'help']]
-                    ],
-                    placeholder: 'Geben Sie hier Ihre E-Mail Signatur ein...',
-                });
-
                 $('#document_footer').summernote({
                     height: 200,
                     toolbar: [
@@ -54,10 +42,8 @@
                     ],
                     placeholder: 'Text, der in Angeboten/Rechnungen unter der Summe angezeigt wird...',
                 });
-                // Editor mit DB-Inhalt befüllen
                 $('#document_footer').summernote('code', @js($footerContent));
 
-                // Speichern-Button: Inhalt an Livewire senden
                 $('#save_footer_btn_{{ $invoiceId }}').on('click', function(){
                     const html = $('#document_footer').summernote('code');
                     if (window.Livewire) {
@@ -65,34 +51,7 @@
                         Livewire.find(@this.__instance.id).call('saveFooter');
                     }
                 });
-
-                // Sicherstellen, dass der Editor-Inhalt beim Absenden im Textarea landet
-                $('form[action="{{ route('clients.update-my-settings') }}"]').on('submit', function() {
-                    const sig = $('#signature').summernote('code');
-                    const docf = $('#document_footer').summernote('code');
-                    $('#signature').val(sig);
-                    $('#document_footer').val(docf);
-                });
             });
-
-            function previewImage(input) {
-                const preview = document.getElementById('preview');
-                const previewContainer = document.getElementById('logo-preview');
-                
-                if (input.files && input.files[0]) {
-                    const reader = new FileReader();
-                    
-                    reader.onload = function(e) {
-                        preview.src = e.target.result;
-                        previewContainer.classList.remove('hidden');
-                    }
-                    
-                    reader.readAsDataURL(input.files[0]);
-                } else {
-                    preview.src = '#';
-                    previewContainer.classList.add('hidden');
-                }
-            }
         </script>
     @endpush
 </div>
