@@ -106,6 +106,9 @@ class InvoicepositionsTable extends Component
             if (!$position || $position->invoice_id != $this->invoiceId) {
                 return;
             }
+            if ($position->sequence === null) {
+                return;
+            }
 
             // Finde die Position mit der nächstniedrigeren sequence
             $previousPosition = Invoicepositions::where('invoice_id', $this->invoiceId)
@@ -135,6 +138,9 @@ class InvoicepositionsTable extends Component
         try {
             $position = Invoicepositions::find($positionId);
             if (!$position || $position->invoice_id != $this->invoiceId) {
+                return;
+            }
+            if ($position->sequence === null) {
                 return;
             }
 

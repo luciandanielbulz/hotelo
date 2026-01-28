@@ -99,6 +99,9 @@ class OfferpositionsTable extends Component
             if (!$position || $position->offer_id != $this->offerId) {
                 return;
             }
+            if ($position->sequence === null) {
+                return;
+            }
 
             // Finde die Position mit der nächstniedrigeren sequence
             $previousPosition = Offerpositions::where('offer_id', $this->offerId)
@@ -128,6 +131,9 @@ class OfferpositionsTable extends Component
         try {
             $position = Offerpositions::find($positionId);
             if (!$position || $position->offer_id != $this->offerId) {
+                return;
+            }
+            if ($position->sequence === null) {
                 return;
             }
 
