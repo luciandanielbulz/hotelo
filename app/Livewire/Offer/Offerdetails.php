@@ -307,8 +307,6 @@ class Offerdetails extends Component
 
     public function render()
     {
-        \Log::info('Rendering details:', ['details' => $this->details]);
-
         return view('livewire.offer.offerdetails', [
             'details' => $this->details, // Überprüfen, ob $details gefüllt ist
         ]);

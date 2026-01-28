@@ -329,8 +329,6 @@ class Invoicedetails extends Component
 
     public function render()
     {
-        \Log::info('Rendering details:', ['details' => $this->details]);
-
         return view('livewire.invoice.invoicedetails', [
             'details' => $this->details // Überprüfen, ob $details gefüllt ist
         ]);

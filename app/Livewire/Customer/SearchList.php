@@ -94,8 +94,6 @@ class SearchList extends Component
 
     public function render()
     {
-        \Log::info('Render aufgerufen mit Suche: ' . $this->searchTerm);
-
         // Aktuell eingeloggter Benutzer
         $user = Auth::user();
         $clientId = $user->client_id;
