@@ -96,20 +96,29 @@
                 const message = typeof payload === 'string' ? payload : (payload.message ?? 'Erfolgreich gespeichert.');
                 const type = typeof payload === 'object' && payload.type ? payload.type : 'success';
                 toasts.push({ id, message, type });
-                setTimeout(() => { toasts = toasts.filter(t => t.id !== id); }, 3000);
+                if (type !== 'error') {
+                    setTimeout(() => { toasts = toasts.filter(t => t.id !== id); }, 3000);
+                }
             });
          ">
         <template x-for="toast in toasts" :key="toast.id">
             <div x-transition.opacity
                  class="rounded-lg shadow-lg border px-4 py-3 min-w-64 max-w-sm"
                  :class="toast.type === 'success' ? 'bg-green-50 border-green-200 text-green-900' : (toast.type === 'error' ? 'bg-red-50 border-red-200 text-red-900' : 'bg-gray-50 border-gray-200 text-gray-900')">
-                <div class="flex items-start">
-                    <div class="mt-0.5 mr-2" :class="toast.type === 'success' ? 'text-green-500' : (toast.type === 'error' ? 'text-red-500' : 'text-gray-500')">
+                <div class="flex items-start gap-2">
+                    <div class="mt-0.5 shrink-0" :class="toast.type === 'success' ? 'text-green-500' : (toast.type === 'error' ? 'text-red-500' : 'text-gray-500')">
                         <svg x-show="toast.type === 'success'" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd" /></svg>
                         <svg x-show="toast.type === 'error'" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z" clip-rule="evenodd" /></svg>
                         <svg x-show="toast.type !== 'success' && toast.type !== 'error'" class="w-5 h-5" viewBox="0 0 20 20" fill="currentColor"><path d="M2 5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414A1 1 0 0116 9v6a2 2 0 01-2 2H4a2 2 0 01-2-2V5z" /></svg>
                     </div>
-                    <div class="text-sm font-medium" x-text="toast.message"></div>
+                    <div class="text-sm font-medium flex-1 min-w-0" x-text="toast.message"></div>
+                    <button type="button"
+                            @click="toasts = toasts.filter(t => t.id !== toast.id)"
+                            class="shrink-0 p-0.5 rounded hover:bg-black/10 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-1"
+                            :class="toast.type === 'error' ? 'text-red-600 hover:bg-red-200/50' : (toast.type === 'success' ? 'text-green-600 hover:bg-green-200/50' : 'text-gray-600')"
+                            aria-label="Schließen">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
                 </div>
             </div>
         </template>

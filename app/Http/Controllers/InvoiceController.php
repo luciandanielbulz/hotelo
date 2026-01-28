@@ -403,7 +403,7 @@ class InvoiceController extends Controller
             'date' => 'required|date',
             'number' => 'required|string|max:100',
             'depositamount' => 'nullable|numeric|min:0',
-            'periodfrom' => 'nullable|date',
+            'periodfrom' => 'nullable|date|before_or_equal:periodto',
             'periodto' => 'nullable|date|after_or_equal:periodfrom',
             'comment' => 'nullable|string|max:1000',
         ]);

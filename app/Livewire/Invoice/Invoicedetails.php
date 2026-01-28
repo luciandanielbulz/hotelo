@@ -9,6 +9,7 @@ use App\Models\Clients;
 use Illuminate\Support\Facades\Auth;
 
 use Livewire\Component;
+use Illuminate\Validation\ValidationException;
 
 use Carbon\Carbon;
 
@@ -176,20 +177,26 @@ class Invoicedetails extends Component
                     'invoiceDate' => 'required|date',
                     'invoiceNumber' => 'required|string|max:100',
                     'condition_id' => 'required|integer',
-                    'periodfrom' => 'nullable|date',
+                    'periodfrom' => 'nullable|date|before_or_equal:periodto',
+                    'periodto' => 'nullable|date|after_or_equal:periodfrom',
                 ];
-                // Range-Validierung nur erzwingen, wenn periodto geändert wurde
-                if ($this->lastChangedProperty !== 'periodfrom') {
-                    $rules['periodto'] = 'nullable|date|after_or_equal:periodfrom';
-                } else {
-                    $rules['periodto'] = 'nullable|date';
-                }
                 $this->validate($rules);
                 \Log::info('Validierung erfolgreich');
+            } catch (ValidationException $e) {
+                $firstError = $e->validator->errors()->first();
+                \Log::error('Validierung fehlgeschlagen: ' . $firstError);
+                $this->message = $firstError;
+                $this->dispatch('notify', message: $this->message, type: 'error');
+                // Bei ungültigem Zeitraum (Bis vor Von oder Von nach Bis): nicht speichern, ursprüngliche Datumsfelder wiederherstellen
+                $this->periodfrom = $this->details->periodfrom ? Carbon::parse($this->details->periodfrom)->format('Y-m-d') : '';
+                $this->periodto = $this->details->periodto ? Carbon::parse($this->details->periodto)->format('Y-m-d') : '';
+                return;
             } catch (\Exception $e) {
                 \Log::error('Validierung fehlgeschlagen: ' . $e->getMessage());
                 $this->message = 'Validierung fehlgeschlagen: ' . $e->getMessage();
                 $this->dispatch('notify', message: $this->message, type: 'error');
+                $this->periodfrom = $this->details->periodfrom ? Carbon::parse($this->details->periodfrom)->format('Y-m-d') : '';
+                $this->periodto = $this->details->periodto ? Carbon::parse($this->details->periodto)->format('Y-m-d') : '';
                 return;
             }
 

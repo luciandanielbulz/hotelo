@@ -15,6 +15,8 @@ return [
 
     'required' => 'Das Feld :attribute ist erforderlich.',
     'required_without' => 'Zumindest das Feld :attribute ist erforderlich.',
+    'after_or_equal' => 'Das Feld :attribute muss ein Datum am oder nach dem :date sein.',
+    'before_or_equal' => 'Das Feld :attribute muss ein Datum am oder vor dem :date sein.',
     'max' => [
         'string' => 'Das Feld :attribute darf nicht mehr als :max Zeichen enthalten.',
         'file' => 'Die Datei :attribute darf nicht größer als :max Kilobyte sein.',
@@ -78,7 +80,12 @@ return [
         'invoicemultiplikator' => [
             'integer' => 'Die Multiplikator Rechnung muss eine Zahl sein.',
         ],
-        
+        'periodfrom' => [
+            'before_or_equal' => 'Das Startdatum (Zeitraum von) darf nicht nach dem Enddatum (Zeitraum bis) liegen.',
+        ],
+        'periodto' => [
+            'after_or_equal' => 'Das Enddatum (Zeitraum bis) muss am oder nach dem Startdatum (Zeitraum von) liegen.',
+        ],
     ],
 
     /*
@@ -116,6 +123,8 @@ return [
         'logo' => 'Logo',
         'logoheight' => 'Logohöhe',
         'logowidth' => 'Logobreite',
+        'periodfrom' => 'Zeitraum von',
+        'periodto' => 'Zeitraum bis',
     ],
 
 ];
