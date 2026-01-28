@@ -20,11 +20,31 @@ class InvoicepositionsTable extends Component
     public function loadPositions()
     {
         $this->positions = Invoicepositions::join('units','invoicepositions.unit_id','=','units.id')
-        ->where('invoicepositions.invoice_id', $this->invoiceId)
-        ->select('units.unitdesignation as unit_desigtnation', 'invoicepositions.*', 'units.unitdesignation as unit_name')
-        ->orderBy('sequence')
-        ->get();
-        //dd($this->positions);
+            ->where('invoicepositions.invoice_id', $this->invoiceId)
+            ->select('units.unitdesignation as unit_desigtnation', 'invoicepositions.*', 'units.unitdesignation as unit_name')
+            ->orderByRaw('invoicepositions.sequence IS NULL, invoicepositions.sequence ASC')
+            ->orderBy('invoicepositions.id')
+            ->get();
+
+        // Fehlende sequence-Werte setzen, damit Verschieben (nach oben/unten) funktioniert
+        $needsNormalization = $this->positions->contains(fn ($p) => $p->sequence === null);
+        if ($needsNormalization) {
+            $seq = 10;
+            foreach ($this->positions as $pos) {
+                $model = Invoicepositions::find($pos->id);
+                if ($model) {
+                    $model->sequence = $seq;
+                    $model->save();
+                }
+                $seq += 10;
+            }
+            $this->positions = Invoicepositions::join('units','invoicepositions.unit_id','=','units.id')
+                ->where('invoicepositions.invoice_id', $this->invoiceId)
+                ->select('units.unitdesignation as unit_desigtnation', 'invoicepositions.*', 'units.unitdesignation as unit_name')
+                ->orderBy('invoicepositions.sequence')
+                ->orderBy('invoicepositions.id')
+                ->get();
+        }
     }
 
     public function addPosition()
