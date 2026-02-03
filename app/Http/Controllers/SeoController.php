@@ -22,25 +22,42 @@ class SeoController extends Controller
 
         $sitemap = Cache::remember($cacheKey, $cacheDuration, function () {
             $urls = [];
-            $baseUrl = config('app.url');
+            $baseUrl = rtrim(config('app.url'), '/');
 
-            // Startseite
-            $urls[] = [
-                'loc' => $baseUrl,
-                'lastmod' => now()->toAtomString(),
-                'changefreq' => 'daily',
-                'priority' => '1.0',
+            $publicPages = [
+                ['url' => $baseUrl, 'changefreq' => 'daily', 'priority' => '1.0'],
+                ['route' => 'login', 'changefreq' => 'monthly', 'priority' => '0.6'],
+                ['route' => 'register', 'changefreq' => 'monthly', 'priority' => '0.5'],
+                ['route' => 'about', 'changefreq' => 'monthly', 'priority' => '0.8'],
+                ['route' => 'pricing', 'changefreq' => 'weekly', 'priority' => '0.9'],
+                ['route' => 'contact.form', 'changefreq' => 'monthly', 'priority' => '0.8'],
+                ['route' => 'impressum', 'changefreq' => 'yearly', 'priority' => '0.3'],
+                ['route' => 'privacy', 'changefreq' => 'yearly', 'priority' => '0.3'],
+                ['route' => 'cookies', 'changefreq' => 'yearly', 'priority' => '0.3'],
+                ['route' => 'features.invoices', 'changefreq' => 'monthly', 'priority' => '0.7'],
+                ['route' => 'features.offers', 'changefreq' => 'monthly', 'priority' => '0.7'],
+                ['route' => 'features.customers', 'changefreq' => 'monthly', 'priority' => '0.7'],
+                ['route' => 'features.pdfs', 'changefreq' => 'monthly', 'priority' => '0.7'],
+                ['route' => 'features.sending', 'changefreq' => 'monthly', 'priority' => '0.7'],
+                ['route' => 'features.analytics', 'changefreq' => 'monthly', 'priority' => '0.7'],
             ];
 
-            // Weitere öffentliche Seiten können hier hinzugefügt werden
-            // Beispiel: Login-Seite
-            if (Route::has('login')) {
-                $urls[] = [
-                    'loc' => route('login'),
-                    'lastmod' => now()->toAtomString(),
-                    'changefreq' => 'monthly',
-                    'priority' => '0.5',
-                ];
+            foreach ($publicPages as $page) {
+                if (isset($page['url'])) {
+                    $urls[] = [
+                        'loc' => $page['url'],
+                        'lastmod' => now()->toAtomString(),
+                        'changefreq' => $page['changefreq'],
+                        'priority' => $page['priority'],
+                    ];
+                } elseif (isset($page['route']) && Route::has($page['route'])) {
+                    $urls[] = [
+                        'loc' => route($page['route']),
+                        'lastmod' => now()->toAtomString(),
+                        'changefreq' => $page['changefreq'],
+                        'priority' => $page['priority'],
+                    ];
+                }
             }
 
             return $urls;

@@ -1,2 +1,6 @@
 User-agent: *
-Disallow:
+Allow: /
+
+# Hinweis: Für Sitemap-URL und Disallow-Pfade (Dashboard, Rechnungen, etc.) die dynamische
+# robots.txt nutzen: GET /robots.txt an Laravel (index.php) leiten, dann wird die Version
+# aus config/seo.php und resources/views/seo/robots.blade.php ausgeliefert. 
