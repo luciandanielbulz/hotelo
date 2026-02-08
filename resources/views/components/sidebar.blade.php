@@ -1,5 +1,5 @@
 <!-- resources/views/components/sidebar.blade.php -->
-<div x-data="{ offersSubmenu: {{ request()->routeIs('offer.*') ? 'true' : 'false' }}, salesSubmenu: {{ (request()->routeIs('sales.*') || request()->routeIs('bankdata.*')) ? 'true' : 'false' }}, invoicesSubmenu: {{ (request()->routeIs('invoice.*') || request()->routeIs('invoiceupload.*')) ? 'true' : 'false' }}, adminSubmenu: {{ (request()->routeIs('roles.*') || request()->routeIs('permissions.*') || request()->routeIs('clients.*') || request()->routeIs('users.*') || request()->routeIs('logos.*') || request()->routeIs('clients.my-settings') || request()->routeIs('condition.*') || request()->routeIs('currencies.*') || request()->routeIs('categories.*') || request()->routeIs('maintenance.*') || request()->routeIs('server-monitoring.*') || request()->routeIs('version.index') || request()->routeIs('client-settings.*') || request()->routeIs('orders.*')) ? 'true' : 'false' }}, profileSubmenu: {{ request()->routeIs('profile.*') ? 'true' : 'false' }} }" class="flex h-screen flex-col gap-y-5 overflow-y-auto bg-white px-6 border-r border-gray-200">
+<div x-data="{ offersSubmenu: {{ request()->routeIs('offer.*') ? 'true' : 'false' }}, salesSubmenu: {{ (request()->routeIs('sales.*') || request()->routeIs('bankdata.*')) ? 'true' : 'false' }}, invoicesSubmenu: {{ (request()->routeIs('invoice.*') || request()->routeIs('invoiceupload.*')) ? 'true' : 'false' }}, bookingSubmenu: {{ (request()->routeIs('admin.booking.*') || request()->routeIs('booking.*')) ? 'true' : 'false' }}, adminSubmenu: {{ (request()->routeIs('roles.*') || request()->routeIs('permissions.*') || request()->routeIs('clients.*') || request()->routeIs('users.*') || request()->routeIs('logos.*') || request()->routeIs('clients.my-settings') || request()->routeIs('condition.*') || request()->routeIs('currencies.*') || request()->routeIs('categories.*') || request()->routeIs('maintenance.*') || request()->routeIs('server-monitoring.*') || request()->routeIs('version.index') || request()->routeIs('client-settings.*') || request()->routeIs('orders.*')) ? 'true' : 'false' }}, profileSubmenu: {{ request()->routeIs('profile.*') ? 'true' : 'false' }} }" class="flex h-screen flex-col gap-y-5 overflow-y-auto bg-white px-6 border-r border-gray-200">
     <!-- Logo -->
     <div class="flex h-16 shrink-0 items-center">
         <a href="{{ route('dashboard') }}">
@@ -90,6 +90,38 @@
                                 </a>
                                 <a href="{{ route('invoiceupload.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('invoiceupload.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
                                     Ausgabenverwaltung
+                                </a>
+                            </div>
+                        </li>
+                    @endif
+
+                    @if($user)
+                        <!-- Booking Modul Dropdown -->
+                        <li>
+                            <button @click="bookingSubmenu = !bookingSubmenu" class="group flex w-full items-center gap-x-3 rounded-md p-2 text-sm font-semibold {{ (request()->routeIs('admin.booking.*') || request()->routeIs('booking.*')) ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }} focus:outline-none">
+                                <!-- SVG Icon -->
+                                <svg class="h-6 w-6 shrink-0 {{ (request()->routeIs('admin.booking.*') || request()->routeIs('booking.*')) ? 'text-gray-700' : 'text-gray-500 group-hover:text-gray-900' }}" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                                Booking
+                                <!-- Dropdown Indicator -->
+                                <svg :class="{ 'transform rotate-90': bookingSubmenu }" class="ml-auto h-5 w-5 transform transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                            <!-- Dropdown Menü -->
+                            <div x-show="bookingSubmenu" @click.away="bookingSubmenu = false" class="mt-2 space-y-1 pl-5" @if(!(request()->routeIs('admin.booking.*') || request()->routeIs('booking.*'))) x-cloak @endif>
+                                <a href="{{ route('admin.booking.dashboard') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('admin.booking.dashboard') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                    Übersicht
+                                </a>
+                                <a href="{{ route('admin.booking.reservations.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('admin.booking.reservations.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                    Reservierungen
+                                </a>
+                                <a href="{{ route('booking.rooms.index') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('booking.rooms.*') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                    Zimmer anzeigen
+                                </a>
+                                <a href="{{ route('booking.reserve') }}" class="group flex gap-x-3 rounded-md p-2 text-sm font-medium {{ request()->routeIs('booking.reserve') ? 'bg-gray-100 text-gray-900' : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900' }}">
+                                    Neue Reservierung
                                 </a>
                             </div>
                         </li>

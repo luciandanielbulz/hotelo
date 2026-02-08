@@ -261,6 +261,11 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * Module Service Providers...
+         */
+        App\Modules\Booking\BookingServiceProvider::class,
+
     ])->toArray(),
 
     /*
