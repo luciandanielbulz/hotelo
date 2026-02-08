@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use App\Models\Clients;
 
 class ClientsSeeder extends Seeder
@@ -14,7 +16,7 @@ class ClientsSeeder extends Seeder
     {
         // Verhindert doppelte Einträge
         if (!Clients::where('email', 'office@bulz.at')->exists()) {
-            Clients::create([
+            $client = Clients::create([
                 'clientname' => 'Lucian-Daniel Bulz',
                 'companyname' => 'Ing. Lucian-Daniel Bulz',
                 'business' => 'Kleinunternehmen',
@@ -34,12 +36,22 @@ class ClientsSeeder extends Seeder
                 'logowidth' => 100,
                 'signature' => "MFG\nBulz Lucian",
                 'style' => 1,
-                'lastoffer' => 1,
-                'lastinvoice' => 1,
-                'offermultiplikator' => 10000,
-                'invoicemultiplikator' => 10000
-
             ]);
+
+            // Erstelle die zugehörigen Client-Settings mit den Nummerierungsfeldern
+            if ($client && Schema::hasTable('client_settings')) {
+                DB::table('client_settings')->updateOrInsert(
+                    ['client_id' => $client->id],
+                    [
+                        'lastoffer' => 1,
+                        'lastinvoice' => 1,
+                        'offermultiplikator' => 10000,
+                        'invoicemultiplikator' => 10000,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]
+                );
+            }
         }
     }
 }

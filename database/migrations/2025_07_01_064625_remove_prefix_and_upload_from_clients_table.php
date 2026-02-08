@@ -11,14 +11,26 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('clients', function (Blueprint $table) {
-            // Entferne Präfix- und Upload-Felder die jetzt in client_settings gespeichert werden
-            $table->dropColumn([
-                'invoice_prefix',
-                'offer_prefix',
-                'max_upload_size'
-            ]);
-        });
+        // Entferne Präfix- und Upload-Felder die jetzt in client_settings gespeichert werden
+        $columnsToDrop = [];
+        
+        if (Schema::hasColumn('clients', 'invoice_prefix')) {
+            $columnsToDrop[] = 'invoice_prefix';
+        }
+        
+        if (Schema::hasColumn('clients', 'offer_prefix')) {
+            $columnsToDrop[] = 'offer_prefix';
+        }
+        
+        if (Schema::hasColumn('clients', 'max_upload_size')) {
+            $columnsToDrop[] = 'max_upload_size';
+        }
+        
+        if (!empty($columnsToDrop)) {
+            Schema::table('clients', function (Blueprint $table) use ($columnsToDrop) {
+                $table->dropColumn($columnsToDrop);
+            });
+        }
     }
 
     /**
